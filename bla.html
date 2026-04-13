@@ -1,0 +1,1773 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RealVilla - Premium Real Estate in Tenerife</title>
+
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap">
+
+    <style>
+        /* =============================================
+           DESIGN SYSTEM TOKENS
+        ============================================= */
+        :root {
+            --color-bg: #ffffff;
+            --color-bg-subtle: #f8f8f8;
+            --color-text: #111111;
+            --color-text-muted: rgba(17, 17, 17, 0.7);
+            --color-text-white: #ffffff;
+            --color-text-white-muted: rgba(255, 255, 255, 0.7);
+            --color-accent: #bcaf8b;
+            --color-accent-subtle: #f3e2b3;
+            --color-accent-bright: #c9bc9a;
+            --color-black: #000000;
+            --color-white: #ffffff;
+            --color-overlay-dark: rgba(0, 0, 0, 0.5);
+            --color-overlay-light: rgba(255, 255, 255, 0.2);
+            --color-border-light: rgba(255, 255, 255, 0.2);
+            --color-border-subtle: rgba(0, 0, 0, 0.05);
+
+            --font-primary: 'Manrope', sans-serif;
+            --weight-normal: 400;
+            --weight-medium: 500;
+            --weight-semibold: 600;
+            --weight-bold: 700;
+            --weight-black: 800;
+
+            --font-size-xs: 0.75rem;
+            --font-size-sm: 0.8rem;
+            --font-size-md: 0.85rem;
+            --font-size-base: 1rem;
+            --font-size-lg: 1.25rem;
+            --font-size-xl: 1.5rem;
+            --font-size-2xl: 1.6rem;
+
+            --font-size-hero-title: var(--font-size-2xl);
+            --font-size-hero-title-tablet: 1.4rem;
+            --font-size-hero-title-mobile: 1.3rem;
+            --font-size-hero-title-small: 1.15rem;
+
+            --font-size-hero-subtitle: var(--font-size-base);
+            --font-size-hero-subtitle-tablet: 0.9rem;
+            --font-size-hero-subtitle-mobile: var(--font-size-md);
+            --font-size-hero-subtitle-small: var(--font-size-sm);
+
+            --font-size-loader: 2.5vw;
+            --font-size-loader-mobile: 8vw;
+
+            --line-height-none: 1;
+            --line-height-tight: 1.2;
+            --line-height-normal: 1.5;
+            --line-height-relaxed: 1.6;
+
+            --tracking-tighter: -0.05em;
+            --tracking-tight: -0.02em;
+            --tracking-normal: 0;
+            --tracking-wide: 0.15em;
+            --tracking-wider: 0.2em;
+            --tracking-widest: 0.3em;
+
+            --space-xs: 0.5rem;
+            --space-sm: 0.75rem;
+            --space-md: 1rem;
+            --space-lg: 1.5rem;
+            --space-xl: 2rem;
+            --space-2xl: 2.5rem;
+            --space-3xl: 3rem;
+            --space-4xl: 4rem;
+            --space-5xl: 5rem;
+            --space-6xl: 6rem;
+
+            --header-height-desktop: 28px;
+            --header-height-mobile: 22px;
+            --header-height-mobile-small: 18px;
+            --container-padding-desktop: 3rem;
+            --container-padding-tablet: 2rem;
+            --container-padding-mobile: 1.5rem;
+            --container-padding-mobile-small: 1.25rem;
+
+            --ease-premium: cubic-bezier(0.16, 1, 0.3, 1);
+            --duration-fast: 0.3s;
+            --duration-normal: 0.4s;
+            --duration-slow: 0.6s;
+            --duration-extra-slow: 0.8s;
+
+            --z-splash: 9999;
+            --z-splash-content: 10000;
+            --z-header: 50000;
+            --z-nav-overlay: 55000;
+            --z-hamburger: 60000;
+            --z-grain: 999999;
+        }
+
+        /* =============================================
+           UTILITY CLASSES (Tailwind-like)
+        ============================================= */
+        /* Layout */
+        .w-full {
+            width: 100%;
+        }
+
+        .h-full {
+            height: 100%;
+        }
+
+        .h-screen {
+            height: 100vh;
+        }
+
+        .relative {
+            position: relative;
+        }
+
+        .absolute {
+            position: absolute;
+        }
+
+        .fixed {
+            position: fixed;
+        }
+
+        .inset-0 {
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+
+        .top-0 {
+            top: 0;
+        }
+
+        .left-0 {
+            left: 0;
+        }
+
+        .left-1\/2 {
+            left: 50%;
+        }
+
+        .-translate-x-1\/2 {
+            transform: translateX(-50%);
+        }
+
+        .z-header {
+            z-index: var(--z-header);
+        }
+
+        .z-splash {
+            z-index: var(--z-splash);
+        }
+
+        .overflow-hidden {
+            overflow: hidden;
+        }
+
+        .overflow-x-hidden {
+            overflow-x: hidden;
+        }
+
+        .pointer-events-none {
+            pointer-events: none;
+        }
+
+        .pointer-events-auto {
+            pointer-events: auto;
+        }
+
+        .z-20 {
+            z-index: 20;
+        }
+
+        .z-25 {
+            z-index: 25;
+        }
+
+        .object-contain {
+            object-fit: contain;
+        }
+
+        .mask-full {
+            -webkit-mask-size: 100% 100%;
+            mask-size: 100% 100%;
+            -webkit-mask-repeat: no-repeat;
+            mask-repeat: no-repeat;
+        }
+
+        .mask-letter {
+            -webkit-mask-image: var(--letter-svg);
+            mask-image: var(--letter-svg);
+        }
+
+        .clip-hide {
+            clip-path: inset(100% 0 0 0);
+        }
+
+        /* Flexbox */
+        .flex {
+            display: flex;
+        }
+
+        .flex-col {
+            flex-direction: column;
+        }
+
+        .items-center {
+            align-items: center;
+        }
+
+        .items-start {
+            align-items: flex-start;
+        }
+
+        .items-end {
+            align-items: flex-end;
+        }
+
+        .justify-center {
+            justify-content: center;
+        }
+
+        .justify-between {
+            justify-content: space-between;
+        }
+
+        .justify-end {
+            justify-content: flex-end;
+        }
+
+        .self-center {
+            align-self: center;
+        }
+
+        /* Spacing */
+        .p-space-md {
+            padding: var(--space-md);
+        }
+
+        .p-6xl {
+            padding: var(--space-6xl);
+        }
+
+        .px-container-desktop {
+            padding-left: var(--container-padding-desktop);
+            padding-right: var(--container-padding-desktop);
+        }
+
+        .pt-lg {
+            padding-top: var(--space-lg);
+        }
+
+        .pb-lg {
+            padding-bottom: var(--space-lg);
+        }
+
+        .gap-sm {
+            gap: var(--space-sm);
+        }
+
+        .gap-md {
+            gap: var(--space-md);
+        }
+
+        .gap-lg {
+            gap: var(--space-lg);
+        }
+
+        .gap-xl {
+            gap: var(--space-xl);
+        }
+
+        .gap-2xl {
+            gap: var(--space-2xl);
+        }
+
+        .gap-3xl {
+            gap: var(--space-3xl);
+        }
+
+        .gap-4xl {
+            gap: var(--space-4xl);
+        }
+
+        .mt-md {
+            margin-top: var(--space-md);
+        }
+
+        .mt-xl {
+            margin-top: var(--space-xl);
+        }
+
+        .mb-md {
+            margin-bottom: var(--space-md);
+        }
+
+        /* Typography */
+        .text-xs {
+            font-size: var(--font-size-xs);
+        }
+
+        .text-sm {
+            font-size: var(--font-size-sm);
+        }
+
+        .text-base {
+            font-size: var(--font-size-base);
+        }
+
+        .text-lg {
+            font-size: var(--font-size-lg);
+        }
+
+        .text-xl {
+            font-size: var(--font-size-xl);
+        }
+
+        .text-2xl {
+            font-size: var(--font-size-2xl);
+        }
+
+        .font-normal {
+            font-weight: var(--weight-normal);
+        }
+
+        .font-medium {
+            font-weight: var(--weight-medium);
+        }
+
+        .font-semibold {
+            font-weight: var(--weight-semibold);
+        }
+
+        .font-bold {
+            font-weight: var(--weight-bold);
+        }
+
+        .font-black {
+            font-weight: var(--weight-black);
+        }
+
+        .tracking-tight {
+            letter-spacing: var(--tracking-tight);
+        }
+
+        .tracking-wide {
+            letter-spacing: var(--tracking-wide);
+        }
+
+        .tracking-wider {
+            letter-spacing: var(--tracking-wider);
+        }
+
+        .tracking-widest {
+            letter-spacing: var(--tracking-widest);
+        }
+
+        .leading-tight {
+            line-height: var(--line-height-tight);
+        }
+
+        .leading-relaxed {
+            line-height: var(--line-height-relaxed);
+        }
+
+        .uppercase {
+            text-transform: uppercase;
+        }
+
+        .text-left {
+            text-align: left;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .no-underline {
+            text-decoration: none;
+        }
+
+        /* Colors */
+        .text-white {
+            color: var(--color-white);
+        }
+
+        .text-black {
+            color: var(--color-black);
+        }
+
+        .text-accent {
+            color: var(--color-accent);
+        }
+
+        .bg-white {
+            background-color: var(--color-white);
+        }
+
+        .bg-black {
+            background-color: var(--color-black);
+        }
+
+        .bg-transparent {
+            background-color: transparent;
+        }
+
+        .opacity-0 {
+            opacity: 0;
+        }
+
+        .opacity-40 {
+            opacity: 0.4;
+        }
+
+        .opacity-100 {
+            opacity: 1;
+        }
+
+        .invert {
+            filter: invert(1);
+        }
+
+        .brightness-0 {
+            filter: brightness(0);
+        }
+
+        .filter-white {
+            filter: brightness(0) invert(1);
+        }
+
+        /* Transitions */
+        .transition-all {
+            transition-property: all;
+            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+            transition-duration: 150ms;
+        }
+
+        .duration-normal {
+            transition-duration: var(--duration-normal);
+        }
+
+        .ease-premium {
+            transition-timing-function: var(--ease-premium);
+        }
+
+        .transition-opacity-500 {
+            transition: opacity 0.5s var(--ease-premium);
+        }
+
+        /* Base */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--color-bg);
+            color: var(--color-text);
+            overflow-x: hidden;
+            font-family: var(--font-primary);
+            -webkit-font-smoothing: antialiased;
+            overflow-y: hidden;
+        }
+
+        /* =============================================
+           COMPONENT SPECIFIC (Animations & Mask logic)
+        ============================================= */
+
+        .splash-bg {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at center, var(--color-white) 0%, var(--color-bg-subtle) 100%);
+            z-index: -2;
+            will-change: transform;
+        }
+
+        .splash-grid {
+            position: absolute;
+            inset: -25%;
+            z-index: -1;
+            opacity: 0.5;
+            transform: scale(1.5);
+        }
+
+        .v-line,
+        .h-line {
+            position: absolute;
+            background-color: var(--color-border-subtle);
+        }
+
+        .v-line {
+            width: 1px;
+            height: 100%;
+            top: 0;
+            left: 50%;
+        }
+
+        .h-line {
+            height: 1px;
+            width: 100%;
+            left: 0;
+            top: 50%;
+        }
+
+        .grid-glider {
+            position: absolute;
+            width: 6px;
+            height: 40vh;
+            background: linear-gradient(to top, transparent, var(--color-accent-subtle) 50%, transparent);
+            left: 50%;
+            transform: translateX(-50%);
+            top: 0;
+            opacity: 1;
+            z-index: 10;
+        }
+
+
+        /* Header Specialized */
+        .header {
+            transition: background var(--duration-extra-slow) var(--ease-premium), backdrop-filter var(--duration-extra-slow) var(--ease-premium);
+        }
+
+        .header-scrolled {
+            background: rgba(0, 0, 0, 0.18);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+
+        .header-logo {
+            height: var(--header-height-desktop);
+        }
+
+        .header-letter {
+            height: 100%;
+            width: calc(var(--header-height-desktop) * var(--letter-w, 1));
+            background-color: var(--color-white);
+            -webkit-mask-image: var(--letter-svg);
+            mask-image: var(--letter-svg);
+            -webkit-mask-size: 100% 100%;
+            mask-size: 100% 100%;
+            -webkit-mask-repeat: no-repeat;
+            mask-repeat: no-repeat;
+            -webkit-mask-position: center;
+            mask-position: center;
+        }
+
+        .nav-link {
+            font-size: var(--font-size-base);
+            font-weight: var(--weight-bold);
+            letter-spacing: var(--tracking-wider);
+            text-transform: uppercase;
+            color: var(--color-white);
+            text-decoration: none;
+            opacity: 0.7;
+            position: relative;
+            transition: opacity var(--duration-normal) var(--ease-premium);
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 1.5px;
+            background-color: var(--color-white);
+            transform: translateX(-50%);
+            transition: width var(--duration-normal) var(--ease-premium);
+        }
+
+        .nav-link:hover {
+            opacity: 1;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        .nav-link-mobile {
+            font-size: var(--font-size-xl);
+            font-weight: var(--weight-bold);
+            letter-spacing: var(--tracking-wider);
+            text-transform: uppercase;
+            color: var(--color-white);
+            text-decoration: none;
+            position: relative;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity var(--duration-normal) ease, transform var(--duration-normal) ease;
+        }
+
+        /* CTA & Buttons Specialized */
+        .cta-link {
+            display: flex;
+            align-items: center;
+            gap: var(--space-xs);
+            text-decoration: none;
+            color: var(--color-text-white);
+            font-size: var(--font-size-lg);
+            font-weight: var(--weight-bold);
+            letter-spacing: var(--tracking-wide);
+            text-transform: uppercase;
+            border-bottom: 2px solid var(--color-border-light);
+            transition: border-bottom-color var(--duration-normal) ease, transform var(--duration-normal) ease, opacity var(--duration-normal) ease;
+            opacity: 0;
+            transform: translateY(20px) scale(0.9);
+            filter: blur(5px);
+        }
+
+        .cta-link:hover {
+            opacity: 1;
+            border-bottom-color: var(--color-white);
+            transform: translateY(-4px);
+        }
+
+
+        .btn {
+            background-color: var(--color-white);
+            color: var(--color-black);
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            font-size: var(--font-size-xs);
+            font-weight: var(--weight-black);
+            text-transform: uppercase;
+            letter-spacing: var(--tracking-wide);
+            text-decoration: none;
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            transition: transform var(--duration-slow) var(--ease-premium), background var(--duration-slow) var(--ease-premium), box-shadow var(--duration-slow) var(--ease-premium);
+        }
+
+        .btn:hover {
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -150%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+            transform: skewX(-25deg);
+            transition: left 0.75s ease;
+        }
+
+        .btn:hover::before {
+            left: 150%;
+        }
+
+        .btn-mobile {
+            padding: 1rem 2.5rem;
+            font-size: var(--font-size-sm);
+            margin-top: var(--space-md);
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity var(--duration-normal) ease 0.3s, transform var(--duration-normal) ease 0.3s;
+        }
+
+        /* Letter & Mosaic logic */
+        .letter-wrapper {
+            position: relative;
+            height: 7vw;
+            width: calc(7vw * var(--letter-w, 0.75));
+        }
+
+        .video-box {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            overflow: hidden;
+            border: 2px solid var(--color-white);
+            box-sizing: border-box;
+        }
+
+        .video-inner {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            inset: 0;
+            background-image: url('/img-hero-001.jpg');
+            background-size: 100vw 100vh;
+            background-repeat: no-repeat;
+        }
+
+        .mask-layer {
+            position: absolute;
+            inset: -2px;
+            background-color: var(--color-bg);
+            mix-blend-mode: screen;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+        }
+
+        .letter-font {
+            width: 100%;
+            height: 100%;
+            background-color: var(--color-black);
+            -webkit-mask-image: var(--letter-svg);
+            mask-image: var(--letter-svg);
+            -webkit-mask-size: 100% 100%;
+            mask-size: 100% 100%;
+            -webkit-mask-repeat: no-repeat;
+            mask-repeat: no-repeat;
+        }
+
+        .morph-shape {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 150%;
+            height: 150%;
+            background-color: var(--color-black);
+        }
+
+
+        .text-black-shimmer {
+            background: linear-gradient(110deg, #111 45%, #333 50%, #111 55%);
+            background-size: 200% auto;
+            animation: shimmer 10s 3 ease-in-out;
+        }
+
+        .text-gold-shimmer {
+            background: linear-gradient(110deg, var(--color-accent) 45%, var(--color-accent-bright) 50%, var(--color-accent) 55%);
+            background-size: 200% auto;
+            animation: shimmer 10s 3 ease-in-out;
+        }
+
+        @keyframes shimmer {
+            0% {
+                background-position: -100% 0;
+            }
+
+            30% {
+                background-position: 100% 0;
+            }
+
+            100% {
+                background-position: 100% 0;
+            }
+        }
+
+        .text-white-reveal {
+            background-color: var(--color-white);
+            opacity: 1;
+        }
+
+        .text-gold {
+            background-color: var(--color-accent);
+        }
+
+        .text-black {
+            background-color: var(--color-black);
+        }
+
+        /* Hero */
+        .scroll-arrow {
+            filter: brightness(0) invert(1);
+        }
+
+        .hero-bg-video {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 1;
+            transform: scale(1.15);
+        }
+
+        .hero-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0.2) 50%, rgba(0, 0, 0, 0.7) 100%);
+            z-index: 2;
+        }
+
+        .word-mask {
+            display: inline-block;
+            vertical-align: top;
+            overflow: hidden;
+        }
+
+        .word-inner {
+            display: inline-block;
+        }
+
+        /* Hamburger & Mobile Nav Overlay */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            gap: 5px;
+            width: var(--header-height-desktop);
+            height: var(--header-height-desktop);
+            cursor: pointer;
+            z-index: var(--z-hamburger);
+            background: none;
+            border: none;
+            padding: 0;
+        }
+
+        .hamburger span {
+            display: block;
+            width: 100%;
+            height: 2px;
+            background-color: var(--color-white);
+            border-radius: 2px;
+            transition: transform var(--duration-normal) var(--ease-premium), opacity var(--duration-normal) var(--ease-premium);
+            transform-origin: center;
+        }
+
+        .hamburger.active span:nth-child(1) {
+            transform: translateY(7px) rotate(45deg);
+        }
+
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger.active span:nth-child(3) {
+            transform: translateY(-7px) rotate(-45deg);
+        }
+
+        .mobile-nav-overlay {
+            background: rgba(0, 0, 0, 0.92);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+
+        .mobile-nav-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .mobile-nav-overlay .nav-link-mobile {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity var(--duration-normal) ease, transform var(--duration-normal) ease;
+        }
+
+        .mobile-nav-overlay.active .nav-link-mobile {
+            opacity: 0.8;
+            transform: translateY(0);
+        }
+
+        .mobile-nav-overlay.active .nav-link-mobile:nth-child(1) {
+            transition-delay: 0.1s;
+        }
+
+        .mobile-nav-overlay.active .nav-link-mobile:nth-child(2) {
+            transition-delay: 0.15s;
+        }
+
+        .mobile-nav-overlay.active .nav-link-mobile:nth-child(3) {
+            transition-delay: 0.2s;
+        }
+
+        .mobile-nav-overlay.active .nav-link-mobile:nth-child(4) {
+            transition-delay: 0.25s;
+        }
+
+        .btn-mobile {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity var(--duration-normal) ease 0.3s, transform var(--duration-normal) ease 0.3s;
+        }
+
+        .mobile-nav-overlay.active .btn-mobile {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Grain & Smooth Scroll */
+        .grain-overlay {
+            position: fixed;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: var(--z-grain);
+            opacity: 0.1;
+            mix-blend-mode: multiply;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+            background-repeat: repeat;
+            background-size: 200px 200px;
+        }
+
+        .lenis-stopped {
+            overflow: hidden;
+        }
+
+        .loader-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: var(--font-size-loader);
+            font-weight: var(--weight-black);
+            color: var(--color-white);
+            z-index: 100;
+            font-family: var(--font-primary);
+            font-variant-numeric: tabular-nums;
+            pointer-events: none;
+            opacity: 0;
+            letter-spacing: var(--tracking-tighter);
+            text-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Responsive Overrides (Utilities also need responsive variants, but for simplicity we use media queries in style block) */
+        @media (max-width: 1024px) {
+            .splash-intro {
+                padding: var(--space-5xl) var(--container-padding-tablet);
+                flex-direction: column;
+                align-items: flex-start;
+                justify-content: flex-end;
+                gap: var(--space-5xl);
+            }
+
+            .logo-content-area {
+                gap: var(--space-2xl);
+                align-self: flex-start;
+                width: 100%;
+            }
+
+            .letter-wrapper {
+                height: 9vw;
+                width: calc(9vw * var(--letter-w, 0.75));
+            }
+
+            .hero-description-area {
+                width: 55vw !important;
+                padding: 0 !important;
+            }
+
+            .hero-title {
+                font-size: var(--font-size-hero-title-tablet) !important;
+            }
+
+            .hero-subtitle {
+                font-size: var(--font-size-hero-subtitle-tablet) !important;
+            }
+
+            .header {
+                padding-left: var(--container-padding-tablet);
+                padding-right: var(--container-padding-tablet);
+            }
+
+            .hamburger {
+                display: flex;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .splash-intro {
+                padding: var(--space-5xl) var(--container-padding-mobile);
+            }
+
+            .logo-content-area {
+                gap: 1.75rem;
+            }
+
+            .letter-wrapper {
+                height: 10vw;
+                width: calc(10vw * var(--letter-w, 0.75));
+            }
+
+            .hero-ctas {
+                gap: 1.75rem;
+            }
+
+            .cta-link {
+                font-size: var(--font-size-hero-subtitle-tablet) !important;
+            }
+
+            .hero-description-area {
+                width: 100% !important;
+            }
+
+            .hero-title {
+                font-size: var(--font-size-hero-title-mobile) !important;
+                margin-bottom: 0.75rem;
+            }
+
+            .hero-subtitle {
+                font-size: var(--font-size-hero-subtitle-mobile) !important;
+                line-height: var(--line-height-normal);
+            }
+
+            .hero-scroll {
+                margin-top: 1.25rem;
+            }
+
+            .hero-scroll span {
+                font-size: var(--font-size-hero-subtitle-small) !important;
+            }
+
+            .header {
+                padding-left: var(--container-padding-mobile);
+                padding-right: var(--container-padding-mobile);
+            }
+
+            .header-logo {
+                height: var(--header-height-mobile);
+            }
+
+            .header-letter {
+                width: calc(var(--header-height-mobile) * var(--letter-w, 1));
+            }
+
+            .hamburger {
+                width: var(--header-height-mobile);
+                height: var(--header-height-mobile);
+            }
+
+            .loader-text {
+                font-size: var(--font-size-loader-mobile);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .splash-intro {
+                padding: var(--space-5xl) var(--container-padding-mobile-small);
+                gap: var(--space-2xl);
+            }
+
+            .letter-wrapper {
+                height: 10.5vw;
+                width: calc(10.5vw * var(--letter-w, 0.75));
+            }
+
+            .hero-ctas {
+                gap: 1.25rem;
+                flex-wrap: wrap;
+            }
+
+            .cta-link {
+                font-size: var(--font-size-hero-subtitle-small) !important;
+            }
+
+            .hero-title {
+                font-size: var(--font-size-hero-title-small) !important;
+            }
+
+            .hero-subtitle {
+                font-size: var(--font-size-hero-subtitle-small) !important;
+            }
+
+            .header {
+                padding-left: var(--container-padding-mobile-small);
+                padding-right: var(--container-padding-mobile-small);
+            }
+
+            .header-logo {
+                height: var(--header-height-mobile-small);
+            }
+
+            .header-letter {
+                width: calc(var(--header-height-mobile-small) * var(--letter-w, 1));
+            }
+
+            .hamburger {
+                width: var(--header-height-mobile-small);
+                height: var(--header-height-mobile-small);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- HEADER -->
+    <header class="header fixed top-0 left-0 w-full flex flex-col z-header px-container-desktop">
+        <div
+            class="header-content relative w-full flex justify-between items-center pt-lg pb-lg opacity-100 pointer-events-auto">
+            <a href="/"
+                class="header-logo flex items-center gap-0 no-underline pointer-events-none opacity-0 !important">
+                <div class="header-letter" style="--letter-svg: url('r.svg'); --letter-w: 1.06;"></div>
+                <div class="header-letter" style="--letter-svg: url('e.svg'); --letter-w: 0.88;"></div>
+                <div class="header-letter" style="--letter-svg: url('a.svg'); --letter-w: 1.05;"></div>
+                <div class="header-letter" style="--letter-svg: url('l.svg'); --letter-w: 0.90;"></div>
+                <div class="header-letter" style="--letter-svg: url('v.svg'); --letter-w: 1.05;"></div>
+                <div class="header-letter" style="--letter-svg: url('i.svg'); --letter-w: 0.51;"></div>
+                <div class="header-letter" style="--letter-svg: url('l.svg'); --letter-w: 0.90;"></div>
+                <div class="header-letter" style="--letter-svg: url('l.svg'); --letter-w: 0.90;"></div>
+                <div class="header-letter" style="--letter-svg: url('a.svg'); --letter-w: 1.05;"></div>
+            </a>
+            <nav
+                class="header-nav absolute left-1/2 -translate-x-1/2 flex gap-2xl opacity-0 pointer-events-none transition-all duration-normal ease-premium">
+                <a href="#" class="nav-link">Buy</a>
+                <a href="#" class="nav-link">Sell</a>
+                <a href="#" class="nav-link">Invest</a>
+                <a href="#" class="nav-link">Mortgages</a>
+            </nav>
+            <div class="header-actions">
+                <a href="#" class="btn">Speak to an Expert</a>
+            </div>
+            <button
+                class="hamburger flex flex-col justify-center gap-sm relative z-hamburger bg-transparent pointer-events-auto"
+                id="hamburgerBtn" aria-label="Menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </header>
+
+    <!-- MOBILE NAV OVERLAY -->
+    <div class="mobile-nav-overlay fixed inset-0 flex flex-col items-center justify-center gap-xl z-nav-overlay opacity-0 pointer-events-none transition-opacity-500"
+        id="mobileNavOverlay">
+        <a href="#" class="nav-link-mobile">Buy</a>
+        <a href="#" class="nav-link-mobile">Sell</a>
+        <a href="#" class="nav-link-mobile">Invest</a>
+        <a href="#" class="nav-link-mobile">Mortgages</a>
+        <a href="#" class="btn-mobile">Speak to an Expert</a>
+    </div>
+
+
+    <!-- SPLASH INTRO -->
+    <div
+        class="splash-intro absolute top-0 left-0 w-full h-screen z-splash flex items-end justify-between p-6xl px-container-desktop gap-3xl overflow-hidden">
+        <div class="splash-bg absolute inset-0 z-[-2]"></div>
+        <div class="splash-grid absolute inset-[-25%] z-[-1] opacity-50"></div>
+
+        <div class="logo-content-area flex flex-col gap-4xl items-start z-splash-content self-center">
+            <div class="word-container flex gap-[0.1vw]">
+
+                <!-- REAL (Gold) -->
+                <div class="letter-wrapper" style="--letter-svg: url('r.svg'); --letter-w: 1.06;">
+                    <div class="video-box" data-mosaic="m-shape-1">
+                        <div class="video-inner">
+                            <div class="mask-layer">
+                                <div class="morph-shape"></div>
+                                <div class="letter-font"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div
+                        class="letter-overlay absolute inset-0 flex items-center justify-center opacity-0 z-20 mask-full mask-letter text-gold">
+                    </div>
+                    <div
+                        class="letter-overlay absolute inset-0 flex items-center justify-center z-25 mask-full mask-letter clip-hide text-white-reveal">
+                    </div>
+                </div>
+                <div class="letter-wrapper" style="--letter-svg: url('e.svg'); --letter-w: 0.88;">
+                    <div class="video-box" data-mosaic="m-shape-2">
+                        <div class="video-inner">
+                            <div class="mask-layer">
+                                <div class="morph-shape"></div>
+                                <div class="letter-font"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div
+                        class="letter-overlay absolute inset-0 flex items-center justify-center opacity-0 z-20 mask-full mask-letter text-gold">
+                    </div>
+                    <div
+                        class="letter-overlay absolute inset-0 flex items-center justify-center z-25 mask-full mask-letter clip-hide text-white-reveal">
+                    </div>
+                </div>
+                <div class="letter-wrapper" style="--letter-svg: url('a.svg'); --letter-w: 1.05;">
+                    <div class="video-box" data-mosaic="m-shape-3">
+                        <div class="video-inner">
+                            <div class="mask-layer">
+                                <div class="morph-shape"></div>
+                                <div class="letter-font"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div
+                        class="letter-overlay absolute inset-0 flex items-center justify-center opacity-0 z-20 mask-full mask-letter text-gold">
+                    </div>
+                    <div
+                        class="letter-overlay absolute inset-0 flex items-center justify-center z-25 mask-full mask-letter clip-hide text-white-reveal">
+                    </div>
+                </div>
+                <div class="letter-wrapper" style="--letter-svg: url('l.svg'); --letter-w: 0.90;">
+                    <div class="video-box" data-mosaic="m-shape-4">
+                        <div class="video-inner">
+                            <div class="mask-layer">
+                                <div class="morph-shape"></div>
+                                <div class="letter-font"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div
+                        class="letter-overlay absolute inset-0 flex items-center justify-center opacity-0 z-20 mask-full mask-letter text-gold">
+                    </div>
+                    <div
+                        class="letter-overlay absolute inset-0 flex items-center justify-center z-25 mask-full mask-letter clip-hide text-white-reveal">
+                    </div>
+                </div>
+
+                <!-- VILLA (Black) -->
+                <div class="letter-wrapper" style="--letter-svg: url('v.svg'); --letter-w: 1.05;">
+                    <div class="video-box" data-mosaic="m-shape-5">
+                        <div class="video-inner">
+                            <div class="mask-layer">
+                                <div class="morph-shape"></div>
+                                <div class="letter-font"></div>
+                            </div>
+                        </div>
+                        <!-- PRELOADER TEXT (Center Mosaic) -->
+                        <div class="loader-text" id="mainLoader">00%</div>
+                    </div>
+                    <div
+                        class="letter-overlay absolute inset-0 flex items-center justify-center opacity-0 z-20 mask-full mask-letter text-black">
+                    </div>
+                    <div
+                        class="letter-overlay absolute inset-0 flex items-center justify-center z-25 mask-full mask-letter clip-hide text-white-reveal">
+                    </div>
+                </div>
+                <div class="letter-wrapper" style="--letter-svg: url('i.svg'); --letter-w: 0.51;">
+                    <div class="video-box" data-mosaic="m-shape-1">
+                        <div class="video-inner">
+                            <div class="mask-layer">
+                                <div class="morph-shape"></div>
+                                <div class="letter-font"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div
+                        class="letter-overlay absolute inset-0 flex items-center justify-center opacity-0 z-20 mask-full mask-letter text-black">
+                    </div>
+                    <div
+                        class="letter-overlay absolute inset-0 flex items-center justify-center z-25 mask-full mask-letter clip-hide text-white-reveal">
+                    </div>
+                </div>
+                <div class="letter-wrapper" style="--letter-svg: url('l.svg'); --letter-w: 0.90;">
+                    <div class="video-box" data-mosaic="m-shape-2">
+                        <div class="video-inner">
+                            <div class="mask-layer">
+                                <div class="morph-shape"></div>
+                                <div class="letter-font"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div
+                        class="letter-overlay absolute inset-0 flex items-center justify-center opacity-0 z-20 mask-full mask-letter text-black">
+                    </div>
+                    <div
+                        class="letter-overlay absolute inset-0 flex items-center justify-center z-25 mask-full mask-letter clip-hide text-white-reveal">
+                    </div>
+                </div>
+                <div class="letter-wrapper" style="--letter-svg: url('l.svg'); --letter-w: 0.90;">
+                    <div class="video-box" data-mosaic="m-shape-3">
+                        <div class="video-inner">
+                            <div class="mask-layer">
+                                <div class="morph-shape"></div>
+                                <div class="letter-font"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div
+                        class="letter-overlay absolute inset-0 flex items-center justify-center opacity-0 z-20 mask-full mask-letter text-black">
+                    </div>
+                    <div
+                        class="letter-overlay absolute inset-0 flex items-center justify-center z-25 mask-full mask-letter clip-hide text-white-reveal">
+                    </div>
+                </div>
+                <div class="letter-wrapper" style="--letter-svg: url('a.svg'); --letter-w: 1.05;">
+                    <div class="video-box" data-mosaic="m-shape-4">
+                        <div class="video-inner">
+                            <div class="mask-layer">
+                                <div class="morph-shape"></div>
+                                <div class="letter-font"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div
+                        class="letter-overlay absolute inset-0 flex items-center justify-center opacity-0 z-20 mask-full mask-letter text-black">
+                    </div>
+                    <div
+                        class="letter-overlay absolute inset-0 flex items-center justify-center z-25 mask-full mask-letter clip-hide text-white-reveal">
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="hero-ctas flex gap-2xl opacity-100 pointer-events-auto">
+                <a href="#" class="cta-link">
+                    <img src="arrows_more_down.svg" alt=""
+                        class="cta-icon w-[1.3rem] h-[1.3rem] object-contain filter-white">
+                    Buy
+                </a>
+                <a href="#" class="cta-link">
+                    <img src="arrows_more_up.svg" alt=""
+                        class="cta-icon w-[1.3rem] h-[1.3rem] object-contain filter-white">
+                    Sell
+                </a>
+                <a href="#" class="cta-link">
+                    <img src="attach_money.svg" alt=""
+                        class="cta-icon w-[1.3rem] h-[1.3rem] object-contain filter-white">
+                    Invest
+                </a>
+            </div>
+        </div>
+
+        <div class="hero-description-area w-[28vw] text-left text-white opacity-100 pointer-events-auto px-md">
+            <h1 class="hero-title text-2xl leading-tight mb-md font-black tracking-tight overflow-hidden">
+                Elevate Your Tenerife Lifestyle.
+            </h1>
+            <p class="hero-subtitle text-base font-normal leading-relaxed opacity-100 max-w-full m-0">
+                Premium Tenerife real estate. Expert guidance for buyers, sellers, and investors looking for exclusive
+                opportunities.
+            </p>
+
+            <div
+                class="hero-scroll flex flex-row items-center gap-md opacity-0 mt-xl transition-all duration-normal ease-premium">
+                <span class="text-base font-semibold tracking-widest text-white opacity-40 uppercase">Scroll</span>
+                <img src="arrow-south.svg" alt=""
+                    class="scroll-arrow w-[1.2rem] h-[1.2rem] invert brightness-0 opacity-40">
+            </div>
+        </div>
+    </div>
+
+
+    <!-- MAIN HERO SECTION -->
+    <main class="main-hero relative w-full h-screen overflow-hidden">
+        <video autoplay muted loop playsinline
+            class="hero-bg-video absolute inset-0 w-full h-full object-cover z-[1] scale-[1.15]">
+            <source src="hero-video.mp4" type="video/mp4">
+        </video>
+        <div class="hero-overlay absolute inset-0 z-[2]"></div>
+    </main>
+
+    <section style="height: 100vh; background: #fff; display: flex; align-items:center; justify-content:center;">
+        <h2 style="font-weight: 300;">Rest of the premium website...</h2>
+    </section>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://unpkg.com/lenis@1.1.20/dist/lenis.min.js"></script>
+
+    <script>
+        // -------------------------------------------------------
+        // DESIGN SYSTEM CONFIG
+        // -------------------------------------------------------
+        const style = getComputedStyle(document.documentElement);
+        const DESIGN_SYSTEM = {
+            spacing: {
+                step: 40,
+            },
+            motion: {
+                durationFast: parseFloat(style.getPropertyValue('--duration-fast')) || 0.3,
+                durationNormal: parseFloat(style.getPropertyValue('--duration-normal')) || 0.4,
+                durationSlow: parseFloat(style.getPropertyValue('--duration-slow')) || 0.6,
+                easePremium: style.getPropertyValue('--ease-premium').trim() || "cubic-bezier(0.16, 1, 0.3, 1)",
+            },
+            breakpoints: {
+                mobile: 768,
+                mobileSmall: 480,
+            }
+        };
+
+        // -------------------------------------------------------
+        // INITIAL SETUP (IMMEDIATE)
+        // -------------------------------------------------------
+        function splitText(selector) {
+            document.querySelectorAll(selector).forEach(el => {
+                const words = el.innerText.split(' ');
+                el.innerHTML = words.map(w =>
+                    `<span class="word-mask"><span class="word-inner">${w}</span></span>`
+                ).join(' ');
+            });
+        }
+
+        splitText('.hero-title');
+        splitText('.hero-subtitle');
+
+        const wrappers = document.querySelectorAll('.splash-intro .letter-wrapper');
+        const loaderEl = document.getElementById('mainLoader');
+        const heroVideo = document.querySelector('.hero-bg-video');
+        const allImages = document.images;
+
+        // -------------------------------------------------------
+        // LENIS SMOOTH SCROLL
+        // -------------------------------------------------------
+        const lenis = new Lenis({
+            duration: 1.5,
+            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+            direction: 'vertical',
+            gestureDirection: 'vertical',
+            smooth: true,
+            mouseMultiplier: 1,
+            smoothTouch: false,
+            touchMultiplier: 2,
+            infinite: false,
+        });
+
+        function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
+        requestAnimationFrame(raf);
+        gsap.ticker.lagSmoothing(0);
+        window.lenisInstance = lenis;
+        lenis.on('scroll', ScrollTrigger.update);
+        lenis.stop();
+        window.scrollTo(0, 0);
+        if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+
+        function generateAtomicGrid() {
+            const grid = document.querySelector('.splash-grid');
+            if (!grid) return;
+            grid.innerHTML = '';
+            const step = DESIGN_SYSTEM.spacing.step;
+            const rangeV = Math.ceil((window.innerWidth * 1.5) / step / 2);
+            const rangeH = Math.ceil((window.innerHeight * 1.5) / step / 2);
+
+            function addGlider(parent) {
+                const g = document.createElement('div');
+                g.className = 'grid-glider';
+                parent.appendChild(g);
+            }
+
+            const halfVisible = Math.floor((window.innerWidth * 0.5) / step);
+            const g1 = Math.max(2, Math.floor(halfVisible * 0.6));
+            const g2 = Math.max(3, Math.floor(halfVisible * 0.75));
+            const g3 = Math.max(4, Math.floor(halfVisible * 0.9));
+
+            for (let i = -rangeV; i <= rangeV; i++) {
+                const line = document.createElement('div');
+                line.className = 'v-line';
+                line.style.marginLeft = (i * step) + 'px';
+                grid.appendChild(line);
+                if (i === g1) addGlider(line);
+                if (i === g2) addGlider(line);
+                if (i === g3) addGlider(line);
+            }
+
+            for (let j = -rangeH; j <= rangeH; j++) {
+                const line = document.createElement('div');
+                line.className = 'h-line';
+                line.style.marginTop = (j * step) + 'px';
+                grid.appendChild(line);
+            }
+        }
+
+        generateAtomicGrid();
+
+        // -------------------------------------------------------
+        // STATE & LAYOUT CONSTANTS
+        // -------------------------------------------------------
+        let revealStarted = false;
+        let morphActive = false;
+        let morphTl;
+        let logoAnchor, descAnchor;
+        let logoArea, heroDesc;
+
+        const premiumLayout = [
+            { x: -0.35, y: -0.25, size: 0.20 }, { x: -0.30, y: 0.20, size: 0.15 },
+            { x: -0.10, y: 0.30, size: 0.20 }, { x: -0.15, y: -0.30, size: 0.15 },
+            { x: 0.00, y: 0.00, size: 0.30 }, { x: 0.15, y: -0.25, size: 0.15 },
+            { x: 0.20, y: 0.25, size: 0.20 }, { x: 0.35, y: -0.10, size: 0.18 },
+            { x: 0.35, y: 0.30, size: 0.15 }
+        ];
+
+        const mosaicRadii = [
+            "60% 15% 40% 20% / 40% 10% 50% 30%",
+            "10% 70% 20% 60% / 20% 40% 15% 70%",
+            "80% 20% 70% 30% / 50% 30% 60% 40%",
+            "30% 60% 10% 80% / 40% 70% 20% 50%",
+            "50% 50% 10% 10% / 80% 80% 10% 10%",
+            "60% 15% 40% 20% / 40% 10% 50% 30%",
+            "10% 70% 20% 60% / 20% 40% 15% 70%",
+            "80% 20% 70% 30% / 50% 30% 60% 40%",
+            "30% 60% 10% 80% / 40% 70% 20% 50%"
+        ];
+
+        function initMosaicLayout() {
+            if (revealStarted) return;
+
+            wrappers.forEach((wrapper, i) => {
+                const box = wrapper.querySelector('.video-box');
+                const inner = wrapper.querySelector('.video-inner');
+                const morphShape = wrapper.querySelector('.morph-shape');
+
+                const finalRect = wrapper.getBoundingClientRect();
+                wrapper.dataset.finalBgPos = `-${finalRect.left}px -${finalRect.top}px`;
+
+                const layout = premiumLayout[i];
+                const squareSize = layout.size * window.innerWidth;
+                const effectiveHeight = Math.min(window.innerHeight, window.innerWidth * 1.2);
+                const screenStartX = (window.innerWidth / 2) + (layout.x * window.innerWidth);
+                const screenStartY = (window.innerHeight / 2) + (layout.y * effectiveHeight);
+                const startL = screenStartX - (squareSize / 2);
+                const startT = screenStartY - (squareSize / 2);
+                const wrapperRect = wrapper.getBoundingClientRect();
+                const offsetX = screenStartX - (wrapperRect.left + wrapperRect.width / 2);
+                const offsetY = screenStartY - (wrapperRect.top + wrapperRect.height / 2);
+
+                gsap.set(box, { xPercent: -50, yPercent: -50, width: squareSize, height: squareSize, x: offsetX, y: offsetY });
+                gsap.set(inner, { filter: "blur(100px)", backgroundPosition: `-${startL}px -${startT}px` });
+                gsap.set(morphShape, { xPercent: -50, yPercent: -50, scale: 2 });
+            });
+        }
+
+        initMosaicLayout();
+
+        // -------------------------------------------------------
+        // RESPONSIVE RESIZE HANDLER
+        // -------------------------------------------------------
+        function debounce(func, wait) {
+            let timeout;
+            return function () {
+                const context = this, args = arguments;
+                clearTimeout(timeout);
+                timeout = setTimeout(() => func.apply(context, args), wait);
+            };
+        }
+
+        window.addEventListener('resize', debounce(() => {
+            generateAtomicGrid();
+            initMosaicLayout();
+
+            if (morphActive) {
+                const lRect = logoAnchor.getBoundingClientRect();
+                const dRect = descAnchor.getBoundingClientRect();
+                gsap.set(logoArea, { left: lRect.left, top: lRect.top, width: lRect.width, height: lRect.height });
+                gsap.set(heroDesc, { left: dRect.left, top: dRect.top, width: dRect.width });
+            }
+
+            ScrollTrigger.refresh();
+        }, 200));
+
+        function startReveal() {
+            if (revealStarted) return;
+            revealStarted = true;
+
+            gsap.set(loaderEl, { opacity: 0, display: 'none' });
+            setupLogoMorph();
+
+            const tl = gsap.timeline({ delay: 0 });
+
+            tl.to(".splash-grid", { scale: 1, opacity: 0.8, duration: 2.0, ease: "power2.out" }, 0.1);
+            tl.fromTo(".grid-glider", { y: "120vh", opacity: 0 }, { y: "-120vh", opacity: 1, duration: 4.5, stagger: 0.2, ease: "power1.inOut" }, 0.1);
+
+            wrappers.forEach((wrapper, i) => {
+                const box = wrapper.querySelector('.video-box');
+                const inner = wrapper.querySelector('.video-inner');
+                const morphShape = wrapper.querySelector('.morph-shape');
+                const solidText = wrapper.querySelector('.letter-overlay');
+
+                tl.to(inner, { filter: "blur(0px)", ease: "power1.inOut", duration: 1.0 }, 0.2);
+                tl.to(box, { width: wrapper.offsetWidth, height: wrapper.offsetHeight, x: 0, y: 0, ease: "expo.inOut", duration: 1.0 }, 1.2);
+                tl.to(box, { borderRadius: mosaicRadii[i], duration: 0.7, ease: "power1.inOut" }, 1.2);
+                tl.to(box, { borderRadius: "0px", duration: 0.3, ease: "power4.out" }, 1.9);
+                tl.to(inner, { backgroundPosition: wrapper.dataset.finalBgPos, ease: "expo.inOut", duration: 1.0 }, 1.2);
+                tl.to(morphShape, { scale: 0, borderRadius: "50%", ease: "expo.inOut", duration: 0.9 }, 1.3);
+                tl.to(solidText, { opacity: 1, duration: 0.4 }, 2.2);
+                tl.to(box, { opacity: 0, duration: 0.1 }, 2.5);
+            });
+
+            tl.to(loaderEl, { opacity: 0, scale: 0.8, duration: 0.2, ease: "power2.in" }, 0);
+
+            tl.to([".splash-bg", ".splash-grid"], {
+                yPercent: -100, ease: "expo.inOut", duration: 1.5,
+                onComplete: () => {
+                    document.body.style.overflowY = 'auto';
+                    lenis.start();
+                    const skipOnScroll = () => {
+                        if (tl.progress() < 1) tl.progress(1);
+                        lenis.off('scroll', skipOnScroll);
+                    };
+                    lenis.on('scroll', skipOnScroll);
+                }
+            }, 2.8);
+
+            tl.to(".text-white-reveal", { clipPath: "inset(0% 0 0 0)", ease: "expo.inOut", duration: 1.25 }, 3);
+            tl.to(".hero-bg-video", {
+                scale: 1.15, ease: "power3.out", duration: 2,
+                onStart: () => { const v = document.querySelector('.hero-bg-video'); if (v) v.play(); }
+            }, 2.8);
+
+            tl.set(".text-black", { opacity: 0 }, 4.1);
+            tl.to(".hero-ctas .cta-link", { opacity: 1, y: 0, scale: 1, filter: "blur(0px)", duration: 1, stagger: 0.15, ease: "expo.out" }, 2.9);
+
+            tl.fromTo(".hero-title .word-inner",
+                { yPercent: 100, rotate: 5, filter: "blur(10px)", opacity: 0 },
+                { yPercent: 0, rotate: 0, filter: "blur(0px)", opacity: 1, duration: 1.2, stagger: 0.1, ease: "expo.out" }
+                , 4.0);
+
+            tl.fromTo(".hero-subtitle .word-inner",
+                { yPercent: 50, opacity: 0, filter: "blur(5px)" },
+                { yPercent: 0, opacity: 0.8, filter: "blur(0px)", duration: 1, stagger: 0.03, ease: "power3.out" }
+                , 4.3);
+
+            tl.to(".hero-scroll", {
+                opacity: 1, y: 0, filter: "blur(0px)", duration: 1, ease: "power3.out",
+                onComplete: () => {
+                    gsap.to(".hero-scroll", { y: 10, duration: 1.5, repeat: -1, yoyo: true, ease: "sine.inOut" });
+                }
+            }, 4.7);
+
+            tl.set(".splash-intro", { pointerEvents: "none" });
+
+            function setupLogoMorph() {
+                logoArea = document.querySelector('.logo-content-area');
+                const wordContainer = document.querySelector('.word-container');
+                const heroCtas = document.querySelector('.hero-ctas');
+                heroDesc = document.querySelector('.hero-description-area');
+                const headerNav = document.querySelector('.header-nav');
+                const headerContent = document.querySelector('.header-content');
+
+                logoAnchor = logoArea.cloneNode(true);
+                descAnchor = heroDesc.cloneNode(true);
+                gsap.set([logoAnchor, descAnchor], { visibility: 'hidden', pointerEvents: 'none', position: 'static' });
+                logoArea.parentNode.insertBefore(logoAnchor, logoArea);
+                heroDesc.parentNode.insertBefore(descAnchor, heroDesc);
+
+                document.body.appendChild(logoArea);
+                document.body.appendChild(heroDesc);
+                morphActive = true;
+
+                const getTargets = () => {
+                    const lRect = logoAnchor.getBoundingClientRect();
+                    const dRect = descAnchor.getBoundingClientRect();
+                    const wRect = wordContainer.getBoundingClientRect();
+                    const hRect = headerContent.getBoundingClientRect();
+
+                    // Read height from design system tokens
+                    const hLogoH = parseFloat(style.getPropertyValue(
+                        window.innerWidth <= DESIGN_SYSTEM.breakpoints.mobileSmall ? '--header-height-mobile-small' :
+                            window.innerWidth <= DESIGN_SYSTEM.breakpoints.mobile ? '--header-height-mobile' :
+                                '--header-height-desktop'
+                    )) || 28;
+
+                    const tScale = hLogoH / wRect.height;
+                    const tLeft = window.innerWidth <= DESIGN_SYSTEM.breakpoints.mobile ? window.innerWidth * 0.06 : window.innerWidth * 0.04;
+                    const hCenterY = hRect.top + hRect.height / 2;
+
+                    const toY = hCenterY - (wRect.top + wRect.height / 2);
+                    const toX = tLeft - wRect.left;
+
+                    const heroEl = document.querySelector('.main-hero');
+                    const sEnd = heroEl.offsetHeight * (window.innerWidth <= DESIGN_SYSTEM.breakpoints.mobile ? 0.55 : 0.65);
+                    const lExitY = -sEnd;
+                    return { lRect, dRect, tScale, toX, toY, lExitY, sEnd };
+                };
+
+                const initial = getTargets();
+                gsap.set(logoArea, {
+                    position: 'fixed', left: initial.lRect.left, top: initial.lRect.top,
+                    width: initial.lRect.width, height: initial.lRect.height,
+                    zIndex: 50001, pointerEvents: 'none'
+                });
+                gsap.set(heroDesc, {
+                    position: 'fixed', left: initial.dRect.left, top: initial.dRect.top,
+                    width: initial.dRect.width, zIndex: 49999, pointerEvents: 'auto'
+                });
+
+                morphTl = gsap.timeline({ paused: true });
+                morphTl
+                    .to(logoArea, { y: () => getTargets().lExitY, duration: 1, ease: 'none' }, 0)
+                    .to(heroCtas, { opacity: 0, duration: 0.35, ease: 'none' }, 0)
+                    .to(heroDesc, { y: () => -getTargets().sEnd, opacity: 0, duration: 1, ease: 'none' }, 0)
+                    .to(wordContainer, {
+                        x: () => getTargets().toX,
+                        y: () => getTargets().toY - getTargets().lExitY,
+                        scale: () => getTargets().tScale,
+                        transformOrigin: 'left center', duration: 1, ease: 'none'
+                    }, 0);
+
+                if (window.innerWidth > 1024) {
+                    morphTl.fromTo(headerNav,
+                        { opacity: 0, y: -6, filter: 'blur(4px)' },
+                        { opacity: 1, y: 0, filter: 'blur(0px)', pointerEvents: 'auto', duration: 0.18, ease: 'power2.out' },
+                        0.88);
+                }
+
+                ScrollTrigger.create({
+                    trigger: document.body,
+                    start: 'top top',
+                    end: () => "+=" + getTargets().sEnd,
+                    scrub: 1,
+                    animation: morphTl,
+                    invalidateOnRefresh: true,
+                    onUpdate: (self) => {
+                        const header = document.querySelector('.header');
+                        if (self.progress > 0.88) header.classList.add('header-scrolled');
+                        else header.classList.remove('header-scrolled');
+                    }
+                });
+            }
+
+            gsap.fromTo(".hero-bg-video", { scale: 1.15 }, {
+                scrollTrigger: { trigger: ".main-hero", start: "top top", end: "bottom top", scrub: 2 },
+                y: 130, scale: 1.75, ease: "none"
+            });
+            gsap.to(".hero-overlay", {
+                scrollTrigger: { trigger: ".main-hero", start: "top top", end: "bottom top", scrub: 2.5 },
+                opacity: 0.85, ease: "none"
+            });
+
+            const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+            if (!isTouchDevice) {
+                const heroIntro = document.querySelector('.splash-intro');
+                const parallaxItems = document.querySelectorAll('.hero-title, .hero-subtitle, .hero-ctas, .hero-scroll');
+                heroIntro.addEventListener('mousemove', (e) => {
+                    const centerX = window.innerWidth / 2, centerY = window.innerHeight / 2;
+                    const moveX = (e.clientX - centerX) / 50, moveY = (e.clientY - centerY) / 50;
+                    parallaxItems.forEach((item, i) => {
+                        gsap.to(item, { x: moveX * (i + 1) * 0.5, y: moveY * (i + 1) * 0.5, duration: 1, ease: "power2.out" });
+                    });
+                });
+            }
+
+            const hamburgerBtn = document.getElementById('hamburgerBtn');
+            const mobileNavOverlay = document.getElementById('mobileNavOverlay');
+            if (hamburgerBtn && mobileNavOverlay) {
+                hamburgerBtn.addEventListener('click', () => {
+                    hamburgerBtn.classList.toggle('active');
+                    mobileNavOverlay.classList.toggle('active');
+                    if (mobileNavOverlay.classList.contains('active')) lenis.stop();
+                    else lenis.start();
+                });
+                mobileNavOverlay.querySelectorAll('a').forEach(link => {
+                    link.addEventListener('click', () => {
+                        hamburgerBtn.classList.remove('active');
+                        mobileNavOverlay.classList.remove('active');
+                        lenis.start();
+                    });
+                });
+            }
+        }
+
+        function updateProgress() {
+            if (revealStarted) return;
+            let imgProgress = 0, videoProgress = 0;
+            let loadedImgs = 0;
+            [...allImages].forEach(img => { if (img.complete) loadedImgs++; });
+            imgProgress = (loadedImgs / allImages.length) || 1;
+            if (heroVideo.readyState >= 4) videoProgress = 1;
+            else if (heroVideo.duration > 0 && heroVideo.buffered.length > 0) videoProgress = heroVideo.buffered.end(0) / heroVideo.duration;
+            const totalProgress = (imgProgress * 0.3) + (videoProgress * 0.7);
+            const displayPercent = Math.min(100, Math.floor(totalProgress * 100));
+            if (loaderEl) {
+                loaderEl.innerText = displayPercent.toString().padStart(2, '0') + "%";
+            }
+            if (totalProgress >= 1) startReveal();
+        }
+
+        [...allImages].forEach(img => { img.addEventListener('load', updateProgress); img.addEventListener('error', updateProgress); });
+        heroVideo.addEventListener('progress', updateProgress);
+        heroVideo.addEventListener('canplaythrough', updateProgress);
+        setTimeout(updateProgress, 100);
+        window.addEventListener('load', () => { updateProgress(); setTimeout(startReveal, 100); });
+    </script>
+
+    <div class="grain-overlay"></div>
+</body>
+
+</html>

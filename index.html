@@ -1,0 +1,1707 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RealVilla - Premium Real Estate in Tenerife</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-white: #ffffff;
+            --text-black: #111111;
+            --text-gold: #bcaf8b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-white);
+            color: var(--text-black);
+            overflow-x: hidden;
+            font-family: 'Manrope', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            overflow-y: hidden;
+        }
+
+        /* =============================================
+           1. SPLASH SCREEN
+        ============================================= */
+        .splash-intro {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            z-index: 9999;
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            padding: 6rem 3rem 6rem 3rem;
+            gap: 3rem;
+            overflow: hidden;
+        }
+
+        .splash-bg {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at center, #ffffff 0%, #f8f8f8 100%);
+            z-index: -2;
+            will-change: transform;
+        }
+
+        .splash-grid {
+            position: absolute;
+            inset: -25%;
+            z-index: -1;
+            opacity: 0.5;
+            transform: scale(1.5);
+            will-change: transform, opacity;
+        }
+
+        .v-line,
+        .h-line {
+            position: absolute;
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+
+        .v-line {
+            width: 1px;
+            height: 100%;
+            top: 0;
+            left: 50%;
+        }
+
+        .h-line {
+            height: 1px;
+            width: 100%;
+            left: 0;
+            top: 50%;
+        }
+
+        .grid-glider {
+            position: absolute;
+            width: 6px;
+            height: 40vh;
+            background: linear-gradient(to top, transparent, #f3e2b3 50%, transparent);
+            left: 50%;
+            transform: translateX(-50%);
+            top: 0;
+            opacity: 1;
+            z-index: 10;
+            will-change: transform;
+        }
+
+        .logo-content-area {
+            display: flex;
+            flex-direction: column;
+            gap: 4rem;
+            align-items: flex-start;
+            pointer-events: auto;
+            z-index: 10000;
+            align-self: center;
+        }
+
+        .word-container {
+            display: flex;
+            gap: 0.1vw;
+            /* IMPROVED: Pre-hint GPU layer for logo morph */
+            will-change: transform;
+        }
+
+        .hero-ctas {
+            display: flex;
+            gap: 4rem;
+            opacity: 1;
+            pointer-events: auto;
+            will-change: transform, opacity;
+        }
+
+        .cta-link {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+            color: #ffffff;
+            font-size: 1.25rem;
+            font-weight: 700;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            padding-bottom: 6px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+            transition: border-bottom-color 0.4s ease, transform 0.4s ease, opacity 0.4s ease;
+            opacity: 0;
+            transform: translateY(20px) scale(0.9);
+            filter: blur(5px);
+            will-change: transform, opacity, filter;
+        }
+
+        .cta-link:hover {
+            opacity: 1;
+            border-bottom-color: #ffffff;
+            transform: translateY(-4px);
+        }
+
+        .cta-hover-arrow {
+            width: 0;
+            height: 1.5rem;
+            opacity: 0;
+            margin-left: 0;
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            transform: translateX(-10px);
+            filter: brightness(0) invert(1);
+        }
+
+        .cta-link:hover .cta-hover-arrow {
+            width: 2rem;
+            opacity: 1;
+            margin-left: 0.75rem;
+            transform: translateX(0);
+        }
+
+        .cta-icon {
+            width: 1.3rem;
+            height: 1.3rem;
+            object-fit: contain;
+            filter: brightness(0) invert(1);
+        }
+
+        .hero-description-area {
+            width: 25vw;
+            text-align: left;
+            color: #ffffff;
+            opacity: 1;
+            pointer-events: auto;
+            padding-left: 1rem;
+            padding-right: 1rem;
+            will-change: transform, opacity;
+        }
+
+        .word-mask {
+            display: inline-block;
+            vertical-align: top;
+            overflow: hidden;
+        }
+
+        .word-inner {
+            display: inline-block;
+            will-change: transform, filter, opacity;
+        }
+
+        .hero-title {
+            font-size: 1.6rem;
+            line-height: 1.2;
+            margin-bottom: 1rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            overflow: hidden;
+        }
+
+        .hero-subtitle {
+            font-size: 1rem;
+            font-weight: 400;
+            line-height: 1.6;
+            opacity: 1;
+            max-width: 100%;
+            margin-left: 0;
+        }
+
+        .hero-scroll {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 1rem;
+            opacity: 0;
+            margin-top: 2rem;
+            transform: translateY(30px);
+            filter: blur(5px);
+            will-change: transform, opacity, filter;
+        }
+
+        .scroll-arrow {
+            width: 1.2rem;
+            height: 1.2rem;
+            filter: brightness(0) invert(1);
+            opacity: 0.4;
+        }
+
+        .hero-scroll span {
+            font-size: 1rem;
+            font-weight: 600;
+            letter-spacing: 0.3em;
+            color: #ffffff;
+            opacity: 0.4;
+            text-transform: uppercase;
+        }
+
+        /* =============================================
+           HEADER
+        ============================================= */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            z-index: 98000;
+            padding-left: 3rem;
+            padding-right: 3rem;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            z-index: -1;
+            background: rgba(0, 0, 0, 0.18);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            transform: scaleY(var(--header-wipe, 0));
+            transform-origin: top;
+            pointer-events: none;
+            will-change: transform;
+        }
+
+        .header-content {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 1.5rem;
+            padding-bottom: 1.5rem;
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+
+        .header-logo {
+            display: flex;
+            align-items: center;
+            gap: 0px;
+            height: 28px;
+            text-decoration: none;
+            pointer-events: none;
+            opacity: 0 !important;
+            transition: none;
+        }
+
+        .header-letter {
+            height: 100%;
+            width: calc(28px * var(--letter-w, 1));
+            background-color: #ffffff;
+            -webkit-mask-image: var(--letter-svg);
+            mask-image: var(--letter-svg);
+            -webkit-mask-size: 100% 100%;
+            mask-size: 100% 100%;
+            -webkit-mask-repeat: no-repeat;
+            mask-repeat: no-repeat;
+            -webkit-mask-position: center;
+            mask-position: center;
+        }
+
+        .header-nav {
+            display: flex;
+            gap: 2.5rem;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            pointer-events: none;
+            transition: none;
+            will-change: transform, opacity;
+        }
+
+        .nav-link {
+            font-size: 0.9rem;
+            font-weight: 700;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: #ffffff;
+            text-decoration: none;
+            opacity: 0.7;
+            position: relative;
+            padding-bottom: 4px;
+            transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 1.5px;
+            background-color: #ffffff;
+            transform: translateX(-50%);
+            transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .nav-link:hover {
+            opacity: 1;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        .btn-book {
+            background-color: #ffffff;
+            color: #000000;
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            text-decoration: none;
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+                background 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+                box-shadow 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .btn-book:hover {
+            transform: translateY(-4px) scale(1.02);
+            background-color: #ffffff;
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Subtle shimmer effect on hover */
+        .btn-book::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -150%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg,
+                    transparent,
+                    rgba(255, 255, 255, 0.6),
+                    transparent);
+            transform: skewX(-25deg);
+            transition: left 0.75s ease;
+        }
+
+        .btn-book:hover::before {
+            left: 150%;
+        }
+
+        /* .header-scrolled class no longer used for scale, handled by scrub */
+        .header-scrolled::before {
+            /* kept for potential other style changes */
+        }
+
+        /* =============================================
+           LETTER / MOSAIC
+        ============================================= */
+        .letter-wrapper {
+            position: relative;
+            height: 7vw;
+            width: calc(7vw * var(--letter-w, 0.75));
+        }
+
+        .video-box {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            overflow: hidden;
+            border: 2px solid #fff;
+            box-sizing: border-box;
+            transition: border-radius 0.3s ease;
+        }
+
+        .video-inner {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            inset: 0;
+            overflow: hidden;
+            background-image: url('/img-hero-001.jpg');
+            background-size: 100vw 100vh;
+            background-repeat: no-repeat;
+        }
+
+        .mask-layer {
+            position: absolute;
+            inset: -2px;
+            background-color: var(--bg-white);
+            mix-blend-mode: screen;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+        }
+
+        .letter-font {
+            width: 100%;
+            height: 100%;
+            background-color: #000000;
+            -webkit-mask-image: var(--letter-svg);
+            mask-image: var(--letter-svg);
+            -webkit-mask-size: 100% 100%;
+            mask-size: 100% 100%;
+            -webkit-mask-repeat: no-repeat;
+            mask-repeat: no-repeat;
+            -webkit-mask-position: center;
+            mask-position: center;
+        }
+
+        .morph-shape {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 150%;
+            height: 150%;
+            background-color: #000000;
+        }
+
+        .solid-text {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            z-index: 20;
+            -webkit-mask-image: var(--letter-svg);
+            mask-image: var(--letter-svg);
+            -webkit-mask-size: 100% 100%;
+            mask-size: 100% 100%;
+            -webkit-mask-repeat: no-repeat;
+            mask-repeat: no-repeat;
+            -webkit-mask-position: center;
+            mask-position: center;
+        }
+
+        .text-black {
+            background: linear-gradient(110deg, #111 45%, #333 50%, #111 55%);
+            background-size: 200% auto;
+            animation: shimmer-classic 10s 3 ease-in-out;
+        }
+
+        .text-gold {
+            background: linear-gradient(110deg, #bcaf8b 45%, #c9bc9a 50%, #bcaf8b 55%);
+            background-size: 200% auto;
+            animation: shimmer-classic 10s 3 ease-in-out;
+        }
+
+        @keyframes shimmer-classic {
+            0% {
+                background-position: -100% 0;
+            }
+
+            30% {
+                background-position: 100% 0;
+            }
+
+            100% {
+                background-position: 100% 0;
+            }
+        }
+
+        .text-white-reveal {
+            background-color: #ffffff;
+            z-index: 25;
+            clip-path: inset(100% 0 0 0);
+            opacity: 1;
+        }
+
+        /* =============================================
+           MAIN HERO
+        ============================================= */
+        .main-hero {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            perspective: 1000px;
+        }
+
+        .hero-bg-video {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 1;
+            transform: scale(1);
+            will-change: transform;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0.2) 50%, rgba(0, 0, 0, 0.7) 100%);
+            z-index: 2;
+            will-change: opacity;
+        }
+
+        /* =============================================
+           HAMBURGER MENU (Mobile)
+        ============================================= */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            gap: 5px;
+            width: 28px;
+            height: 28px;
+            cursor: pointer;
+            z-index: 97000;
+            background: none;
+            border: none;
+            padding: 0;
+        }
+
+        .hamburger span {
+            display: block;
+            width: 100%;
+            height: 2px;
+            background-color: #ffffff;
+            border-radius: 2px;
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+                opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            transform-origin: center;
+        }
+
+        .hamburger.active span:nth-child(1) {
+            transform: translateY(7px) rotate(45deg);
+        }
+
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger.active span:nth-child(3) {
+            transform: translateY(-7px) rotate(-45deg);
+        }
+
+        /* Mobile Nav Overlay */
+        .mobile-nav-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.92);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            z-index: 97000;
+            transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2rem;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .mobile-nav-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* Hide "leaking" elements when menu is open */
+        body.menu-open .logo-content-area,
+        body.menu-open .hero-description-area {
+            opacity: 0 !important;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .mobile-nav-overlay .nav-link-mobile {
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: #ffffff;
+            text-decoration: none;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+
+        .mobile-nav-overlay.active .nav-link-mobile {
+            opacity: 0.8;
+            transform: translateY(0);
+        }
+
+        .mobile-nav-overlay.active .nav-link-mobile:nth-child(1) {
+            transition-delay: 0.1s;
+        }
+
+        .mobile-nav-overlay.active .nav-link-mobile:nth-child(2) {
+            transition-delay: 0.15s;
+        }
+
+        .mobile-nav-overlay.active .nav-link-mobile:nth-child(3) {
+            transition-delay: 0.2s;
+        }
+
+        .mobile-nav-overlay.active .nav-link-mobile:nth-child(4) {
+            transition-delay: 0.25s;
+        }
+
+        .mobile-nav-overlay .nav-link-mobile:hover {
+            opacity: 1;
+        }
+
+        .mobile-nav-overlay .btn-book-mobile {
+            background-color: #ffffff;
+            color: #000000;
+            padding: 1rem 2.5rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            text-decoration: none;
+            margin-top: 1.5rem;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.4s ease 0.3s, transform 0.4s ease 0.3s;
+        }
+
+        .mobile-nav-overlay.active .btn-book-mobile {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* =============================================
+           RESPONSIVE — TABLET (769px – 1024px)
+        ============================================= */
+        @media (max-width: 1024px) and (min-width: 769px) {
+            .splash-intro {
+                padding: 5rem 2rem 5rem 2rem;
+                flex-direction: column;
+                align-items: flex-start;
+                justify-content: flex-end;
+                gap: 3.5rem;
+            }
+
+            .logo-content-area {
+                gap: 2.5rem;
+                align-self: flex-start;
+                width: 100%;
+            }
+
+            .letter-wrapper {
+                height: 9vw;
+                width: calc(9vw * var(--letter-w, 0.75));
+            }
+
+            .hero-ctas {
+                gap: 2.5rem;
+            }
+
+            .cta-link {
+                font-size: 1rem;
+            }
+
+            .hero-description-area {
+                width: 55vw;
+                padding-left: 0;
+                padding-right: 0;
+            }
+
+            .hero-title {
+                font-size: 1.4rem;
+            }
+
+            .hero-subtitle {
+                font-size: 0.9rem;
+            }
+
+            .header {
+                padding-left: 2rem;
+                padding-right: 2rem;
+            }
+
+            /* Hide desktop nav, show hamburger on tablet too */
+            .header-nav {
+                display: none !important;
+            }
+
+            .header-actions .btn-book {
+                display: none;
+            }
+
+            .hamburger {
+                display: flex;
+            }
+        }
+
+        /* =============================================
+           RESPONSIVE — MOBILE (≤768px)
+        ============================================= */
+        @media (max-width: 768px) {
+            .cta-hover-arrow {
+                display: none !important;
+            }
+
+            .splash-intro {
+                padding: 5rem 1.5rem 5rem 1.5rem;
+                flex-direction: column;
+                align-items: flex-start;
+                justify-content: flex-end;
+                gap: 3.5rem;
+            }
+
+            .logo-content-area {
+                gap: 2.5rem;
+                width: 100%;
+                align-self: flex-start;
+            }
+
+            .word-container {
+                gap: 0.2vw;
+            }
+
+            .letter-wrapper {
+                height: 10vw;
+                width: calc(10vw * var(--letter-w, 0.75));
+            }
+
+            .hero-ctas {
+                gap: 2rem;
+            }
+
+            .cta-link {
+                font-size: 1.15rem;
+                gap: 0.5rem;
+            }
+
+            .cta-icon {
+                width: 1rem;
+                height: 1rem;
+            }
+
+            .hero-description-area {
+                width: 100%;
+                max-width: 100%;
+                padding-left: 0;
+                padding-right: 0;
+            }
+
+            .hero-title {
+                font-size: 1.25rem;
+                margin-bottom: 0.75rem;
+            }
+
+            .hero-subtitle {
+                font-size: 0.85rem;
+                line-height: 1.5;
+            }
+
+            .hero-scroll {
+                margin-top: 1.25rem;
+            }
+
+            .hero-scroll span {
+                font-size: 0.85rem;
+            }
+
+            .scroll-arrow {
+                width: 1rem;
+                height: 1rem;
+            }
+
+            /* Header — mobile */
+            .header {
+                padding-left: 1.5rem;
+                padding-right: 1.5rem;
+            }
+
+            .header-logo {
+                height: 22px;
+            }
+
+            .header-letter {
+                width: calc(22px * var(--letter-w, 1));
+            }
+
+            .header-nav {
+                display: none !important;
+            }
+
+            .header-actions .btn-book {
+                display: none;
+            }
+
+            .hamburger {
+                display: flex;
+            }
+        }
+
+        /* =============================================
+           RESPONSIVE — SMALL MOBILE (≤480px)
+        ============================================= */
+        @media (max-width: 480px) {
+            .splash-intro {
+                padding: 5rem 1.25rem 5rem 1.25rem;
+                gap: 2.5rem;
+            }
+
+            .logo-content-area {
+                gap: 2rem;
+            }
+
+            .letter-wrapper {
+                height: 10.5vw;
+                width: calc(10.5vw * var(--letter-w, 0.75));
+            }
+
+            .hero-title {
+                font-size: 1.25rem;
+            }
+
+            .hero-subtitle {
+                font-size: 0.85rem;
+            }
+
+            .header {
+                padding-left: 1.25rem;
+                padding-right: 1.25rem;
+            }
+
+            .header-logo {
+                height: 18px;
+            }
+
+            .header-letter {
+                width: calc(18px * var(--letter-w, 1));
+            }
+        }
+
+        /* =============================================
+           GRAIN
+        ============================================= */
+        .grain-overlay {
+            position: fixed;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 999999;
+            opacity: 0.4;
+            mix-blend-mode: multiply;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+            background-repeat: repeat;
+            background-size: 200px 200px;
+        }
+
+        html.lenis,
+        html.lenis body {
+            height: auto;
+        }
+
+        .lenis.lenis-smooth {
+            scroll-behavior: auto !important;
+        }
+
+        .lenis.lenis-smooth [data-lenis-prevent] {
+            overscroll-behavior: contain;
+        }
+
+        .lenis.lenis-stopped {
+            overflow: hidden;
+        }
+
+        .lenis.lenis-scrolling iframe {
+            pointer-events: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- HEADER -->
+    <header class="header">
+        <div class="header-content">
+            <a href="/" class="header-logo">
+                <div class="header-letter" style="--letter-svg: url('r.svg'); --letter-w: 1.06;"></div>
+                <div class="header-letter" style="--letter-svg: url('e.svg'); --letter-w: 0.88;"></div>
+                <div class="header-letter" style="--letter-svg: url('a.svg'); --letter-w: 1.05;"></div>
+                <div class="header-letter" style="--letter-svg: url('l.svg'); --letter-w: 0.90;"></div>
+                <div class="header-letter" style="--letter-svg: url('v.svg'); --letter-w: 1.05;"></div>
+                <div class="header-letter" style="--letter-svg: url('i.svg'); --letter-w: 0.51;"></div>
+                <div class="header-letter" style="--letter-svg: url('l.svg'); --letter-w: 0.90;"></div>
+                <div class="header-letter" style="--letter-svg: url('l.svg'); --letter-w: 0.90;"></div>
+                <div class="header-letter" style="--letter-svg: url('a.svg'); --letter-w: 1.05;"></div>
+            </a>
+            <nav class="header-nav">
+                <a href="#" class="nav-link">Buy</a>
+                <a href="#" class="nav-link">Sell</a>
+                <a href="#" class="nav-link">Invest</a>
+                <a href="#" class="nav-link">Mortgages</a>
+            </nav>
+            <div class="header-actions">
+                <a href="#" class="btn-book">Speak to an Expert</a>
+            </div>
+            <button class="hamburger" id="hamburgerBtn" aria-label="Menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </header>
+
+    <!-- MOBILE NAV OVERLAY -->
+    <div class="mobile-nav-overlay" id="mobileNavOverlay">
+        <a href="#" class="nav-link-mobile">Buy</a>
+        <a href="#" class="nav-link-mobile">Sell</a>
+        <a href="#" class="nav-link-mobile">Invest</a>
+        <a href="#" class="nav-link-mobile">Mortgages</a>
+        <a href="#" class="btn-book-mobile">Speak to an Expert</a>
+    </div>
+
+
+    <!-- SPLASH INTRO -->
+    <div class="splash-intro">
+        <div class="splash-bg"></div>
+        <div class="splash-grid"></div>
+
+        <div class="logo-content-area">
+            <div class="word-container">
+
+                <!-- REAL (Gold) -->
+                <div class="letter-wrapper" style="--letter-svg: url('r.svg'); --letter-w: 1.06;">
+                    <div class="video-box" data-mosaic="m-shape-1">
+                        <div class="video-inner">
+                            <div class="mask-layer">
+                                <div class="morph-shape"></div>
+                                <div class="letter-font"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="solid-text text-gold"></div>
+                    <div class="solid-text text-white-reveal"></div>
+                </div>
+                <div class="letter-wrapper" style="--letter-svg: url('e.svg'); --letter-w: 0.88;">
+                    <div class="video-box" data-mosaic="m-shape-2">
+                        <div class="video-inner">
+                            <div class="mask-layer">
+                                <div class="morph-shape"></div>
+                                <div class="letter-font"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="solid-text text-gold"></div>
+                    <div class="solid-text text-white-reveal"></div>
+                </div>
+                <div class="letter-wrapper" style="--letter-svg: url('a.svg'); --letter-w: 1.05;">
+                    <div class="video-box" data-mosaic="m-shape-3">
+                        <div class="video-inner">
+                            <div class="mask-layer">
+                                <div class="morph-shape"></div>
+                                <div class="letter-font"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="solid-text text-gold"></div>
+                    <div class="solid-text text-white-reveal"></div>
+                </div>
+                <div class="letter-wrapper" style="--letter-svg: url('l.svg'); --letter-w: 0.90;">
+                    <div class="video-box" data-mosaic="m-shape-4">
+                        <div class="video-inner">
+                            <div class="mask-layer">
+                                <div class="morph-shape"></div>
+                                <div class="letter-font"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="solid-text text-gold"></div>
+                    <div class="solid-text text-white-reveal"></div>
+                </div>
+
+                <!-- VILLA (Black) -->
+                <div class="letter-wrapper" style="--letter-svg: url('v.svg'); --letter-w: 1.05;">
+                    <div class="video-box" data-mosaic="m-shape-5">
+                        <div class="video-inner">
+                            <div class="mask-layer">
+                                <div class="morph-shape"></div>
+                                <div class="letter-font"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="solid-text text-black"></div>
+                    <div class="solid-text text-white-reveal"></div>
+                </div>
+                <div class="letter-wrapper" style="--letter-svg: url('i.svg'); --letter-w: 0.51;">
+                    <div class="video-box" data-mosaic="m-shape-1">
+                        <div class="video-inner">
+                            <div class="mask-layer">
+                                <div class="morph-shape"></div>
+                                <div class="letter-font"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="solid-text text-black"></div>
+                    <div class="solid-text text-white-reveal"></div>
+                </div>
+                <div class="letter-wrapper" style="--letter-svg: url('l.svg'); --letter-w: 0.90;">
+                    <div class="video-box" data-mosaic="m-shape-2">
+                        <div class="video-inner">
+                            <div class="mask-layer">
+                                <div class="morph-shape"></div>
+                                <div class="letter-font"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="solid-text text-black"></div>
+                    <div class="solid-text text-white-reveal"></div>
+                </div>
+                <div class="letter-wrapper" style="--letter-svg: url('l.svg'); --letter-w: 0.90;">
+                    <div class="video-box" data-mosaic="m-shape-3">
+                        <div class="video-inner">
+                            <div class="mask-layer">
+                                <div class="morph-shape"></div>
+                                <div class="letter-font"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="solid-text text-black"></div>
+                    <div class="solid-text text-white-reveal"></div>
+                </div>
+                <div class="letter-wrapper" style="--letter-svg: url('a.svg'); --letter-w: 1.05;">
+                    <div class="video-box" data-mosaic="m-shape-4">
+                        <div class="video-inner">
+                            <div class="mask-layer">
+                                <div class="morph-shape"></div>
+                                <div class="letter-font"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="solid-text text-black"></div>
+                    <div class="solid-text text-white-reveal"></div>
+                </div>
+
+            </div>
+
+            <div class="hero-ctas">
+                <a href="#" class="cta-link">
+                    <img src="/arrows_more_down.svg" alt="Buy" class="cta-icon">
+                    <span>Buy</span>
+                    <img src="/arrow_right.svg" class="cta-hover-arrow" alt="">
+                </a>
+                <a href="#" class="cta-link">
+                    <img src="/arrows_more_up.svg" alt="Sell" class="cta-icon">
+                    <span>Sell</span>
+                    <img src="/arrow_right.svg" class="cta-hover-arrow" alt="">
+                </a>
+                <a href="#" class="cta-link">
+                    <img src="/attach_money.svg" alt="Invest" class="cta-icon">
+                    <span>Invest</span>
+                    <img src="/arrow_right.svg" class="cta-hover-arrow" alt="">
+                </a>
+            </div>
+        </div>
+
+        <div class="hero-description-area">
+            <h1 class="hero-title">Elevate Your Tenerife Lifestyle.</h1>
+            <p class="hero-subtitle">Premium Tenerife real estate. Expert guidance for buyers, sellers, and investors
+                looking for exclusive opportunities.</p>
+            <div class="hero-scroll">
+                <span>Scroll</span>
+                <img src="/arrow_south.svg" alt="" class="scroll-arrow">
+            </div>
+        </div>
+    </div>
+
+
+    <!-- MAIN HERO -->
+    <main class="main-hero">
+        <video class="hero-bg-video" src="/hero-video-3.mp4" muted loop playsinline></video>
+        <div class="hero-overlay"></div>
+    </main>
+
+    <section style="height: 100vh; background: #fff; display: flex; align-items:center; justify-content:center;">
+        <h2 style="font-weight: 300;">Rest of the website...</h2>
+    </section>
+
+    <section style="height: 100vh; background: #fff; display: flex; align-items:center; justify-content:center;">
+        <h2 style="font-weight: 300;">Rest of the website...</h2>
+    </section>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://unpkg.com/lenis@1.1.20/dist/lenis.min.js"></script>
+
+    <script>
+        window.addEventListener('load', () => {
+
+            // -------------------------------------------------------
+            // LENIS SMOOTH SCROLL
+            // IMPROVED: duration 1.8 + quintic ease = buttery feel
+            //           tanpa lag saat berhenti (infinite: false)
+            // -------------------------------------------------------
+            const lenis = new Lenis({
+                duration: 1.5,
+                easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+                direction: 'vertical',
+                gestureDirection: 'vertical',
+                smooth: true,
+                mouseMultiplier: 1,
+                smoothTouch: false,
+                touchMultiplier: 2,
+                infinite: false,
+            });
+
+            // IMPROVED: Tetap pakai RAF loop asli + gsap ticker untuk kompatibilitas Lenis
+            function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
+            requestAnimationFrame(raf);
+
+            gsap.ticker.lagSmoothing(0);
+
+            lenis.on('scroll', ScrollTrigger.update);
+
+            lenis.stop();
+
+            window.scrollTo(0, 0);
+            if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+
+            // -------------------------------------------------------
+            // RESPONSIVE RESIZE ARCHITECTURE
+            // -------------------------------------------------------
+            let logoArea, heroDesc, logoAnchor;
+            let morphTlInstance, morphSTInstance, navSTInstance;
+            let isMorphed = false;
+
+            function debounce(func, wait) {
+                let timeout;
+                return function () {
+                    const context = this, args = arguments;
+                    clearTimeout(timeout);
+                    timeout = setTimeout(() => func.apply(context, args), wait);
+                };
+            }
+
+            window.addEventListener('resize', debounce(() => {
+                generateAtomicGrid();
+                // Trigger full re-anchoring
+                if (isMorphed) {
+                    setupLogoMorph();
+                }
+                ScrollTrigger.refresh();
+            }, 250));
+
+
+            // -------------------------------------------------------
+            // SPLIT TEXT
+            // -------------------------------------------------------
+            function splitText(selector) {
+                document.querySelectorAll(selector).forEach(el => {
+                    const words = el.innerText.split(' ');
+                    el.innerHTML = words.map(w =>
+                        `<span class="word-mask"><span class="word-inner">${w}</span></span>`
+                    ).join(' ');
+                });
+            }
+
+            splitText('.hero-title');
+            splitText('.hero-subtitle');
+
+            const wrappers = document.querySelectorAll('.splash-intro .letter-wrapper');
+
+            function generateAtomicGrid() {
+                const grid = document.querySelector('.splash-grid');
+                if (!grid) return;
+                grid.innerHTML = ''; // Clear existing
+                const step = 40;
+                const rangeV = Math.ceil((window.innerWidth * 1.5) / step / 2);
+                const rangeH = Math.ceil((window.innerHeight * 1.5) / step / 2);
+
+                function addGlider(parent) {
+                    const g = document.createElement('div');
+                    g.className = 'grid-glider';
+                    parent.appendChild(g);
+                }
+
+                const halfVisible = Math.floor((window.innerWidth * 0.5) / step);
+                const g1 = Math.max(2, Math.floor(halfVisible * 0.6));
+                const g2 = Math.max(3, Math.floor(halfVisible * 0.75));
+                const g3 = Math.max(4, Math.floor(halfVisible * 0.9));
+
+                for (let i = -rangeV; i <= rangeV; i++) {
+                    const line = document.createElement('div');
+                    line.className = 'v-line';
+                    line.style.marginLeft = (i * step) + 'px';
+                    grid.appendChild(line);
+                    if (i === g1) addGlider(line);
+                    if (i === g2) addGlider(line);
+                    if (i === g3) addGlider(line);
+                }
+
+                for (let j = -rangeH; j <= rangeH; j++) {
+                    const line = document.createElement('div');
+                    line.className = 'h-line';
+                    line.style.marginTop = (j * step) + 'px';
+                    grid.appendChild(line);
+                }
+            }
+
+            generateAtomicGrid();
+
+            const premiumLayout = [
+                { x: -0.35, y: -0.25, size: 0.20 }, { x: -0.30, y: 0.20, size: 0.15 },
+                { x: -0.10, y: 0.30, size: 0.20 }, { x: -0.15, y: -0.30, size: 0.15 },
+                { x: 0.00, y: 0.00, size: 0.30 }, { x: 0.15, y: -0.25, size: 0.15 },
+                { x: 0.20, y: 0.25, size: 0.20 }, { x: 0.35, y: -0.10, size: 0.18 },
+                { x: 0.35, y: 0.30, size: 0.15 }
+            ];
+
+            wrappers.forEach((wrapper, i) => {
+                const box = wrapper.querySelector('.video-box');
+                const inner = wrapper.querySelector('.video-inner');
+                const morphShape = wrapper.querySelector('.morph-shape');
+
+                const finalRect = wrapper.getBoundingClientRect();
+                wrapper.dataset.finalBgPos = `-${finalRect.left}px -${finalRect.top}px`;
+
+                const layout = premiumLayout[i];
+
+                // Responsive multiplier: 1.0 desktop, 1.2 tablet, 1.25 mobile
+                const ww = window.innerWidth;
+                const sizeMultiplier = ww <= 768 ? 1.25 : (ww <= 1024 ? 1.2 : 1.0);
+
+                const squareSize = layout.size * window.innerWidth * sizeMultiplier;
+                // Cap vertical spread on portrait screens to keep mosaic compact
+                const effectiveHeight = Math.min(window.innerHeight, window.innerWidth * 1.2);
+                const screenStartX = (window.innerWidth / 2) + (layout.x * window.innerWidth);
+                const screenStartY = (window.innerHeight / 2) + (layout.y * effectiveHeight);
+                const startL = screenStartX - (squareSize / 2);
+                const startT = screenStartY - (squareSize / 2);
+                const wrapperRect = wrapper.getBoundingClientRect();
+                const offsetX = screenStartX - (wrapperRect.left + wrapperRect.width / 2);
+                const offsetY = screenStartY - (wrapperRect.top + wrapperRect.height / 2);
+
+                gsap.set(box, { xPercent: -50, yPercent: -50, width: squareSize, height: squareSize, x: offsetX, y: offsetY });
+                gsap.set(inner, { filter: "blur(50px)", backgroundPosition: `-${startL}px -${startT}px` });
+                gsap.set(morphShape, { xPercent: -50, yPercent: -50, scale: 2 });
+            });
+
+            const mosaicRadii = [
+                "60% 15% 40% 20% / 40% 10% 50% 30%",
+                "10% 70% 20% 60% / 20% 40% 15% 70%",
+                "80% 20% 70% 30% / 50% 30% 60% 40%",
+                "30% 60% 10% 80% / 40% 70% 20% 50%",
+                "50% 50% 10% 10% / 80% 80% 10% 10%",
+                "60% 15% 40% 20% / 40% 10% 50% 30%",
+                "10% 70% 20% 60% / 20% 40% 15% 70%",
+                "80% 20% 70% 30% / 50% 30% 60% 40%",
+                "30% 60% 10% 80% / 40% 70% 20% 50%"
+            ];
+
+            // -------------------------------------------------------
+            // INTRO TIMELINE
+            // -------------------------------------------------------
+            let canParallax = false;
+            const tl = gsap.timeline({
+                delay: 0,
+                paused: true, // Start paused, preloader will play()
+                onComplete: () => {
+                    canParallax = true;
+                }
+            });
+            tl.to(".splash-grid", { scale: 1, opacity: 0.8, duration: 2.0, ease: "power2.out" }, 0.8);
+            tl.fromTo(".grid-glider", { y: "120vh", opacity: 0 }, { y: "-120vh", opacity: 1, duration: 4.5, stagger: 0.2, ease: "power1.inOut" }, 0.2);
+
+            wrappers.forEach((wrapper, i) => {
+                const box = wrapper.querySelector('.video-box');
+                const inner = wrapper.querySelector('.video-inner');
+                const morphShape = wrapper.querySelector('.morph-shape');
+                const solidText = wrapper.querySelector('.solid-text');
+
+                tl.to(inner, { filter: "blur(0px)", ease: "power2.out", duration: 0.7 }, 0);
+                tl.to(box, { width: wrapper.offsetWidth, height: wrapper.offsetHeight, x: 0, y: 0, ease: "expo.inOut", duration: 1.0 }, 0.5);
+                tl.to(box, { borderRadius: mosaicRadii[i], duration: 0.7, ease: "power1.inOut" }, 0.5);
+                tl.to(box, { borderRadius: "0px", duration: 0.3, ease: "power4.out" }, 1.2);
+                tl.to(inner, { backgroundPosition: wrapper.dataset.finalBgPos, ease: "expo.inOut", duration: 1.0 }, 0.5);
+                tl.to(morphShape, { scale: 0, borderRadius: "50%", ease: "expo.inOut", duration: 0.9 }, 0.6);
+                tl.to(solidText, { opacity: 1, duration: 0.4 }, 1.5);
+                tl.to(box, { opacity: 0, duration: 0.1 }, 1.8);
+            });
+
+            tl.to([".splash-bg", ".splash-grid"], {
+                yPercent: -100, ease: "expo.inOut", duration: 1.5,
+                onComplete: () => {
+                    document.body.style.overflowY = 'auto';
+                    lenis.start();
+
+                    const skipOnScroll = () => {
+                        if (tl.progress() < 1) tl.progress(1);
+                        lenis.off('scroll', skipOnScroll);
+                    };
+                    lenis.on('scroll', skipOnScroll);
+                }
+            }, 2.3);
+
+            tl.to(".text-white-reveal", {
+                clipPath: "inset(0% 0 0 0)", ease: "expo.inOut", duration: 1.25
+            }, 2.3);
+
+            tl.to(".hero-bg-video", {
+                scale: 1, ease: "power3.out", duration: 2,
+                onStart: () => { const v = document.querySelector('.hero-bg-video'); if (v) v.play(); }
+            }, 2.3);
+
+            tl.to(".hero-ctas .cta-link", { opacity: 1, y: 0, scale: 1, filter: "blur(0px)", duration: 1, stagger: 0.15, ease: "expo.out" }, 2.4);
+
+            tl.fromTo(".hero-title .word-inner",
+                { yPercent: 100, rotate: 5, filter: "blur(10px)", opacity: 0 },
+                { yPercent: 0, rotate: 0, filter: "blur(0px)", opacity: 1, duration: 1.2, stagger: 0.1, ease: "expo.out" }
+                , 3.5);
+
+            tl.fromTo(".hero-subtitle .word-inner",
+                { yPercent: 50, opacity: 0, filter: "blur(5px)" },
+                { yPercent: 0, opacity: 0.8, filter: "blur(0px)", duration: 1, stagger: 0.03, ease: "power3.out" }
+                , 3.8);
+
+            tl.to(".hero-scroll", {
+                opacity: 1, y: 0, filter: "blur(0px)", duration: 1, ease: "power3.out",
+                onComplete: () => {
+                    gsap.to(".hero-scroll", { y: 10, duration: 1.5, repeat: -1, yoyo: true, ease: "sine.inOut" });
+                }
+            }, 4.2);
+
+            tl.set(".splash-intro", { pointerEvents: "none" });
+
+            // FIXED: Don't auto-play, wait for preloader
+            tl.pause();
+
+            tl.call(setupLogoMorph, [], 4.8);
+
+
+            // -------------------------------------------------------
+            // LOGO MORPH → HEADER
+            // Semua elemen naik sebagai satu blok (kompak, natural).
+            // wordContainer break-out dari parent → mendarat di header.
+            // -------------------------------------------------------
+            function setupLogoMorph() {
+                // ── CLEANUP & TOTAL RESET (Atomic Clean-Snapshot) ──────────
+                if (morphTlInstance) morphTlInstance.kill();
+                if (morphSTInstance) morphSTInstance.kill();
+                if (navSTInstance) navSTInstance.kill();
+
+                const splashIntro = document.querySelector('.splash-intro');
+                const heroEl = document.querySelector('.main-hero');
+                const headerNav = document.querySelector('.header-nav');
+                const headerContent = document.querySelector('.header-content');
+                
+                // Cari logoArea yang ada di hero (bukan yang sudah breakout di body)
+                logoArea = splashIntro.querySelector('.logo-content-area');
+                const existingBreakout = document.getElementById('morph-breakout-logo');
+                const existingAnchor = document.getElementById('hero-logo-anchor');
+
+                // Revert reparenting logic: Jika ada breakout, kembalikan ke anchor
+                if (existingBreakout && existingAnchor) {
+                    existingAnchor.parentNode.insertBefore(existingBreakout, existingAnchor);
+                    existingBreakout.id = ''; // Hapus ID breakout setelah kembali
+                    existingAnchor.remove();
+                    logoArea = existingBreakout; 
+                }
+                
+                // Cleanup sisa-sisa ID atau properties
+                if (existingAnchor) existingAnchor.remove();
+                if (logoArea) gsap.set(logoArea, { clearProps: "all" });
+
+                const wordContainer = logoArea.querySelector('.word-container');
+                const heroCtas = splashIntro.querySelector('.hero-ctas');
+                heroDesc = splashIntro.querySelector('.hero-description-area');
+
+                // ── SNAPSHOT COORDINATES (Clean State) ──────────────────────
+                const logoAreaRect = logoArea.getBoundingClientRect();
+                const wordRect = wordContainer.getBoundingClientRect();
+                const headerRect = headerContent.getBoundingClientRect();
+
+                isMorphed = true;
+
+                // ── CONSTRICTION RESTORED ──────────────────────────────────
+                gsap.set(heroEl, { overflow: 'hidden' });
+                gsap.set(splashIntro, { overflow: 'visible' });
+
+                // ── LOGO FIXED BREAKOUT ────────────────────────────────────
+                // Buat anchor/spacer sederhana saja untuk menjaga layout
+                logoAnchor = document.createElement('div');
+                logoAnchor.id = 'hero-logo-anchor';
+                gsap.set(logoAnchor, { width: logoAreaRect.width, height: logoAreaRect.height, visibility: 'hidden' });
+                logoArea.parentNode.insertBefore(logoAnchor, logoArea);
+
+                // Tandai logo yang akan di-breakout
+                logoArea.id = 'morph-breakout-logo';
+                Object.assign(logoArea.style, {
+                    position: 'fixed',
+                    left: logoAreaRect.left + 'px',
+                    top: logoAreaRect.top + 'px',
+                    width: logoAreaRect.width + 'px',
+                    margin: '0',
+                    padding: '0',
+                    zIndex: '98001',
+                    pointerEvents: 'none',
+                    willChange: 'transform',
+                    transform: 'translateZ(0)'
+                });
+
+                document.body.appendChild(logoArea);
+
+                // ── CONFIGURATION & TARGETS ──────────────────
+                const headerLogoHeight = window.innerWidth <= 480 ? 18 : window.innerWidth <= 768 ? 22 : 28;
+                const targetScale = headerLogoHeight / wordRect.height;
+                const targetLeftPx = window.innerWidth <= 768 ? window.innerWidth * 0.06 : window.innerWidth * 0.04;
+
+                const currentScroll = window.scrollY;
+                const initialWordCenterY = (wordRect.top + currentScroll) + (wordRect.height / 2);
+                const targetHeaderCenterY = (headerRect.top + currentScroll) + (headerRect.height / 2);
+
+                const scrollEnd = heroEl.offsetHeight;
+
+                // logic synchronization
+                const exitY = -scrollEnd;
+                const wordLocalY = (targetHeaderCenterY - initialWordCenterY) + scrollEnd;
+                const toX = targetLeftPx - wordRect.left;
+
+                morphTlInstance = gsap.timeline({ paused: true });
+
+                morphTlInstance
+                    .to(logoArea, {
+                        y: exitY,
+                        duration: 1,
+                        ease: 'none'
+                    }, 0)
+                    .to([heroCtas], {
+                        opacity: 0,
+                        y: "250%",
+                        duration: 0.25,
+                        ease: 'none'
+                    }, 0)
+                    .to([heroDesc], {
+                        opacity: 0,
+                        duration: 0.5,
+                        ease: 'none'
+                    }, 0)
+                    .to(wordContainer, {
+                        x: toX,
+                        y: wordLocalY,
+                        scale: targetScale,
+                        transformOrigin: 'left center',
+                        duration: 1,
+                        ease: 'none',
+                        overwrite: true,
+                        force3D: true
+                    }, 0);
+
+                if (window.innerWidth > 1024) {
+                    const navLinks = headerNav.querySelectorAll('.nav-link');
+                    navSTInstance = ScrollTrigger.create({
+                        trigger: '.main-hero',
+                        start: '50% top',
+                        onEnter: () => {
+                            gsap.to(headerNav, { opacity: 1, pointerEvents: 'auto', duration: 0.3 });
+                            gsap.fromTo(navLinks,
+                                { opacity: 0, y: -15, filter: 'blur(5px)' },
+                                { opacity: 0.7, y: 0, filter: 'blur(0px)', duration: 0.45, stagger: 0.08, ease: 'power2.out', overwrite: true }
+                            );
+                        },
+                        onLeaveBack: () => {
+                            gsap.to(headerNav, { opacity: 0, pointerEvents: 'none', duration: 0.3 });
+                            gsap.to(navLinks, { opacity: 0, y: -15, filter: 'blur(5px)', duration: 0.3 });
+                        }
+                    });
+                }
+
+                morphSTInstance = ScrollTrigger.create({
+                    trigger: '.main-hero',
+                    start: 'top top',
+                    end: '50% top',
+                    scrub: true,
+                    animation: morphTlInstance,
+                    invalidateOnRefresh: true
+                });
+
+                // 6. Header wipe-in terikat penuh dengan scroll (scrubbed)
+                const header = document.querySelector('.header');
+                gsap.to(header, {
+                    '--header-wipe': 1,
+                    ease: 'none',
+                    scrollTrigger: {
+                        trigger: '.main-hero',
+                        start: () => `bottom ${header.offsetHeight}px`,
+                        end: 'bottom top',
+                        scrub: true,
+                        invalidateOnRefresh: true
+                    }
+                });
+            }
+
+
+            // -------------------------------------------------------
+            // PARALLAX VIDEO ZOOM (Cinematic Fixed Feel)
+            // -------------------------------------------------------
+            gsap.fromTo(".hero-bg-video",
+                { scale: 1 },
+                {
+                    scrollTrigger: {
+                        trigger: ".main-hero",
+                        start: "top top",
+                        end: "bottom top",
+                        scrub: true
+                    },
+                    y: "50%",       // Slower movement for fixed feel
+                    scale: 1.75,      // Cinematic zoom
+                    ease: "none"
+                }
+            );
+
+            // IMPROVED: overlay fade tetap linear tapi scrub lebih halus
+            gsap.to(".hero-overlay", {
+                scrollTrigger: {
+                    trigger: ".main-hero",
+                    start: "top top",
+                    end: "bottom top",
+                    scrub: true,             // FIXED: linear response
+                },
+                opacity: 0.85,
+                ease: "none"
+            });
+
+
+            // -------------------------------------------------------
+            // MOUSE PARALLAX (Disabled to keep content grounded)
+            // -------------------------------------------------------
+            /*
+            const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+
+            if (!isTouchDevice) {
+                const hero = document.querySelector('.splash-intro');
+                const parallaxItems = document.querySelectorAll('.hero-title, .hero-subtitle, .hero-ctas, .hero-scroll');
+
+                hero.addEventListener('mousemove', (e) => {
+                    if (!canParallax) return;
+                    const centerX = window.innerWidth / 2;
+                    const centerY = window.innerHeight / 2;
+                    const moveX = (e.clientX - centerX) / 50;
+                    const moveY = (e.clientY - centerY) / 50;
+
+                    parallaxItems.forEach((item, index) => {
+                        const depth = (index + 1) * 0.5;
+                        gsap.to(item, { x: moveX * depth, y: moveY * depth, duration: 1, ease: "power2.out" });
+                    });
+                });
+            }
+            */
+
+
+            // -------------------------------------------------------
+            // PRELOADER LOGISTIC
+            // -------------------------------------------------------
+            const loaderEl = document.getElementById('mainLoader');
+            const allImages = document.querySelectorAll('img');
+            const heroVideo = document.querySelector('.hero-bg-video');
+            let revealStarted = false;
+
+            function startReveal() {
+                if (revealStarted) return;
+                revealStarted = true;
+                tl.play();
+            }
+
+            function updateProgress() {
+                if (revealStarted) return;
+                let imgProgress = 0;
+                let videoProgress = 0;
+
+                // Image tracking
+                let loadedImgs = 0;
+                allImages.forEach(img => {
+                    if (img.complete) loadedImgs++;
+                });
+                imgProgress = (loadedImgs / allImages.length) || 1;
+
+                // Video tracking
+                if (heroVideo.readyState >= 4) {
+                    videoProgress = 1;
+                } else if (heroVideo.duration > 0 && heroVideo.buffered.length > 0) {
+                    videoProgress = heroVideo.buffered.end(0) / heroVideo.duration;
+                }
+
+                // Weighted total (30% images, 70% video)
+                const totalProgress = (imgProgress * 0.3) + (videoProgress * 0.7);
+                const displayPercent = Math.min(100, Math.floor(totalProgress * 100));
+
+                if (loaderEl) {
+                    loaderEl.innerText = displayPercent.toString().padStart(2, '0') + "%";
+                }
+
+                if (totalProgress >= 1) {
+                    startReveal();
+                }
+            }
+
+            // Listeners
+            allImages.forEach(img => {
+                img.addEventListener('load', updateProgress);
+                img.addEventListener('error', updateProgress);
+            });
+            heroVideo.addEventListener('progress', updateProgress);
+            heroVideo.addEventListener('canplaythrough', updateProgress);
+
+            // Initial and interval check
+            updateProgress();
+            const progressInterval = setInterval(() => {
+                updateProgress();
+                if (revealStarted) clearInterval(progressInterval);
+            }, 500);
+
+            // Fallback (6 seconds)
+            setTimeout(startReveal, 6000);
+
+            // HAMBURGER MENU TOGGLE
+            // -------------------------------------------------------
+            const hamburgerBtn = document.getElementById('hamburgerBtn');
+            const mobileNavOverlay = document.getElementById('mobileNavOverlay');
+
+            if (hamburgerBtn && mobileNavOverlay) {
+                hamburgerBtn.addEventListener('click', () => {
+                    hamburgerBtn.classList.toggle('active');
+                    mobileNavOverlay.classList.toggle('active');
+                    document.body.classList.toggle('menu-open');
+
+                    if (mobileNavOverlay.classList.contains('active')) {
+                        lenis.stop();
+                    } else {
+                        lenis.start();
+                    }
+                });
+
+                // Close on link click
+                mobileNavOverlay.querySelectorAll('a').forEach(link => {
+                    link.addEventListener('click', () => {
+                        hamburgerBtn.classList.remove('active');
+                        mobileNavOverlay.classList.remove('active');
+                        document.body.classList.remove('menu-open');
+                        lenis.start();
+                    });
+                });
+            }
+        });
+    </script>
+
+    <div class="grain-overlay"></div>
+</body>
+
+</html>
