@@ -48,7 +48,7 @@
             padding: 6rem 3rem 6rem 3rem;
             gap: 3rem;
             overflow: hidden;
-            opacity: 1; /* Instant Mosaic */
+            opacity: 0; /* Hidden until scattered by JS */
             pointer-events: none;
             will-change: opacity;
         }
@@ -1305,7 +1305,6 @@
                 const sizeMultiplier = ww <= 768 ? 1.25 : (ww <= 1024 ? 1.2 : 1.0);
 
                 const squareSize = layout.size * window.innerWidth * sizeMultiplier;
-                // Cap vertical spread on portrait screens to keep mosaic compact
                 const effectiveHeight = Math.min(window.innerHeight, window.innerWidth * 1.2);
                 const screenStartX = (window.innerWidth / 2) + (layout.x * window.innerWidth);
                 const screenStartY = (window.innerHeight / 2) + (layout.y * effectiveHeight);
@@ -1315,25 +1314,34 @@
                 const offsetX = screenStartX - (wrapperRect.left + wrapperRect.width / 2);
                 const offsetY = screenStartY - (wrapperRect.top + wrapperRect.height / 2);
 
-                gsap.set(box, { xPercent: -50, yPercent: -50, width: squareSize, height: squareSize, x: offsetX, y: offsetY });
+                const mosaicRadii = [
+                    "60% 15% 40% 20% / 40% 10% 50% 30%",
+                    "10% 70% 20% 60% / 20% 40% 15% 70%",
+                    "80% 20% 70% 30% / 50% 30% 60% 40%",
+                    "30% 60% 10% 80% / 40% 70% 20% 50%",
+                    "50% 50% 10% 10% / 80% 80% 10% 10%",
+                    "60% 15% 40% 20% / 40% 10% 50% 30%",
+                    "10% 70% 20% 60% / 20% 40% 15% 70%",
+                    "80% 20% 70% 30% / 50% 30% 60% 40%",
+                    "30% 60% 10% 80% / 40% 70% 20% 50%"
+                ];
+
+                // ── ATOMIC INITIALIZATION ──
+                gsap.set(box, { 
+                    xPercent: -50, 
+                    yPercent: -50, 
+                    width: squareSize, 
+                    height: squareSize, 
+                    x: offsetX, 
+                    y: offsetY,
+                    borderRadius: mosaicRadii[i] // Apply shape immediately
+                });
                 gsap.set(inner, { filter: "blur(50px)", backgroundPosition: `-${startL}px -${startT}px` });
                 gsap.set(morphShape, { xPercent: -50, yPercent: -50, scale: 2 });
             });
 
-            // Reveal immediately after scatter to avoid "raw" look
-            gsap.to(".splash-intro", { opacity: 1, duration: 0.5, ease: "power2.out" });
-
-            const mosaicRadii = [
-                "60% 15% 40% 20% / 40% 10% 50% 30%",
-                "10% 70% 20% 60% / 20% 40% 15% 70%",
-                "80% 20% 70% 30% / 50% 30% 60% 40%",
-                "30% 60% 10% 80% / 40% 70% 20% 50%",
-                "50% 50% 10% 10% / 80% 80% 10% 10%",
-                "60% 15% 40% 20% / 40% 10% 50% 30%",
-                "10% 70% 20% 60% / 20% 40% 15% 70%",
-                "80% 20% 70% 30% / 50% 30% 60% 40%",
-                "30% 60% 10% 80% / 40% 70% 20% 50%"
-            ];
+            // Reveal only AFTER atoms are positioned and shaped
+            gsap.to(".splash-intro", { opacity: 1, duration: 0.6, ease: "power2.out" });
 
             // -------------------------------------------------------
             // INTRO TIMELINE
