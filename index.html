@@ -493,36 +493,28 @@
         }
 
         .text-black {
-            background: linear-gradient(110deg, #111 40%, #444 50%, #111 60%);
+            background: linear-gradient(90deg, #111 0%, #111 40%, #555 50%, #111 60%, #111 100%);
             background-size: 200% 100%;
-            animation: shimmer-classic 8s infinite ease-in-out;
+            animation: shimmer-classic 4s infinite linear;
         }
 
         .text-gold {
-            background: linear-gradient(110deg, #bcaf8b 40%, #f3e2b3 50%, #bcaf8b 60%);
+            background: linear-gradient(90deg, #bcaf8b 0%, #bcaf8b 40%, #fef3c7 50%, #bcaf8b 60%, #bcaf8b 100%);
             background-size: 200% 100%;
-            animation: shimmer-classic 8s infinite ease-in-out;
+            animation: shimmer-classic 4s infinite linear;
         }
 
         @keyframes shimmer-classic {
-            0% {
-                background-position: -100% 0;
-            }
-
-            30% {
-                background-position: 100% 0;
-            }
-
-            100% {
-                background-position: 100% 0;
-            }
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
         }
 
         .text-white-reveal {
             background-color: #ffffff;
             z-index: 25;
             clip-path: inset(100% 0 0 0);
-            opacity: 1;
+            opacity: 0;
+            will-change: clip-path, opacity;
         }
 
         /* =============================================
@@ -1331,7 +1323,7 @@
                 const box = wrapper.querySelector('.video-box');
                 const inner = wrapper.querySelector('.video-inner');
                 const morphShape = wrapper.querySelector('.morph-shape');
-                const solidText = wrapper.querySelector('.solid-text');
+                const solidTexts = wrapper.querySelectorAll('.solid-text');
 
                 tl.to(inner, { filter: "blur(0px)", ease: "power2.out", duration: 0.7 }, 0);
                 tl.to(box, { width: wrapper.offsetWidth, height: wrapper.offsetHeight, x: 0, y: 0, ease: "expo.inOut", duration: 1.0 }, 0.5);
@@ -1339,7 +1331,7 @@
                 tl.to(box, { borderRadius: "0px", duration: 0.3, ease: "power4.out" }, 1.2);
                 tl.to(inner, { backgroundPosition: wrapper.dataset.finalBgPos, ease: "expo.inOut", duration: 1.0 }, 0.5);
                 tl.to(morphShape, { scale: 0, borderRadius: "50%", ease: "expo.inOut", duration: 0.9 }, 0.6);
-                tl.to(solidText, { opacity: 1, duration: 0.4 }, 1.5);
+                tl.to(solidTexts, { opacity: 1, duration: 0.4 }, 1.5);
                 tl.to(box, { opacity: 0, duration: 0.1 }, 1.8);
             });
 
