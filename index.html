@@ -493,15 +493,15 @@
         }
 
         .text-black {
-            background: linear-gradient(110deg, #111 45%, #333 50%, #111 55%);
-            background-size: 200% auto;
-            animation: shimmer-classic 10s 3 ease-in-out;
+            background: linear-gradient(110deg, #111 40%, #444 50%, #111 60%);
+            background-size: 200% 100%;
+            animation: shimmer-classic 8s infinite ease-in-out;
         }
 
         .text-gold {
-            background: linear-gradient(110deg, #bcaf8b 45%, #c9bc9a 50%, #bcaf8b 55%);
-            background-size: 200% auto;
-            animation: shimmer-classic 10s 3 ease-in-out;
+            background: linear-gradient(110deg, #bcaf8b 40%, #f3e2b3 50%, #bcaf8b 60%);
+            background-size: 200% 100%;
+            animation: shimmer-classic 8s infinite ease-in-out;
         }
 
         @keyframes shimmer-classic {
@@ -1422,9 +1422,13 @@
                     logoArea = existingBreakout; 
                 }
                 
-                // Cleanup sisa-sisa ID atau properties
+                // Cleanup only the breakout tags/styles, preserving content states (like shimmer)
                 if (existingAnchor) existingAnchor.remove();
-                if (logoArea) gsap.set(logoArea, { clearProps: "all" });
+                if (logoArea) {
+                    gsap.set(logoArea, { 
+                        clearProps: "position,left,top,width,margin,padding,zIndex,pointerEvents,willChange,transform" 
+                    });
+                }
 
                 const wordContainer = logoArea.querySelector('.word-container');
                 const heroCtas = splashIntro.querySelector('.hero-ctas');
