@@ -48,6 +48,9 @@
             padding: 6rem 3rem 6rem 3rem;
             gap: 3rem;
             overflow: hidden;
+            opacity: 0;
+            pointer-events: none;
+            will-change: opacity;
         }
 
         .splash-bg {
@@ -1295,6 +1298,9 @@
                 gsap.set(morphShape, { xPercent: -50, yPercent: -50, scale: 2 });
             });
 
+            // Reveal immediately after scatter to avoid "raw" look
+            gsap.to(".splash-intro", { opacity: 1, duration: 0.5, ease: "power2.out" });
+
             const mosaicRadii = [
                 "60% 15% 40% 20% / 40% 10% 50% 30%",
                 "10% 70% 20% 60% / 20% 40% 15% 70%",
@@ -1609,66 +1615,15 @@
             // -------------------------------------------------------
             // PRELOADER LOGISTIC
             // -------------------------------------------------------
-            const loaderEl = document.getElementById('mainLoader');
-            const allImages = document.querySelectorAll('img');
-            const heroVideo = document.querySelector('.hero-bg-video');
             let revealStarted = false;
-
             function startReveal() {
                 if (revealStarted) return;
                 revealStarted = true;
                 tl.play();
             }
 
-            function updateProgress() {
-                if (revealStarted) return;
-                let imgProgress = 0;
-                let videoProgress = 0;
-
-                // Image tracking
-                let loadedImgs = 0;
-                allImages.forEach(img => {
-                    if (img.complete) loadedImgs++;
-                });
-                imgProgress = (loadedImgs / allImages.length) || 1;
-
-                // Video tracking
-                if (heroVideo.readyState >= 4) {
-                    videoProgress = 1;
-                } else if (heroVideo.duration > 0 && heroVideo.buffered.length > 0) {
-                    videoProgress = heroVideo.buffered.end(0) / heroVideo.duration;
-                }
-
-                // Weighted total (30% images, 70% video)
-                const totalProgress = (imgProgress * 0.3) + (videoProgress * 0.7);
-                const displayPercent = Math.min(100, Math.floor(totalProgress * 100));
-
-                if (loaderEl) {
-                    loaderEl.innerText = displayPercent.toString().padStart(2, '0') + "%";
-                }
-
-                if (totalProgress >= 1) {
-                    startReveal();
-                }
-            }
-
-            // Listeners
-            allImages.forEach(img => {
-                img.addEventListener('load', updateProgress);
-                img.addEventListener('error', updateProgress);
-            });
-            heroVideo.addEventListener('progress', updateProgress);
-            heroVideo.addEventListener('canplaythrough', updateProgress);
-
-            // Initial and interval check
-            updateProgress();
-            const progressInterval = setInterval(() => {
-                updateProgress();
-                if (revealStarted) clearInterval(progressInterval);
-            }, 500);
-
-            // Fallback (6 seconds)
-            setTimeout(startReveal, 6000);
+            // Accelerated reveal logic (User requested instant mosaic)
+            setTimeout(startReveal, 1000); 
 
             // HAMBURGER MENU TOGGLE
             // -------------------------------------------------------
