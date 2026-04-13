@@ -48,30 +48,9 @@
             padding: 6rem 3rem 6rem 3rem;
             gap: 3rem;
             overflow: hidden;
-            opacity: 0; /* Hidden until scattered by JS */
+            opacity: 0;
             pointer-events: none;
             will-change: opacity;
-        }
-
-        #mainLoader {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 100;
-            font-family: 'Manrope', sans-serif;
-            font-size: 2vw;
-            font-weight: 800;
-            color: #ffffff;
-            letter-spacing: -0.05em;
-            opacity: 0.8;
-            pointer-events: none;
-            will-change: opacity, transform;
-            text-shadow: 0 4px 20px rgba(0,0,0,0.5);
-        }
-
-        @media (max-width: 768px) {
-            #mainLoader { font-size: 8vw; }
         }
 
         .splash-bg {
@@ -1056,7 +1035,6 @@
                 <!-- VILLA (Black) -->
                 <div class="letter-wrapper" style="--letter-svg: url('v.svg'); --letter-w: 1.05;">
                     <div class="video-box" data-mosaic="m-shape-5">
-                        <div id="mainLoader">00%</div>
                         <div class="video-inner">
                             <div class="mask-layer">
                                 <div class="morph-shape"></div>
@@ -1282,18 +1260,6 @@
 
             generateAtomicGrid();
 
-            const mosaicRadii = [
-                "60% 15% 40% 20% / 40% 10% 50% 30%",
-                "10% 70% 20% 60% / 20% 40% 15% 70%",
-                "80% 20% 70% 30% / 50% 30% 60% 40%",
-                "30% 60% 10% 80% / 40% 70% 20% 50%",
-                "50% 50% 10% 10% / 80% 80% 10% 10%",
-                "60% 15% 40% 20% / 40% 10% 50% 30%",
-                "10% 70% 20% 60% / 20% 40% 15% 70%",
-                "80% 20% 70% 30% / 50% 30% 60% 40%",
-                "30% 60% 10% 80% / 40% 70% 20% 50%"
-            ];
-
             const premiumLayout = [
                 { x: -0.35, y: -0.25, size: 0.20 }, { x: -0.30, y: 0.20, size: 0.15 },
                 { x: -0.10, y: 0.30, size: 0.20 }, { x: -0.15, y: -0.30, size: 0.15 },
@@ -1317,6 +1283,7 @@
                 const sizeMultiplier = ww <= 768 ? 1.25 : (ww <= 1024 ? 1.2 : 1.0);
 
                 const squareSize = layout.size * window.innerWidth * sizeMultiplier;
+                // Cap vertical spread on portrait screens to keep mosaic compact
                 const effectiveHeight = Math.min(window.innerHeight, window.innerWidth * 1.2);
                 const screenStartX = (window.innerWidth / 2) + (layout.x * window.innerWidth);
                 const screenStartY = (window.innerHeight / 2) + (layout.y * effectiveHeight);
@@ -1326,22 +1293,25 @@
                 const offsetX = screenStartX - (wrapperRect.left + wrapperRect.width / 2);
                 const offsetY = screenStartY - (wrapperRect.top + wrapperRect.height / 2);
 
-                // ── ATOMIC INITIALIZATION ──
-                gsap.set(box, { 
-                    xPercent: -50, 
-                    yPercent: -50, 
-                    width: squareSize, 
-                    height: squareSize, 
-                    x: offsetX, 
-                    y: offsetY,
-                    borderRadius: mosaicRadii[i] // Apply shape immediately
-                });
+                gsap.set(box, { xPercent: -50, yPercent: -50, width: squareSize, height: squareSize, x: offsetX, y: offsetY });
                 gsap.set(inner, { filter: "blur(50px)", backgroundPosition: `-${startL}px -${startT}px` });
                 gsap.set(morphShape, { xPercent: -50, yPercent: -50, scale: 2 });
             });
 
-            // Reveal only AFTER atoms are positioned and shaped
-            gsap.to(".splash-intro", { opacity: 1, duration: 0.6, ease: "power2.out" });
+            // Reveal immediately after scatter to avoid "raw" look
+            gsap.to(".splash-intro", { opacity: 1, duration: 0.5, ease: "power2.out" });
+
+            const mosaicRadii = [
+                "60% 15% 40% 20% / 40% 10% 50% 30%",
+                "10% 70% 20% 60% / 20% 40% 15% 70%",
+                "80% 20% 70% 30% / 50% 30% 60% 40%",
+                "30% 60% 10% 80% / 40% 70% 20% 50%",
+                "50% 50% 10% 10% / 80% 80% 10% 10%",
+                "60% 15% 40% 20% / 40% 10% 50% 30%",
+                "10% 70% 20% 60% / 20% 40% 15% 70%",
+                "80% 20% 70% 30% / 50% 30% 60% 40%",
+                "30% 60% 10% 80% / 40% 70% 20% 50%"
+            ];
 
             // -------------------------------------------------------
             // INTRO TIMELINE
@@ -1643,80 +1613,18 @@
 
 
             // -------------------------------------------------------
-            // PRELOADER & ASSET TRACKING
+            // PRELOADER LOGISTIC
             // -------------------------------------------------------
-            const loaderEl = document.getElementById('mainLoader');
-            const allImages = document.querySelectorAll('img');
-            const heroVideo = document.querySelector('.hero-bg-video');
             let revealStarted = false;
-
             function startReveal() {
                 if (revealStarted) return;
                 revealStarted = true;
-
-                // Subtle exit for the in-context loader
-                gsap.to(loaderEl, { 
-                    opacity: 0, 
-                    duration: 0.8, 
-                    ease: "power2.inOut",
-                    onComplete: () => {
-                        loaderEl.style.display = 'none';
-                        tl.play(); // Start cinematic intro
-                    }
-                });
+                tl.play();
             }
 
-            function updateProgress() {
-                if (revealStarted) return;
-                let imgProgress = 0;
-                let videoProgress = 0;
+            // Accelerated reveal logic (User requested instant mosaic)
+            setTimeout(startReveal, 1000); 
 
-                // Image tracking
-                let loadedImgs = 0;
-                allImages.forEach(img => {
-                    if (img.complete) loadedImgs++;
-                });
-                imgProgress = (loadedImgs / allImages.length) || 1;
-
-                // Video tracking: ReadyState 3 (HAVE_FUTURE_DATA) or 4 (HAVE_ENOUGH_DATA)
-                if (heroVideo.readyState >= 3) {
-                    videoProgress = 1;
-                } else if (heroVideo.duration > 0 && heroVideo.buffered.length > 0) {
-                    videoProgress = heroVideo.buffered.end(0) / heroVideo.duration;
-                }
-
-                // Weighted total (30% images, 70% video)
-                const totalProgress = (imgProgress * 0.3) + (videoProgress * 0.7);
-                const displayPercent = Math.min(100, Math.floor(totalProgress * 100));
-
-                if (loaderEl) {
-                    loaderEl.innerText = displayPercent.toString().padStart(2, '0') + "%";
-                }
-
-                if (totalProgress >= 1) {
-                    startReveal();
-                }
-            }
-
-            // Listeners
-            allImages.forEach(img => {
-                img.addEventListener('load', updateProgress);
-                img.addEventListener('error', updateProgress);
-            });
-            heroVideo.addEventListener('progress', updateProgress);
-            heroVideo.addEventListener('canplaythrough', updateProgress);
-
-            // Initial check and safety interval
-            updateProgress();
-            const progressInterval = setInterval(() => {
-                updateProgress();
-                if (revealStarted) clearInterval(progressInterval);
-            }, 500);
-
-            // Fallback (6 seconds) to ensure the site reveals regardless of network
-            setTimeout(startReveal, 6000); 
-
-            // -------------------------------------------------------
             // HAMBURGER MENU TOGGLE
             // -------------------------------------------------------
             const hamburgerBtn = document.getElementById('hamburgerBtn');
