@@ -516,7 +516,7 @@
 
         .text-white-reveal {
             background-color: #ffffff;
-            z-index: 25;
+            z-index: 15; /* Lower than shimmer (20) during intro */
             clip-path: inset(100% 0 0 0);
             opacity: 0;
             will-change: clip-path, opacity;
@@ -1295,8 +1295,9 @@
                 gsap.set(morphShape, { xPercent: -50, yPercent: -50, scale: 2 });
             });
 
-            // Reveal immediately after scatter to avoid "raw" look
-            gsap.to(".splash-intro", { opacity: 1, duration: 0.5, ease: "power2.out" });
+            // Reveal immediately after scatter - the mosaic is the first thing user sees
+            gsap.set(".splash-intro", { opacity: 1 });
+            gsap.set(".splash-bg", { opacity: 1 });
 
             const mosaicRadii = [
                 "60% 15% 40% 20% / 40% 10% 50% 30%",
