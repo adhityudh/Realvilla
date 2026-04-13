@@ -495,18 +495,23 @@
         .text-black {
             background: linear-gradient(110deg, #111 45%, #333 50%, #111 55%);
             background-size: 200% 100%;
-            animation: shimmer-classic 8s infinite ease-in-out;
+            animation: shimmer-classic 4s 3 ease-in-out;
         }
 
         .text-gold {
             background: linear-gradient(110deg, #bcaf8b 45%, #c9bc9a 50%, #bcaf8b 55%);
             background-size: 200% 100%;
-            animation: shimmer-classic 8s infinite ease-in-out;
+            animation: shimmer-classic 4s 3 ease-in-out;
         }
 
         @keyframes shimmer-classic {
-            0% { background-position: -100% 0; }
-            100% { background-position: 100% 0; }
+            0% {
+                background-position: -100% 0;
+            }
+
+            100% {
+                background-position: 100% 0;
+            }
         }
 
         .text-white-reveal {
@@ -1403,7 +1408,7 @@
                 const heroEl = document.querySelector('.main-hero');
                 const headerNav = document.querySelector('.header-nav');
                 const headerContent = document.querySelector('.header-content');
-                
+
                 // Cari logoArea yang ada di hero (bukan yang sudah breakout di body)
                 logoArea = splashIntro.querySelector('.logo-content-area');
                 const existingBreakout = document.getElementById('morph-breakout-logo');
@@ -1414,14 +1419,14 @@
                     existingAnchor.parentNode.insertBefore(existingBreakout, existingAnchor);
                     existingBreakout.id = ''; // Hapus ID breakout setelah kembali
                     existingAnchor.remove();
-                    logoArea = existingBreakout; 
+                    logoArea = existingBreakout;
                 }
-                
+
                 // Cleanup only the breakout tags/styles, preserving content states (like shimmer)
                 if (existingAnchor) existingAnchor.remove();
                 if (logoArea) {
-                    gsap.set(logoArea, { 
-                        clearProps: "position,left,top,width,margin,padding,zIndex,pointerEvents,willChange,transform" 
+                    gsap.set(logoArea, {
+                        clearProps: "position,left,top,width,margin,padding,zIndex,pointerEvents,willChange,transform"
                     });
                 }
 
@@ -1622,7 +1627,7 @@
             }
 
             // Accelerated reveal logic (User requested instant mosaic)
-            setTimeout(startReveal, 1000); 
+            setTimeout(startReveal, 1000);
 
             // HAMBURGER MENU TOGGLE
             // -------------------------------------------------------
