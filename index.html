@@ -48,9 +48,30 @@
             padding: 6rem 3rem 6rem 3rem;
             gap: 3rem;
             overflow: hidden;
-            opacity: 0;
+            opacity: 1; /* Instant Mosaic */
             pointer-events: none;
             will-change: opacity;
+        }
+
+        #mainLoader {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 100;
+            font-family: 'Manrope', sans-serif;
+            font-size: 2vw;
+            font-weight: 800;
+            color: #ffffff;
+            letter-spacing: -0.05em;
+            opacity: 0.8;
+            pointer-events: none;
+            will-change: opacity, transform;
+            text-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        }
+
+        @media (max-width: 768px) {
+            #mainLoader { font-size: 8vw; }
         }
 
         .splash-bg {
@@ -1035,6 +1056,7 @@
                 <!-- VILLA (Black) -->
                 <div class="letter-wrapper" style="--letter-svg: url('v.svg'); --letter-w: 1.05;">
                     <div class="video-box" data-mosaic="m-shape-5">
+                        <div id="mainLoader">00%</div>
                         <div class="video-inner">
                             <div class="mask-layer">
                                 <div class="morph-shape"></div>
@@ -1613,18 +1635,80 @@
 
 
             // -------------------------------------------------------
-            // PRELOADER LOGISTIC
+            // PRELOADER & ASSET TRACKING
             // -------------------------------------------------------
+            const loaderEl = document.getElementById('mainLoader');
+            const allImages = document.querySelectorAll('img');
+            const heroVideo = document.querySelector('.hero-bg-video');
             let revealStarted = false;
+
             function startReveal() {
                 if (revealStarted) return;
                 revealStarted = true;
-                tl.play();
+
+                // Subtle exit for the in-context loader
+                gsap.to(loaderEl, { 
+                    opacity: 0, 
+                    duration: 0.8, 
+                    ease: "power2.inOut",
+                    onComplete: () => {
+                        loaderEl.style.display = 'none';
+                        tl.play(); // Start cinematic intro
+                    }
+                });
             }
 
-            // Accelerated reveal logic (User requested instant mosaic)
-            setTimeout(startReveal, 1000); 
+            function updateProgress() {
+                if (revealStarted) return;
+                let imgProgress = 0;
+                let videoProgress = 0;
 
+                // Image tracking
+                let loadedImgs = 0;
+                allImages.forEach(img => {
+                    if (img.complete) loadedImgs++;
+                });
+                imgProgress = (loadedImgs / allImages.length) || 1;
+
+                // Video tracking: ReadyState 3 (HAVE_FUTURE_DATA) or 4 (HAVE_ENOUGH_DATA)
+                if (heroVideo.readyState >= 3) {
+                    videoProgress = 1;
+                } else if (heroVideo.duration > 0 && heroVideo.buffered.length > 0) {
+                    videoProgress = heroVideo.buffered.end(0) / heroVideo.duration;
+                }
+
+                // Weighted total (30% images, 70% video)
+                const totalProgress = (imgProgress * 0.3) + (videoProgress * 0.7);
+                const displayPercent = Math.min(100, Math.floor(totalProgress * 100));
+
+                if (loaderEl) {
+                    loaderEl.innerText = displayPercent.toString().padStart(2, '0') + "%";
+                }
+
+                if (totalProgress >= 1) {
+                    startReveal();
+                }
+            }
+
+            // Listeners
+            allImages.forEach(img => {
+                img.addEventListener('load', updateProgress);
+                img.addEventListener('error', updateProgress);
+            });
+            heroVideo.addEventListener('progress', updateProgress);
+            heroVideo.addEventListener('canplaythrough', updateProgress);
+
+            // Initial check and safety interval
+            updateProgress();
+            const progressInterval = setInterval(() => {
+                updateProgress();
+                if (revealStarted) clearInterval(progressInterval);
+            }, 500);
+
+            // Fallback (6 seconds) to ensure the site reveals regardless of network
+            setTimeout(startReveal, 6000); 
+
+            // -------------------------------------------------------
             // HAMBURGER MENU TOGGLE
             // -------------------------------------------------------
             const hamburgerBtn = document.getElementById('hamburgerBtn');
