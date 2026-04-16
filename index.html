@@ -48,8 +48,8 @@
             padding: 6rem 3rem 6rem 3rem;
             gap: 3rem;
             overflow: hidden;
-            opacity: 0;
-            pointer-events: none;
+            opacity: 1; /* Preloader state awal terlihat langsung */
+            pointer-events: auto;
             will-change: opacity;
         }
 
@@ -65,7 +65,7 @@
             position: absolute;
             inset: -25%;
             z-index: -1;
-            opacity: 0.5;
+            opacity: 0.25;
             transform: scale(1.5);
             will-change: transform, opacity;
         }
@@ -111,6 +111,7 @@
             pointer-events: auto;
             z-index: 10000;
             align-self: center;
+            opacity: 0; /* Tersembunyi selama fase preloader murni */
         }
 
         .word-container {
@@ -256,8 +257,8 @@
             display: flex;
             flex-direction: column;
             z-index: 98000;
-            padding-left: 3rem;
-            padding-right: 3rem;
+            padding-left: 1rem;
+            padding-right: 1rem;
         }
 
         .header::before {
@@ -265,9 +266,7 @@
             position: absolute;
             inset: 0;
             z-index: -1;
-            background: rgba(0, 0, 0, 0.18);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
+            background: transparent;
             transform: scaleY(var(--header-wipe, 0));
             transform-origin: top;
             pointer-events: none;
@@ -279,8 +278,8 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding-top: 1.5rem;
-            padding-bottom: 1.5rem;
+            padding-top: 1rem;
+            padding-bottom: 1rem;
             opacity: 1;
             transform: translateY(0);
             pointer-events: auto;
@@ -330,10 +329,10 @@
             text-transform: uppercase;
             color: #ffffff;
             text-decoration: none;
-            opacity: 0.7;
+            opacity: 1;
             position: relative;
             padding-bottom: 4px;
-            transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), color 0.4s ease;
         }
 
         .nav-link::after {
@@ -345,7 +344,7 @@
             height: 1.5px;
             background-color: #ffffff;
             transform: translateX(-50%);
-            transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.4s ease;
         }
 
         .nav-link:hover {
@@ -359,7 +358,7 @@
         .btn-book {
             background-color: #ffffff;
             color: #000000;
-            padding: 0.75rem 1.5rem;
+            padding: 0.5rem 1.5rem;
             border-radius: 50px;
             font-size: 0.75rem;
             font-weight: 800;
@@ -371,7 +370,8 @@
             display: inline-block;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
             transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1),
-                background 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+                background-color 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+                color 0.6s cubic-bezier(0.16, 1, 0.3, 1),
                 box-shadow 0.6s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
@@ -401,9 +401,34 @@
             left: 150%;
         }
 
-        /* .header-scrolled class no longer used for scale, handled by scrub */
-        .header-scrolled::before {
-            /* kept for potential other style changes */
+        /* Header dark mode when scrolled past hero */
+        .header-letter {
+            transition: background-color 0.4s ease;
+        }
+
+        body.header-dark-mode .header-letter {
+            background-color: #111111;
+        }
+
+        body.header-dark-mode .nav-link {
+            color: #111111;
+        }
+
+        body.header-dark-mode .nav-link::after {
+            background-color: #111111;
+        }
+
+        body.header-dark-mode .btn-book {
+            background-color: #111111;
+            color: #ffffff;
+        }
+
+        body.header-dark-mode .hamburger span {
+            background-color: #111111;
+        }
+
+        body.header-dark-mode .text-white-reveal {
+            background-color: #111111;
         }
 
         /* =============================================
@@ -495,22 +520,24 @@
         .text-black {
             background: linear-gradient(110deg, #111 45%, #333 50%, #111 55%);
             background-size: 200% 100%;
-            animation: shimmer-classic 4s 3 ease-in-out;
         }
 
         .text-gold {
             background: linear-gradient(110deg, #bcaf8b 45%, #c9bc9a 50%, #bcaf8b 55%);
             background-size: 200% 100%;
-            animation: shimmer-classic 4s 3 ease-in-out;
+        }
+
+        .shimmer-active {
+            animation: shimmer-classic 1.5s ease-in-out forwards;
         }
 
         @keyframes shimmer-classic {
             0% {
-                background-position: -100% 0;
+                background-position: 150% 0;
             }
 
             100% {
-                background-position: 100% 0;
+                background-position: -50% 0;
             }
         }
 
@@ -520,6 +547,7 @@
             clip-path: inset(100% 0 0 0);
             opacity: 0;
             will-change: clip-path, opacity;
+            transition: background-color 0.4s ease;
         }
 
         /* =============================================
@@ -528,7 +556,7 @@
         .main-hero {
             position: relative;
             width: 100vw;
-            height: 100vh;
+            height: 115vh;
             overflow: hidden;
             perspective: 1000px;
         }
@@ -559,9 +587,9 @@
             display: none;
             flex-direction: column;
             justify-content: center;
-            gap: 5px;
+            gap: 6px;
             width: 28px;
-            height: 28px;
+            height: 20px;
             cursor: pointer;
             z-index: 97000;
             background: none;
@@ -576,20 +604,21 @@
             background-color: #ffffff;
             border-radius: 2px;
             transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
-                opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+                opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+                background-color 0.4s ease;
             transform-origin: center;
         }
 
+        .hamburger.active span {
+            background-color: #ffffff !important;
+        }
+
         .hamburger.active span:nth-child(1) {
-            transform: translateY(7px) rotate(45deg);
+            transform: translateY(4px) rotate(45deg);
         }
 
         .hamburger.active span:nth-child(2) {
-            opacity: 0;
-        }
-
-        .hamburger.active span:nth-child(3) {
-            transform: translateY(-7px) rotate(-45deg);
+            transform: translateY(-4px) rotate(-45deg);
         }
 
         /* Mobile Nav Overlay */
@@ -625,7 +654,7 @@
         }
 
         .mobile-nav-overlay .nav-link-mobile {
-            font-size: 1.5rem;
+            font-size: 1.25rem;
             font-weight: 700;
             letter-spacing: 0.2em;
             text-transform: uppercase;
@@ -750,6 +779,11 @@
            RESPONSIVE — MOBILE (≤768px)
         ============================================= */
         @media (max-width: 768px) {
+            .header-content {
+                padding-top: 0.85rem;
+                padding-bottom: 0.85rem;
+            }
+
             .cta-hover-arrow {
                 display: none !important;
             }
@@ -898,7 +932,7 @@
             height: 100%;
             pointer-events: none;
             z-index: 999999;
-            opacity: 0.4;
+            opacity: 0.1;
             mix-blend-mode: multiply;
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
             background-repeat: repeat;
@@ -925,11 +959,36 @@
         .lenis.lenis-scrolling iframe {
             pointer-events: none;
         }
+
+        /* =============================================
+           CURSOR FOLLOWER
+        ============================================= */
+        .cursor-follower {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 8px;
+            height: 8px;
+            background-color: #ffffff;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999999;
+            mix-blend-mode: difference;
+            will-change: transform;
+        }
+
+        @media (max-width: 768px) {
+            .cursor-follower {
+                display: none;
+            }
+        }
     </style>
 </head>
 
 <body>
 
+    <!-- CURSOR FOLLOWER -->
+    <div class="cursor-follower"></div>
     <!-- HEADER -->
     <header class="header">
         <div class="header-content">
@@ -954,7 +1013,6 @@
                 <a href="#" class="btn-book">Speak to an Expert</a>
             </div>
             <button class="hamburger" id="hamburgerBtn" aria-label="Menu">
-                <span></span>
                 <span></span>
                 <span></span>
             </button>
@@ -1151,12 +1209,12 @@
             //           tanpa lag saat berhenti (infinite: false)
             // -------------------------------------------------------
             const lenis = new Lenis({
-                duration: 1.75,
-                easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+                duration: 1.6, // Ditingkatkan durasinya agar perlambatan terasa lebih menyeret/berat
+                easing: (t) => t === 1 ? 1 : 1 - Math.pow(2, -9 * t),
+                wheelMultiplier: 0.6, // Dikurangi agar gesekan mousepool/trackpad terasa lebih kesat
                 direction: 'vertical',
                 gestureDirection: 'vertical',
-                smooth: true,
-                mouseMultiplier: 1,
+                smoothWheel: true,
                 smoothTouch: false,
                 touchMultiplier: 2,
                 infinite: false,
@@ -1295,8 +1353,8 @@
                 gsap.set(morphShape, { xPercent: -50, yPercent: -50, scale: 2 });
             });
 
-            // Reveal immediately after scatter to avoid "raw" look
-            gsap.to(".splash-intro", { opacity: 1, duration: 0.5, ease: "power2.out" });
+            // Logo content area fade in when animation starts
+            gsap.set(".logo-content-area", { opacity: 0 });
 
             const mosaicRadii = [
                 "60% 15% 40% 20% / 40% 10% 50% 30%",
@@ -1321,7 +1379,8 @@
                     canParallax = true;
                 }
             });
-            tl.to(".splash-grid", { scale: 1, opacity: 0.8, duration: 2.0, ease: "power2.out" }, 0.8);
+            tl.to(".logo-content-area", { opacity: 1, duration: 0.5, ease: "power2.out" }, 0);
+            tl.to(".splash-grid", { scale: 1, opacity: 0.5, duration: 2.0, ease: "power2.out" }, 0.8);
             tl.fromTo(".grid-glider", { y: "120vh", opacity: 0 }, { y: "-120vh", opacity: 1, duration: 4.5, stagger: 0.2, ease: "power1.inOut" }, 0.2);
 
             wrappers.forEach((wrapper, i) => {
@@ -1336,7 +1395,13 @@
                 tl.to(box, { borderRadius: "0px", duration: 0.3, ease: "power4.out" }, 1.2);
                 tl.to(inner, { backgroundPosition: wrapper.dataset.finalBgPos, ease: "expo.inOut", duration: 1.0 }, 0.5);
                 tl.to(morphShape, { scale: 0, borderRadius: "50%", ease: "expo.inOut", duration: 0.9 }, 0.6);
-                tl.to(solidTexts, { opacity: 1, duration: 0.4 }, 1.5);
+                tl.to(solidTexts, {
+                    opacity: 1,
+                    duration: 0.4,
+                    onStart: () => {
+                        solidTexts.forEach(t => t.classList.add('shimmer-active'));
+                    }
+                }, 1.5);
                 tl.to(box, { opacity: 0, duration: 0.1 }, 1.8);
             });
 
@@ -1390,7 +1455,7 @@
             // FIXED: Don't auto-play, wait for preloader
             tl.pause();
 
-            tl.call(setupLogoMorph, [], 4.8);
+            // (setupLogoMorph is called earlier in onComplete of splash-bg)
 
 
             // -------------------------------------------------------
@@ -1470,9 +1535,9 @@
                 document.body.appendChild(logoArea);
 
                 // ── CONFIGURATION & TARGETS ──────────────────
-                const headerLogoHeight = window.innerWidth <= 480 ? 18 : window.innerWidth <= 768 ? 22 : 28;
+                const headerLogoHeight = window.innerWidth <= 480 ? 14 : window.innerWidth <= 768 ? 16 : 20;
                 const targetScale = headerLogoHeight / wordRect.height;
-                const targetLeftPx = window.innerWidth <= 768 ? window.innerWidth * 0.06 : window.innerWidth * 0.04;
+                const targetLeftPx = window.innerWidth <= 768 ? window.innerWidth * 0.03 : window.innerWidth * 0.02;
 
                 const currentScroll = window.scrollY;
                 const initialWordCenterY = (wordRect.top + currentScroll) + (wordRect.height / 2);
@@ -1519,12 +1584,12 @@
                     const navLinks = headerNav.querySelectorAll('.nav-link');
                     navSTInstance = ScrollTrigger.create({
                         trigger: '.main-hero',
-                        start: '50% top',
+                        start: '30% top', // Dimulai lebih awal agar rampung bersamaan morph
                         onEnter: () => {
                             gsap.to(headerNav, { opacity: 1, pointerEvents: 'auto', duration: 0.3 });
                             gsap.fromTo(navLinks,
                                 { opacity: 0, y: -15, filter: 'blur(5px)' },
-                                { opacity: 0.7, y: 0, filter: 'blur(0px)', duration: 0.45, stagger: 0.08, ease: 'power2.out', overwrite: true }
+                                { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.45, stagger: 0.08, ease: 'power2.out', overwrite: true }
                             );
                         },
                         onLeaveBack: () => {
@@ -1556,6 +1621,15 @@
                         invalidateOnRefresh: true
                     }
                 });
+
+                // Toggle dark mode classes when passing hero
+                ScrollTrigger.create({
+                    trigger: '.main-hero',
+                    start: () => `bottom ${header.offsetHeight}px`,
+                    end: 'max',
+                    onEnter: () => document.body.classList.add('header-dark-mode'),
+                    onLeaveBack: () => document.body.classList.remove('header-dark-mode')
+                });
             }
 
 
@@ -1572,7 +1646,7 @@
                         scrub: true
                     },
                     y: "50%",       // Slower movement for fixed feel
-                    scale: 1.75,      // Cinematic zoom
+                    scale: 1,      // Cinematic zoom
                     ease: "none"
                 }
             );
@@ -1626,8 +1700,8 @@
                 tl.play();
             }
 
-            // Accelerated reveal logic (User requested instant mosaic)
-            setTimeout(startReveal, 1000);
+            // Accelerated reveal logic: start as soon as setup is done
+            startReveal();
 
             // HAMBURGER MENU TOGGLE
             // -------------------------------------------------------
@@ -1654,6 +1728,24 @@
                         mobileNavOverlay.classList.remove('active');
                         document.body.classList.remove('menu-open');
                         lenis.start();
+                    });
+                });
+            }
+
+            // -------------------------------------------------------
+            // CURSOR FOLLOWER
+            // -------------------------------------------------------
+            const cursorFollower = document.querySelector('.cursor-follower');
+            if (cursorFollower && window.innerWidth > 768) {
+                gsap.set(cursorFollower, { xPercent: -50, yPercent: -50 });
+
+                window.addEventListener('mousemove', (e) => {
+                    gsap.to(cursorFollower, {
+                        x: e.clientX + 40, // Offset ke kanan
+                        y: e.clientY + 40, // Offset ke bawah
+                        duration: 3.0, // Increased for a highly heavy/dragging delay
+                        ease: "expo.out", // Exponential ease makes it crawl slowly into place
+                        overwrite: "auto"
                     });
                 });
             }
