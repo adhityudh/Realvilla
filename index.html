@@ -48,7 +48,8 @@
             padding: 6rem 3rem 6rem 3rem;
             gap: 3rem;
             overflow: hidden;
-            opacity: 1; /* Preloader state awal terlihat langsung */
+            opacity: 1;
+            /* Preloader state awal terlihat langsung */
             pointer-events: auto;
             will-change: opacity;
         }
@@ -111,7 +112,8 @@
             pointer-events: auto;
             z-index: 10000;
             align-self: center;
-            opacity: 0; /* Tersembunyi selama fase preloader murni */
+            opacity: 0;
+            /* Tersembunyi selama fase preloader murni */
         }
 
         .word-container {
@@ -1201,7 +1203,7 @@
     <script src="https://unpkg.com/lenis@1.1.20/dist/lenis.min.js"></script>
 
     <script>
-        function initApp() {
+        window.addEventListener('load', () => {
 
             // -------------------------------------------------------
             // LENIS SMOOTH SCROLL
@@ -1748,20 +1750,6 @@
                         overwrite: "auto"
                     });
                 });
-            }
-        }
-
-        // Jalankan inisialisasi segera setelah DOM siap (tidak menunggu video/gambar berat selesai)
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', initApp);
-        } else {
-            initApp();
-        }
-
-        // Tetap lakukan refresh ScrollTrigger saat semua aset (seperti video/gambar) selesai dimuat penuh
-        window.addEventListener('load', () => {
-            if (typeof ScrollTrigger !== 'undefined') {
-                ScrollTrigger.refresh();
             }
         });
     </script>
