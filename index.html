@@ -71,6 +71,13 @@
         .main-hero {
             /* Fallback clip-path: top 25vh, right, bottom 40vh (because main-hero is 115vh tall), left */
             clip-path: inset(25vh calc(50vw - min(17.5vh, 40vw)) 40vh calc(50vw - min(17.5vh, 40vw)) round 24px);
+            opacity: 0;
+            animation: fadeInHero 1.5s ease-out 0.2s forwards;
+        }
+
+        @keyframes fadeInHero {
+            0% { opacity: 0; filter: blur(8px); }
+            100% { opacity: 1; filter: blur(0px); }
         }
 
         .splash-bg {
