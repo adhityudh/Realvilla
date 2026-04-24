@@ -8,7 +8,8 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Vidaloka&display=swap"
+        rel="stylesheet">
 
     <style>
         :root {
@@ -30,6 +31,19 @@
             font-family: 'Manrope', sans-serif;
             -webkit-font-smoothing: antialiased;
             overflow-y: hidden;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6,
+        .hero-title,
+        .btn-book,
+        .btn-book-mobile,
+        .cta-link {
+            font-family: 'Vidaloka', serif;
         }
 
         /* =============================================
@@ -59,6 +73,21 @@
             background: radial-gradient(circle at center, #ffffff 0%, #f8f8f8 100%);
             z-index: -2;
             will-change: transform;
+        }
+
+        .preloader-border-box {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 9998;
+            pointer-events: none;
+            opacity: 1;
+            /* managed by GSAP */
+        }
+
+        .preloader-border-box svg {
+            display: block;
         }
 
         .splash-grid {
@@ -205,6 +234,7 @@
             margin-bottom: 1rem;
             font-weight: 800;
             letter-spacing: -0.02em;
+            text-transform: uppercase;
             overflow: hidden;
         }
 
@@ -357,7 +387,7 @@
         .btn-book {
             background-color: #ffffff;
             color: #000000;
-            padding: 0.5rem 1.5rem;
+            padding: 0.75rem 1.5rem;
             border-radius: 50px;
             font-size: 0.75rem;
             font-weight: 800;
@@ -427,6 +457,11 @@
         }
 
         body.header-dark-mode .text-white-reveal {
+            background-color: #111111;
+        }
+
+        body.header-dark-mode .text-black,
+        body.header-dark-mode .text-gold {
             background-color: #111111;
         }
 
@@ -504,8 +539,9 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            opacity: 0;
+            opacity: 1;
             z-index: 20;
+            transition: background-color 0.4s ease;
             -webkit-mask-image: var(--letter-svg);
             mask-image: var(--letter-svg);
             -webkit-mask-size: 100% 100%;
@@ -517,15 +553,22 @@
         }
 
         .text-black {
+            /* Original Black Gradient for Shimmer
             background: linear-gradient(110deg, #111 45%, #333 50%, #111 55%);
             background-size: 200% 100%;
+            */
+            background-color: #ffffff;
         }
 
         .text-gold {
+            /* Original Gold Gradient for Shimmer
             background: linear-gradient(110deg, #bcaf8b 45%, #c9bc9a 50%, #bcaf8b 55%);
             background-size: 200% 100%;
+            */
+            background-color: #ffffff;
         }
 
+        /*
         .shimmer-active {
             animation: shimmer-classic 1.5s ease-in-out forwards;
         }
@@ -539,6 +582,7 @@
                 background-position: -50% 0;
             }
         }
+        */
 
         .text-white-reveal {
             background-color: #ffffff;
@@ -1031,119 +1075,128 @@
     <!-- SPLASH INTRO -->
     <div class="splash-intro">
         <div class="splash-bg"></div>
-        <div class="splash-grid"></div>
+
+        <!-- LUXURY PRELOADER BORDER -->
+        <div class="preloader-border-box">
+            <svg id="preloader-svg" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+                <rect id="preloader-rect" x="1" y="1" fill="none" stroke="#d4af37" stroke-width="2" rx="36"
+                    stroke-linecap="round" />
+            </svg>
+        </div>
+
+        <!-- <div class="splash-grid"></div> -->
 
         <div class="logo-content-area">
             <div class="word-container">
 
                 <!-- REAL (Gold) -->
                 <div class="letter-wrapper" style="--letter-svg: url('r.svg'); --letter-w: 1.06;">
-                    <div class="video-box" data-mosaic="m-shape-1">
+                    <!-- <div class="video-box" data-mosaic="m-shape-1">
                         <div class="video-inner">
                             <div class="mask-layer">
                                 <div class="morph-shape"></div>
                                 <div class="letter-font"></div>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
                     <div class="solid-text text-gold"></div>
                     <div class="solid-text text-white-reveal"></div>
                 </div>
                 <div class="letter-wrapper" style="--letter-svg: url('e.svg'); --letter-w: 0.88;">
-                    <div class="video-box" data-mosaic="m-shape-2">
+                    <!-- <div class="video-box" data-mosaic="m-shape-2">
                         <div class="video-inner">
                             <div class="mask-layer">
                                 <div class="morph-shape"></div>
                                 <div class="letter-font"></div>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
                     <div class="solid-text text-gold"></div>
                     <div class="solid-text text-white-reveal"></div>
                 </div>
                 <div class="letter-wrapper" style="--letter-svg: url('a.svg'); --letter-w: 1.05;">
-                    <div class="video-box" data-mosaic="m-shape-3">
+                    <!-- <div class="video-box" data-mosaic="m-shape-3">
                         <div class="video-inner">
                             <div class="mask-layer">
                                 <div class="morph-shape"></div>
                                 <div class="letter-font"></div>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
                     <div class="solid-text text-gold"></div>
                     <div class="solid-text text-white-reveal"></div>
                 </div>
                 <div class="letter-wrapper" style="--letter-svg: url('l.svg'); --letter-w: 0.90;">
-                    <div class="video-box" data-mosaic="m-shape-4">
+                    <!-- <div class="video-box" data-mosaic="m-shape-4">
                         <div class="video-inner">
                             <div class="mask-layer">
                                 <div class="morph-shape"></div>
                                 <div class="letter-font"></div>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
                     <div class="solid-text text-gold"></div>
                     <div class="solid-text text-white-reveal"></div>
                 </div>
 
                 <!-- VILLA (Black) -->
                 <div class="letter-wrapper" style="--letter-svg: url('v.svg'); --letter-w: 1.05;">
-                    <div class="video-box" data-mosaic="m-shape-5">
+                    <!-- <div class="video-box" data-mosaic="m-shape-5">
                         <div class="video-inner">
                             <div class="mask-layer">
                                 <div class="morph-shape"></div>
                                 <div class="letter-font"></div>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
                     <div class="solid-text text-black"></div>
                     <div class="solid-text text-white-reveal"></div>
                 </div>
                 <div class="letter-wrapper" style="--letter-svg: url('i.svg'); --letter-w: 0.51;">
-                    <div class="video-box" data-mosaic="m-shape-1">
+                    <!-- <div class="video-box" data-mosaic="m-shape-1">
                         <div class="video-inner">
                             <div class="mask-layer">
                                 <div class="morph-shape"></div>
                                 <div class="letter-font"></div>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
                     <div class="solid-text text-black"></div>
                     <div class="solid-text text-white-reveal"></div>
                 </div>
                 <div class="letter-wrapper" style="--letter-svg: url('l.svg'); --letter-w: 0.90;">
-                    <div class="video-box" data-mosaic="m-shape-2">
+                    <!-- <div class="video-box" data-mosaic="m-shape-2">
                         <div class="video-inner">
                             <div class="mask-layer">
                                 <div class="morph-shape"></div>
                                 <div class="letter-font"></div>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
                     <div class="solid-text text-black"></div>
                     <div class="solid-text text-white-reveal"></div>
                 </div>
                 <div class="letter-wrapper" style="--letter-svg: url('l.svg'); --letter-w: 0.90;">
-                    <div class="video-box" data-mosaic="m-shape-3">
+                    <!-- <div class="video-box" data-mosaic="m-shape-3">
                         <div class="video-inner">
                             <div class="mask-layer">
                                 <div class="morph-shape"></div>
                                 <div class="letter-font"></div>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
                     <div class="solid-text text-black"></div>
                     <div class="solid-text text-white-reveal"></div>
                 </div>
                 <div class="letter-wrapper" style="--letter-svg: url('a.svg'); --letter-w: 1.05;">
-                    <div class="video-box" data-mosaic="m-shape-4">
+                    <!-- <div class="video-box" data-mosaic="m-shape-4">
                         <div class="video-inner">
                             <div class="mask-layer">
                                 <div class="morph-shape"></div>
                                 <div class="letter-font"></div>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
                     <div class="solid-text text-black"></div>
                     <div class="solid-text text-white-reveal"></div>
                 </div>
@@ -1183,7 +1236,7 @@
 
     <!-- MAIN HERO -->
     <main class="main-hero">
-        <video class="hero-bg-video" src="/hero-video-3.mp4" muted loop playsinline></video>
+        <video class="hero-bg-video" src="/hero-video.mp4" muted loop playsinline></video>
         <div class="hero-overlay"></div>
     </main>
 
@@ -1249,7 +1302,7 @@
             }
 
             window.addEventListener('resize', debounce(() => {
-                generateAtomicGrid();
+                // generateAtomicGrid();
                 // Trigger full re-anchoring
                 if (isMorphed) {
                     setupLogoMorph();
@@ -1275,6 +1328,7 @@
 
             const wrappers = document.querySelectorAll('.splash-intro .letter-wrapper');
 
+            /*
             function generateAtomicGrid() {
                 const grid = document.querySelector('.splash-grid');
                 if (!grid) return;
@@ -1313,6 +1367,7 @@
             }
 
             generateAtomicGrid();
+            */
 
             const premiumLayout = [
                 { x: -0.35, y: -0.25, size: 0.20 }, { x: -0.30, y: 0.20, size: 0.15 },
@@ -1378,32 +1433,92 @@
                     canParallax = true;
                 }
             });
+            /*
+            // OLD CODE COMMENTED OUT:
             tl.to(".splash-grid", { scale: 1, opacity: 0.5, duration: 2.0, ease: "power2.out" }, 0.8);
             tl.fromTo(".grid-glider", { y: "120vh", opacity: 0 }, { y: "-120vh", opacity: 1, duration: 4.5, stagger: 0.2, ease: "power1.inOut" }, 0.2);
+            */
 
+            // NEW CODE: Main Hero (Video) expands from vertical rectangle over white background
+            gsap.set(".splash-bg", { opacity: 0 }); // Hide solid splash bg to reveal video and white body
+
+            const heroEl = document.querySelector('.main-hero');
+            const heroRect = heroEl.getBoundingClientRect();
+            const heroW = heroRect.width;
+            const heroH = heroRect.height;
+
+            const boxW = Math.min(window.innerHeight * 0.35, window.innerWidth * 0.8);
+            const boxH = window.innerHeight * 0.5;
+
+            const viewportCenterY = window.innerHeight / 2;
+            const heroLocalCenterY = viewportCenterY - heroRect.top;
+
+            const insetTop = heroLocalCenterY - (boxH / 2);
+            const insetBottom = heroH - (insetTop + boxH);
+            const insetLR = (heroW - boxW) / 2;
+
+            // Setup preloader border box size & gap
+            const preloaderBox = document.querySelector('.preloader-border-box');
+            const preloaderRect = document.querySelector('#preloader-rect');
+            if (preloaderBox && preloaderRect) {
+                const borderPadding = 18; // Gap distance (18px)
+                const borderW = boxW + (borderPadding * 2);
+                const borderH = boxH + (borderPadding * 2);
+
+                preloaderBox.style.width = `${borderW}px`;
+                preloaderBox.style.height = `${borderH}px`;
+
+                preloaderRect.setAttribute('width', borderW - 2);
+                preloaderRect.setAttribute('height', borderH - 2);
+
+                // Calculate perimeter for the drawing animation
+                const rx = 42; // inner radius (24px) + padding gap (18px)
+                const perimeter = 2 * (borderW - 2) + 2 * (borderH - 2) - 8 * rx + 2 * Math.PI * rx;
+                preloaderRect.setAttribute('stroke-dasharray', perimeter);
+                preloaderRect.setAttribute('stroke-dashoffset', perimeter);
+            }
+
+            tl.fromTo(".main-hero",
+                { clipPath: `inset(${insetTop}px ${insetLR}px ${insetBottom}px ${insetLR}px round 24px)` },
+                {
+                    clipPath: "inset(0px 0px 0px 0px round 0px)", duration: 2.2, ease: "expo.inOut",
+                    onStart: () => { const v = document.querySelector('.hero-bg-video'); if (v) v.play(); }
+                },
+                0
+            );
+
+            /* OLD CODE COMMENTED OUT: Mosaic Animation
             wrappers.forEach((wrapper, i) => {
                 const box = wrapper.querySelector('.video-box');
                 const inner = wrapper.querySelector('.video-inner');
                 const morphShape = wrapper.querySelector('.morph-shape');
                 const solidTexts = wrapper.querySelectorAll('.solid-text');
 
-                tl.to(inner, { filter: "blur(0px)", ease: "power2.out", duration: 0.7 }, 0);
-                tl.to(box, { width: wrapper.offsetWidth, height: wrapper.offsetHeight, x: 0, y: 0, ease: "expo.inOut", duration: 1.0 }, 0.5);
-                tl.to(box, { borderRadius: mosaicRadii[i], duration: 0.7, ease: "power1.inOut" }, 0.5);
-                tl.to(box, { borderRadius: "0px", duration: 0.3, ease: "power4.out" }, 1.2);
-                tl.to(inner, { backgroundPosition: wrapper.dataset.finalBgPos, ease: "expo.inOut", duration: 1.0 }, 0.5);
-                tl.to(morphShape, { scale: 0, borderRadius: "50%", ease: "expo.inOut", duration: 0.9 }, 0.6);
+                tl.to(inner, { filter: "blur(0px)", ease: "power2.out", duration: 0.7 }, 2.2);
+                tl.to(box, { width: wrapper.offsetWidth, height: wrapper.offsetHeight, x: 0, y: 0, ease: "expo.inOut", duration: 1.0 }, 2.7);
+                tl.to(box, { borderRadius: mosaicRadii[i], duration: 0.7, ease: "power1.inOut" }, 2.7);
+                tl.to(box, { borderRadius: "0px", duration: 0.3, ease: "power4.out" }, 3.4);
+                tl.to(inner, { backgroundPosition: wrapper.dataset.finalBgPos, ease: "expo.inOut", duration: 1.0 }, 2.7);
+                tl.to(morphShape, { scale: 0, borderRadius: "50%", ease: "expo.inOut", duration: 0.9 }, 2.8);
                 tl.to(solidTexts, {
                     opacity: 1,
                     duration: 0.4,
                     onStart: () => {
                         solidTexts.forEach(t => t.classList.add('shimmer-active'));
                     }
-                }, 1.5);
-                tl.to(box, { opacity: 0, duration: 0.1 }, 1.8);
+                }, 3.7);
+                tl.to(box, { opacity: 0, duration: 0.1 }, 4.0);
             });
+            */
 
-            tl.to([".splash-bg", ".splash-grid"], {
+            // NEW CODE: Elegant Logo Reveal Animation
+            tl.fromTo(".letter-wrapper",
+                { opacity: 0, y: 40, filter: "blur(10px)", scale: 0.95 },
+                { opacity: 1, y: 0, filter: "blur(0px)", scale: 1, duration: 1.0, stagger: 0.05, ease: "power3.out" },
+                0.8 // Delayed start so it doesn't overlap too much with the video box initial expansion
+            );
+
+            tl.to(".splash-bg", {
                 yPercent: -100, ease: "expo.inOut", duration: 1.5,
                 onComplete: () => {
                     document.body.style.overflowY = 'auto';
@@ -1429,24 +1544,24 @@
                 onStart: () => { const v = document.querySelector('.hero-bg-video'); if (v) v.play(); }
             }, 2.3);
 
-            tl.to(".hero-ctas .cta-link", { opacity: 1, y: 0, scale: 1, filter: "blur(0px)", duration: 1, stagger: 0.15, ease: "expo.out" }, 2.4);
+            tl.to(".hero-ctas .cta-link", { opacity: 1, y: 0, scale: 1, filter: "blur(0px)", duration: 0.8, stagger: 0.1, ease: "expo.out" }, 1.6);
 
             tl.fromTo(".hero-title .word-inner",
                 { yPercent: 100, rotate: 5, filter: "blur(10px)", opacity: 0 },
-                { yPercent: 0, rotate: 0, filter: "blur(0px)", opacity: 1, duration: 1.2, stagger: 0.1, ease: "expo.out" }
-                , 3.5);
+                { yPercent: 0, rotate: 0, filter: "blur(0px)", opacity: 1, duration: 1.0, stagger: 0.08, ease: "expo.out" }
+                , 1.8);
 
             tl.fromTo(".hero-subtitle .word-inner",
                 { yPercent: 50, opacity: 0, filter: "blur(5px)" },
-                { yPercent: 0, opacity: 0.8, filter: "blur(0px)", duration: 1, stagger: 0.03, ease: "power3.out" }
-                , 3.8);
+                { yPercent: 0, opacity: 0.8, filter: "blur(0px)", duration: 0.8, stagger: 0.03, ease: "power3.out" }
+                , 2.0);
 
             tl.to(".hero-scroll", {
-                opacity: 1, y: 0, filter: "blur(0px)", duration: 1, ease: "power3.out",
+                opacity: 1, y: 0, filter: "blur(0px)", duration: 0.8, ease: "power3.out",
                 onComplete: () => {
                     gsap.to(".hero-scroll", { y: 10, duration: 1.5, repeat: -1, yoyo: true, ease: "sine.inOut" });
                 }
-            }, 4.2);
+            }, 2.2);
 
             tl.set(".splash-intro", { pointerEvents: "none" });
 
@@ -1698,8 +1813,43 @@
                 tl.play();
             }
 
-            // Accelerated reveal logic (User requested instant mosaic)
-            setTimeout(startReveal, 1000);
+            // Real Load Luxury Preloader Animation
+            if (preloaderRect && preloaderBox) {
+                const perimeter = parseFloat(preloaderRect.getAttribute('stroke-dasharray'));
+                let slowTween;
+                
+                const finishPreloader = () => {
+                    if (slowTween) slowTween.kill();
+                    
+                    gsap.to(preloaderRect, {
+                        strokeDashoffset: 0,
+                        duration: 0.5, // fast completion once loaded
+                        ease: "power2.out",
+                        onComplete: () => {
+                            gsap.to(preloaderBox, { opacity: 0, duration: 0.8, ease: "power2.out" });
+                            startReveal();
+                        }
+                    });
+                };
+
+                if (document.readyState === 'complete') {
+                    finishPreloader();
+                } else {
+                    // Draw slowly up to 80% while waiting for real load
+                    slowTween = gsap.to(preloaderRect, {
+                        strokeDashoffset: perimeter * 0.2,
+                        duration: 10,
+                        ease: "power1.out"
+                    });
+                    window.addEventListener('load', finishPreloader);
+                }
+            } else {
+                if (document.readyState === 'complete') {
+                    startReveal();
+                } else {
+                    window.addEventListener('load', startReveal);
+                }
+            }
 
             // HAMBURGER MENU TOGGLE
             // -------------------------------------------------------
