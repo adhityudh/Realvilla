@@ -62,9 +62,13 @@
             padding: 6rem 3rem 6rem 3rem;
             gap: 3rem;
             overflow: hidden;
-            opacity: 0;
-            pointer-events: none;
+            opacity: 1; /* Hide main-hero behind splash-bg initially */
+            pointer-events: auto;
             will-change: opacity;
+        }
+
+        .main-hero {
+            opacity: 0; /* Ensures no full-screen flash before JS clips it */
         }
 
         .splash-bg {
@@ -1407,9 +1411,6 @@
                 gsap.set(morphShape, { xPercent: -50, yPercent: -50, scale: 2 });
             });
 
-            // Reveal immediately after scatter to avoid "raw" look
-            gsap.to(".splash-intro", { opacity: 1, duration: 0.5, ease: "power2.out" });
-
             const mosaicRadii = [
                 "60% 15% 40% 20% / 40% 10% 50% 30%",
                 "10% 70% 20% 60% / 20% 40% 15% 70%",
@@ -1441,6 +1442,7 @@
 
             // NEW CODE: Main Hero (Video) expands from vertical rectangle over white background
             gsap.set(".splash-bg", { opacity: 0 }); // Hide solid splash bg to reveal video and white body
+            gsap.set(".main-hero", { opacity: 1 }); // Reveal clipped main-hero instantly when JS is ready
 
             const heroEl = document.querySelector('.main-hero');
             const heroRect = heroEl.getBoundingClientRect();
