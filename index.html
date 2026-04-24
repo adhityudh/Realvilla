@@ -84,10 +84,21 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
+            width: calc(min(35vh, 80vw) + 36px);
+            height: calc(50vh + 36px);
             z-index: 9998;
             pointer-events: none;
             opacity: 1;
-            /* managed by GSAP */
+        }
+
+        #preloader-rect {
+            /* Pure CSS animation guarantees it runs instantly before JS loads */
+            animation: preloaderDraw 10s cubic-bezier(0.1, 0.7, 0.1, 1) forwards;
+        }
+
+        @keyframes preloaderDraw {
+            0% { stroke-dashoffset: 100; }
+            100% { stroke-dashoffset: 10; } /* Draws up to 90% while waiting for real load */
         }
 
         .preloader-border-box svg {
@@ -1083,8 +1094,7 @@
         <!-- LUXURY PRELOADER BORDER -->
         <div class="preloader-border-box">
             <svg id="preloader-svg" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-                <rect id="preloader-rect" x="1" y="1" fill="none" stroke="#d4af37" stroke-width="2" rx="36"
-                    stroke-linecap="round" />
+                <rect id="preloader-rect" x="1" y="1" width="calc(100% - 2px)" height="calc(100% - 2px)" fill="none" stroke="#d4af37" stroke-width="2" rx="42" stroke-linecap="round" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100" />
             </svg>
         </div>
 
@@ -1459,26 +1469,9 @@
             const insetBottom = heroH - (insetTop + boxH);
             const insetLR = (heroW - boxW) / 2;
 
-            // Setup preloader border box size & gap
             const preloaderBox = document.querySelector('.preloader-border-box');
             const preloaderRect = document.querySelector('#preloader-rect');
-            if (preloaderBox && preloaderRect) {
-                const borderPadding = 18; // Gap distance (18px)
-                const borderW = boxW + (borderPadding * 2);
-                const borderH = boxH + (borderPadding * 2);
-
-                preloaderBox.style.width = `${borderW}px`;
-                preloaderBox.style.height = `${borderH}px`;
-
-                preloaderRect.setAttribute('width', borderW - 2);
-                preloaderRect.setAttribute('height', borderH - 2);
-
-                // Calculate perimeter for the drawing animation
-                const rx = 42; // inner radius (24px) + padding gap (18px)
-                const perimeter = 2 * (borderW - 2) + 2 * (borderH - 2) - 8 * rx + 2 * Math.PI * rx;
-                preloaderRect.setAttribute('stroke-dasharray', perimeter);
-                preloaderRect.setAttribute('stroke-dashoffset', perimeter);
-            }
+            // Dimension setup and initial animation is now handled natively by CSS!
 
             tl.fromTo(".main-hero",
                 { clipPath: `inset(${insetTop}px ${insetLR}px ${insetBottom}px ${insetLR}px round 24px)` },
@@ -1817,12 +1810,12 @@
 
             // Real Load Luxury Preloader Animation
             if (preloaderRect && preloaderBox) {
-                const perimeter = parseFloat(preloaderRect.getAttribute('stroke-dasharray'));
-                let slowTween;
-                
                 const finishPreloader = () => {
-                    if (slowTween) slowTween.kill();
-                    
+                    // Disable CSS animation so GSAP can take over from current position
+                    const currentOffset = window.getComputedStyle(preloaderRect).strokeDashoffset;
+                    preloaderRect.style.animation = 'none';
+                    gsap.set(preloaderRect, { strokeDashoffset: currentOffset });
+
                     gsap.to(preloaderRect, {
                         strokeDashoffset: 0,
                         duration: 0.5, // fast completion once loaded
@@ -1837,12 +1830,7 @@
                 if (document.readyState === 'complete') {
                     finishPreloader();
                 } else {
-                    // Draw slowly up to 80% while waiting for real load
-                    slowTween = gsap.to(preloaderRect, {
-                        strokeDashoffset: perimeter * 0.2,
-                        duration: 10,
-                        ease: "power1.out"
-                    });
+                    // CSS animation handles the slow draw while waiting
                     window.addEventListener('load', finishPreloader);
                 }
             } else {
