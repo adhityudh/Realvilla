@@ -1265,7 +1265,9 @@
 
     <!-- MAIN HERO -->
     <main class="main-hero">
-        <video class="hero-bg-video" src="/hero-video.mp4" muted loop playsinline></video>
+        <!-- Force browser to load the very first frame and ignore cached playback state -->
+        <video class="hero-bg-video" src="/hero-video.mp4#t=0.001" muted loop playsinline></video>
+        <script>document.querySelector('.hero-bg-video').currentTime = 0;</script>
         <div class="hero-overlay"></div>
     </main>
 
@@ -1491,7 +1493,7 @@
                 { clipPath: `inset(${insetTop}px ${insetLR}px ${insetBottom}px ${insetLR}px round 24px)` },
                 {
                     clipPath: "inset(0px 0px 0px 0px round 0px)", duration: 2.2, ease: "expo.inOut",
-                    onStart: () => { const v = document.querySelector('.hero-bg-video'); if (v) v.play(); }
+                    onStart: () => { const v = document.querySelector('.hero-bg-video'); if (v) { v.currentTime = 0; v.play(); } }
                 },
                 0
             );
@@ -1550,7 +1552,7 @@
 
             tl.to(".hero-bg-video", {
                 scale: 1, ease: "power3.out", duration: 2,
-                onStart: () => { const v = document.querySelector('.hero-bg-video'); if (v) v.play(); }
+                onStart: () => { const v = document.querySelector('.hero-bg-video'); if (v) { v.currentTime = 0; v.play(); } }
             }, 2.3);
 
             tl.to(".hero-ctas .cta-link", { opacity: 1, y: 0, scale: 1, filter: "blur(0px)", duration: 0.8, stagger: 0.1, ease: "expo.out" }, 1.6);
