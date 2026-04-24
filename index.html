@@ -62,7 +62,8 @@
             padding: 6rem 3rem 6rem 3rem;
             gap: 3rem;
             overflow: hidden;
-            opacity: 1; /* Hide main-hero behind splash-bg initially */
+            opacity: 1;
+            /* Hide main-hero behind splash-bg initially */
             pointer-events: auto;
             will-change: opacity;
         }
@@ -77,7 +78,8 @@
             inset: 0;
             background: radial-gradient(circle at center, #ffffff 0%, #f8f8f8 100%);
             z-index: -2;
-            opacity: 0; /* Hidden so the video rectangle is visible during preloading */
+            opacity: 0;
+            /* Hidden so the video rectangle is visible during preloading */
             will-change: transform;
         }
 
@@ -99,8 +101,15 @@
         }
 
         @keyframes preloaderDraw {
-            0% { stroke-dashoffset: 100; }
-            100% { stroke-dashoffset: 10; } /* Draws up to 90% while waiting for real load */
+            0% {
+                stroke-dashoffset: 100;
+            }
+
+            100% {
+                stroke-dashoffset: 10;
+            }
+
+            /* Draws up to 90% while waiting for real load */
         }
 
         .preloader-border-box svg {
@@ -489,7 +498,8 @@
             position: relative;
             height: 7vw;
             width: calc(7vw * var(--letter-w, 0.75));
-            opacity: 0; /* Hidden initially so it only appears when GSAP reveals it */
+            opacity: 0;
+            /* Hidden initially so it only appears when GSAP reveals it */
         }
 
         .video-box {
@@ -1097,7 +1107,9 @@
         <!-- LUXURY PRELOADER BORDER -->
         <div class="preloader-border-box">
             <svg id="preloader-svg" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-                <rect id="preloader-rect" x="1" y="1" width="calc(100% - 2px)" height="calc(100% - 2px)" fill="none" stroke="#d4af37" stroke-width="2" rx="42" stroke-linecap="round" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100" />
+                <rect id="preloader-rect" x="1" y="1" width="calc(100% - 2px)" height="calc(100% - 2px)" fill="none"
+                    stroke="#d4af37" stroke-width="2" rx="36" stroke-linecap="round" pathLength="100"
+                    stroke-dasharray="100" stroke-dashoffset="100" />
             </svg>
         </div>
 
