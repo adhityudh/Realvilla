@@ -54,7 +54,7 @@
             top: 0;
             left: 0;
             width: 100%;
-            height: 100vh;
+            height: 100dvh;
             z-index: 9999;
             display: flex;
             align-items: flex-end;
@@ -69,8 +69,8 @@
         }
 
         .main-hero {
-            /* Fallback clip-path: top 25vh, right, bottom 40vh (because main-hero is 115vh tall), left */
-            clip-path: inset(25vh calc(50vw - min(17.5vh, 40vw)) 40vh calc(50vw - min(17.5vh, 40vw)) round 24px);
+            /* Fallback clip-path: top 25dvh, right, bottom 40dvh (because main-hero is 115dvh tall), left */
+            clip-path: inset(25dvh calc(50vw - min(17.5dvh, 40vw)) 40dvh calc(50vw - min(17.5dvh, 40vw)) round 24px);
         }
 
         .splash-bg {
@@ -88,8 +88,8 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: calc(min(35vh, 80vw) + 36px);
-            height: calc(50vh + 36px);
+            width: calc(min(35dvh, 80vw) + 36px);
+            height: calc(50dvh + 36px);
             z-index: 9998;
             pointer-events: none;
             opacity: 1;
@@ -148,7 +148,7 @@
         .grid-glider {
             position: absolute;
             width: 6px;
-            height: 40vh;
+            height: 40dvh;
             background: linear-gradient(to top, transparent, #f3e2b3 50%, transparent);
             left: 50%;
             transform: translateX(-50%);
@@ -628,7 +628,7 @@
         .main-hero {
             position: relative;
             width: 100vw;
-            height: 115vh;
+            height: 115dvh;
             overflow: hidden;
             perspective: 1000px;
         }
@@ -785,6 +785,10 @@
         .mobile-nav-overlay.active .btn-book-mobile {
             opacity: 1;
             transform: translateY(0);
+        }
+
+        .mobile-pill-nav {
+            display: none;
         }
 
         /* =============================================
@@ -956,6 +960,60 @@
             .hamburger {
                 display: flex;
             }
+
+            .mobile-pill-nav {
+                display: flex;
+                position: fixed;
+                top: 52px;
+                left: 50%;
+                transform: translateX(-50%) translateY(-20px);
+                width: calc(100% - 1.5rem);
+                background-color: #f0f0f0; /* Muted grey background */
+                border-radius: 50px;
+                padding: 0.85rem 0;
+                justify-content: space-evenly;
+                align-items: center;
+                z-index: 96000;
+                opacity: 0;
+                pointer-events: none;
+                transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            }
+
+            body.header-dark-mode .mobile-pill-nav {
+                opacity: 1;
+                pointer-events: auto;
+                transform: translateX(-50%) translateY(0);
+            }
+
+            body.menu-open .mobile-pill-nav {
+                opacity: 0 !important;
+                pointer-events: none !important;
+                transform: translateX(-50%) translateY(-20px) !important;
+            }
+
+            .pill-link {
+                color: var(--text-black);
+                text-decoration: none;
+                font-family: 'Vidaloka', serif;
+                font-size: 0.85rem;
+                text-transform: uppercase;
+                letter-spacing: 0.15em;
+            }
+            
+            .pill-link:active {
+                color: var(--text-gold);
+            }
+
+            .preloader-border-box {
+                width: calc(65vw + 24px);
+                height: calc(40dvh + 24px);
+            }
+
+            .main-hero {
+                /* clip-path inset top = (100 - 40)/2 = 30dvh. Bottom = 115 - 30 - 40 = 45dvh. */
+                /* inset LR = (100vw - 65vw)/2 = 17.5vw */
+                clip-path: inset(30dvh 17.5vw 45dvh 17.5vw round 16px);
+            }
         }
 
         /* =============================================
@@ -1094,6 +1152,13 @@
             </button>
         </div>
     </header>
+
+    <!-- MOBILE PILL NAV -->
+    <div class="mobile-pill-nav">
+        <a href="#" class="pill-link">Buy</a>
+        <a href="#" class="pill-link">Sell</a>
+        <a href="#" class="pill-link">Invest</a>
+    </div>
 
     <!-- MOBILE NAV OVERLAY -->
     <div class="mobile-nav-overlay" id="mobileNavOverlay">
@@ -1489,8 +1554,9 @@
             const heroW = heroRect.width;
             const heroH = heroRect.height;
 
-            const boxW = Math.min(window.innerHeight * 0.35, window.innerWidth * 0.8);
-            const boxH = window.innerHeight * 0.5;
+            const isMobile = window.innerWidth <= 768;
+            const boxW = isMobile ? window.innerWidth * 0.65 : Math.min(window.innerHeight * 0.35, window.innerWidth * 0.8);
+            const boxH = isMobile ? window.innerHeight * 0.4 : window.innerHeight * 0.5;
 
             const viewportCenterY = window.innerHeight / 2;
             const heroLocalCenterY = viewportCenterY - heroRect.top;
@@ -1635,6 +1701,11 @@
                 const wordContainer = logoArea.querySelector('.word-container');
                 const heroCtas = splashIntro.querySelector('.hero-ctas');
                 heroDesc = splashIntro.querySelector('.hero-description-area');
+
+                // Clear props mutated by previous morphTlInstance, preventing lock-ups on resize
+                if (wordContainer) gsap.set(wordContainer, { clearProps: "transform,x,y,scale,transformOrigin" });
+                if (heroCtas) gsap.set(heroCtas, { clearProps: "opacity,y,transform" });
+                if (heroDesc) gsap.set(heroDesc, { clearProps: "opacity,transform" });
 
                 // ── SNAPSHOT COORDINATES (Clean State) ──────────────────────
                 const logoAreaRect = logoArea.getBoundingClientRect();
