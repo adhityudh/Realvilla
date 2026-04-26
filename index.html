@@ -979,8 +979,7 @@
                 /* Muted grey background */
                 border-radius: 50px;
                 padding: 0.85rem 0;
-                justify-content: center;
-                gap: 1.25rem;
+                justify-content: space-evenly;
                 align-items: center;
                 z-index: 96000;
                 opacity: 0;
@@ -1010,15 +1009,9 @@
                 display: flex;
                 align-items: center;
                 gap: 0.4rem;
-                position: relative;
             }
 
-            .pill-link:not(:last-child)::after {
-                content: "";
-                position: absolute;
-                right: -0.75rem;
-                top: 50%;
-                transform: translateY(-50%);
+            .pill-sep {
                 width: 1px;
                 height: 12px;
                 background-color: rgba(0, 0, 0, 0.1);
@@ -1040,7 +1033,7 @@
             }
 
             .main-hero {
-            will-change: clip-path;
+                will-change: clip-path;
                 /* Updated for 105svh height: Top 30svh. Bottom = 105 - 30 - 40 = 35svh. */
                 clip-path: inset(30svh 17.5vw 35svh 17.5vw round 24px);
             }
@@ -1177,10 +1170,12 @@
             <img src="/arrows_more_down.svg" alt="" class="pill-icon">
             <span>Buy</span>
         </a>
+        <div class="pill-sep"></div>
         <a href="#" class="pill-link">
             <img src="/arrows_more_up.svg" alt="" class="pill-icon">
             <span>Sell</span>
         </a>
+        <div class="pill-sep"></div>
         <a href="#" class="pill-link">
             <img src="/attach_money.svg" alt="" class="pill-icon">
             <span>Invest</span>
@@ -1204,9 +1199,8 @@
         <!-- LUXURY PRELOADER BORDER -->
         <div class="preloader-border-box">
             <svg id="preloader-svg" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-                <rect id="preloader-rect" x="1" y="1" fill="none"
-                    stroke="#d4af37" stroke-width="2" rx="36" stroke-linecap="round" pathLength="100"
-                    stroke-dasharray="100" stroke-dashoffset="100" />
+                <rect id="preloader-rect" x="1" y="1" fill="none" stroke="#d4af37" stroke-width="2" rx="36"
+                    stroke-linecap="round" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100" />
             </svg>
         </div>
 
@@ -1363,8 +1357,7 @@
 
     <!-- MAIN HERO -->
     <main class="main-hero">
-        <video class="hero-bg-video" src="/hero-video.mp4"  preload="auto" muted
-            playsinline></video>
+        <video class="hero-bg-video" src="/hero-video.mp4" preload="auto" muted playsinline></video>
         <script>
             const v = document.querySelector(".hero-bg-video");
             const revealMedia = () => {
@@ -1405,14 +1398,14 @@
             // -------------------------------------------------------
             const isMobile = window.innerWidth <= 768;
             const lenis = new Lenis({
-                duration: isMobile ? 0.8 : 1.2, 
-                easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), 
-                wheelMultiplier: 0.6, 
+                duration: isMobile ? 0.8 : 1.2,
+                easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+                wheelMultiplier: 0.6,
                 direction: 'vertical',
                 gestureDirection: 'vertical',
                 smoothWheel: true,
                 smoothTouch: true,
-                touchMultiplier: isMobile ? 1.8 : 2, 
+                touchMultiplier: isMobile ? 1.8 : 2,
                 infinite: false,
             });
 
@@ -1721,7 +1714,7 @@
                 // Force return to original DOM flow for clean measurement
                 if (existingBreakout && existingAnchor) {
                     existingAnchor.parentNode.insertBefore(existingBreakout, existingAnchor);
-                    existingBreakout.id = ''; 
+                    existingBreakout.id = '';
                     existingAnchor.remove();
                 }
 
@@ -1791,11 +1784,11 @@
                     .fromTo(logoArea, { y: 0 }, { y: exitY, duration: 1, ease: 'none' }, 0)
                     .fromTo(heroCtas, { opacity: 1, y: 0 }, { opacity: 0, y: "250%", duration: 0.25, ease: 'none' }, 0)
                     .fromTo(heroDesc, { opacity: 1 }, { opacity: 0, duration: 0.5, ease: 'none' }, 0)
-                    .fromTo(wordContainer, 
+                    .fromTo(wordContainer,
                         { x: 0, y: 0, scale: 1 },
-                        { x: toX, y: wordLocalY, scale: targetScale, transformOrigin: 'left center', duration: 1, ease: 'none', force3D: true }, 
+                        { x: toX, y: wordLocalY, scale: targetScale, transformOrigin: 'left center', duration: 1, ease: 'none', force3D: true },
                         0);
-                
+
                 ScrollTrigger.refresh();
 
                 if (window.innerWidth > 1024) {
