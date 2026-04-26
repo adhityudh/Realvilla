@@ -1762,6 +1762,10 @@
                 const targetScale = headerLogoHeight / wordRect.height;
                 const targetLeftPx = window.innerWidth <= 768 ? window.innerWidth * 0.03 : window.innerWidth * 0.02;
 
+                isMorphed = true;
+                gsap.set(heroEl, { overflow: 'hidden' });
+                gsap.set(splashIntro, { overflow: 'visible' });
+
                 // Since we measured at scroll 0, we can calculate target center relative to screen
                 const initialWordCenterY = wordRect.top + (wordRect.height / 2);
                 const targetHeaderCenterY = headerRect.top + (headerRect.height / 2);
@@ -1770,6 +1774,9 @@
                 const exitY = -scrollEnd;
                 const wordLocalY = (targetHeaderCenterY - initialWordCenterY) + scrollEnd;
                 const toX = targetLeftPx - wordRect.left;
+
+                // Ensure hero remains expanded after intro
+                gsap.set(heroEl, { clipPath: 'inset(0px 0px 0px 0px round 0px)' });
 
                 morphTlInstance = gsap.timeline({ paused: true });
 
