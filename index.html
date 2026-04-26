@@ -54,7 +54,7 @@
             top: 0;
             left: 0;
             width: 100%;
-            height: 100vh;
+            height: 100svh;
             z-index: 9999;
             display: flex;
             align-items: flex-end;
@@ -70,9 +70,9 @@
 
         .main-hero {
             will-change: clip-path;
-            /* Updated for 105vh height: (105 - 50)/2 centered around 50vh viewport center */
-            /* Top inset: 50vh - 25vh = 25vh. Bottom inset: 105vh - (25vh + 50vh) = 30vh */
-            clip-path: inset(25vh calc(50vw - min(17.5vh, 40vw)) 30vh calc(50vw - min(17.5vh, 40vw)) round 24px);
+            /* Updated for 105svh height: (105 - 50)/2 centered around 50svh viewport center */
+            /* Top inset: 50svh - 25svh = 25svh. Bottom inset: 105svh - (25svh + 50svh) = 30svh */
+            clip-path: inset(25svh calc(50vw - min(17.5svh, 40vw)) 30svh calc(50vw - min(17.5svh, 40vw)) round 24px);
         }
 
         .splash-bg {
@@ -90,8 +90,8 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: calc(min(35vh, 80vw) + 36px);
-            height: calc(50vh + 36px);
+            width: calc(min(35svh, 80vw) + 36px);
+            height: calc(50svh + 36px);
             z-index: 9998;
             pointer-events: none;
             opacity: 1;
@@ -152,7 +152,7 @@
         .grid-glider {
             position: absolute;
             width: 6px;
-            height: 40vh;
+            height: 40svh;
             background: linear-gradient(to top, transparent, #f3e2b3 50%, transparent);
             left: 50%;
             transform: translateX(-50%);
@@ -528,7 +528,7 @@
             inset: 0;
             overflow: hidden;
             background-image: url('/img-hero-001.jpg');
-            background-size: 100vw 100vh;
+            background-size: 100vw 100svh;
             background-repeat: no-repeat;
         }
 
@@ -634,7 +634,7 @@
             will-change: clip-path;
             position: relative;
             width: 100vw;
-            height: 105vh;
+            height: 105svh;
             overflow: hidden;
             perspective: 1000px;
         }
@@ -1023,13 +1023,13 @@
 
             .preloader-border-box {
                 width: calc(65vw + 24px);
-                height: calc(40vh + 24px);
+                height: calc(40svh + 24px);
             }
 
             .main-hero {
             will-change: clip-path;
-                /* Updated for 105vh height: Top 30vh. Bottom = 105 - 30 - 40 = 35vh. */
-                clip-path: inset(30vh 17.5vw 35vh 17.5vw round 24px);
+                /* Updated for 105svh height: Top 30svh. Bottom = 105 - 30 - 40 = 35svh. */
+                clip-path: inset(30svh 17.5vw 35svh 17.5vw round 24px);
             }
         }
 
@@ -1370,11 +1370,11 @@
         <div class="hero-overlay"></div>
     </main>
 
-    <section style="height: 100vh; background: #fff; display: flex; align-items:center; justify-content:center;">
+    <section style="height: 100svh; background: #fff; display: flex; align-items:center; justify-content:center;">
         <h2 style="font-weight: 300;">Rest of the website...</h2>
     </section>
 
-    <section style="height: 100vh; background: #fff; display: flex; align-items:center; justify-content:center;">
+    <section style="height: 100svh; background: #fff; display: flex; align-items:center; justify-content:center;">
         <h2 style="font-weight: 300;">Rest of the website...</h2>
     </section>
 
@@ -1567,7 +1567,7 @@
             /*
             // OLD CODE COMMENTED OUT:
             tl.to(".splash-grid", { scale: 1, opacity: 0.5, duration: 2.0, ease: "power2.out" }, 0.8);
-            tl.fromTo(".grid-glider", { y: "120vh", opacity: 0 }, { y: "-120vh", opacity: 1, duration: 4.5, stagger: 0.2, ease: "power1.inOut" }, 0.2);
+            tl.fromTo(".grid-glider", { y: "120svh", opacity: 0 }, { y: "-120svh", opacity: 1, duration: 4.5, stagger: 0.2, ease: "power1.inOut" }, 0.2);
             */
 
             // Main Hero expands from vertical rectangle over white background
