@@ -54,7 +54,7 @@
             top: 0;
             left: 0;
             width: 100%;
-            height: 100dvh;
+            height: 100vh;
             z-index: 9999;
             display: flex;
             align-items: flex-end;
@@ -69,9 +69,10 @@
         }
 
         .main-hero {
-            /* Updated for 105dvh height: (105 - 50)/2 centered around 50vh viewport center */
-            /* Top inset: 50vh - 25dvh = 25dvh. Bottom inset: 105dvh - (25dvh + 50dvh) = 30dvh */
-            clip-path: inset(25dvh calc(50vw - min(17.5dvh, 40vw)) 30dvh calc(50vw - min(17.5dvh, 40vw)) round 24px);
+            will-change: clip-path;
+            /* Updated for 105vh height: (105 - 50)/2 centered around 50vh viewport center */
+            /* Top inset: 50vh - 25vh = 25vh. Bottom inset: 105vh - (25vh + 50vh) = 30vh */
+            clip-path: inset(25vh calc(50vw - min(17.5vh, 40vw)) 30vh calc(50vw - min(17.5vh, 40vw)) round 24px);
         }
 
         .splash-bg {
@@ -89,8 +90,8 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: calc(min(35dvh, 80vw) + 36px);
-            height: calc(50dvh + 36px);
+            width: calc(min(35vh, 80vw) + 36px);
+            height: calc(50vh + 36px);
             z-index: 9998;
             pointer-events: none;
             opacity: 1;
@@ -151,7 +152,7 @@
         .grid-glider {
             position: absolute;
             width: 6px;
-            height: 40dvh;
+            height: 40vh;
             background: linear-gradient(to top, transparent, #f3e2b3 50%, transparent);
             left: 50%;
             transform: translateX(-50%);
@@ -630,9 +631,10 @@
            MAIN HERO
         ============================================= */
         .main-hero {
+            will-change: clip-path;
             position: relative;
             width: 100vw;
-            height: 105dvh;
+            height: 105vh;
             overflow: hidden;
             perspective: 1000px;
         }
@@ -1021,12 +1023,13 @@
 
             .preloader-border-box {
                 width: calc(65vw + 24px);
-                height: calc(40dvh + 24px);
+                height: calc(40vh + 24px);
             }
 
             .main-hero {
-                /* Updated for 105dvh height: Top 30dvh. Bottom = 105 - 30 - 40 = 35dvh. */
-                clip-path: inset(30dvh 17.5vw 35dvh 17.5vw round 24px);
+            will-change: clip-path;
+                /* Updated for 105vh height: Top 30vh. Bottom = 105 - 30 - 40 = 35vh. */
+                clip-path: inset(30vh 17.5vw 35vh 17.5vw round 24px);
             }
         }
 
@@ -1395,7 +1398,7 @@
                 direction: 'vertical',
                 gestureDirection: 'vertical',
                 smoothWheel: true,
-                smoothTouch: true,
+                smoothTouch: false,
                 touchMultiplier: isMobile ? 1.5 : 2, // Less aggressive on mobile to avoid overshoot lag
                 infinite: false,
             });
