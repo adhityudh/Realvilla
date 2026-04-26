@@ -807,13 +807,15 @@
                 flex-direction: column;
                 align-items: flex-start;
                 justify-content: flex-end;
-                gap: 3.5rem;
+                gap: 2rem;
             }
 
             .logo-content-area {
                 gap: 2.5rem;
-                align-self: flex-start;
+                align-self: center;
                 width: 100%;
+                margin-top: auto;
+                margin-bottom: auto;
             }
 
             .letter-wrapper {
@@ -880,13 +882,15 @@
                 flex-direction: column;
                 align-items: flex-start;
                 justify-content: flex-end;
-                gap: 3.5rem;
+                gap: 2rem;
             }
 
             .logo-content-area {
                 gap: 2.5rem;
                 width: 100%;
-                align-self: flex-start;
+                align-self: center;
+                margin-top: auto;
+                margin-bottom: auto;
             }
 
             .word-container {
@@ -1055,14 +1059,6 @@
             .letter-wrapper {
                 height: 9.2vw;
                 width: calc(9.2vw * var(--letter-w, 0.75));
-            }
-
-            .hero-title {
-                font-size: 1.25rem;
-            }
-
-            .hero-subtitle {
-                font-size: 0.85rem;
             }
 
             .header {
@@ -1360,6 +1356,9 @@
         <video class="hero-bg-video" src="/hero-video.mp4" preload="auto" muted playsinline></video>
         <script>
             const v = document.querySelector(".hero-bg-video");
+            if (window.innerWidth <= 768) {
+                v.src = "/hero-mobile-video.mp4";
+            }
             const revealMedia = () => {
                 v.style.opacity = "1";
                 v.style.filter = "blur(0px)";
@@ -1722,8 +1721,8 @@
                 if (!logoArea) return;
 
                 // Targeted clearProps to avoid flickering end-of-intro states
-                gsap.set([logoArea, heroEl, splashIntro], { 
-                    clearProps: "position,left,top,width,margin,padding,zIndex,pointerEvents,willChange" 
+                gsap.set([logoArea, heroEl, splashIntro], {
+                    clearProps: "position,left,top,width,margin,padding,zIndex,pointerEvents,willChange"
                 });
                 const wordContainer = logoArea.querySelector('.word-container');
                 const heroCtas = splashIntro.querySelector('.hero-ctas');
