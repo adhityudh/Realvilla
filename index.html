@@ -8,7 +8,7 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Vidaloka&display=swap"
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Manrope:wght@400;500;600;700&display=swap"
         rel="stylesheet">
 
     <style>
@@ -43,7 +43,9 @@
         .btn-book,
         .btn-book-mobile,
         .cta-link {
-            font-family: 'Vidaloka', serif;
+            font-family: 'Cormorant Garamond', serif;
+            font-weight: 700;
+            letter-spacing: 0.06em;
         }
 
         /* =============================================
@@ -118,6 +120,25 @@
 
         .preloader-border-box svg {
             display: block;
+        }
+
+        /* Running shine effect */
+        #preloader-shine {
+            width: calc(100% - 2px);
+            height: calc(100% - 2px);
+            stroke-dasharray: 8 92;
+            stroke-dashoffset: 100;
+            animation: preloaderShine 1.5s linear infinite;
+            opacity: 0.9;
+        }
+
+        @keyframes preloaderShine {
+            0% {
+                stroke-dashoffset: 100;
+            }
+            100% {
+                stroke-dashoffset: 0;
+            }
         }
 
         .splash-grid {
@@ -195,7 +216,7 @@
             color: #ffffff;
             font-size: 1.25rem;
             font-weight: 700;
-            letter-spacing: 0.15em;
+            letter-spacing: 0.2em;
             text-transform: uppercase;
             padding-bottom: 6px;
             border-bottom: 2px solid rgba(255, 255, 255, 0.2);
@@ -263,7 +284,7 @@
             line-height: 1.2;
             margin-bottom: 1rem;
             font-weight: 800;
-            letter-spacing: 0.05em;
+            letter-spacing: 0.08em;
             text-transform: uppercase;
             overflow: hidden;
             opacity: 0;
@@ -383,10 +404,10 @@
         }
 
         .nav-link {
-            font-family: 'Vidaloka', serif;
+            font-family: 'Cormorant Garamond', serif;
             font-size: 0.9rem;
-            font-weight: 400;
-            letter-spacing: 0.2em;
+            font-weight: 600;
+            letter-spacing: 0.25em;
             text-transform: uppercase;
             color: #ffffff;
             text-decoration: none;
@@ -424,7 +445,7 @@
             font-size: 0.75rem;
             font-weight: 800;
             text-transform: uppercase;
-            letter-spacing: 0.15em;
+            letter-spacing: 0.2em;
             text-decoration: none;
             position: relative;
             overflow: hidden;
@@ -657,7 +678,7 @@
         .hero-overlay {
             position: absolute;
             inset: 0;
-            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.3) 50%, rgba(0, 0, 0, 0.3) 100%);
+            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.25) 0%, rgba(45, 35, 15, 0.3) 50%, rgba(0, 0, 0, 0.35) 100%);
             z-index: 2;
             will-change: opacity;
         }
@@ -736,10 +757,10 @@
         }
 
         .mobile-nav-overlay .nav-link-mobile {
-            font-family: 'Vidaloka', serif;
+            font-family: 'Cormorant Garamond', serif;
             font-size: 1.25rem;
-            font-weight: 400;
-            letter-spacing: 0.2em;
+            font-weight: 600;
+            letter-spacing: 0.25em;
             text-transform: uppercase;
             color: #ffffff;
             text-decoration: none;
@@ -781,7 +802,7 @@
             font-size: 0.85rem;
             font-weight: 800;
             text-transform: uppercase;
-            letter-spacing: 0.15em;
+            letter-spacing: 0.2em;
             text-decoration: none;
             margin-top: 1.5rem;
             opacity: 0;
@@ -1197,6 +1218,8 @@
             <svg id="preloader-svg" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
                 <rect id="preloader-rect" x="1" y="1" fill="none" stroke="#d4af37" stroke-width="2" rx="36"
                     stroke-linecap="round" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100" />
+                <rect id="preloader-shine" x="1" y="1" fill="none" stroke="#fff8e1" stroke-width="3" rx="36"
+                    stroke-linecap="round" pathLength="100" />
             </svg>
         </div>
 
@@ -1720,6 +1743,9 @@
                 logoArea = document.querySelector('.logo-content-area');
                 if (!logoArea) return;
 
+                // ── HIDE LOGO DURING DOM MANIPULATION (prevent flicker) ──
+                logoArea.style.visibility = 'hidden';
+
                 // Targeted clearProps to avoid flickering end-of-intro states
                 gsap.set([logoArea, heroEl, splashIntro], {
                     clearProps: "position,left,top,width,margin,padding,zIndex,pointerEvents,willChange"
@@ -1752,16 +1778,14 @@
                 });
                 document.body.appendChild(logoArea);
 
-
+                // Force layout recalc, then reveal — no intermediate frame rendered
+                logoArea.offsetHeight; // force reflow
+                logoArea.style.visibility = '';
 
                 // ── CONFIGURATION & TARGETS ──────────────────
                 const headerLogoHeight = window.innerWidth <= 480 ? 14 : window.innerWidth <= 768 ? 16 : 20;
                 const targetScale = headerLogoHeight / wordRect.height;
-                const targetLeftPx = window.innerWidth <= 768 ? window.innerWidth * 0.03 : window.innerWidth * 0.02;
-
-                isMorphed = true;
-                gsap.set(heroEl, { overflow: 'hidden' });
-                gsap.set(splashIntro, { overflow: 'visible' });
+                const targetLeftPx = window.innerWidth <= 768 ? window.innerWidth * 0.04 : window.innerWidth * 0.02;
 
                 isMorphed = true;
                 gsap.set(heroEl, { overflow: 'hidden' });
@@ -1913,12 +1937,18 @@
             }
 
             // Real Load Luxury Preloader Animation
+            const preloaderShine = document.getElementById('preloader-shine');
             if (preloaderRect && preloaderBox) {
                 const finishPreloader = () => {
                     // Disable CSS animation so GSAP can take over from current position
                     const currentOffset = window.getComputedStyle(preloaderRect).strokeDashoffset;
                     preloaderRect.style.animation = 'none';
                     gsap.set(preloaderRect, { strokeDashoffset: currentOffset });
+
+                    // Fade out shine as loading completes
+                    if (preloaderShine) {
+                        gsap.to(preloaderShine, { opacity: 0, duration: 0.4, ease: "power2.out" });
+                    }
 
                     gsap.to(preloaderRect, {
                         strokeDashoffset: 0,
