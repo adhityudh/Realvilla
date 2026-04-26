@@ -1718,18 +1718,17 @@
                     existingAnchor.remove();
                 }
 
-                // Reset all states and measure from scroll top 0 for consistency
-                const scrollBefore = window.scrollY;
-                if (scrollBefore > 0) window.scrollTo(0, 0);
-
                 logoArea = document.querySelector('.logo-content-area');
-                if (!logoArea) return; // Safety
+                if (!logoArea) return;
 
-                gsap.set([logoArea, heroEl, splashIntro], { clearProps: "all" });
+                // Targeted clearProps to avoid flickering end-of-intro states
+                gsap.set([logoArea, heroEl, splashIntro], { 
+                    clearProps: "position,left,top,width,margin,padding,zIndex,pointerEvents,willChange" 
+                });
                 const wordContainer = logoArea.querySelector('.word-container');
                 const heroCtas = splashIntro.querySelector('.hero-ctas');
                 heroDesc = splashIntro.querySelector('.hero-description-area');
-                gsap.set([wordContainer, heroCtas, heroDesc], { clearProps: "all" });
+                gsap.set([wordContainer, heroCtas, heroDesc], { clearProps: "transform,x,y,scale,opacity" });
 
                 // ── SNAPSHOT COORDINATES ──────────────────────
                 const logoAreaRect = logoArea.getBoundingClientRect();
@@ -1754,8 +1753,7 @@
                 });
                 document.body.appendChild(logoArea);
 
-                // Restore scroll after measurement
-                if (scrollBefore > 0) window.scrollTo(0, scrollBefore);
+
 
                 // ── CONFIGURATION & TARGETS ──────────────────
                 const headerLogoHeight = window.innerWidth <= 480 ? 14 : window.innerWidth <= 768 ? 16 : 20;
@@ -1766,7 +1764,11 @@
                 gsap.set(heroEl, { overflow: 'hidden' });
                 gsap.set(splashIntro, { overflow: 'visible' });
 
-                // Since we measured at scroll 0, we can calculate target center relative to screen
+                isMorphed = true;
+                gsap.set(heroEl, { overflow: 'hidden' });
+                gsap.set(splashIntro, { overflow: 'visible' });
+
+                // Targets calculated relative to current viewport for seamless handoff
                 const initialWordCenterY = wordRect.top + (wordRect.height / 2);
                 const targetHeaderCenterY = headerRect.top + (headerRect.height / 2);
                 const scrollEnd = heroEl.offsetHeight;
