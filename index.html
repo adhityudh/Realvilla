@@ -975,7 +975,7 @@
                 /* Muted grey background */
                 border-radius: 50px;
                 padding: 0.85rem 0;
-                justify-content: space-evenly;
+                justify-content: space-around;
                 align-items: center;
                 z-index: 96000;
                 opacity: 0;
@@ -999,9 +999,18 @@
                 color: var(--text-black);
                 text-decoration: none;
                 font-family: 'Vidaloka', serif;
-                font-size: 0.85rem;
+                font-size: 0.75rem;
                 text-transform: uppercase;
                 letter-spacing: 0.15em;
+                display: flex;
+                align-items: center;
+                gap: 0.4rem;
+            }
+
+            .pill-icon {
+                width: 0.85rem;
+                height: 0.85rem;
+                opacity: 0.7;
             }
 
             .pill-link:active {
@@ -1158,9 +1167,18 @@
 
     <!-- MOBILE PILL NAV -->
     <div class="mobile-pill-nav">
-        <a href="#" class="pill-link">Buy</a>
-        <a href="#" class="pill-link">Sell</a>
-        <a href="#" class="pill-link">Invest</a>
+        <a href="#" class="pill-link">
+            <img src="/arrows_more_down.svg" alt="" class="pill-icon">
+            <span>Buy</span>
+        </a>
+        <a href="#" class="pill-link">
+            <img src="/arrows_more_up.svg" alt="" class="pill-icon">
+            <span>Sell</span>
+        </a>
+        <a href="#" class="pill-link">
+            <img src="/attach_money.svg" alt="" class="pill-icon">
+            <span>Invest</span>
+        </a>
     </div>
 
     <!-- MOBILE NAV OVERLAY -->
@@ -1386,7 +1404,7 @@
                 direction: 'vertical',
                 gestureDirection: 'vertical',
                 smoothWheel: true,
-                smoothTouch: false,
+                smoothTouch: true,
                 touchMultiplier: 2,
                 infinite: false,
             });
@@ -1679,65 +1697,51 @@
             // wordContainer break-out dari parent → mendarat di header.
             // -------------------------------------------------------
             function setupLogoMorph() {
-                // ── CLEANUP & TOTAL RESET (Atomic Clean-Snapshot) ──────────
+                // ── CLEANUP & TOTAL RESET ──────────
                 if (morphTlInstance) morphTlInstance.kill();
                 if (morphSTInstance) morphSTInstance.kill();
                 if (navSTInstance) navSTInstance.kill();
 
                 const splashIntro = document.querySelector('.splash-intro');
                 const heroEl = document.querySelector('.main-hero');
-                const headerNav = document.querySelector('.header-nav');
                 const headerContent = document.querySelector('.header-content');
+                const headerNav = document.querySelector('.header-nav');
 
                 // Cari logoArea yang ada di hero (bukan yang sudah breakout di body)
-                logoArea = splashIntro.querySelector('.logo-content-area');
-                const existingBreakout = document.getElementById('morph-breakout-logo');
-                const existingAnchor = document.getElementById('hero-logo-anchor');
+                let existingBreakout = document.getElementById('morph-breakout-logo');
+                let existingAnchor = document.getElementById('hero-logo-anchor');
 
-                // Revert reparenting logic: Jika ada breakout, kembalikan ke anchor
+                // Force return to original DOM flow for clean measurement
                 if (existingBreakout && existingAnchor) {
                     existingAnchor.parentNode.insertBefore(existingBreakout, existingAnchor);
-                    existingBreakout.id = ''; // Hapus ID breakout setelah kembali
+                    existingBreakout.id = ''; 
                     existingAnchor.remove();
-                    logoArea = existingBreakout;
                 }
 
-                // Cleanup only the breakout tags/styles, preserving content states (like shimmer)
-                if (existingAnchor) existingAnchor.remove();
-                if (logoArea) {
-                    gsap.set(logoArea, {
-                        clearProps: "position,left,top,width,margin,padding,zIndex,pointerEvents,willChange,transform"
-                    });
-                }
+                // Reset all states and measure from scroll top 0 for consistency
+                const scrollBefore = window.scrollY;
+                if (scrollBefore > 0) window.scrollTo(0, 0);
 
+                logoArea = document.querySelector('.logo-content-area');
+                if (!logoArea) return; // Safety
+
+                gsap.set([logoArea, heroEl, splashIntro], { clearProps: "all" });
                 const wordContainer = logoArea.querySelector('.word-container');
                 const heroCtas = splashIntro.querySelector('.hero-ctas');
                 heroDesc = splashIntro.querySelector('.hero-description-area');
+                gsap.set([wordContainer, heroCtas, heroDesc], { clearProps: "all" });
 
-                // Clear props mutated by previous morphTlInstance, preventing lock-ups on resize
-                if (wordContainer) gsap.set(wordContainer, { clearProps: "transform,x,y,scale,transformOrigin" });
-                if (heroCtas) gsap.set(heroCtas, { clearProps: "opacity,y,transform" });
-                if (heroDesc) gsap.set(heroDesc, { clearProps: "opacity,transform" });
-
-                // ── SNAPSHOT COORDINATES (Clean State) ──────────────────────
+                // ── SNAPSHOT COORDINATES ──────────────────────
                 const logoAreaRect = logoArea.getBoundingClientRect();
                 const wordRect = wordContainer.getBoundingClientRect();
                 const headerRect = headerContent.getBoundingClientRect();
 
-                isMorphed = true;
-
-                // ── CONSTRICTION RESTORED ──────────────────────────────────
-                gsap.set(heroEl, { overflow: 'hidden' });
-                gsap.set(splashIntro, { overflow: 'visible' });
-
                 // ── LOGO FIXED BREAKOUT ────────────────────────────────────
-                // Buat anchor/spacer sederhana saja untuk menjaga layout
                 logoAnchor = document.createElement('div');
                 logoAnchor.id = 'hero-logo-anchor';
                 gsap.set(logoAnchor, { width: logoAreaRect.width, height: logoAreaRect.height, visibility: 'hidden' });
                 logoArea.parentNode.insertBefore(logoAnchor, logoArea);
 
-                // Tandai logo yang akan di-breakout
                 logoArea.id = 'morph-breakout-logo';
                 Object.assign(logoArea.style, {
                     position: 'fixed',
@@ -1745,27 +1749,24 @@
                     top: logoAreaRect.top + 'px',
                     width: logoAreaRect.width + 'px',
                     margin: '0',
-                    padding: '0',
                     zIndex: '98001',
-                    pointerEvents: 'none',
-                    willChange: 'transform',
-                    transform: 'translateZ(0)'
+                    pointerEvents: 'none'
                 });
-
                 document.body.appendChild(logoArea);
+
+                // Restore scroll after measurement
+                if (scrollBefore > 0) window.scrollTo(0, scrollBefore);
 
                 // ── CONFIGURATION & TARGETS ──────────────────
                 const headerLogoHeight = window.innerWidth <= 480 ? 14 : window.innerWidth <= 768 ? 16 : 20;
                 const targetScale = headerLogoHeight / wordRect.height;
                 const targetLeftPx = window.innerWidth <= 768 ? window.innerWidth * 0.03 : window.innerWidth * 0.02;
 
-                const currentScroll = window.scrollY;
-                const initialWordCenterY = (wordRect.top + currentScroll) + (wordRect.height / 2);
-                const targetHeaderCenterY = (headerRect.top + currentScroll) + (headerRect.height / 2);
-
+                // Since we measured at scroll 0, we can calculate target center relative to screen
+                const initialWordCenterY = wordRect.top + (wordRect.height / 2);
+                const targetHeaderCenterY = headerRect.top + (headerRect.height / 2);
                 const scrollEnd = heroEl.offsetHeight;
 
-                // logic synchronization
                 const exitY = -scrollEnd;
                 const wordLocalY = (targetHeaderCenterY - initialWordCenterY) + scrollEnd;
                 const toX = targetLeftPx - wordRect.left;
@@ -1773,32 +1774,15 @@
                 morphTlInstance = gsap.timeline({ paused: true });
 
                 morphTlInstance
-                    .to(logoArea, {
-                        y: exitY,
-                        duration: 1,
-                        ease: 'none'
-                    }, 0)
-                    .to([heroCtas], {
-                        opacity: 0,
-                        y: "250%",
-                        duration: 0.25,
-                        ease: 'none'
-                    }, 0)
-                    .to([heroDesc], {
-                        opacity: 0,
-                        duration: 0.5,
-                        ease: 'none'
-                    }, 0)
-                    .to(wordContainer, {
-                        x: toX,
-                        y: wordLocalY,
-                        scale: targetScale,
-                        transformOrigin: 'left center',
-                        duration: 1,
-                        ease: 'none',
-                        overwrite: true,
-                        force3D: true
-                    }, 0);
+                    .fromTo(logoArea, { y: 0 }, { y: exitY, duration: 1, ease: 'none' }, 0)
+                    .fromTo(heroCtas, { opacity: 1, y: 0 }, { opacity: 0, y: "250%", duration: 0.25, ease: 'none' }, 0)
+                    .fromTo(heroDesc, { opacity: 1 }, { opacity: 0, duration: 0.5, ease: 'none' }, 0)
+                    .fromTo(wordContainer, 
+                        { x: 0, y: 0, scale: 1 },
+                        { x: toX, y: wordLocalY, scale: targetScale, transformOrigin: 'left center', duration: 1, ease: 'none', force3D: true }, 
+                        0);
+                
+                ScrollTrigger.refresh();
 
                 if (window.innerWidth > 1024) {
                     const navLinks = headerNav.querySelectorAll('.nav-link');
