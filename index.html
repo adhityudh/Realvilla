@@ -579,6 +579,37 @@
             background-color: #111111;
         }
 
+        /* Header light mode for dark sections (valuation, etc.) */
+        body.header-light-mode .header-letter {
+            background-color: #ffffff;
+        }
+
+        body.header-light-mode .nav-link {
+            color: #ffffff;
+        }
+
+        body.header-light-mode .nav-link::after {
+            background-color: #ffffff;
+        }
+
+        body.header-light-mode .btn-book {
+            background-color: #ffffff;
+            color: #111111;
+        }
+
+        body.header-light-mode .hamburger span {
+            background-color: #ffffff;
+        }
+
+        body.header-light-mode .text-white-reveal {
+            background-color: #ffffff;
+        }
+
+        body.header-light-mode .text-black,
+        body.header-light-mode .text-gold {
+            background-color: #ffffff;
+        }
+
         /* =============================================
            LETTER / MOSAIC
         ============================================= */
@@ -3277,6 +3308,18 @@
                         duration: 1.5,
                         ease: "expo.out"
                     }, 0.5);
+
+                // Toggle header light mode when valuation section overlaps header
+                const header = document.querySelector('.header');
+                ScrollTrigger.create({
+                    trigger: valuationSection,
+                    start: () => `top ${header.offsetHeight}px`,
+                    end: () => `bottom ${header.offsetHeight}px`,
+                    onEnter: () => document.body.classList.add('header-light-mode'),
+                    onLeave: () => document.body.classList.remove('header-light-mode'),
+                    onEnterBack: () => document.body.classList.add('header-light-mode'),
+                    onLeaveBack: () => document.body.classList.remove('header-light-mode')
+                });
             }
 
             // -------------------------------------------------------
