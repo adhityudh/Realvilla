@@ -235,21 +235,44 @@
             transform: translateY(-4px);
         }
 
-        .cta-hover-arrow {
-            width: 0;
-            height: 1.5rem;
-            opacity: 0;
-            margin-left: 0;
-            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-            transform: translateX(-10px);
-            filter: brightness(0) invert(1);
+        /* ---- Stretch Arrow Component ---- */
+        .stretch-arrow {
+            width: 24px;
+            height: 24px;
+            overflow: visible;
+            flex-shrink: 0;
         }
 
-        .cta-link:hover .cta-hover-arrow {
-            width: 2rem;
+        .stretch-arrow .arrow-shaft {
+            transform: scaleX(0);
+            transform-origin: right center;
+            transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .stretch-arrow .arrow-head {
+            transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* Hero CTA variant — starts collapsed, expands on hover */
+        .cta-stretch-arrow {
+            width: 0;
+            opacity: 0;
+            margin-left: 0;
+            transition: width 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+                opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+                margin-left 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            transform: translateX(-10px);
+        }
+
+        .cta-link:hover .cta-stretch-arrow {
+            width: 36px;
             opacity: 1;
             margin-left: 0.75rem;
             transform: translateX(0);
+        }
+
+        .cta-link:hover .stretch-arrow .arrow-shaft {
+            transform: scaleX(1);
         }
 
         .cta-icon {
@@ -317,7 +340,7 @@
             font-weight: 600;
             letter-spacing: 0.35em;
             color: #ffffff;
-            opacity: 0.5;
+            opacity: 1;
             text-transform: uppercase;
         }
 
@@ -467,7 +490,7 @@
         .btn-book {
             background-color: #ffffff;
             color: #000000;
-            padding: 0.75rem 1.5rem;
+            padding: 0.75rem 1.75rem;
             border-radius: 50px;
             font-size: 0.75rem;
             font-weight: 800;
@@ -476,7 +499,9 @@
             text-decoration: none;
             position: relative;
             overflow: hidden;
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
             transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1),
                 background-color 0.6s cubic-bezier(0.16, 1, 0.3, 1),
@@ -485,9 +510,18 @@
         }
 
         .btn-book:hover {
-            transform: translateY(-4px) scale(1.02);
+            transform: translateY(-4px);
             background-color: #ffffff;
-            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-book .stretch-arrow {
+            width: 18px;
+            height: 18px;
+        }
+
+        .btn-book:hover .stretch-arrow .arrow-shaft {
+            transform: scaleX(1);
         }
 
         /* Subtle shimmer effect on hover */
@@ -921,7 +955,7 @@
                 padding-bottom: 0.85rem;
             }
 
-            .cta-hover-arrow {
+            .cta-stretch-arrow {
                 display: none !important;
             }
 
@@ -1166,6 +1200,489 @@
                 display: none;
             }
         }
+
+        /* =============================================
+           SERVICES SCROLL SECTION
+        ============================================= */
+        .services-scroll {
+            position: relative;
+            background-color: var(--bg-white);
+            color: var(--text-black);
+        }
+
+        .services-scroll-inner {
+            position: relative;
+            height: 300vh;
+        }
+
+        .services-sticky {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            overflow: clip;
+        }
+
+        .services-container {
+            width: 100%;
+            padding: 0 3rem;
+            display: grid;
+            grid-template-columns: auto 0.5fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        /* Progress Track (Left Line) */
+        .services-progress {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 280px;
+            width: fit-content;
+            position: relative;
+        }
+
+        .services-progress-track {
+            width: 2px;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.08);
+            position: relative;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .services-progress-fill {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 0%;
+            background: linear-gradient(to bottom, var(--text-gold), #d4af37);
+            border-radius: 2px;
+            will-change: height;
+        }
+
+        /* Content (Left column) */
+        .services-content {
+            position: relative;
+            min-height: 360px;
+        }
+
+        .service-item {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .service-item.active {
+            opacity: 1;
+            pointer-events: auto;
+            position: relative;
+        }
+
+        /* Luxury Staggered Reveal */
+        .service-label,
+        .service-title,
+        .service-description,
+        .service-cta {
+            opacity: 0;
+            transform: translateY(30px) skewY(2deg);
+            filter: blur(12px);
+            transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 1.2s cubic-bezier(0.16, 1, 0.3, 1),
+                filter 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: transform, opacity, filter;
+        }
+
+        .service-item.active .service-label {
+            opacity: 1;
+            transform: translateY(0) skewY(0deg);
+            filter: blur(0px);
+            transition-delay: 0.1s;
+        }
+
+        .service-item.active .service-title {
+            opacity: 1;
+            transform: translateY(0) skewY(0deg);
+            filter: blur(0px);
+            transition-delay: 0.2s;
+        }
+
+        .service-item.active .service-description {
+            opacity: 1;
+            transform: translateY(0) skewY(0deg);
+            filter: blur(0px);
+            transition-delay: 0.3s;
+        }
+
+        .service-item.active .service-cta {
+            opacity: 1;
+            transform: translateY(0) skewY(0deg);
+            filter: blur(0px);
+            transition-delay: 0.4s;
+        }
+
+        /* Outgoing state for smoothness */
+        .service-item:not(.active) .service-label,
+        .service-item:not(.active) .service-title,
+        .service-item:not(.active) .service-description,
+        .service-item:not(.active) .service-cta {
+            opacity: 0;
+            transform: translateY(-20px);
+            filter: blur(5px);
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            transition-delay: 0s !important;
+        }
+
+        .service-label {
+            font-family: 'Manrope', sans-serif;
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: var(--text-gold);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .service-label-line {
+            width: 30px;
+            height: 1px;
+            background-color: var(--text-gold);
+        }
+
+        .service-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(2.5rem, 4vw, 4.5rem);
+            font-weight: 700;
+            line-height: 1.05;
+            letter-spacing: 0.02em;
+            text-transform: uppercase;
+            margin-bottom: 1.5rem;
+            color: var(--text-black);
+        }
+
+        .service-description {
+            font-family: 'Manrope', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 400;
+            line-height: 1.7;
+            color: var(--text-black);
+            max-width: 420px;
+            margin-bottom: 2.5rem;
+        }
+
+        .service-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--text-black);
+            text-decoration: none;
+            padding: 0.85rem 2.25rem;
+            border: 1px solid rgba(17, 17, 17, 0.15);
+            border-radius: 50px;
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .service-cta::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(188, 175, 139, 0.15), rgba(212, 175, 55, 0.08));
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .service-cta:hover {
+            border-color: var(--text-gold);
+            color: var(--text-gold);
+            transform: translateY(-4px);
+            box-shadow: 0 10px 30px rgba(188, 175, 139, 0.2);
+        }
+
+        .service-cta:hover::before {
+            opacity: 1;
+            left: 150%;
+        }
+
+        /* Add shimmer to service-cta too */
+        .service-cta::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -150%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg,
+                    transparent,
+                    rgba(188, 175, 139, 0.2),
+                    transparent);
+            transform: skewX(-25deg);
+            transition: left 0.75s ease;
+            z-index: 1;
+        }
+
+        .service-cta:hover::after {
+            left: 150%;
+        }
+
+        .service-cta .stretch-arrow {
+            width: 20px;
+            height: 20px;
+        }
+
+        .service-cta:hover .stretch-arrow .arrow-shaft {
+            transform: scaleX(1);
+        }
+
+        /* Images (Right column) */
+        .services-images {
+            position: relative;
+            height: 90vh;
+        }
+
+        .service-image-wrapper {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1), visibility 1s step-end;
+        }
+
+        .service-image-wrapper.active {
+            opacity: 1;
+            visibility: visible;
+            transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1), visibility 1s step-start;
+        }
+
+        .service-img-main {
+            opacity: 0;
+            transform: translateY(15px);
+            filter: blur(5px);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .service-image-wrapper.active .service-img-main {
+            opacity: 1;
+            transform: translateY(0);
+            filter: blur(0px);
+            transition-delay: 0.1s;
+        }
+
+        .service-img-secondary {
+            opacity: 0;
+            transform: translateY(calc(-50% + 20px));
+            filter: blur(5px);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .service-image-wrapper.active .service-img-secondary {
+            opacity: 1;
+            transform: translateY(-50%);
+            filter: blur(0px);
+            transition-delay: 0.2s;
+        }
+
+        /* Background image — full right side, edge-to-edge height */
+        .service-img-main {
+            position: absolute;
+            width: 65%;
+            height: 100%;
+            right: 0;
+            top: 0;
+            overflow: hidden;
+        }
+
+        .service-img-main img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .service-img-main .img-placeholder {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #e8e6e1 0%, #d9d5cd 50%, #e8e6e1 100%);
+        }
+
+        /* Foreground image — overlapping, square-ish, center-left */
+        .service-img-secondary {
+            position: absolute;
+            width: 45%;
+            height: 65%;
+            left: 5%;
+            top: 50%;
+            transform: translateY(-50%);
+            overflow: hidden;
+            z-index: 2;
+            box-shadow: 20px 20px 60px rgba(0, 0, 0, 0.1);
+        }
+
+        .service-img-secondary img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .service-img-secondary .img-placeholder {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #ddd9d1 0%, #cec9c0 50%, #ddd9d1 100%);
+        }
+
+        /* Responsive - Tablet */
+        @media (max-width: 1024px) {
+            .services-container {
+                grid-template-columns: auto 0.5fr 1fr;
+                gap: 2.5rem;
+                padding: 0 2.5rem;
+            }
+
+            .service-title {
+                font-size: clamp(2rem, 5vw, 3.5rem);
+            }
+
+            .services-progress {
+                height: 220px;
+            }
+
+            .services-images {
+                height: 60vh;
+            }
+        }
+
+        /* Responsive - Mobile */
+        @media (max-width: 768px) {
+            .services-scroll-inner {
+                height: 300vh;
+            }
+
+            .services-sticky {
+                align-items: flex-start;
+                padding-top: max(130px, 15vh); /* Dynamic clearance for header/nav + whitespace balance */
+            }
+
+            .services-container {
+                display: grid;
+                grid-template-columns: 2px 1fr;
+                grid-template-rows: auto auto;
+                gap: 2rem 1.25rem;
+                padding: 0 1.5rem;
+                width: 100%;
+                max-width: 100vw;
+            }
+
+            .services-progress {
+                grid-row: 1;
+                height: 100%;
+                max-height: 250px;
+                width: 2px;
+                align-self: center;
+                margin-left: 0;
+                position: relative;
+                z-index: 10;
+            }
+
+            .services-content {
+                grid-column: 2;
+                min-height: auto;
+                width: 100%;
+                padding-left: 0;
+                position: relative;
+            }
+
+            .service-title {
+                font-size: clamp(1.8rem, 8vw, 2.3rem);
+                line-height: 1.1;
+                margin-bottom: 0.75rem;
+                letter-spacing: -0.01em;
+            }
+
+            .service-label {
+                margin-bottom: 0.75rem;
+                font-size: 0.65rem;
+            }
+
+            .service-description {
+                font-size: 0.85rem;
+                line-height: 1.6;
+                max-width: 100%;
+                margin-bottom: 1.5rem;
+                color: rgba(17, 17, 17, 0.8);
+            }
+
+            .service-cta {
+                font-size: 0.65rem;
+                padding: 0.65rem 1.25rem;
+            }
+
+            .service-cta .stretch-arrow {
+                width: 16px;
+                height: 16px;
+            }
+
+            .services-images {
+                grid-column: 1 / 3;
+                width: 100%;
+                height: 38vh; /* Increased to reduce bottom whitespace on tall screens */
+                position: relative;
+                margin-top: 1rem;
+            }
+
+            .service-img-main {
+                width: 85%;
+                height: 100%;
+                left: 0;
+                right: auto;
+                border-radius: 4px;
+            }
+
+            .service-img-secondary {
+                width: 55%;
+                height: 65%;
+                right: 0;
+                left: auto;
+                top: auto;
+                bottom: -12%;
+                transform: none;
+                box-shadow: 10px 10px 30px rgba(0, 0, 0, 0.1);
+                border-radius: 4px;
+            }
+
+            /* Consistent Reveal */
+            .service-label,
+            .service-title,
+            .service-description,
+            .service-cta {
+                transform: translateY(15px);
+                filter: blur(5px);
+                transition-duration: 0.7s;
+            }
+
+            .service-item.active .service-label,
+            .service-item.active .service-title,
+            .service-item.active .service-description,
+            .service-item.active .service-cta {
+                transform: translateY(0);
+                filter: blur(0px);
+            }
+        }
     </style>
 </head>
 
@@ -1194,7 +1711,16 @@
                 <a href="#" class="nav-link">Mortgages</a>
             </nav>
             <div class="header-actions">
-                <a href="#" class="btn-book">Speak to an Expert</a>
+                <a href="#" class="btn-book">
+                    <span>Speak to an Expert</span>
+                    <svg class="stretch-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+                        <g class="arrow-shaft">
+                            <line x1="2" y1="12" x2="20" y2="12" />
+                        </g>
+                        <polyline class="arrow-head" points="18 8 22 12 18 16" />
+                    </svg>
+                </a>
             </div>
             <button class="hamburger" id="hamburgerBtn" aria-label="Menu">
                 <span></span>
@@ -1216,7 +1742,7 @@
         </a>
         <div class="pill-sep"></div>
         <a href="#" class="pill-link">
-            <img src="/attach_money.svg" alt="" class="pill-icon">
+            <img src="/euro.svg" alt="" class="pill-icon">
             <span>Invest</span>
         </a>
     </div>
@@ -1227,7 +1753,16 @@
         <a href="#" class="nav-link-mobile">Sell</a>
         <a href="#" class="nav-link-mobile">Invest</a>
         <a href="#" class="nav-link-mobile">Mortgages</a>
-        <a href="#" class="btn-book-mobile">Speak to an Expert</a>
+        <a href="#" class="btn-book-mobile">
+            <span>Speak to an Expert</span>
+            <svg class="stretch-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+                <g class="arrow-shaft">
+                    <line x1="2" y1="12" x2="20" y2="12" />
+                </g>
+                <polyline class="arrow-head" points="18 8 22 12 18 16" />
+            </svg>
+        </a>
     </div>
 
 
@@ -1368,17 +1903,35 @@
                 <a href="#" class="cta-link">
                     <img src="/arrows_more_down.svg" alt="Buy" class="cta-icon">
                     <span>Buy</span>
-                    <img src="/arrow_right.svg" class="cta-hover-arrow" alt="">
+                    <svg class="stretch-arrow cta-stretch-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+                        <g class="arrow-shaft">
+                            <line x1="2" y1="12" x2="20" y2="12" />
+                        </g>
+                        <polyline class="arrow-head" points="18 8 22 12 18 16" />
+                    </svg>
                 </a>
                 <a href="#" class="cta-link">
                     <img src="/arrows_more_up.svg" alt="Sell" class="cta-icon">
                     <span>Sell</span>
-                    <img src="/arrow_right.svg" class="cta-hover-arrow" alt="">
+                    <svg class="stretch-arrow cta-stretch-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+                        <g class="arrow-shaft">
+                            <line x1="2" y1="12" x2="20" y2="12" />
+                        </g>
+                        <polyline class="arrow-head" points="18 8 22 12 18 16" />
+                    </svg>
                 </a>
                 <a href="#" class="cta-link">
-                    <img src="/attach_money.svg" alt="Invest" class="cta-icon">
+                    <img src="/euro.svg" alt="Invest" class="cta-icon">
                     <span>Invest</span>
-                    <img src="/arrow_right.svg" class="cta-hover-arrow" alt="">
+                    <svg class="stretch-arrow cta-stretch-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+                        <g class="arrow-shaft">
+                            <line x1="2" y1="12" x2="20" y2="12" />
+                        </g>
+                        <polyline class="arrow-head" points="18 8 22 12 18 16" />
+                    </svg>
                 </a>
             </div>
         </div>
@@ -1421,6 +1974,126 @@
         </script>
         <div class="hero-overlay"></div>
     </main>
+
+    <!-- SERVICES SCROLL SECTION -->
+    <section class="services-scroll" id="servicesScroll">
+        <div class="services-scroll-inner">
+            <div class="services-sticky">
+                <div class="services-container">
+
+                    <!-- Progress Indicator -->
+                    <div class="services-progress">
+                        <div class="services-progress-track">
+                            <div class="services-progress-fill" id="progressFill"></div>
+                        </div>
+                    </div>
+
+                    <!-- Content -->
+                    <div class="services-content">
+                        <!-- BUY -->
+                        <div class="service-item active" data-service="0">
+                            <div class="service-label">
+                                <span class="service-label-line"></span>
+                                <span>Services</span>
+                            </div>
+                            <h2 class="service-title">Find Your<br>Dream Villa</h2>
+                            <p class="service-description">Explore our curated portfolio of premium Tenerife properties.
+                                From beachfront villas to hillside retreats, we match you with the perfect home that
+                                reflects your lifestyle.</p>
+                            <a href="#" class="service-cta">
+                                <span>Browse Properties</span>
+                                <svg class="stretch-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+                                    <g class="arrow-shaft">
+                                        <line x1="2" y1="12" x2="20" y2="12" />
+                                    </g>
+                                    <polyline class="arrow-head" points="18 8 22 12 18 16" />
+                                </svg>
+                            </a>
+                        </div>
+
+                        <!-- SELL -->
+                        <div class="service-item" data-service="1">
+                            <div class="service-label">
+                                <span class="service-label-line"></span>
+                                <span>Services</span>
+                            </div>
+                            <h2 class="service-title">Sell With<br>Confidence</h2>
+                            <p class="service-description">Maximize your property's value with our expert marketing
+                                strategies, professional staging, and access to an exclusive network of qualified
+                                international buyers.</p>
+                            <a href="#" class="service-cta">
+                                <span>Get a Valuation</span>
+                                <svg class="stretch-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+                                    <g class="arrow-shaft">
+                                        <line x1="2" y1="12" x2="20" y2="12" />
+                                    </g>
+                                    <polyline class="arrow-head" points="18 8 22 12 18 16" />
+                                </svg>
+                            </a>
+                        </div>
+
+                        <!-- INVEST -->
+                        <div class="service-item" data-service="2">
+                            <div class="service-label">
+                                <span class="service-label-line"></span>
+                                <span>Services</span>
+                            </div>
+                            <h2 class="service-title">Invest in<br>Paradise</h2>
+                            <p class="service-description">Unlock exceptional returns in Tenerife's booming real estate
+                                market. Our investment advisory provides data-driven insights and turnkey property
+                                management solutions.</p>
+                            <a href="#" class="service-cta">
+                                <span>Explore Opportunities</span>
+                                <svg class="stretch-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+                                    <g class="arrow-shaft">
+                                        <line x1="2" y1="12" x2="20" y2="12" />
+                                    </g>
+                                    <polyline class="arrow-head" points="18 8 22 12 18 16" />
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Images -->
+                    <div class="services-images">
+                        <!-- BUY Images -->
+                        <div class="service-image-wrapper active" data-service-img="0">
+                            <div class="service-img-main">
+                                <div class="img-placeholder"></div>
+                            </div>
+                            <div class="service-img-secondary">
+                                <div class="img-placeholder"></div>
+                            </div>
+                        </div>
+
+                        <!-- SELL Images -->
+                        <div class="service-image-wrapper" data-service-img="1">
+                            <div class="service-img-main">
+                                <div class="img-placeholder"></div>
+                            </div>
+                            <div class="service-img-secondary">
+                                <div class="img-placeholder"></div>
+                            </div>
+                        </div>
+
+                        <!-- INVEST Images -->
+                        <div class="service-image-wrapper" data-service-img="2">
+                            <div class="service-img-main">
+                                <div class="img-placeholder"></div>
+                            </div>
+                            <div class="service-img-secondary">
+                                <div class="img-placeholder"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
 
     <section style="height: 100svh; background: #fff; display: flex; align-items:center; justify-content:center;">
         <h2 style="font-weight: 300;">Rest of the website...</h2>
@@ -2053,6 +2726,67 @@
                     });
                 });
             }
+
+
+            // -------------------------------------------------------
+            // SERVICES SCROLL SECTION
+            // -------------------------------------------------------
+            const servicesSection = document.getElementById('servicesScroll');
+            if (servicesSection) {
+                const serviceItems = document.querySelectorAll('.service-item');
+                const serviceImages = document.querySelectorAll('.service-image-wrapper');
+                const progressFill = document.getElementById('progressFill');
+                let currentService = 0;
+
+                function setActiveService(index) {
+                    if (index === currentService) return;
+                    currentService = index;
+
+                    serviceItems.forEach((item, i) => {
+                        if (i === index) {
+                            item.classList.add('active');
+                        } else {
+                            item.classList.remove('active');
+                        }
+                    });
+
+                    serviceImages.forEach((img, i) => {
+                        if (i === index) {
+                            img.classList.add('active');
+                        } else {
+                            img.classList.remove('active');
+                        }
+                    });
+                }
+
+                ScrollTrigger.create({
+                    trigger: '.services-scroll-inner',
+                    start: 'top top',
+                    end: 'bottom bottom',
+                    scrub: true,
+                    onUpdate: (self) => {
+                        const progress = self.progress;
+
+                        // Smooth scrollbar fill
+                        if (progressFill) {
+                            progressFill.style.height = (progress * 100) + '%';
+                        }
+
+                        // Content switching
+                        let activeIndex = 0;
+                        if (progress < 0.33) {
+                            activeIndex = 0;
+                        } else if (progress < 0.66) {
+                            activeIndex = 1;
+                        } else {
+                            activeIndex = 2;
+                        }
+
+                        setActiveService(activeIndex);
+                    }
+                });
+            }
+
         });
     </script>
 
