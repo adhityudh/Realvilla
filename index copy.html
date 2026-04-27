@@ -204,7 +204,7 @@
 
         .hero-ctas {
             display: flex;
-            gap: 2rem;
+            gap: 4rem;
             opacity: 1;
             pointer-events: auto;
             will-change: transform, opacity;
@@ -598,77 +598,7 @@
 
         body.header-light-mode .btn-book {
             background-color: #ffffff;
-            color: #000000;
-        }
-
-        /* Shared Button Style */
-        .service-cta {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.75rem;
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 0.8rem;
-            font-weight: 700;
-            letter-spacing: 0.2em;
-            text-transform: uppercase;
-            color: var(--text-black);
-            text-decoration: none;
-            padding: 0.85rem 2.25rem;
-            border: 1px solid rgba(17, 17, 17, 0.15);
-            border-radius: 50px;
-            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .service-cta::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(135deg, rgba(188, 175, 139, 0.15), rgba(212, 175, 55, 0.08));
-            opacity: 0;
-            transition: opacity 0.5s ease;
-        }
-
-        .service-cta:hover {
-            border-color: var(--text-gold);
-            color: var(--text-gold);
-            transform: translateY(-4px);
-            box-shadow: 0 10px 30px rgba(188, 175, 139, 0.2);
-        }
-
-        .service-cta:hover::before {
-            opacity: 1;
-            left: 150%;
-        }
-
-        .service-cta::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -150%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg,
-                    transparent,
-                    rgba(188, 175, 139, 0.2),
-                    transparent);
-            transform: skewX(-25deg);
-            transition: left 0.75s ease;
-            z-index: 1;
-        }
-
-        .service-cta:hover::after {
-            left: 150%;
-        }
-
-        .service-cta .stretch-arrow {
-            width: 20px;
-            height: 20px;
-        }
-
-        .service-cta:hover .stretch-arrow .arrow-shaft {
-            transform: scaleX(1);
+            color: #111111;
         }
 
         body.header-light-mode .hamburger span {
@@ -1021,7 +951,7 @@
             }
 
             .hero-ctas {
-                gap: 1.5rem;
+                gap: 2.5rem;
             }
 
             .cta-link {
@@ -1036,6 +966,10 @@
 
             .hero-title {
                 font-size: 1.15rem;
+            }
+
+            .hero-subtitle {
+                font-size: 0.9rem;
             }
 
             .header {
@@ -1105,6 +1039,10 @@
                 width: calc(8vw * var(--letter-w, 0.75));
             }
 
+            .hero-ctas {
+                gap: 2rem;
+            }
+
             .cta-link {
                 font-size: 1rem;
                 gap: 0.5rem;
@@ -1124,7 +1062,7 @@
 
             .mobile-hero-ctas .cta-link {
                 padding-bottom: 4px;
-                font-size: 1.15rem;
+                font-size: 0.85rem;
                 letter-spacing: 0.1em;
                 border-bottom: 1px solid rgba(255, 255, 255, 0.3);
                 gap: 0.5rem;
@@ -1142,6 +1080,11 @@
                 margin-bottom: 0.75rem;
                 letter-spacing: -0.01em;
                 line-height: 1.1;
+            }
+
+            .hero-subtitle {
+                font-size: 0.85rem;
+                line-height: 1.5;
             }
 
             .hero-scroll {
@@ -1173,11 +1116,11 @@
             }
 
             .header-logo {
-                height: 16px;
+                height: 12px;
             }
 
             .header-letter {
-                width: calc(16px * var(--letter-w, 1));
+                width: calc(12px * var(--letter-w, 1));
             }
 
             .header-nav {
@@ -1273,7 +1216,7 @@
         ============================================= */
         @media (max-width: 480px) {
             .splash-intro {
-                padding: 3rem 1.25rem 3rem 1.25rem;
+                padding: 5rem 1.25rem 5rem 1.25rem;
                 gap: 3rem;
             }
 
@@ -1292,11 +1235,11 @@
             }
 
             .header-logo {
-                height: 12px;
+                height: 18px;
             }
 
             .header-letter {
-                width: calc(12px * var(--letter-w, 1));
+                width: calc(18px * var(--letter-w, 1));
             }
         }
 
@@ -1348,6 +1291,456 @@
                 display: none;
             }
         }
+
+        /* =============================================
+           SERVICES SCROLL SECTION
+        ============================================= */
+        .services-scroll {
+            position: relative;
+            background-color: var(--bg-white);
+            color: var(--text-black);
+        }
+
+        .services-scroll-inner {
+            position: relative;
+            height: 300vh;
+        }
+
+        .services-sticky {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            overflow: clip;
+        }
+
+        .services-container {
+            width: 100%;
+            padding: 0 3rem;
+            display: grid;
+            grid-template-columns: auto 0.5fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        /* Progress Track (Left Line) */
+        .services-progress {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 280px;
+            width: fit-content;
+            position: relative;
+        }
+
+        .services-progress-track {
+            width: 2px;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.08);
+            position: relative;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .services-progress-fill {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 0%;
+            background: linear-gradient(to bottom, var(--text-gold), #d4af37);
+            border-radius: 2px;
+            will-change: height;
+        }
+
+        /* Content (Left column) */
+        .services-content {
+            position: relative;
+            min-height: 360px;
+        }
+
+        .service-item {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .service-item.active {
+            opacity: 1;
+            pointer-events: auto;
+            position: relative;
+        }
+
+        /* Luxury Staggered Reveal */
+        .service-label,
+        .service-title,
+        .service-description,
+        .service-cta {
+            opacity: 0;
+            transform: translateY(30px) skewY(2deg);
+            filter: blur(12px);
+            transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 1.2s cubic-bezier(0.16, 1, 0.3, 1),
+                filter 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: transform, opacity, filter;
+        }
+
+        .service-item.active .service-label {
+            opacity: 1;
+            transform: translateY(0) skewY(0deg);
+            filter: blur(0px);
+            transition-delay: 0.1s;
+        }
+
+        .service-item.active .service-title {
+            opacity: 1;
+            transform: translateY(0) skewY(0deg);
+            filter: blur(0px);
+            transition-delay: 0.2s;
+        }
+
+        .service-item.active .service-description {
+            opacity: 1;
+            transform: translateY(0) skewY(0deg);
+            filter: blur(0px);
+            transition-delay: 0.3s;
+        }
+
+        .service-item.active .service-cta {
+            opacity: 1;
+            transform: translateY(0) skewY(0deg);
+            filter: blur(0px);
+            transition-delay: 0.4s;
+        }
+
+        /* Outgoing state for smoothness */
+        .service-item:not(.active) .service-label,
+        .service-item:not(.active) .service-title,
+        .service-item:not(.active) .service-description,
+        .service-item:not(.active) .service-cta {
+            opacity: 0;
+            transform: translateY(-20px);
+            filter: blur(5px);
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            transition-delay: 0s !important;
+        }
+
+        .service-label {
+            font-family: 'Manrope', sans-serif;
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: var(--text-gold);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .service-label-line {
+            width: 30px;
+            height: 1px;
+            background-color: var(--text-gold);
+        }
+
+        .service-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(2.5rem, 4vw, 4.5rem);
+            font-weight: 700;
+            line-height: 1.05;
+            letter-spacing: 0.02em;
+            text-transform: uppercase;
+            margin-bottom: 1.5rem;
+            color: var(--text-black);
+        }
+
+        .service-description {
+            font-family: 'Manrope', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 400;
+            line-height: 1.7;
+            color: var(--text-black);
+            max-width: 420px;
+            margin-bottom: 2.5rem;
+        }
+
+        .service-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--text-black);
+            text-decoration: none;
+            padding: 0.85rem 2.25rem;
+            border: 1px solid rgba(17, 17, 17, 0.15);
+            border-radius: 50px;
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .service-cta::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(188, 175, 139, 0.15), rgba(212, 175, 55, 0.08));
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .service-cta:hover {
+            border-color: var(--text-gold);
+            color: var(--text-gold);
+            transform: translateY(-4px);
+            box-shadow: 0 10px 30px rgba(188, 175, 139, 0.2);
+        }
+
+        .service-cta:hover::before {
+            opacity: 1;
+            left: 150%;
+        }
+
+        /* Add shimmer to service-cta too */
+        .service-cta::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -150%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg,
+                    transparent,
+                    rgba(188, 175, 139, 0.2),
+                    transparent);
+            transform: skewX(-25deg);
+            transition: left 0.75s ease;
+            z-index: 1;
+        }
+
+        .service-cta:hover::after {
+            left: 150%;
+        }
+
+        .service-cta .stretch-arrow {
+            width: 20px;
+            height: 20px;
+        }
+
+        .service-cta:hover .stretch-arrow .arrow-shaft {
+            transform: scaleX(1);
+        }
+
+        /* Images (Right column) */
+        .services-images {
+            position: relative;
+            height: 90vh;
+        }
+
+        /* Shared persistent background card */
+        .services-images::before {
+            content: '';
+            position: absolute;
+            width: 45%;
+            height: 65%;
+            left: 5%;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #ffffff;
+            z-index: 40;
+            box-shadow: 20px 20px 60px rgba(0, 0, 0, 0.1);
+            pointer-events: none;
+        }
+
+        .service-image-wrapper {
+            position: absolute;
+            inset: 0;
+            opacity: 1;
+            visibility: visible;
+            pointer-events: none;
+            transition: opacity 0.6s ease;
+        }
+
+        /* Shutter stacking order: main images overlap, secondary cards stay on top */
+        .service-image-wrapper[data-service-img="0"] .service-img-main {
+            z-index: 10;
+        }
+
+        .service-image-wrapper[data-service-img="1"] .service-img-main {
+            z-index: 20;
+        }
+
+        .service-image-wrapper[data-service-img="2"] .service-img-main {
+            z-index: 30;
+        }
+
+        .service-img-main {
+            position: absolute;
+            width: 65%;
+            height: 100%;
+            right: 0;
+            top: 0;
+            overflow: hidden;
+            z-index: 1;
+
+            /* Shutter Mask Effect */
+            -webkit-mask-image: repeating-linear-gradient(to bottom,
+                    #000 0%,
+                    #000 var(--shutter-p, 0%),
+                    transparent var(--shutter-p, 0%),
+                    transparent 100%);
+            mask-image: repeating-linear-gradient(to bottom,
+                    #000 0%,
+                    #000 var(--shutter-p, 0%),
+                    transparent var(--shutter-p, 0%),
+                    transparent 100%);
+            -webkit-mask-size: 100% 50px;
+            mask-size: 100% 50px;
+            will-change: mask-image, -webkit-mask-image;
+            overflow: hidden;
+        }
+
+        /* First image should be visible by default if progress is 0 */
+        .service-image-wrapper[data-service-img="0"] .service-img-main {
+            --shutter-p: 100%;
+        }
+
+        .service-image-wrapper.active {
+            pointer-events: auto;
+        }
+
+
+
+        .service-image-wrapper.active .service-img-secondary {
+            pointer-events: auto;
+        }
+
+        .service-img-main img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .service-image-wrapper[data-service-img="1"] .service-img-main img,
+        .service-image-wrapper[data-service-img="2"] .service-img-main img {
+            object-position: top;
+        }
+
+        .service-img-main .img-placeholder {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #e8e6e1 0%, #d9d5cd 50%, #e8e6e1 100%);
+        }
+
+        /* Foreground image — overlapping, square-ish, center-left */
+
+
+        .service-img-secondary {
+            position: absolute;
+            width: 45%;
+            height: 65%;
+            left: 5%;
+            top: 50%;
+            transform: translateY(-50%);
+            opacity: 1;
+            filter: none;
+            overflow: visible;
+            z-index: 50;
+            /* Above the shared background */
+            background: transparent;
+            box-shadow: none;
+        }
+
+        .service-img-secondary img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        /* Market Insight Card Style */
+        .market-insight-card {
+            width: 100%;
+            height: 100%;
+            background: transparent;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .market-insight-card::before {
+            content: '';
+            position: absolute;
+            inset: 1rem;
+            border: 1px solid rgba(188, 175, 139, 0.2);
+            pointer-events: none;
+        }
+
+        .insight-value {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(2.5rem, 4vw, 4.5rem);
+            font-weight: 500;
+            color: #111111;
+            line-height: 1;
+            margin-bottom: 1.5rem;
+            position: relative;
+
+            /* Initial state for transition */
+            opacity: 0;
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .service-image-wrapper.active .insight-value {
+            opacity: 1;
+            transition-delay: 0.4s;
+        }
+
+        .insight-value::after {
+            content: '';
+            position: absolute;
+            bottom: -0.75rem;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 1px;
+            background-color: #bcaf8b;
+        }
+
+        .insight-label {
+            font-family: 'Manrope', sans-serif;
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: #bcaf8b;
+            max-width: 200px;
+            line-height: 1.8;
+
+            /* Initial state for transition */
+            opacity: 0;
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .service-image-wrapper.active .insight-label {
+            opacity: 1;
+            transition-delay: 0.5s;
+        }
+
+
 
         /* =============================================
            COLLECTION SECTION
@@ -1550,11 +1943,33 @@
         /* Valuation Tool Section */
         .valuation-section {
             position: relative;
-            background-color: var(--bg-white);
-            padding: 120px 0;
+            min-height: 100vh;
+            height: auto;
+            padding: 100px 0;
             overflow: hidden;
             display: flex;
             align-items: center;
+        }
+
+        .valuation-bg {
+            position: absolute;
+            top: -20%;
+            left: 0;
+            width: 100%;
+            height: 140%;
+            background-image: url('buy.jpg');
+            background-size: cover;
+            background-position: center;
+            z-index: 1;
+            will-change: transform;
+        }
+
+        .valuation-bg::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to right, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.3) 100%);
+            z-index: 2;
         }
 
         .valuation-container {
@@ -1571,9 +1986,9 @@
         .valuation-content {
             display: flex;
             flex-direction: column;
-            color: var(--text-black);
+            justify-content: center;
+            color: #ffffff;
             padding-right: 4rem;
-            padding-top: 2rem;
         }
 
         .valuation-tagline {
@@ -1610,10 +2025,9 @@
             font-family: 'Manrope', sans-serif;
             font-size: 1.1rem;
             line-height: 1.8;
-            color: var(--text-black);
+            color: rgba(255, 255, 255);
             max-width: 500px;
-            margin-bottom: 1.5rem;
-            opacity: 0.8;
+            margin-bottom: 3rem;
         }
 
         .valuation-trust {
@@ -1622,7 +2036,7 @@
             font-weight: 700;
             letter-spacing: 0.1em;
             text-transform: uppercase;
-            color: rgba(0, 0, 0, 0.5);
+            color: rgba(255, 255, 255, 0.5);
             display: flex;
             align-items: center;
             gap: 0.75rem;
@@ -1632,7 +2046,6 @@
             width: 14px;
             height: 14px;
             opacity: 0.6;
-            filter: invert(1);
         }
 
         .valuation-form-wrapper {
@@ -1640,6 +2053,7 @@
             justify-content: flex-end;
             align-items: stretch;
             height: 100%;
+            padding: 1.5rem 0;
             width: 50vw;
         }
 
@@ -1648,7 +2062,7 @@
             width: calc(100% - 1.5rem);
             min-height: 700px;
             height: auto;
-            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.2);
             position: relative;
             overflow: hidden;
             display: flex;
@@ -1661,12 +2075,6 @@
             flex: 1;
             width: 100%;
             background: #ffffff;
-        }
-
-        .valuation-cta {
-            grid-column: 1;
-            margin-top: 3rem;
-            width: fit-content;
         }
 
         @media (max-width: 1024px) {
@@ -1691,13 +2099,6 @@
             .valuation-headline {
                 margin-left: auto;
                 margin-right: auto;
-            }
-
-            .valuation-cta {
-                margin-left: auto;
-                margin-right: auto;
-                margin-top: 2rem;
-                margin-bottom: 4rem;
             }
 
             .valuation-form-wrapper {
@@ -1731,7 +2132,6 @@
             }
 
             .valuation-content {
-                margin-top: 0;
                 margin-bottom: 2rem;
             }
 
@@ -1751,6 +2151,160 @@
                 height: 500px;
                 width: 100%;
                 margin-right: 0;
+            }
+        }
+
+        /* Responsive - Tablet */
+        @media (max-width: 1024px) {
+            .services-container {
+                grid-template-columns: auto 0.5fr 1fr;
+                gap: 2.5rem;
+                padding: 0 2.5rem;
+            }
+
+            .service-title {
+                font-size: clamp(2rem, 5vw, 3.5rem);
+            }
+
+            .services-progress {
+                height: 220px;
+            }
+
+            .services-images {
+                height: 60vh;
+            }
+        }
+
+        /* Responsive - Mobile */
+        @media (max-width: 768px) {
+            .services-scroll-inner {
+                height: 450vh;
+            }
+
+            .services-sticky {
+                align-items: flex-start;
+                padding-top: max(130px, 15vh);
+                /* Dynamic clearance for header/nav + whitespace balance */
+            }
+
+            .services-container {
+                display: grid;
+                grid-template-columns: 2px 1fr;
+                grid-template-rows: auto auto;
+                gap: 2rem 1.25rem;
+                padding: 0 1.5rem;
+                width: 100%;
+                max-width: 100vw;
+            }
+
+            .services-progress {
+                grid-row: 1;
+                height: 100%;
+                max-height: 250px;
+                width: 2px;
+                align-self: center;
+                margin-left: 0;
+                position: relative;
+                z-index: 10;
+            }
+
+            .services-content {
+                grid-column: 2;
+                min-height: auto;
+                width: 100%;
+                padding-left: 0;
+                position: relative;
+            }
+
+            .service-title {
+                font-size: clamp(1.8rem, 8vw, 2.3rem);
+                line-height: 1.1;
+                margin-bottom: 0.75rem;
+                letter-spacing: -0.01em;
+            }
+
+            .service-label {
+                margin-bottom: 0.75rem;
+                font-size: 0.65rem;
+            }
+
+            .service-description {
+                font-size: 0.85rem;
+                line-height: 1.6;
+                max-width: 100%;
+                margin-bottom: 1.5rem;
+                color: rgba(17, 17, 17, 0.8);
+            }
+
+            .service-cta {
+                font-size: 0.65rem;
+                padding: 0.65rem 1.25rem;
+            }
+
+            .service-cta .stretch-arrow {
+                width: 16px;
+                height: 16px;
+            }
+
+            .services-images {
+                grid-column: 1 / 3;
+                width: 100%;
+                height: 38vh;
+                /* Increased to reduce bottom whitespace on tall screens */
+                position: relative;
+                margin-top: 1rem;
+            }
+
+            .service-img-main {
+                width: 85%;
+                height: 100%;
+                left: 0;
+                right: auto;
+            }
+
+            .service-img-secondary {
+                width: 55%;
+                height: 65%;
+                right: 0;
+                left: auto;
+                top: auto;
+                bottom: 5%;
+                transform: none;
+                box-shadow: none;
+                background: transparent;
+            }
+
+            .services-images::before {
+                width: 55%;
+                height: 65%;
+                right: 0;
+                left: auto;
+                top: auto;
+                bottom: 5%;
+                transform: none;
+                box-shadow: 10px 10px 30px rgba(0, 0, 0, 0.1);
+            }
+
+            .market-insight-card {
+                padding: 1rem;
+            }
+
+            /* Consistent Reveal */
+            .service-label,
+            .service-title,
+            .service-description,
+            .service-cta {
+                transform: translateY(15px);
+                filter: blur(5px);
+                transition-duration: 0.7s;
+            }
+
+            .service-item.active .service-label,
+            .service-item.active .service-title,
+            .service-item.active .service-description,
+            .service-item.active .service-cta {
+                transform: translateY(0);
+                filter: blur(0px);
             }
         }
     </style>
@@ -2082,9 +2636,138 @@
         <div class="hero-overlay"></div>
     </main>
 
+    <!-- SERVICES SCROLL SECTION -->
+    <section class="services-scroll" id="servicesScroll">
+        <div class="services-scroll-inner">
+            <div class="services-sticky">
+                <div class="services-container">
+
+                    <!-- Progress Indicator -->
+                    <div class="services-progress">
+                        <div class="services-progress-track">
+                            <div class="services-progress-fill" id="progressFill"></div>
+                        </div>
+                    </div>
+
+                    <!-- Content -->
+                    <div class="services-content">
+                        <!-- BUY -->
+                        <div class="service-item active" data-service="0">
+                            <div class="service-label">
+                                <span class="service-label-line"></span>
+                                <span>01 / BUY</span>
+                            </div>
+                            <h2 class="service-title">CURATED<br>LIVING</h2>
+                            <p class="service-description">Explore an exclusive portfolio of Tenerife’s finest
+                                properties. From coastal estates to modern architectural homes, we align extraordinary
+                                residences with your exact lifestyle.</p>
+                            <a href="#" class="service-cta">
+                                <span>Browse Properties</span>
+                                <svg class="stretch-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+                                    <g class="arrow-shaft">
+                                        <line x1="2" y1="12" x2="20" y2="12" />
+                                    </g>
+                                    <polyline class="arrow-head" points="18 8 22 12 18 16" />
+                                </svg>
+                            </a>
+                        </div>
+
+                        <!-- SELL -->
+                        <div class="service-item" data-service="1">
+                            <div class="service-label">
+                                <span class="service-label-line"></span>
+                                <span>02 / SELL</span>
+                            </div>
+                            <h2 class="service-title">MAXIMIZE<br>YOUR ASSET</h2>
+                            <p class="service-description">Leverage our targeted marketing, precise valuation, and an
+                                exclusive network of international buyers to secure the highest possible return for your
+                                property.</p>
+                            <a href="#" class="service-cta">
+                                <span>Get a Valuation</span>
+                                <svg class="stretch-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+                                    <g class="arrow-shaft">
+                                        <line x1="2" y1="12" x2="20" y2="12" />
+                                    </g>
+                                    <polyline class="arrow-head" points="18 8 22 12 18 16" />
+                                </svg>
+                            </a>
+                        </div>
+
+                        <!-- INVEST -->
+                        <div class="service-item" data-service="2">
+                            <div class="service-label">
+                                <span class="service-label-line"></span>
+                                <span>03 / INVEST</span>
+                            </div>
+                            <h2 class="service-title">PRIME<br>RETURNS</h2>
+                            <p class="service-description">Access off-market assets and high-ROI opportunities. Our
+                                advisory delivers data-driven market intelligence for secure and profitable Tenerife
+                                investments.</p>
+                            <a href="#" class="service-cta">
+                                <span>Explore Opportunities</span>
+                                <svg class="stretch-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+                                    <g class="arrow-shaft">
+                                        <line x1="2" y1="12" x2="20" y2="12" />
+                                    </g>
+                                    <polyline class="arrow-head" points="18 8 22 12 18 16" />
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Images -->
+                    <div class="services-images">
+                        <!-- BUY Images -->
+                        <div class="service-image-wrapper active" data-service-img="0">
+                            <div class="service-img-main">
+                                <img src="buy.jpg" alt="Invest">
+                            </div>
+                            <div class="service-img-secondary">
+                                <div class="market-insight-card">
+                                    <div class="insight-value">€3,800</div>
+                                    <div class="insight-label">AVG. PRICE PER M² IN PRIME TENERIFE</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- SELL Images -->
+                        <div class="service-image-wrapper" data-service-img="1">
+                            <div class="service-img-main">
+                                <img src="sell.jpg" alt="Invest">
+                            </div>
+                            <div class="service-img-secondary">
+                                <div class="market-insight-card">
+                                    <div class="insight-value">+4.2%</div>
+                                    <div class="insight-label">PROPERTY VALUE INCREASE THIS YEAR</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- INVEST Images -->
+                        <div class="service-image-wrapper" data-service-img="2">
+                            <div class="service-img-main">
+                                <img src="invest.jpg" alt="Invest">
+                            </div>
+                            <div class="service-img-secondary">
+                                <div class="market-insight-card">
+                                    <div class="insight-value">2.68%</div>
+                                    <div class="insight-label">CURRENT EURIBOR RATE</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
 
     <!-- Valuation Tool Section -->
     <section class="valuation-section" id="valuation">
+        <div class="valuation-bg"></div>
         <div class="valuation-container">
             <div class="valuation-content">
                 <div class="valuation-tagline">Know Your Worth</div>
@@ -2123,16 +2806,6 @@
                     </div>
                 </div>
             </div>
-            <a href="#" class="service-cta valuation-cta">
-                <span>Sell Your Property</span>
-                <svg class="stretch-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"
-                    stroke-linecap="round" stroke-linejoin="round">
-                    <g class="arrow-shaft">
-                        <line x1="2" y1="12" x2="20" y2="12" />
-                    </g>
-                    <polyline class="arrow-head" points="18 8 22 12 18 16" />
-                </svg>
-            </a>
         </div>
     </section>
 
@@ -2751,50 +3424,33 @@
 
             // -------------------------------------------------------
             // PARALLAX VIDEO ZOOM (Cinematic Fixed Feel)
-            // Disable on mobile/touch for performance
             // -------------------------------------------------------
-            const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-
-            if (!isTouchDevice && window.innerWidth > 1024) {
-                gsap.fromTo(".hero-bg-video",
-                    { scale: 1 },
-                    {
-                        scrollTrigger: {
-                            trigger: ".main-hero",
-                            start: "top top",
-                            end: "bottom top",
-                            scrub: true
-                        },
-                        y: "50%",       // Slower movement for fixed feel
-                        scale: 1,      // Cinematic zoom
-                        ease: "none"
-                    }
-                );
-
-                // IMPROVED: overlay fade tetap linear tapi scrub lebih halus
-                gsap.to(".hero-overlay", {
+            gsap.fromTo(".hero-bg-video",
+                { scale: 1 },
+                {
                     scrollTrigger: {
                         trigger: ".main-hero",
                         start: "top top",
                         end: "bottom top",
-                        scrub: true,             // FIXED: linear response
+                        scrub: true
                     },
-                    opacity: 0.85,
+                    y: "50%",       // Slower movement for fixed feel
+                    scale: 1,      // Cinematic zoom
                     ease: "none"
-                });
-            } else {
-                // On mobile, just a simple static fade or no parallax
-                gsap.to(".hero-overlay", {
-                    scrollTrigger: {
-                        trigger: ".main-hero",
-                        start: "top top",
-                        end: "bottom top",
-                        scrub: true,
-                    },
-                    opacity: 0.7, // Slightly lighter fixed opacity for better visibility
-                    ease: "none"
-                });
-            }
+                }
+            );
+
+            // IMPROVED: overlay fade tetap linear tapi scrub lebih halus
+            gsap.to(".hero-overlay", {
+                scrollTrigger: {
+                    trigger: ".main-hero",
+                    start: "top top",
+                    end: "bottom top",
+                    scrub: true,             // FIXED: linear response
+                },
+                opacity: 0.85,
+                ease: "none"
+            });
 
 
             // -------------------------------------------------------
@@ -2917,6 +3573,128 @@
             }
 
 
+            // -------------------------------------------------------
+            // SERVICES SCROLL SECTION
+            // -------------------------------------------------------
+            const servicesSection = document.getElementById('servicesScroll');
+            if (servicesSection) {
+                const serviceItems = document.querySelectorAll('.service-item');
+                const serviceImages = document.querySelectorAll('.service-image-wrapper');
+                const progressFill = document.getElementById('progressFill');
+                let currentService = 0;
+
+                function setActiveService(index) {
+                    if (index === currentService) return;
+                    currentService = index;
+
+                    serviceItems.forEach((item, i) => {
+                        if (i === index) {
+                            item.classList.add('active');
+                        } else {
+                            // Clear any GSAP inline styles so CSS :not(.active) rules apply
+                            const children = item.querySelectorAll('.service-label, .service-title, .service-description, .service-cta');
+                            gsap.set(children, { clearProps: "opacity,y,transform,filter" });
+                            item.classList.remove('active');
+                        }
+                    });
+
+                    serviceImages.forEach((img, i) => {
+                        if (i === index) {
+                            img.classList.add('active');
+                        } else {
+                            img.classList.remove('active');
+                        }
+                    });
+                }
+
+                ScrollTrigger.create({
+                    trigger: '.services-scroll-inner',
+                    start: 'top top',
+                    end: 'bottom bottom',
+                    scrub: true,
+                    onUpdate: (self) => {
+                        const progress = self.progress;
+
+                        // Smooth scrollbar fill
+                        if (progressFill) {
+                            progressFill.style.height = (progress * 100) + '%';
+                        }
+
+                        // Shutter Reveal Logic with custom thresholds
+                        // Item 0: 0 - 0.25
+                        // Item 1: 0.25 - 0.75 (Longest)
+                        // Item 2: 0.75 - 1.0
+
+                        const thresholds = [0.4, 0.8, 1.0];
+
+                        serviceImages.forEach((wrapper, i) => {
+                            const mainImg = wrapper.querySelector('.service-img-main');
+                            if (!mainImg) return;
+
+                            let shutterP = 0;
+                            if (i === 0) {
+                                shutterP = 100;
+                            } else {
+                                // Image i reveals just before the previous threshold
+                                const prevThreshold = thresholds[i - 1];
+                                const start = prevThreshold - 0.2;
+                                const end = prevThreshold;
+
+                                if (progress <= start) shutterP = 0;
+                                else if (progress >= end) shutterP = 100;
+                                else {
+                                    shutterP = ((progress - start) / (end - start)) * 100;
+                                }
+                            }
+
+                            // STAGGERED SHUTTER REVEAL
+                            if (shutterP <= 0) {
+                                mainImg.style.webkitMaskImage = 'linear-gradient(transparent, transparent)';
+                                mainImg.style.maskImage = 'linear-gradient(transparent, transparent)';
+                            } else if (shutterP >= 100) {
+                                mainImg.style.webkitMaskImage = 'none';
+                                mainImg.style.maskImage = 'none';
+                            } else {
+                                const numStrips = 16;
+                                const stagger = 0.4; // 40% overlap/stagger
+                                let stops = [];
+                                for (let j = 0; j < numStrips; j++) {
+                                    // Reverse stagger: bottom strips reveal first
+                                    const stripStart = ((numStrips - 1 - j) / numStrips) * (1 - stagger);
+                                    const stripEnd = stripStart + stagger;
+                                    const p = shutterP / 100;
+
+                                    let sP = (p - stripStart) / (stripEnd - stripStart);
+                                    sP = Math.max(0, Math.min(1, sP));
+
+                                    const y1 = (j / numStrips) * 100;
+                                    const y2 = ((j + 1) / numStrips) * 100;
+                                    // Fill each strip from bottom to top
+                                    const cut = y2 - (y2 - y1) * sP;
+
+                                    stops.push(`transparent ${y1}%`);
+                                    stops.push(`transparent ${cut}%`);
+                                    stops.push(`#000 ${cut}%`);
+                                    stops.push(`#000 ${y2}%`);
+                                }
+                                const grad = `linear-gradient(to bottom, ${stops.join(', ')})`;
+                                mainImg.style.webkitMaskImage = grad;
+                                mainImg.style.maskImage = grad;
+                                mainImg.style.webkitMaskSize = '100% 100%';
+                                mainImg.style.maskSize = '100% 100%';
+                            }
+                        });
+
+                        // Content switching
+                        let activeIndex = 0;
+                        if (progress < thresholds[0]) activeIndex = 0;
+                        else if (progress < thresholds[1]) activeIndex = 1;
+                        else activeIndex = 2;
+
+                        setActiveService(activeIndex);
+                    }
+                });
+            }
 
             // -------------------------------------------------------
             // COLLECTION SECTION ENTRANCE
@@ -2947,7 +3725,105 @@
                     }, "-=1.0");
             }
 
+            // -------------------------------------------------------
+            // VALUATION SECTION PARALLAX & ENTRANCE
+            // -------------------------------------------------------
+            const valuationSection = document.querySelector('.valuation-section');
+            if (valuationSection) {
+                // Background parallax
+                gsap.to('.valuation-bg', {
+                    yPercent: 20,
+                    ease: "none",
+                    scrollTrigger: {
+                        trigger: valuationSection,
+                        start: "top bottom",
+                        end: "bottom top",
+                        scrub: true
+                    }
+                });
 
+                // Content parallax
+                gsap.to('.valuation-content', {
+                    y: -50,
+                    ease: "none",
+                    scrollTrigger: {
+                        trigger: valuationSection,
+                        start: "top bottom",
+                        end: "bottom top",
+                        scrub: true
+                    }
+                });
+
+                // Entrance Reveal (Staggered)
+                const valTL = gsap.timeline({
+                    scrollTrigger: {
+                        trigger: valuationSection,
+                        start: "top 55%",
+                    }
+                });
+
+                valTL.from('.valuation-bg', {
+                    scale: 1.1,
+                    duration: 2.5,
+                    ease: "expo.out"
+                }, 0)
+                    .from('.valuation-tagline, .valuation-headline, .valuation-body, .valuation-trust', {
+                        y: 40,
+                        opacity: 0,
+                        duration: 1.2,
+                        stagger: 0.2,
+                        ease: "expo.out"
+                    }, 0.3)
+                    .from('.valuation-card', {
+                        y: 100,
+                        opacity: 0,
+                        duration: 1.5,
+                        ease: "expo.out"
+                    }, 0.5);
+
+                // Toggle header light mode when valuation section overlaps header
+                const header = document.querySelector('.header');
+                ScrollTrigger.create({
+                    trigger: valuationSection,
+                    start: () => `top ${header.offsetHeight}px`,
+                    end: () => `bottom ${header.offsetHeight}px`,
+                    onEnter: () => document.body.classList.add('header-light-mode'),
+                    onLeave: () => document.body.classList.remove('header-light-mode'),
+                    onEnterBack: () => document.body.classList.add('header-light-mode'),
+                    onLeaveBack: () => document.body.classList.remove('header-light-mode')
+                });
+            }
+
+            // -------------------------------------------------------
+            // SERVICES SECTION ENTRANCE
+            // -------------------------------------------------------
+            const servicesScroll = document.querySelector('.services-scroll');
+            if (servicesScroll) {
+                const servicesTL = gsap.timeline({
+                    scrollTrigger: {
+                        trigger: servicesScroll,
+                        start: "top 55%", // Trigger much later, when it's fully entering the view
+                    }
+                });
+
+                // Stagger first service content
+                servicesTL.fromTo('.service-item[data-service="0"] .service-label, .service-item[data-service="0"] .service-title, .service-item[data-service="0"] .service-description, .service-item[data-service="0"] .service-cta',
+                    { y: 30, opacity: 0, filter: 'blur(12px)', skewY: 2, transition: 'none' },
+                    {
+                        y: 0, opacity: 1, filter: 'blur(0px)', skewY: 0,
+                        duration: 2,
+                        stagger: 0.15,
+                        ease: "power3.out",
+                        clearProps: "transition"
+                    }, 0)
+                    // Image entry
+                    .from('.services-images', {
+                        x: 50,
+                        opacity: 0,
+                        duration: 2,
+                        ease: "power3.out"
+                    }, 0);
+            }
 
         });
     </script>
