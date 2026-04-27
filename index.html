@@ -58,7 +58,7 @@
             left: 0;
             width: 100%;
             height: 100svh;
-            z-index: 9999;
+            z-index: 99999;
             display: flex;
             align-items: flex-end;
             justify-content: space-between;
@@ -68,7 +68,6 @@
             opacity: 1;
             /* Hide main-hero behind splash-bg initially */
             pointer-events: auto;
-            will-change: opacity;
         }
 
         .main-hero {
@@ -1258,7 +1257,7 @@
 
         .services-scroll-inner {
             position: relative;
-            height: 400vh;
+            height: 300vh;
         }
 
         .services-sticky {
@@ -1700,6 +1699,204 @@
         }
 
 
+
+        /* =============================================
+           COLLECTION SECTION
+        ============================================= */
+        .collection-section {
+            position: relative;
+            padding: 10rem 0;
+            background-color: var(--bg-white);
+            color: var(--text-black);
+            overflow: hidden;
+            z-index: 10;
+        }
+
+        .development-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 50;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: all;
+        }
+
+        .development-overlay span {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2rem;
+            font-weight: 700;
+            color: #111;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 1rem 2.5rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        .collection-container {
+            width: 100%;
+            padding: 0 3rem;
+            display: grid;
+            grid-template-columns: 0.8fr 1.2fr;
+            gap: 6rem;
+            align-items: center;
+        }
+
+        .collection-info {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .collection-label {
+            font-family: 'Manrope', sans-serif;
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: var(--text-gold);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .collection-label-line {
+            width: 30px;
+            height: 1px;
+            background-color: var(--text-gold);
+        }
+
+        .collection-headline {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(2.5rem, 4vw, 4.5rem);
+            font-weight: 400;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            color: var(--text-black);
+        }
+
+        .collection-desc {
+            font-family: 'Manrope', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 400;
+            line-height: 1.7;
+            color: var(--text-black);
+            max-width: 480px;
+            margin-bottom: 2.5rem;
+        }
+
+        .collection-carousel-wrapper {
+            width: 100%;
+            position: relative;
+        }
+
+        .collection-carousel {
+            display: flex;
+            gap: 2rem;
+            overflow-x: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            padding-bottom: 2rem;
+            cursor: grab;
+        }
+
+        .collection-carousel::-webkit-scrollbar {
+            display: none;
+        }
+
+        .collection-carousel:active {
+            cursor: grabbing;
+        }
+
+        .property-card {
+            flex: 0 0 calc(50% - 1rem);
+            min-width: 280px;
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .property-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .property-img-wrapper {
+            width: 100%;
+            aspect-ratio: 3/4;
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+            background-color: #f5f5f5;
+        }
+
+        .property-img-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .property-card:hover .property-img-wrapper img {
+            transform: scale(1.05);
+        }
+
+        .property-details {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .property-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.75rem;
+            font-weight: 600;
+            color: var(--text-black);
+        }
+
+        .property-meta {
+            font-family: 'Manrope', sans-serif;
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.15em;
+            color: rgba(0, 0, 0, 0.5);
+            text-transform: uppercase;
+        }
+
+        @media (max-width: 1024px) {
+            .collection-container {
+                grid-template-columns: 1fr;
+                gap: 4rem;
+            }
+
+            .property-card {
+                flex: 0 0 calc(45% - 1rem);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .collection-section {
+                padding: 6rem 0;
+            }
+
+            .collection-container {
+                padding: 0 1.5rem;
+            }
+
+            .property-card {
+                flex: 0 0 85%;
+            }
+
+            .collection-headline {
+                font-size: 2.5rem;
+            }
+        }
 
         /* Valuation Tool Section */
         .valuation-section {
@@ -2514,6 +2711,74 @@
         </div>
     </section>
 
+    <!-- THE COLLECTION SECTION -->
+    <section class="collection-section" id="collection">
+        <!-- Under Development Overlay -->
+        <div class="development-overlay">
+            <span>Under Development</span>
+        </div>
+        <div class="collection-container">
+            <!-- Left Side -->
+            <div class="collection-info">
+                <div class="collection-label">
+                    <span class="collection-label-line"></span>
+                    <span>THE COLLECTION</span>
+                </div>
+                <h2 class="collection-headline">Architectural sanctuaries designed for the Tenerife lifestyle.</h2>
+                <p class="collection-desc">Curated for the discerning buyer, our exclusive portfolio showcases the
+                    island's most extraordinary properties. From oceanfront estates in Costa Adeje to secluded hillside
+                    villas, discover residences where absolute luxury meets the horizon. Each home is thoughtfully
+                    selected to elevate your way of life.</p>
+                <a href="#" class="service-cta">
+                    <span>View All Properties</span>
+                    <svg class="stretch-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <g class="arrow-shaft">
+                            <line x1="2" y1="12" x2="20" y2="12" />
+                        </g>
+                        <polyline class="arrow-head" points="18 8 22 12 18 16" />
+                    </svg>
+                </a>
+            </div>
+
+            <!-- Right Side: Carousel -->
+            <div class="collection-carousel-wrapper">
+                <div class="collection-carousel">
+                    <!-- Card 1 -->
+                    <div class="property-card">
+                        <div class="property-img-wrapper">
+                            <img src="sell.jpg" alt="Villa Azure">
+                        </div>
+                        <div class="property-details">
+                            <h3 class="property-title">Villa Azure</h3>
+                            <p class="property-meta">5 BEDROOMS &bull; COSTA ADEJE</p>
+                        </div>
+                    </div>
+                    <!-- Card 2 -->
+                    <div class="property-card">
+                        <div class="property-img-wrapper">
+                            <img src="buy.jpg" alt="The Horizon Estate">
+                        </div>
+                        <div class="property-details">
+                            <h3 class="property-title">The Horizon Estate</h3>
+                            <p class="property-meta">4 BEDROOMS &bull; LA CALETA</p>
+                        </div>
+                    </div>
+                    <!-- Card 3 -->
+                    <div class="property-card">
+                        <div class="property-img-wrapper">
+                            <img src="invest.jpg" alt="El Teide Retreat">
+                        </div>
+                        <div class="property-details">
+                            <h3 class="property-title">El Teide Retreat</h3>
+                            <p class="property-meta">6 BEDROOMS &bull; ABAMA RESORT</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <section style="height: 100svh; background: #fff; display: flex; align-items:center; justify-content:center;">
         <h2 style="font-weight: 300;">Rest of the website...</h2>
     </section>
@@ -2795,8 +3060,8 @@
                     document.body.style.overflowY = 'auto';
                     lenis.start();
 
-                    // Defer morph setup to next frame — avoids GSAP mid-tick DOM conflict
-                    requestAnimationFrame(() => setupLogoMorph());
+                    // Run morph setup
+                    setupLogoMorph();
 
                     const skipOnScroll = () => {
                         if (tl.progress() < 1) tl.progress(1);
@@ -2920,7 +3185,7 @@
                     pointerEvents: 'none',
                     willChange: 'transform'
                 });
-                document.body.appendChild(logoArea);
+
                 logoArea.style.visibility = '';
 
                 // ── CONFIGURATION & TARGETS ──────────────────
@@ -3251,6 +3516,35 @@
                         setActiveService(activeIndex);
                     }
                 });
+            }
+
+            // -------------------------------------------------------
+            // COLLECTION SECTION ENTRANCE
+            // -------------------------------------------------------
+            const collectionSection = document.querySelector('.collection-section');
+            if (collectionSection) {
+                const colTL = gsap.timeline({
+                    scrollTrigger: {
+                        trigger: collectionSection,
+                        start: "top 60%",
+                    }
+                });
+
+                colTL.from('.collection-label, .collection-headline, .collection-desc, .collection-info .service-cta', {
+                    y: 40,
+                    opacity: 0,
+                    filter: "blur(10px)",
+                    duration: 1.5,
+                    stagger: 0.15,
+                    ease: "power3.out"
+                })
+                    .from('.property-card', {
+                        x: 100,
+                        opacity: 0,
+                        duration: 1.5,
+                        stagger: 0.15,
+                        ease: "power3.out"
+                    }, "-=1.0");
             }
 
             // -------------------------------------------------------
