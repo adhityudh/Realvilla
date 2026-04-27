@@ -828,11 +828,12 @@
 
         .hero-bg-video {
             position: absolute;
-            inset: 0;
+            top: -30%;
+            left: 0;
             width: 100%;
-            height: 100%;
+            height: 130%;
             object-fit: cover;
-            object-position: center bottom;
+            object-position: center;
             z-index: 1;
             transform: scale(1);
             opacity: 0;
@@ -1118,13 +1119,13 @@
             .mobile-hero-ctas {
                 display: flex;
                 gap: 1.5rem;
-                margin-top: 1.5rem;
+                margin-top: 2rem;
                 flex-wrap: wrap;
             }
 
             .mobile-hero-ctas .cta-link {
                 padding-bottom: 4px;
-                font-size: 1.15rem;
+                font-size: 1rem;
                 letter-spacing: 0.1em;
                 border-bottom: 1px solid rgba(255, 255, 255, 0.3);
                 gap: 0.5rem;
@@ -1731,7 +1732,7 @@
             }
 
             .valuation-content {
-                margin-top: 0;
+                padding-top: 0;
                 margin-bottom: 2rem;
             }
 
@@ -2408,6 +2409,35 @@
                 paused: true, // Start paused, preloader will play()
                 onComplete: () => {
                     canParallax = true;
+
+                    // -------------------------------------------------------
+                    // PARALLAX VIDEO ZOOM (Cinematic Fixed Feel)
+                    // -------------------------------------------------------
+                    // Background parallax (Aggressive like valuation section)
+                    gsap.to(".hero-bg-video", {
+                        y: "30%",
+                        ease: "none",
+                        scrollTrigger: {
+                            trigger: ".main-hero",
+                            start: "top top",
+                            end: "bottom top",
+                            scrub: true,
+                            invalidateOnRefresh: true
+                        }
+                    });
+
+                    // IMPROVED: overlay fade tetap linear tapi scrub lebih halus
+                    gsap.to(".hero-overlay", {
+                        scrollTrigger: {
+                            trigger: ".main-hero",
+                            start: "top top",
+                            end: "bottom top",
+                            scrub: true,
+                            invalidateOnRefresh: true
+                        },
+                        opacity: 0.85,
+                        ease: "none"
+                    });
                 }
             });
             /*
@@ -2515,7 +2545,7 @@
 
             tl.fromTo(".hero-subtitle .word-inner",
                 { yPercent: 50, opacity: 0, filter: "blur(5px)" },
-                { yPercent: 0, opacity: 0.8, filter: "blur(0px)", duration: 0.8, stagger: 0.03, ease: "power3.out" }
+                { yPercent: 0, opacity: 1, filter: "blur(0px)", duration: 0.8, stagger: 0.03, ease: "power3.out" }
                 , 2.0);
 
             tl.to(".hero-scroll", {
@@ -2753,48 +2783,6 @@
             // PARALLAX VIDEO ZOOM (Cinematic Fixed Feel)
             // Disable on mobile/touch for performance
             // -------------------------------------------------------
-            const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-
-            if (!isTouchDevice && window.innerWidth > 1024) {
-                gsap.fromTo(".hero-bg-video",
-                    { scale: 1 },
-                    {
-                        scrollTrigger: {
-                            trigger: ".main-hero",
-                            start: "top top",
-                            end: "bottom top",
-                            scrub: true
-                        },
-                        y: "50%",       // Slower movement for fixed feel
-                        scale: 1,      // Cinematic zoom
-                        ease: "none"
-                    }
-                );
-
-                // IMPROVED: overlay fade tetap linear tapi scrub lebih halus
-                gsap.to(".hero-overlay", {
-                    scrollTrigger: {
-                        trigger: ".main-hero",
-                        start: "top top",
-                        end: "bottom top",
-                        scrub: true,             // FIXED: linear response
-                    },
-                    opacity: 0.85,
-                    ease: "none"
-                });
-            } else {
-                // On mobile, just a simple static fade or no parallax
-                gsap.to(".hero-overlay", {
-                    scrollTrigger: {
-                        trigger: ".main-hero",
-                        start: "top top",
-                        end: "bottom top",
-                        scrub: true,
-                    },
-                    opacity: 0.7, // Slightly lighter fixed opacity for better visibility
-                    ease: "none"
-                });
-            }
 
 
             // -------------------------------------------------------
