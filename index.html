@@ -3334,22 +3334,23 @@
                     }
                 });
 
-                // Stagger first service content — starts at t=0 (head start for blur/skew to clear)
+                // Stagger first service content
                 servicesTL.fromTo('.service-item[data-service="0"] .service-label, .service-item[data-service="0"] .service-title, .service-item[data-service="0"] .service-description, .service-item[data-service="0"] .service-cta',
-                    { y: 30, opacity: 0, filter: 'blur(12px)', skewY: 2 },
+                    { y: 30, opacity: 0, filter: 'blur(12px)', skewY: 2, transition: 'none' },
                     {
                         y: 0, opacity: 1, filter: 'blur(0px)', skewY: 0,
-                        duration: 1,
+                        duration: 1.5,
                         stagger: 0.15,
-                        ease: "expo.out"
+                        ease: "power3.out",
+                        clearProps: "transition"
                     }, 0)
-                    // Image entry — slight delay so content and images feel simultaneous
+                    // Image entry
                     .from('.services-images', {
                         x: 50,
                         opacity: 0,
                         duration: 1.5,
-                        ease: "expo.out"
-                    }, 0.3);
+                        ease: "power3.out"
+                    }, 0);
             }
 
         });
