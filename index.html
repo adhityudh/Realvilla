@@ -1575,7 +1575,8 @@
 
             .services-sticky {
                 align-items: flex-start;
-                padding-top: max(130px, 15vh); /* Dynamic clearance for header/nav + whitespace balance */
+                padding-top: max(130px, 15vh);
+                /* Dynamic clearance for header/nav + whitespace balance */
             }
 
             .services-container {
@@ -1640,7 +1641,8 @@
             .services-images {
                 grid-column: 1 / 3;
                 width: 100%;
-                height: 38vh; /* Increased to reduce bottom whitespace on tall screens */
+                height: 38vh;
+                /* Increased to reduce bottom whitespace on tall screens */
                 position: relative;
                 margin-top: 1rem;
             }
@@ -1713,8 +1715,8 @@
             <div class="header-actions">
                 <a href="#" class="btn-book">
                     <span>Speak to an Expert</span>
-                    <svg class="stretch-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                        stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+                    <svg class="stretch-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"
+                        stroke-linecap="round" stroke-linejoin="round">
                         <g class="arrow-shaft">
                             <line x1="2" y1="12" x2="20" y2="12" />
                         </g>
@@ -1755,8 +1757,8 @@
         <a href="#" class="nav-link-mobile">Mortgages</a>
         <a href="#" class="btn-book-mobile">
             <span>Speak to an Expert</span>
-            <svg class="stretch-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+            <svg class="stretch-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"
+                stroke-linecap="round" stroke-linejoin="round">
                 <g class="arrow-shaft">
                     <line x1="2" y1="12" x2="20" y2="12" />
                 </g>
@@ -2115,7 +2117,7 @@
             // IMPROVED: duration 1.8 + quintic ease = buttery feel
             //           tanpa lag saat berhenti (infinite: false)
             // -------------------------------------------------------
-            const isMobile = window.innerWidth <= 768;
+            let isMobile = window.innerWidth <= 768;
             const lenis = new Lenis({
                 duration: isMobile ? 0.8 : 1.2,
                 easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
@@ -2158,11 +2160,27 @@
             }
 
             window.addEventListener('resize', debounce(() => {
-                // generateAtomicGrid();
-                // Trigger full re-anchoring
+                const currentScroll = window.scrollY;
+                
+                // Use Lenis for scroll jump if available for better consistency
+                if (typeof lenis !== 'undefined' && lenis.scrollTo) {
+                    lenis.scrollTo(0, { immediate: true });
+                } else {
+                    window.scrollTo(0, 0);
+                }
+                
+                isMobile = window.innerWidth <= 768;
                 if (isMorphed) {
                     setupLogoMorph();
                 }
+                
+                // Restore scroll
+                if (typeof lenis !== 'undefined' && lenis.scrollTo) {
+                    lenis.scrollTo(currentScroll, { immediate: true });
+                } else {
+                    window.scrollTo(0, currentScroll);
+                }
+                
                 ScrollTrigger.refresh();
             }, 250));
 
@@ -2442,13 +2460,14 @@
                     // Only clearProps on resize re-init (not first call)
                     const _logo = document.querySelector('.logo-content-area');
                     if (_logo) {
+                        // CRITICAL: Clear ALL potential GSAP transforms/states on the logo area itself
                         gsap.set([_logo, heroEl, splashIntro], {
-                            clearProps: "position,left,top,width,margin,padding,zIndex,pointerEvents,willChange"
+                            clearProps: "all" 
                         });
                         const _wc = _logo.querySelector('.word-container');
                         const _hc = splashIntro.querySelector('.hero-ctas');
                         const _hd = splashIntro.querySelector('.hero-description-area');
-                        gsap.set([_wc, _hc, _hd], { clearProps: "transform,x,y,scale,opacity" });
+                        gsap.set([_wc, _hc, _hd], { clearProps: "all" });
                     }
                 }
 
@@ -2471,10 +2490,16 @@
                 logoArea.parentNode.insertBefore(logoAnchor, logoArea);
 
                 logoArea.id = 'morph-breakout-logo';
+                
+                // NORMALIZE COORDINATES: If we are scrolled, getBoundingClientRect is relative to viewport.
+                // We need to set 'top' as it would be at scrollY = 0 for the GSAP timeline to work correctly.
+                const topAtZero = logoAreaRect.top + window.scrollY;
+                const leftAtZero = logoAreaRect.left + window.scrollX;
+
                 Object.assign(logoArea.style, {
                     position: 'fixed',
-                    left: logoAreaRect.left + 'px',
-                    top: logoAreaRect.top + 'px',
+                    left: leftAtZero + 'px',
+                    top: topAtZero + 'px',
                     width: logoAreaRect.width + 'px',
                     margin: '0',
                     padding: '0',
