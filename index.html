@@ -1227,7 +1227,7 @@
 
         .services-scroll-inner {
             position: relative;
-            height: 300vh;
+            height: 400vh;
         }
 
         .services-sticky {
@@ -1470,49 +1470,43 @@
             height: 90vh;
         }
 
+        /* Shared persistent background card */
+        .services-images::before {
+            content: '';
+            position: absolute;
+            width: 45%;
+            height: 65%;
+            left: 5%;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #ffffff;
+            z-index: 40;
+            box-shadow: 20px 20px 60px rgba(0, 0, 0, 0.1);
+            pointer-events: none;
+        }
+
         .service-image-wrapper {
             position: absolute;
             inset: 0;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1), visibility 1s step-end;
-        }
-
-        .service-image-wrapper.active {
             opacity: 1;
             visibility: visible;
-            transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1), visibility 1s step-start;
+            pointer-events: none;
+            transition: opacity 0.6s ease;
         }
 
-        .service-img-main {
-            opacity: 0;
-            transform: translateY(15px);
-            filter: blur(5px);
-            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        /* Shutter stacking order: main images overlap, secondary cards stay on top */
+        .service-image-wrapper[data-service-img="0"] .service-img-main {
+            z-index: 10;
         }
 
-        .service-image-wrapper.active .service-img-main {
-            opacity: 1;
-            transform: translateY(0);
-            filter: blur(0px);
-            transition-delay: 0.1s;
+        .service-image-wrapper[data-service-img="1"] .service-img-main {
+            z-index: 20;
         }
 
-        .service-img-secondary {
-            opacity: 0;
-            transform: translateY(calc(-50% + 20px));
-            filter: blur(5px);
-            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        .service-image-wrapper[data-service-img="2"] .service-img-main {
+            z-index: 30;
         }
 
-        .service-image-wrapper.active .service-img-secondary {
-            opacity: 1;
-            transform: translateY(-50%);
-            filter: blur(0px);
-            transition-delay: 0.2s;
-        }
-
-        /* Background image — full right side, edge-to-edge height */
         .service-img-main {
             position: absolute;
             width: 65%;
@@ -1520,6 +1514,38 @@
             right: 0;
             top: 0;
             overflow: hidden;
+            z-index: 1;
+
+            /* Shutter Mask Effect */
+            -webkit-mask-image: repeating-linear-gradient(to bottom,
+                    #000 0%,
+                    #000 var(--shutter-p, 0%),
+                    transparent var(--shutter-p, 0%),
+                    transparent 100%);
+            mask-image: repeating-linear-gradient(to bottom,
+                    #000 0%,
+                    #000 var(--shutter-p, 0%),
+                    transparent var(--shutter-p, 0%),
+                    transparent 100%);
+            -webkit-mask-size: 100% 15px;
+            mask-size: 100% 15px;
+            will-change: mask-image, -webkit-mask-image;
+            overflow: hidden;
+        }
+
+        /* First image should be visible by default if progress is 0 */
+        .service-image-wrapper[data-service-img="0"] .service-img-main {
+            --shutter-p: 100%;
+        }
+
+        .service-image-wrapper.active {
+            pointer-events: auto;
+        }
+
+
+
+        .service-image-wrapper.active .service-img-secondary {
+            pointer-events: auto;
         }
 
         .service-img-main img {
@@ -1536,6 +1562,8 @@
         }
 
         /* Foreground image — overlapping, square-ish, center-left */
+
+
         .service-img-secondary {
             position: absolute;
             width: 45%;
@@ -1543,9 +1571,13 @@
             left: 5%;
             top: 50%;
             transform: translateY(-50%);
-            overflow: hidden;
-            z-index: 2;
-            box-shadow: 20px 20px 60px rgba(0, 0, 0, 0.1);
+            opacity: 1;
+            filter: none;
+            overflow: visible;
+            z-index: 50;
+            /* Above the shared background */
+            background: transparent;
+            box-shadow: none;
         }
 
         .service-img-secondary img {
@@ -1559,7 +1591,7 @@
         .market-insight-card {
             width: 100%;
             height: 100%;
-            background: #ffffff;
+            background: transparent;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -1567,7 +1599,6 @@
             padding: 2rem;
             text-align: center;
             position: relative;
-            overflow: hidden;
         }
 
         .market-insight-card::before {
@@ -1586,6 +1617,17 @@
             line-height: 1;
             margin-bottom: 1.5rem;
             position: relative;
+
+            /* Initial state for transition */
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .service-image-wrapper.active .insight-value {
+            opacity: 1;
+            transform: translateY(0);
+            transition-delay: 0.4s;
         }
 
         .insight-value::after {
@@ -1608,6 +1650,17 @@
             color: #bcaf8b;
             max-width: 200px;
             line-height: 1.8;
+
+            /* Initial state for transition */
+            opacity: 0;
+            transform: translateY(15px);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .service-image-wrapper.active .insight-label {
+            opacity: 1;
+            transform: translateY(0);
+            transition-delay: 0.5s;
         }
 
 
@@ -1636,7 +1689,7 @@
         /* Responsive - Mobile */
         @media (max-width: 768px) {
             .services-scroll-inner {
-                height: 300vh;
+                height: 450vh;
             }
 
             .services-sticky {
@@ -1721,6 +1774,18 @@
             }
 
             .service-img-secondary {
+                width: 55%;
+                height: 65%;
+                right: 0;
+                left: auto;
+                top: auto;
+                bottom: -12%;
+                transform: none;
+                box-shadow: none;
+                background: transparent;
+            }
+
+            .services-images::before {
                 width: 55%;
                 height: 65%;
                 right: 0;
@@ -2132,7 +2197,7 @@
                         <!-- BUY Images -->
                         <div class="service-image-wrapper active" data-service-img="0">
                             <div class="service-img-main">
-                                <div class="img-placeholder"></div>
+                                <img src="buy.jpg" alt="Invest">
                             </div>
                             <div class="service-img-secondary">
                                 <div class="market-insight-card">
@@ -2145,7 +2210,7 @@
                         <!-- SELL Images -->
                         <div class="service-image-wrapper" data-service-img="1">
                             <div class="service-img-main">
-                                <div class="img-placeholder"></div>
+                                <img src="sell.jpg" alt="Invest">
                             </div>
                             <div class="service-img-secondary">
                                 <div class="market-insight-card">
@@ -2158,7 +2223,7 @@
                         <!-- INVEST Images -->
                         <div class="service-image-wrapper" data-service-img="2">
                             <div class="service-img-main">
-                                <div class="img-placeholder"></div>
+                                <img src="invest.jpg" alt="Invest">
                             </div>
                             <div class="service-img-secondary">
                                 <div class="market-insight-card">
@@ -2874,15 +2939,40 @@
                             progressFill.style.height = (progress * 100) + '%';
                         }
 
+                        // Shutter Reveal Logic with custom thresholds
+                        // Item 0: 0 - 0.25
+                        // Item 1: 0.25 - 0.75 (Longest)
+                        // Item 2: 0.75 - 1.0
+
+                        const thresholds = [0.25, 0.75, 1.0];
+
+                        serviceImages.forEach((wrapper, i) => {
+                            const mainImg = wrapper.querySelector('.service-img-main');
+                            if (!mainImg) return;
+
+                            let shutterP = 0;
+                            if (i === 0) {
+                                shutterP = 100;
+                            } else {
+                                // Image i reveals just before the previous threshold
+                                const prevThreshold = thresholds[i - 1];
+                                const start = prevThreshold - 0.1;
+                                const end = prevThreshold;
+
+                                if (progress <= start) shutterP = 0;
+                                else if (progress >= end) shutterP = 100;
+                                else {
+                                    shutterP = ((progress - start) / (end - start)) * 100;
+                                }
+                            }
+                            mainImg.style.setProperty('--shutter-p', shutterP + '%');
+                        });
+
                         // Content switching
                         let activeIndex = 0;
-                        if (progress < 0.33) {
-                            activeIndex = 0;
-                        } else if (progress < 0.66) {
-                            activeIndex = 1;
-                        } else {
-                            activeIndex = 2;
-                        }
+                        if (progress < thresholds[0]) activeIndex = 0;
+                        else if (progress < thresholds[1]) activeIndex = 1;
+                        else activeIndex = 2;
 
                         setActiveService(activeIndex);
                     }
