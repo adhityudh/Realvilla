@@ -3286,7 +3286,7 @@
                 const valTL = gsap.timeline({
                     scrollTrigger: {
                         trigger: valuationSection,
-                        start: "top 75%",
+                        start: "top 55%",
                     }
                 });
 
@@ -3330,7 +3330,7 @@
                 const servicesTL = gsap.timeline({
                     scrollTrigger: {
                         trigger: servicesScroll,
-                        start: "top 70%",
+                        start: "top 55%", // Trigger much later, when it's fully entering the view
                     }
                 });
 
@@ -3339,7 +3339,7 @@
                     { y: 30, opacity: 0, filter: 'blur(12px)', skewY: 2, transition: 'none' },
                     {
                         y: 0, opacity: 1, filter: 'blur(0px)', skewY: 0,
-                        duration: 1.5,
+                        duration: 2,
                         stagger: 0.15,
                         ease: "power3.out",
                         clearProps: "transition"
@@ -3348,7 +3348,7 @@
                     .from('.services-images', {
                         x: 50,
                         opacity: 0,
-                        duration: 1.5,
+                        duration: 2,
                         ease: "power3.out"
                     }, 0);
             }
