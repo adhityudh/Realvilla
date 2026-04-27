@@ -1113,10 +1113,15 @@
                 height: calc(40svh + 24px);
             }
 
+            #preloader-rect,
+            #preloader-shine {
+                rx: 22px;
+            }
+
             .main-hero {
                 will-change: clip-path;
                 /* Updated for 105svh height: Top 30svh. Bottom = 105 - 30 - 40 = 35svh. */
-                clip-path: inset(30svh 17.5vw 35svh 17.5vw round 24px);
+                clip-path: inset(30svh 17.5vw 35svh 17.5vw round 16px);
             }
         }
 
@@ -1652,7 +1657,6 @@
                 height: 100%;
                 left: 0;
                 right: auto;
-                border-radius: 4px;
             }
 
             .service-img-secondary {
@@ -1664,7 +1668,6 @@
                 bottom: -12%;
                 transform: none;
                 box-shadow: 10px 10px 30px rgba(0, 0, 0, 0.1);
-                border-radius: 4px;
             }
 
             /* Consistent Reveal */
@@ -1996,12 +1999,12 @@
                         <div class="service-item active" data-service="0">
                             <div class="service-label">
                                 <span class="service-label-line"></span>
-                                <span>Services</span>
+                                <span>01 / ACQUISITIONS</span>
                             </div>
-                            <h2 class="service-title">Find Your<br>Dream Villa</h2>
-                            <p class="service-description">Explore our curated portfolio of premium Tenerife properties.
-                                From beachfront villas to hillside retreats, we match you with the perfect home that
-                                reflects your lifestyle.</p>
+                            <h2 class="service-title">CURATED<br>LIVING</h2>
+                            <p class="service-description">Explore an exclusive portfolio of Tenerife’s finest
+                                properties. From coastal estates to modern architectural homes, we align extraordinary
+                                residences with your exact lifestyle.</p>
                             <a href="#" class="service-cta">
                                 <span>Browse Properties</span>
                                 <svg class="stretch-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -2018,12 +2021,12 @@
                         <div class="service-item" data-service="1">
                             <div class="service-label">
                                 <span class="service-label-line"></span>
-                                <span>Services</span>
+                                <span>02 / DISPOSITIONS</span>
                             </div>
-                            <h2 class="service-title">Sell With<br>Confidence</h2>
-                            <p class="service-description">Maximize your property's value with our expert marketing
-                                strategies, professional staging, and access to an exclusive network of qualified
-                                international buyers.</p>
+                            <h2 class="service-title">MAXIMIZE<br>YOUR ASSET</h2>
+                            <p class="service-description">Leverage our targeted marketing, precise valuation, and an
+                                exclusive network of international buyers to secure the highest possible return for your
+                                property.</p>
                             <a href="#" class="service-cta">
                                 <span>Get a Valuation</span>
                                 <svg class="stretch-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -2040,12 +2043,12 @@
                         <div class="service-item" data-service="2">
                             <div class="service-label">
                                 <span class="service-label-line"></span>
-                                <span>Services</span>
+                                <span>03 / WEALTH MANAGEMENT</span>
                             </div>
-                            <h2 class="service-title">Invest in<br>Paradise</h2>
-                            <p class="service-description">Unlock exceptional returns in Tenerife's booming real estate
-                                market. Our investment advisory provides data-driven insights and turnkey property
-                                management solutions.</p>
+                            <h2 class="service-title">PRIME<br>RETURNS</h2>
+                            <p class="service-description">Access off-market assets and high-ROI opportunities. Our
+                                advisory delivers data-driven market intelligence for secure and profitable Tenerife
+                                investments.</p>
                             <a href="#" class="service-cta">
                                 <span>Explore Opportunities</span>
                                 <svg class="stretch-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -2161,26 +2164,26 @@
 
             window.addEventListener('resize', debounce(() => {
                 const currentScroll = window.scrollY;
-                
+
                 // Use Lenis for scroll jump if available for better consistency
                 if (typeof lenis !== 'undefined' && lenis.scrollTo) {
                     lenis.scrollTo(0, { immediate: true });
                 } else {
                     window.scrollTo(0, 0);
                 }
-                
+
                 isMobile = window.innerWidth <= 768;
                 if (isMorphed) {
                     setupLogoMorph();
                 }
-                
+
                 // Restore scroll
                 if (typeof lenis !== 'undefined' && lenis.scrollTo) {
                     lenis.scrollTo(currentScroll, { immediate: true });
                 } else {
                     window.scrollTo(0, currentScroll);
                 }
-                
+
                 ScrollTrigger.refresh();
             }, 250));
 
@@ -2337,7 +2340,7 @@
             // Dimension setup and initial animation is now handled natively by CSS!
 
             tl.fromTo(".main-hero",
-                { clipPath: `inset(${insetTop}px ${insetLR}px ${insetBottom}px ${insetLR}px round 24px)` },
+                { clipPath: `inset(${insetTop}px ${insetLR}px ${insetBottom}px ${insetLR}px round ${isMobile ? 16 : 24}px)` },
                 {
                     clipPath: "inset(0px 0px 0px 0px round 0px)", duration: 2.2, ease: "expo.inOut",
                     onStart: () => { const v = document.querySelector('.hero-bg-video'); if (v && v.tagName.toLowerCase() === 'video') { v.currentTime = 0; v.play().catch(err => console.warn('Autoplay prevented:', err)); } }
@@ -2462,7 +2465,7 @@
                     if (_logo) {
                         // CRITICAL: Clear ALL potential GSAP transforms/states on the logo area itself
                         gsap.set([_logo, heroEl, splashIntro], {
-                            clearProps: "all" 
+                            clearProps: "all"
                         });
                         const _wc = _logo.querySelector('.word-container');
                         const _hc = splashIntro.querySelector('.hero-ctas');
@@ -2490,7 +2493,7 @@
                 logoArea.parentNode.insertBefore(logoAnchor, logoArea);
 
                 logoArea.id = 'morph-breakout-logo';
-                
+
                 // NORMALIZE COORDINATES: If we are scrolled, getBoundingClientRect is relative to viewport.
                 // We need to set 'top' as it would be at scrollY = 0 for the GSAP timeline to work correctly.
                 const topAtZero = logoAreaRect.top + window.scrollY;
