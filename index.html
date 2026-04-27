@@ -209,6 +209,10 @@
             will-change: transform, opacity;
         }
 
+        .mobile-hero-ctas {
+            display: none;
+        }
+
         .cta-link {
             display: flex;
             align-items: center;
@@ -990,6 +994,16 @@
            RESPONSIVE — MOBILE (≤768px)
         ============================================= */
         @media (max-width: 768px) {
+            .header-logo {
+                opacity: 1 !important;
+                pointer-events: auto !important;
+            }
+
+            .logo-content-area,
+            .hero-ctas {
+                display: none !important;
+            }
+
             .header-content {
                 padding-top: 0.85rem;
                 padding-bottom: 0.85rem;
@@ -1038,6 +1052,21 @@
                 height: 1rem;
             }
 
+            .mobile-hero-ctas {
+                display: flex;
+                gap: 1.5rem;
+                margin-top: 1.5rem;
+                flex-wrap: wrap;
+            }
+
+            .mobile-hero-ctas .cta-link {
+                padding-bottom: 4px;
+                font-size: 0.85rem;
+                letter-spacing: 0.1em;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+                gap: 0.5rem;
+            }
+
             .hero-description-area {
                 width: 100%;
                 max-width: 100%;
@@ -1046,8 +1075,10 @@
             }
 
             .hero-title {
-                font-size: 1rem;
+                font-size: 2.15rem;
                 margin-bottom: 0.75rem;
+                letter-spacing: -0.01em;
+                line-height: 1.1;
             }
 
             .hero-subtitle {
@@ -1056,7 +1087,7 @@
             }
 
             .hero-scroll {
-                margin-top: 1.5rem;
+                margin-top: 4rem;
             }
 
             .scroll-line-track {
@@ -1069,12 +1100,26 @@
                 padding-right: 1.5rem;
             }
 
+            .header::before {
+                background: rgba(255, 255, 255, 0.85);
+                backdrop-filter: blur(15px);
+                -webkit-backdrop-filter: blur(15px);
+                height: 105px;
+                -webkit-mask-image: linear-gradient(to bottom, black 0%, black 40px, transparent 100%);
+                mask-image: linear-gradient(to bottom, black 0%, black 40px, transparent 100%);
+                transform-origin: top;
+            }
+
+            body.header-light-mode .header::before {
+                background: rgba(17, 17, 17, 0.85);
+            }
+
             .header-logo {
-                height: 22px;
+                height: 12px;
             }
 
             .header-letter {
-                width: calc(22px * var(--letter-w, 1));
+                width: calc(12px * var(--letter-w, 1));
             }
 
             .header-nav {
@@ -1102,7 +1147,7 @@
                 padding: 0.85rem 0;
                 justify-content: space-evenly;
                 align-items: center;
-                z-index: 96000;
+                z-index: 98001;
                 opacity: 0;
                 pointer-events: none;
                 transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
@@ -1557,8 +1602,8 @@
                     #000 var(--shutter-p, 0%),
                     transparent var(--shutter-p, 0%),
                     transparent 100%);
-            -webkit-mask-size: 100% 15px;
-            mask-size: 100% 15px;
+            -webkit-mask-size: 100% 50px;
+            mask-size: 100% 50px;
             will-change: mask-image, -webkit-mask-image;
             overflow: hidden;
         }
@@ -1735,7 +1780,7 @@
             background: rgba(255, 255, 255, 0.8);
             padding: 1rem 2.5rem;
             border-radius: 8px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
         }
 
         .collection-container {
@@ -2223,7 +2268,7 @@
                 right: 0;
                 left: auto;
                 top: auto;
-                bottom: -12%;
+                bottom: 5%;
                 transform: none;
                 box-shadow: none;
                 background: transparent;
@@ -2235,7 +2280,7 @@
                 right: 0;
                 left: auto;
                 top: auto;
-                bottom: -12%;
+                bottom: 5%;
                 transform: none;
                 box-shadow: 10px 10px 30px rgba(0, 0, 0, 0.1);
             }
@@ -2519,6 +2564,43 @@
             <h1 class="hero-title">Elevate Your Tenerife Lifestyle.</h1>
             <p class="hero-subtitle">Premium Tenerife real estate. Expert guidance for buyers, sellers, and investors
                 looking for exclusive opportunities.</p>
+
+            <!-- MOBILE CTAs -->
+            <div class="mobile-hero-ctas">
+                <a href="#" class="cta-link">
+                    <img src="/arrows_more_down.svg" alt="Buy" class="cta-icon">
+                    <span>Buy</span>
+                    <svg class="stretch-arrow cta-stretch-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+                        <g class="arrow-shaft">
+                            <line x1="2" y1="12" x2="20" y2="12" />
+                        </g>
+                        <polyline class="arrow-head" points="18 8 22 12 18 16" />
+                    </svg>
+                </a>
+                <a href="#" class="cta-link">
+                    <img src="/arrows_more_up.svg" alt="Sell" class="cta-icon">
+                    <span>Sell</span>
+                    <svg class="stretch-arrow cta-stretch-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+                        <g class="arrow-shaft">
+                            <line x1="2" y1="12" x2="20" y2="12" />
+                        </g>
+                        <polyline class="arrow-head" points="18 8 22 12 18 16" />
+                    </svg>
+                </a>
+                <a href="#" class="cta-link">
+                    <img src="/euro.svg" alt="Invest" class="cta-icon">
+                    <span>Invest</span>
+                    <svg class="stretch-arrow cta-stretch-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+                        <g class="arrow-shaft">
+                            <line x1="2" y1="12" x2="20" y2="12" />
+                        </g>
+                        <polyline class="arrow-head" points="18 8 22 12 18 16" />
+                    </svg>
+                </a>
+            </div>
             <div class="hero-scroll">
                 <span>Scroll</span>
                 <div class="scroll-line-track">
@@ -2825,7 +2907,7 @@
             // RESPONSIVE RESIZE ARCHITECTURE
             // -------------------------------------------------------
             let logoArea, heroDesc, logoAnchor;
-            let morphTlInstance, morphSTInstance, navSTInstance;
+            let morphTlInstance, morphSTInstance, navSTInstance, mobileHeroFadeST, headerWipeST, headerColorST;
             let isMorphed = false;
 
             function debounce(func, wait) {
@@ -3014,8 +3096,10 @@
             const preloaderRect = document.querySelector('#preloader-rect');
             // Dimension setup and initial animation is now handled natively by CSS!
 
+            tl.to(".preloader-border-box", { opacity: 0, duration: 0.8, ease: "power2.out" }, 0);
+
             tl.fromTo(".main-hero",
-                { clipPath: `inset(${insetTop}px ${insetLR}px ${insetBottom}px ${insetLR}px round ${isMobile ? 16 : 24}px)` },
+                { clipPath: `inset(${insetTop}px ${insetLR}px ${insetBottom}px ${insetLR}px round ${isMobile ? 22 : 24}px)` },
                 {
                     clipPath: "inset(0px 0px 0px 0px round 0px)", duration: 2.2, ease: "expo.inOut",
                     onStart: () => { const v = document.querySelector('.hero-bg-video'); if (v && v.tagName.toLowerCase() === 'video') { v.currentTime = 0; v.play().catch(err => console.warn('Autoplay prevented:', err)); } }
@@ -3079,7 +3163,7 @@
                 scale: 1, ease: "power3.out", duration: 2
             }, 2.3);
 
-            tl.to(".hero-ctas .cta-link", { opacity: 1, y: 0, scale: 1, filter: "blur(0px)", duration: 0.8, stagger: 0.1, ease: "expo.out" }, 1);
+            tl.to(".hero-ctas .cta-link, .mobile-hero-ctas .cta-link", { opacity: 1, y: 0, scale: 1, filter: "blur(0px)", duration: 0.8, stagger: 0.1, ease: "expo.out" }, 1);
 
             tl.fromTo(".hero-title .word-inner",
                 { yPercent: 100, rotate: 5, filter: "blur(10px)", opacity: 0 },
@@ -3117,6 +3201,48 @@
                 if (morphTlInstance) morphTlInstance.kill();
                 if (morphSTInstance) morphSTInstance.kill();
                 if (navSTInstance) navSTInstance.kill();
+                if (mobileHeroFadeST) mobileHeroFadeST.kill();
+                if (headerWipeST) headerWipeST.kill();
+                if (headerColorST) headerColorST.kill();
+
+                // ── MOBILE OPTIMIZATION ──────────
+                // Disable morph on mobile to prevent lag. 
+                // CSS handles showing the header logo and hiding the hero logo.
+                if (window.innerWidth <= 768) {
+                    isMorphed = false;
+
+                    // Simple fade out for mobile hero content
+                    mobileHeroFadeST = ScrollTrigger.create({
+                        trigger: '.main-hero',
+                        start: 'top top',
+                        end: '25% top',
+                        scrub: true,
+                        animation: gsap.to('.hero-description-area', { opacity: 0, ease: 'none' })
+                    });
+
+                    // Header wipe-in and color toggle for mobile
+                    const header = document.querySelector('.header');
+                    if (header) {
+                        // Background wipe
+                        headerWipeST = ScrollTrigger.create({
+                            trigger: '.main-hero',
+                            start: () => `bottom ${header.offsetHeight}px`,
+                            end: 'bottom top',
+                            scrub: true,
+                            animation: gsap.to(header, { '--header-wipe': 1, ease: 'none' })
+                        });
+
+                        // Color toggle (Dark mode = black logo/icons)
+                        headerColorST = ScrollTrigger.create({
+                            trigger: '.main-hero',
+                            start: () => `bottom ${header.offsetHeight}px`,
+                            onEnter: () => document.body.classList.add('header-dark-mode'),
+                            onLeaveBack: () => document.body.classList.remove('header-dark-mode')
+                        });
+                    }
+
+                    return;
+                }
 
                 const splashIntro = document.querySelector('.splash-intro');
                 const heroEl = document.querySelector('.main-hero');
@@ -3483,7 +3609,7 @@
                         // Item 1: 0.25 - 0.75 (Longest)
                         // Item 2: 0.75 - 1.0
 
-                        const thresholds = [0.33, 0.66, 1.0];
+                        const thresholds = [0.4, 0.8, 1.0];
 
                         serviceImages.forEach((wrapper, i) => {
                             const mainImg = wrapper.querySelector('.service-img-main');
@@ -3504,7 +3630,43 @@
                                     shutterP = ((progress - start) / (end - start)) * 100;
                                 }
                             }
-                            mainImg.style.setProperty('--shutter-p', shutterP + '%');
+
+                            // STAGGERED SHUTTER REVEAL
+                            if (shutterP <= 0) {
+                                mainImg.style.webkitMaskImage = 'linear-gradient(transparent, transparent)';
+                                mainImg.style.maskImage = 'linear-gradient(transparent, transparent)';
+                            } else if (shutterP >= 100) {
+                                mainImg.style.webkitMaskImage = 'none';
+                                mainImg.style.maskImage = 'none';
+                            } else {
+                                const numStrips = 16;
+                                const stagger = 0.4; // 40% overlap/stagger
+                                let stops = [];
+                                for (let j = 0; j < numStrips; j++) {
+                                    // Reverse stagger: bottom strips reveal first
+                                    const stripStart = ((numStrips - 1 - j) / numStrips) * (1 - stagger);
+                                    const stripEnd = stripStart + stagger;
+                                    const p = shutterP / 100;
+
+                                    let sP = (p - stripStart) / (stripEnd - stripStart);
+                                    sP = Math.max(0, Math.min(1, sP));
+
+                                    const y1 = (j / numStrips) * 100;
+                                    const y2 = ((j + 1) / numStrips) * 100;
+                                    // Fill each strip from bottom to top
+                                    const cut = y2 - (y2 - y1) * sP;
+
+                                    stops.push(`transparent ${y1}%`);
+                                    stops.push(`transparent ${cut}%`);
+                                    stops.push(`#000 ${cut}%`);
+                                    stops.push(`#000 ${y2}%`);
+                                }
+                                const grad = `linear-gradient(to bottom, ${stops.join(', ')})`;
+                                mainImg.style.webkitMaskImage = grad;
+                                mainImg.style.maskImage = grad;
+                                mainImg.style.webkitMaskSize = '100% 100%';
+                                mainImg.style.maskSize = '100% 100%';
+                            }
                         });
 
                         // Content switching
