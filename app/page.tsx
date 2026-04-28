@@ -1,4 +1,4 @@
-export default function Home() {
+export default function Page() {
   return (
     <div style={{ padding: '50px', textAlign: 'center', fontFamily: 'sans-serif' }}>
       <h1>RealVilla - Deployment Test</h1>
