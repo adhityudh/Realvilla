@@ -54,7 +54,7 @@ const PropertyCard = ({ prop }: { prop: typeof properties[0] }) => {
           stops.push(`#000 ${y2}%`);
         }
         const mask = `linear-gradient(to bottom, ${stops.join(', ')})`;
-        target.style.webkitMaskImage = mask;
+        (target.style as any).WebkitMaskImage = mask;
         target.style.maskImage = mask;
       }
     });
@@ -93,7 +93,7 @@ const PropertyCard = ({ prop }: { prop: typeof properties[0] }) => {
           stops.push(`#000 ${y2}%`);
         }
         const mask = `linear-gradient(to bottom, ${stops.join(', ')})`;
-        target.style.webkitMaskImage = mask;
+        (target.style as any).WebkitMaskImage = mask;
         target.style.maskImage = mask;
       }
     });
@@ -114,7 +114,7 @@ const PropertyCard = ({ prop }: { prop: typeof properties[0] }) => {
           src={prop.secondaryImage} 
           alt={prop.address} 
           className="property-image secondary" 
-          style={{ webkitMaskImage: 'linear-gradient(transparent, transparent)', maskImage: 'linear-gradient(transparent, transparent)' }}
+          style={{ WebkitMaskImage: 'linear-gradient(transparent, transparent)', maskImage: 'linear-gradient(transparent, transparent)' }}
         />
       </div>
       <div className="property-info">
