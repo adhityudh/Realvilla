@@ -1,4 +1,4 @@
-/* Global styles */
+@import url('../styles/all.css');
 
 html.lenis,
 html.lenis body {
