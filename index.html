@@ -391,9 +391,9 @@
             width: 100%;
             display: flex;
             flex-direction: column;
-            z-index: 98000;
-            padding-left: 1rem;
-            padding-right: 1rem;
+            z-index: 200000;
+            padding-left: 3rem;
+            padding-right: 3rem;
         }
 
         .header::before {
@@ -401,11 +401,41 @@
             position: absolute;
             inset: 0;
             z-index: -1;
-            background: transparent;
+            background: rgba(188, 175, 139, 0.15); /* Gold tone glassmorphism */
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            box-shadow: none;
+            border: 1px solid rgba(188, 175, 139, 0.25);
             transform: scaleY(var(--header-wipe, 0));
             transform-origin: top;
             pointer-events: none;
             will-change: transform;
+        }
+
+        /* Desktop Pill Header State */
+        @media (min-width: 1025px) {
+            .header {
+                transition: padding 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+                    width 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+                    margin-left 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            }
+
+            .header::before {
+                transition: border-radius 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            }
+
+            body.header-pill-mode .header {
+                padding-left: 1.5rem;
+                padding-right: 1.5rem;
+                width: calc(100% - 3rem);
+                margin-left: 1.5rem;
+            }
+
+            body.header-pill-mode .header::before {
+                border-radius: 999px;
+                transform: scaleY(1) !important;
+                /* Background is naturally handled by the existing wipe scrub */
+            }
         }
 
         .header-content {
@@ -898,7 +928,7 @@
             background: rgba(0, 0, 0, 0.92);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            z-index: 97000;
+            z-index: 190000;
             transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
             display: flex;
             flex-direction: column;
@@ -915,8 +945,11 @@
             pointer-events: auto;
         }
 
+        body.menu-open .header::before {
+            opacity: 0 !important;
+        }
+
         /* Hide "leaking" elements when menu is open */
-        body.menu-open .logo-content-area,
         body.menu-open .hero-description-area {
             opacity: 0 !important;
             visibility: hidden;
@@ -1175,6 +1208,8 @@
 
             .header-logo {
                 height: 16px;
+                opacity: 1 !important;
+                pointer-events: auto !important;
             }
 
             .header-letter {
@@ -1206,7 +1241,7 @@
                 padding: 0.85rem 0;
                 justify-content: space-evenly;
                 align-items: center;
-                z-index: 98001;
+                z-index: 200002;
                 opacity: 0;
                 pointer-events: none;
                 transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
@@ -1365,9 +1400,7 @@
         .development-overlay {
             position: absolute;
             inset: 0;
-            background: rgba(255, 255, 255, 0.4);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
+            background: rgba(255, 255, 255, 0.8);
             z-index: 50;
             display: flex;
             align-items: center;
@@ -1609,7 +1642,7 @@
 
         .valuation-body {
             font-family: 'Manrope', sans-serif;
-            font-size: 1.1rem;
+            font-size: 1rem;
             line-height: 1.8;
             color: var(--text-black);
             max-width: 500px;
@@ -1662,12 +1695,18 @@
             flex: 1;
             width: 100%;
             background: #ffffff;
+            padding-bottom: 2rem;
         }
 
-        .valuation-cta {
-            grid-column: 1;
-            margin-top: 3rem;
+        .valuation-cta-desktop {
+            margin-top: auto;
+            margin-bottom: 2rem;
             width: fit-content;
+            display: flex;
+        }
+
+        .valuation-cta-mobile {
+            display: none;
         }
 
         @media (max-width: 1024px) {
@@ -1694,11 +1733,16 @@
                 margin-right: auto;
             }
 
-            .valuation-cta {
+            .valuation-cta-desktop {
+                display: none;
+            }
+
+            .valuation-cta-mobile {
+                display: flex;
                 margin-left: auto;
                 margin-right: auto;
-                margin-top: 2rem;
                 margin-bottom: 4rem;
+                width: fit-content;
             }
 
             .valuation-form-wrapper {
@@ -1803,18 +1847,19 @@
     <!-- MOBILE PILL NAV -->
     <div class="mobile-pill-nav">
         <a href="#" class="pill-link">
-            <img src="/arrows_more_down.svg" alt="" class="pill-icon">
             <span>Buy</span>
         </a>
         <div class="pill-sep"></div>
         <a href="#" class="pill-link">
-            <img src="/arrows_more_up.svg" alt="" class="pill-icon">
             <span>Sell</span>
         </a>
         <div class="pill-sep"></div>
         <a href="#" class="pill-link">
-            <img src="/euro.svg" alt="" class="pill-icon">
             <span>Invest</span>
+        </a>
+        <div class="pill-sep"></div>
+        <a href="#" class="pill-link">
+            <span>Mortgages</span>
         </a>
     </div>
 
@@ -1851,119 +1896,43 @@
             </svg>
         </div>
 
-        <!-- <div class="splash-grid"></div> -->
-
         <div class="logo-content-area">
             <div class="word-container">
 
-                <!-- REAL (Gold) -->
                 <div class="letter-wrapper" style="--letter-svg: url('r.svg'); --letter-w: 1.06;">
-                    <!-- <div class="video-box" data-mosaic="m-shape-1">
-                        <div class="video-inner">
-                            <div class="mask-layer">
-                                <div class="morph-shape"></div>
-                                <div class="letter-font"></div>
-                            </div>
-                        </div>
-                    </div> -->
                     <div class="solid-text text-gold"></div>
                     <div class="solid-text text-white-reveal"></div>
                 </div>
                 <div class="letter-wrapper" style="--letter-svg: url('e.svg'); --letter-w: 0.88;">
-                    <!-- <div class="video-box" data-mosaic="m-shape-2">
-                        <div class="video-inner">
-                            <div class="mask-layer">
-                                <div class="morph-shape"></div>
-                                <div class="letter-font"></div>
-                            </div>
-                        </div>
-                    </div> -->
                     <div class="solid-text text-gold"></div>
                     <div class="solid-text text-white-reveal"></div>
                 </div>
                 <div class="letter-wrapper" style="--letter-svg: url('a.svg'); --letter-w: 1.05;">
-                    <!-- <div class="video-box" data-mosaic="m-shape-3">
-                        <div class="video-inner">
-                            <div class="mask-layer">
-                                <div class="morph-shape"></div>
-                                <div class="letter-font"></div>
-                            </div>
-                        </div>
-                    </div> -->
                     <div class="solid-text text-gold"></div>
                     <div class="solid-text text-white-reveal"></div>
                 </div>
                 <div class="letter-wrapper" style="--letter-svg: url('l.svg'); --letter-w: 0.90;">
-                    <!-- <div class="video-box" data-mosaic="m-shape-4">
-                        <div class="video-inner">
-                            <div class="mask-layer">
-                                <div class="morph-shape"></div>
-                                <div class="letter-font"></div>
-                            </div>
-                        </div>
-                    </div> -->
                     <div class="solid-text text-gold"></div>
                     <div class="solid-text text-white-reveal"></div>
                 </div>
 
-                <!-- VILLA (Black) -->
                 <div class="letter-wrapper" style="--letter-svg: url('v.svg'); --letter-w: 1.05;">
-                    <!-- <div class="video-box" data-mosaic="m-shape-5">
-                        <div class="video-inner">
-                            <div class="mask-layer">
-                                <div class="morph-shape"></div>
-                                <div class="letter-font"></div>
-                            </div>
-                        </div>
-                    </div> -->
                     <div class="solid-text text-black"></div>
                     <div class="solid-text text-white-reveal"></div>
                 </div>
                 <div class="letter-wrapper" style="--letter-svg: url('i.svg'); --letter-w: 0.51;">
-                    <!-- <div class="video-box" data-mosaic="m-shape-1">
-                        <div class="video-inner">
-                            <div class="mask-layer">
-                                <div class="morph-shape"></div>
-                                <div class="letter-font"></div>
-                            </div>
-                        </div>
-                    </div> -->
                     <div class="solid-text text-black"></div>
                     <div class="solid-text text-white-reveal"></div>
                 </div>
                 <div class="letter-wrapper" style="--letter-svg: url('l.svg'); --letter-w: 0.90;">
-                    <!-- <div class="video-box" data-mosaic="m-shape-2">
-                        <div class="video-inner">
-                            <div class="mask-layer">
-                                <div class="morph-shape"></div>
-                                <div class="letter-font"></div>
-                            </div>
-                        </div>
-                    </div> -->
                     <div class="solid-text text-black"></div>
                     <div class="solid-text text-white-reveal"></div>
                 </div>
                 <div class="letter-wrapper" style="--letter-svg: url('l.svg'); --letter-w: 0.90;">
-                    <!-- <div class="video-box" data-mosaic="m-shape-3">
-                        <div class="video-inner">
-                            <div class="mask-layer">
-                                <div class="morph-shape"></div>
-                                <div class="letter-font"></div>
-                            </div>
-                        </div>
-                    </div> -->
                     <div class="solid-text text-black"></div>
                     <div class="solid-text text-white-reveal"></div>
                 </div>
                 <div class="letter-wrapper" style="--letter-svg: url('a.svg'); --letter-w: 1.05;">
-                    <!-- <div class="video-box" data-mosaic="m-shape-4">
-                        <div class="video-inner">
-                            <div class="mask-layer">
-                                <div class="morph-shape"></div>
-                                <div class="letter-font"></div>
-                            </div>
-                        </div>
-                    </div> -->
                     <div class="solid-text text-black"></div>
                     <div class="solid-text text-white-reveal"></div>
                 </div>
@@ -1996,6 +1965,17 @@
                 <a href="#" class="cta-link">
                     <img src="/euro.svg" alt="Invest" class="cta-icon">
                     <span>Invest</span>
+                    <svg class="stretch-arrow cta-stretch-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+                        <g class="arrow-shaft">
+                            <line x1="2" y1="12" x2="20" y2="12" />
+                        </g>
+                        <polyline class="arrow-head" points="18 8 22 12 18 16" />
+                    </svg>
+                </a>
+                <a href="#" class="cta-link">
+                    <img src="/contract.svg" alt="Mortgages" class="cta-icon">
+                    <span>Mortgages</span>
                     <svg class="stretch-arrow cta-stretch-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                         stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
                         <g class="arrow-shaft">
@@ -2039,6 +2019,17 @@
                 <a href="#" class="cta-link">
                     <img src="/euro.svg" alt="Invest" class="cta-icon">
                     <span>Invest</span>
+                    <svg class="stretch-arrow cta-stretch-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+                        <g class="arrow-shaft">
+                            <line x1="2" y1="12" x2="20" y2="12" />
+                        </g>
+                        <polyline class="arrow-head" points="18 8 22 12 18 16" />
+                    </svg>
+                </a>
+                <a href="#" class="cta-link">
+                    <img src="/contract.svg" alt="Mortgages" class="cta-icon">
+                    <span>Mortgages</span>
                     <svg class="stretch-arrow cta-stretch-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                         stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
                         <g class="arrow-shaft">
@@ -2096,6 +2087,16 @@
                     <img src="shield.svg" alt="Shield">
                     <span>Powered by Local Market Intelligence</span>
                 </div>
+                <a href="#" class="service-cta valuation-cta-desktop">
+                    <span>Sell Your Property</span>
+                    <svg class="stretch-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <g class="arrow-shaft">
+                            <line x1="2" y1="12" x2="20" y2="12" />
+                        </g>
+                        <polyline class="arrow-head" points="18 8 22 12 18 16" />
+                    </svg>
+                </a>
             </div>
             <div class="valuation-form-wrapper">
                 <div class="valuation-card">
@@ -2105,13 +2106,18 @@
                             function initResizer() {
                                 iFrameResize({
                                     heightCalculationMethod: 'documentElementOffset',
+                                    autoResize: true,
                                     onScroll: ({ x, y }) => {
-                                        // Sync with main window scroll if needed
-                                        window.scrollTo({
-                                            top: y,
-                                            left: x,
-                                            behavior: 'smooth'
-                                        })
+                                        // Sync with Lenis if available, otherwise fallback
+                                        if (window.lenis) {
+                                            window.lenis.scrollTo(y, { duration: 1.2 });
+                                        } else {
+                                            window.scrollTo({
+                                                top: y,
+                                                left: x,
+                                                behavior: 'smooth'
+                                            })
+                                        }
                                         return false;
                                     }
                                 }, '#valuationFrame');
@@ -2124,7 +2130,7 @@
                     </div>
                 </div>
             </div>
-            <a href="#" class="service-cta valuation-cta">
+            <a href="#" class="service-cta valuation-cta-mobile">
                 <span>Sell Your Property</span>
                 <svg class="stretch-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"
                     stroke-linecap="round" stroke-linejoin="round">
@@ -2134,74 +2140,6 @@
                     <polyline class="arrow-head" points="18 8 22 12 18 16" />
                 </svg>
             </a>
-        </div>
-    </section>
-
-    <!-- THE COLLECTION SECTION -->
-    <section class="collection-section" id="collection">
-        <!-- Under Development Overlay -->
-        <!-- <div class="development-overlay">
-            <span>Under Development</span>
-        </div> -->
-        <div class="collection-container">
-            <!-- Left Side -->
-            <div class="collection-info">
-                <div class="collection-label">
-                    <span class="collection-label-line"></span>
-                    <span>THE COLLECTION</span>
-                </div>
-                <h2 class="collection-headline">Architectural sanctuaries designed for the Tenerife lifestyle.</h2>
-                <p class="collection-desc">Curated for the discerning buyer, our exclusive portfolio showcases the
-                    island's most extraordinary properties. From oceanfront estates in Costa Adeje to secluded hillside
-                    villas, discover residences where absolute luxury meets the horizon. Each home is thoughtfully
-                    selected to elevate your way of life.</p>
-                <a href="#" class="service-cta">
-                    <span>View All Properties</span>
-                    <svg class="stretch-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"
-                        stroke-linecap="round" stroke-linejoin="round">
-                        <g class="arrow-shaft">
-                            <line x1="2" y1="12" x2="20" y2="12" />
-                        </g>
-                        <polyline class="arrow-head" points="18 8 22 12 18 16" />
-                    </svg>
-                </a>
-            </div>
-
-            <!-- Right Side: Carousel -->
-            <div class="collection-carousel-wrapper">
-                <div class="collection-carousel">
-                    <!-- Card 1 -->
-                    <div class="property-card">
-                        <div class="property-img-wrapper">
-                            <img src="sell.jpg" alt="Villa Azure">
-                        </div>
-                        <div class="property-details">
-                            <h3 class="property-title">Villa Azure</h3>
-                            <p class="property-meta">5 BEDROOMS &bull; COSTA ADEJE</p>
-                        </div>
-                    </div>
-                    <!-- Card 2 -->
-                    <div class="property-card">
-                        <div class="property-img-wrapper">
-                            <img src="buy.jpg" alt="The Horizon Estate">
-                        </div>
-                        <div class="property-details">
-                            <h3 class="property-title">The Horizon Estate</h3>
-                            <p class="property-meta">4 BEDROOMS &bull; LA CALETA</p>
-                        </div>
-                    </div>
-                    <!-- Card 3 -->
-                    <div class="property-card">
-                        <div class="property-img-wrapper">
-                            <img src="invest.jpg" alt="El Teide Retreat">
-                        </div>
-                        <div class="property-details">
-                            <h3 class="property-title">El Teide Retreat</h3>
-                            <p class="property-meta">6 BEDROOMS &bull; ABAMA RESORT</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
     </section>
 
@@ -2217,12 +2155,52 @@
         window.addEventListener('load', () => {
 
             // -------------------------------------------------------
+            // VALUATION SECTION ENTRANCE
+            // -------------------------------------------------------
+            const valuationSection = document.querySelector('.valuation-section');
+            if (valuationSection) {
+                // Ensure elements are pre-hidden to avoid jump
+                gsap.set('.valuation-tagline, .valuation-headline, .valuation-body, .valuation-trust, .valuation-cta-desktop, .valuation-cta-mobile, .valuation-card', {
+                    opacity: 0,
+                    y: 40,
+                    filter: 'blur(10px)'
+                });
+
+                ScrollTrigger.create({
+                    trigger: valuationSection,
+                    start: "top 50%",
+                    onEnter: () => {
+                        gsap.to('.valuation-tagline, .valuation-headline, .valuation-body, .valuation-trust, .valuation-cta-desktop, .valuation-cta-mobile', {
+                            y: 0,
+                            opacity: 1,
+                            filter: 'blur(0px)',
+                            duration: 1.2,
+                            stagger: 0.2,
+                            ease: "expo.out",
+                            clearProps: "all"
+                        });
+                        gsap.to('.valuation-card', {
+                            y: 0,
+                            opacity: 1,
+                            filter: 'blur(0px)',
+                            duration: 1.5,
+                            delay: 0.5,
+                            ease: "expo.out",
+                            clearProps: "all"
+                        });
+                    },
+                    once: true
+                });
+            }
+
+
+            // -------------------------------------------------------
             // LENIS SMOOTH SCROLL
             // IMPROVED: duration 1.8 + quintic ease = buttery feel
             //           tanpa lag saat berhenti (infinite: false)
             // -------------------------------------------------------
             let isMobile = window.innerWidth <= 768;
-            const lenis = new Lenis({
+            window.lenis = new Lenis({
                 duration: isMobile ? 0.8 : 1.2,
                 easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
                 wheelMultiplier: 0.6,
@@ -2234,15 +2212,16 @@
                 infinite: false,
             });
 
-            // IMPROVED: Tetap pakai RAF loop asli + gsap ticker untuk kompatibilitas Lenis
-            function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
-            requestAnimationFrame(raf);
+            // IMPROVED: Lenis + GSAP Ticker Sync (Standard Best Practice to avoid frame drops)
+            window.lenis.on('scroll', ScrollTrigger.update);
+
+            gsap.ticker.add((time) => {
+                window.lenis.raf(time * 1000);
+            });
 
             gsap.ticker.lagSmoothing(0);
 
-            lenis.on('scroll', ScrollTrigger.update);
-
-            lenis.stop();
+            window.lenis.stop();
 
             window.scrollTo(0, 0);
             if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
@@ -2251,7 +2230,7 @@
             // RESPONSIVE RESIZE ARCHITECTURE
             // -------------------------------------------------------
             let logoArea, heroDesc, logoAnchor;
-            let morphTlInstance, morphSTInstance, navSTInstance, mobileHeroFadeST, headerWipeST, headerColorST;
+            let morphTlInstance, morphSTInstance, navSTInstance, mobileHeroFadeST, headerWipeST, headerColorST, headerPillST;
             let isMorphed = false;
 
             function debounce(func, wait) {
@@ -2307,99 +2286,6 @@
             // Show wrappers once words are split (GSAP will handle the word animations)
             gsap.set('.hero-title, .hero-subtitle', { opacity: 1 });
 
-            const wrappers = document.querySelectorAll('.splash-intro .letter-wrapper');
-
-            /*
-            function generateAtomicGrid() {
-                const grid = document.querySelector('.splash-grid');
-                if (!grid) return;
-                grid.innerHTML = ''; // Clear existing
-                const step = 40;
-                const rangeV = Math.ceil((window.innerWidth * 1.5) / step / 2);
-                const rangeH = Math.ceil((window.innerHeight * 1.5) / step / 2);
-
-                function addGlider(parent) {
-                    const g = document.createElement('div');
-                    g.className = 'grid-glider';
-                    parent.appendChild(g);
-                }
-
-                const halfVisible = Math.floor((window.innerWidth * 0.5) / step);
-                const g1 = Math.max(2, Math.floor(halfVisible * 0.6));
-                const g2 = Math.max(3, Math.floor(halfVisible * 0.75));
-                const g3 = Math.max(4, Math.floor(halfVisible * 0.9));
-
-                for (let i = -rangeV; i <= rangeV; i++) {
-                    const line = document.createElement('div');
-                    line.className = 'v-line';
-                    line.style.marginLeft = (i * step) + 'px';
-                    grid.appendChild(line);
-                    if (i === g1) addGlider(line);
-                    if (i === g2) addGlider(line);
-                    if (i === g3) addGlider(line);
-                }
-
-                for (let j = -rangeH; j <= rangeH; j++) {
-                    const line = document.createElement('div');
-                    line.className = 'h-line';
-                    line.style.marginTop = (j * step) + 'px';
-                    grid.appendChild(line);
-                }
-            }
-
-            generateAtomicGrid();
-            */
-
-            const premiumLayout = [
-                { x: -0.35, y: -0.25, size: 0.20 }, { x: -0.30, y: 0.20, size: 0.15 },
-                { x: -0.10, y: 0.30, size: 0.20 }, { x: -0.15, y: -0.30, size: 0.15 },
-                { x: 0.00, y: 0.00, size: 0.30 }, { x: 0.15, y: -0.25, size: 0.15 },
-                { x: 0.20, y: 0.25, size: 0.20 }, { x: 0.35, y: -0.10, size: 0.18 },
-                { x: 0.35, y: 0.30, size: 0.15 }
-            ];
-
-            wrappers.forEach((wrapper, i) => {
-                const box = wrapper.querySelector('.video-box');
-                const inner = wrapper.querySelector('.video-inner');
-                const morphShape = wrapper.querySelector('.morph-shape');
-
-                const finalRect = wrapper.getBoundingClientRect();
-                wrapper.dataset.finalBgPos = `-${finalRect.left}px -${finalRect.top}px`;
-
-                const layout = premiumLayout[i];
-
-                // Responsive multiplier: 1.0 desktop, 1.2 tablet, 1.25 mobile
-                const ww = window.innerWidth;
-                const sizeMultiplier = ww <= 768 ? 1.25 : (ww <= 1024 ? 1.2 : 1.0);
-
-                const squareSize = layout.size * window.innerWidth * sizeMultiplier;
-                // Cap vertical spread on portrait screens to keep mosaic compact
-                const effectiveHeight = Math.min(window.innerHeight, window.innerWidth * 1.2);
-                const screenStartX = (window.innerWidth / 2) + (layout.x * window.innerWidth);
-                const screenStartY = (window.innerHeight / 2) + (layout.y * effectiveHeight);
-                const startL = screenStartX - (squareSize / 2);
-                const startT = screenStartY - (squareSize / 2);
-                const wrapperRect = wrapper.getBoundingClientRect();
-                const offsetX = screenStartX - (wrapperRect.left + wrapperRect.width / 2);
-                const offsetY = screenStartY - (wrapperRect.top + wrapperRect.height / 2);
-
-                gsap.set(box, { xPercent: -50, yPercent: -50, width: squareSize, height: squareSize, x: offsetX, y: offsetY });
-                gsap.set(inner, { filter: "blur(50px)", backgroundPosition: `-${startL}px -${startT}px` });
-                gsap.set(morphShape, { xPercent: -50, yPercent: -50, scale: 2 });
-            });
-
-            const mosaicRadii = [
-                "60% 15% 40% 20% / 40% 10% 50% 30%",
-                "10% 70% 20% 60% / 20% 40% 15% 70%",
-                "80% 20% 70% 30% / 50% 30% 60% 40%",
-                "30% 60% 10% 80% / 40% 70% 20% 50%",
-                "50% 50% 10% 10% / 80% 80% 10% 10%",
-                "60% 15% 40% 20% / 40% 10% 50% 30%",
-                "10% 70% 20% 60% / 20% 40% 15% 70%",
-                "80% 20% 70% 30% / 50% 30% 60% 40%",
-                "30% 60% 10% 80% / 40% 70% 20% 50%"
-            ];
-
             // -------------------------------------------------------
             // INTRO TIMELINE
             // -------------------------------------------------------
@@ -2409,13 +2295,16 @@
                 paused: true, // Start paused, preloader will play()
                 onComplete: () => {
                     canParallax = true;
+                    if (window.lenis) window.lenis.start();
+                    document.body.classList.remove("preloading");
 
                     // -------------------------------------------------------
                     // PARALLAX VIDEO ZOOM (Cinematic Fixed Feel)
                     // -------------------------------------------------------
                     // Background parallax (Aggressive like valuation section)
                     gsap.to(".hero-bg-video", {
-                        y: "30%",
+                        yPercent: 30, // yPercent is slightly more optimized in GSAP than string-based y
+                        force3D: true, // Force hardware acceleration via translate3d
                         ease: "none",
                         scrollTrigger: {
                             trigger: ".main-hero",
@@ -2440,11 +2329,6 @@
                     });
                 }
             });
-            /*
-            // OLD CODE COMMENTED OUT:
-            tl.to(".splash-grid", { scale: 1, opacity: 0.5, duration: 2.0, ease: "power2.out" }, 0.8);
-            tl.fromTo(".grid-glider", { y: "120svh", opacity: 0 }, { y: "-120svh", opacity: 1, duration: 4.5, stagger: 0.2, ease: "power1.inOut" }, 0.2);
-            */
 
             // Main Hero expands from vertical rectangle over white background
             // Initial states are now properly handled in CSS
@@ -2480,30 +2364,6 @@
                 0
             );
 
-            /* OLD CODE COMMENTED OUT: Mosaic Animation
-            wrappers.forEach((wrapper, i) => {
-                const box = wrapper.querySelector('.video-box');
-                const inner = wrapper.querySelector('.video-inner');
-                const morphShape = wrapper.querySelector('.morph-shape');
-                const solidTexts = wrapper.querySelectorAll('.solid-text');
-
-                tl.to(inner, { filter: "blur(0px)", ease: "power2.out", duration: 0.7 }, 2.2);
-                tl.to(box, { width: wrapper.offsetWidth, height: wrapper.offsetHeight, x: 0, y: 0, ease: "expo.inOut", duration: 1.0 }, 2.7);
-                tl.to(box, { borderRadius: mosaicRadii[i], duration: 0.7, ease: "power1.inOut" }, 2.7);
-                tl.to(box, { borderRadius: "0px", duration: 0.3, ease: "power4.out" }, 3.4);
-                tl.to(inner, { backgroundPosition: wrapper.dataset.finalBgPos, ease: "expo.inOut", duration: 1.0 }, 2.7);
-                tl.to(morphShape, { scale: 0, borderRadius: "50%", ease: "expo.inOut", duration: 0.9 }, 2.8);
-                tl.to(solidTexts, {
-                    opacity: 1,
-                    duration: 0.4,
-                    onStart: () => {
-                        solidTexts.forEach(t => t.classList.add('shimmer-active'));
-                    }
-                }, 3.7);
-                tl.to(box, { opacity: 0, duration: 0.1 }, 4.0);
-            });
-            */
-
             // NEW CODE: Elegant Logo Reveal Animation
             tl.fromTo(".letter-wrapper",
                 { opacity: 0, y: 40, filter: "blur(10px)", scale: 0.95 },
@@ -2522,9 +2382,9 @@
 
                     const skipOnScroll = () => {
                         if (tl.progress() < 1) tl.progress(1);
-                        lenis.off('scroll', skipOnScroll);
+                        window.lenis.off('scroll', skipOnScroll);
                     };
-                    lenis.on('scroll', skipOnScroll);
+                    window.lenis.on('scroll', skipOnScroll);
                 }
             }, 2.3);
 
@@ -2577,6 +2437,7 @@
                 if (mobileHeroFadeST) mobileHeroFadeST.kill();
                 if (headerWipeST) headerWipeST.kill();
                 if (headerColorST) headerColorST.kill();
+                if (headerPillST) headerPillST.kill();
 
                 // ── MOBILE OPTIMIZATION ──────────
                 // Disable morph on mobile to prevent lag. 
@@ -2665,6 +2526,8 @@
                 logoAnchor.id = 'hero-logo-anchor';
                 logoAnchor.style.cssText = `width:${logoAreaRect.width}px;height:${logoAreaRect.height}px;visibility:hidden;`;
                 logoArea.parentNode.insertBefore(logoAnchor, logoArea);
+                
+                document.body.appendChild(logoArea); // Escape main-hero stacking context
 
                 logoArea.id = 'morph-breakout-logo';
 
@@ -2680,7 +2543,7 @@
                     width: logoAreaRect.width + 'px',
                     margin: '0',
                     padding: '0',
-                    zIndex: '98001',
+                    zIndex: '200001',
                     pointerEvents: 'none',
                     willChange: 'transform'
                 });
@@ -2690,7 +2553,7 @@
                 // ── CONFIGURATION & TARGETS ──────────────────
                 const headerLogoHeight = window.innerWidth <= 480 ? 14 : window.innerWidth <= 768 ? 16 : 20;
                 const targetScale = headerLogoHeight / wordRect.height;
-                const targetLeftPx = window.innerWidth <= 768 ? window.innerWidth * 0.04 : window.innerWidth * 0.02;
+                const targetLeftPx = window.innerWidth <= 768 ? 24 : 48;
 
                 isMorphed = true;
                 gsap.set(heroEl, { overflow: 'hidden' });
@@ -2756,7 +2619,7 @@
 
                 // 6. Header wipe-in terikat penuh dengan scroll (scrubbed)
                 const header = document.querySelector('.header');
-                gsap.to(header, {
+                headerWipeST = gsap.to(header, {
                     '--header-wipe': 1,
                     ease: 'none',
                     scrollTrigger: {
@@ -2769,12 +2632,21 @@
                 });
 
                 // Toggle dark mode classes when passing hero
-                ScrollTrigger.create({
+                headerColorST = ScrollTrigger.create({
                     trigger: '.main-hero',
                     start: () => `bottom ${header.offsetHeight}px`,
                     end: 'max',
                     onEnter: () => document.body.classList.add('header-dark-mode'),
                     onLeaveBack: () => document.body.classList.remove('header-dark-mode')
+                });
+
+                // Toggle pill mode classes when fully passing hero
+                headerPillST = ScrollTrigger.create({
+                    trigger: '.main-hero',
+                    start: 'bottom top',
+                    end: 'max',
+                    onEnter: () => document.body.classList.add('header-pill-mode'),
+                    onLeaveBack: () => document.body.classList.remove('header-pill-mode')
                 });
             }
 
@@ -2869,9 +2741,9 @@
                     document.body.classList.toggle('menu-open');
 
                     if (mobileNavOverlay.classList.contains('active')) {
-                        lenis.stop();
+                        window.lenis.stop();
                     } else {
-                        lenis.start();
+                        window.lenis.start();
                     }
                 });
 
@@ -2881,7 +2753,7 @@
                         hamburgerBtn.classList.remove('active');
                         mobileNavOverlay.classList.remove('active');
                         document.body.classList.remove('menu-open');
-                        lenis.start();
+                        window.lenis.start();
                     });
                 });
             }
@@ -2914,7 +2786,7 @@
                 const colTL = gsap.timeline({
                     scrollTrigger: {
                         trigger: collectionSection,
-                        start: "top 60%",
+                        start: "top 50%",
                     }
                 });
 
