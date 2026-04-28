@@ -110,7 +110,13 @@ export default function Header() {
         <div className="header-actions">
           <Button label="Speak to an Expert" href="#" className="btn-book" />
         </div>
-        <button className="hamburger" id="hamburgerBtn" aria-label="Menu">
+        <button 
+          className="hamburger" 
+          id="hamburgerBtn" 
+          aria-label="Menu"
+          type="button"
+          onClick={() => window.dispatchEvent(new CustomEvent('toggle-mobile-menu'))}
+        >
           <span></span><span></span>
         </button>
       </div>

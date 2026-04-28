@@ -10,19 +10,38 @@ export default function MobileNav() {
   const lenis = useLenis();
 
   useEffect(() => {
-    const hamburgerBtn = document.getElementById('hamburgerBtn');
-    const mobileNavOverlay = document.getElementById('mobileNavOverlay');
-    if (hamburgerBtn && mobileNavOverlay) {
-      hamburgerBtn.addEventListener('click', () => {
+    const handleToggle = () => {
+      const hamburgerBtn = document.getElementById('hamburgerBtn');
+      const mobileNavOverlay = document.getElementById('mobileNavOverlay');
+      if (hamburgerBtn && mobileNavOverlay) {
         hamburgerBtn.classList.toggle('active');
         mobileNavOverlay.classList.toggle('active');
         document.body.classList.toggle('menu-open');
         mobileNavOverlay.classList.contains('active') ? lenis?.stop() : lenis?.start();
-      });
-      mobileNavOverlay.querySelectorAll('a').forEach(link => {
-        link.addEventListener('click', () => { hamburgerBtn.classList.remove('active'); mobileNavOverlay.classList.remove('active'); document.body.classList.remove('menu-open'); lenis?.start(); });
-      });
-    }
+      }
+    };
+
+    const handleLinkClick = () => {
+      const hamburgerBtn = document.getElementById('hamburgerBtn');
+      const mobileNavOverlay = document.getElementById('mobileNavOverlay');
+      if (hamburgerBtn && mobileNavOverlay) {
+        hamburgerBtn.classList.remove('active');
+        mobileNavOverlay.classList.remove('active');
+        document.body.classList.remove('menu-open');
+        lenis?.start();
+      }
+    };
+
+    window.addEventListener('toggle-mobile-menu', handleToggle);
+    
+    const mobileNavOverlay = document.getElementById('mobileNavOverlay');
+    const links = mobileNavOverlay?.querySelectorAll('a');
+    links?.forEach(link => link.addEventListener('click', handleLinkClick));
+
+    return () => {
+      window.removeEventListener('toggle-mobile-menu', handleToggle);
+      links?.forEach(link => link.removeEventListener('click', handleLinkClick));
+    };
   }, [lenis]);
   return (
     <>

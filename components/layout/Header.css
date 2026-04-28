@@ -219,6 +219,10 @@
             color: #ffffff;
         }
 
+        body.preloading .hamburger span {
+            background-color: #111111; /* Dark during preloader (white splash) */
+        }
+        
         body.header-dark-mode .hamburger span {
             background-color: #111111;
         }
