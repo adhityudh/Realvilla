@@ -950,7 +950,9 @@
         }
 
         /* Hide "leaking" elements when menu is open */
-        body.menu-open .hero-description-area {
+        body.menu-open .hero-description-area,
+        body.menu-open .header-logo,
+        body.menu-open #morph-breakout-logo {
             opacity: 0 !important;
             visibility: hidden;
             pointer-events: none;
