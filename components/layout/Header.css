@@ -219,10 +219,18 @@
             color: #ffffff;
         }
 
-        body.preloading .hamburger span {
-            background-color: #111111; /* Dark during preloader (white splash) */
+        /* Hide header elements only while the preloader box is visible */
+        body.preloading:not(.intro-active) .header-logo,
+        body.preloading:not(.intro-active) .hamburger {
+            opacity: 0 !important;
+            visibility: hidden;
+            pointer-events: none;
         }
-        
+
+        body.preloading:not(.intro-active) .hamburger span {
+            background-color: #111111;
+        }
+
         body.header-dark-mode .hamburger span {
             background-color: #111111;
         }
@@ -267,6 +275,11 @@
             background-color: #ffffff;
         }
 
+        body.header-light-mode .header::before {
+            background: rgba(17, 17, 17, 0.25);
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
         /* =============================================
            RESPONSIVE — MOBILE (≤1024px)
         ============================================= */
@@ -299,12 +312,15 @@
             }
 
             body.header-light-mode .header::before {
-                background: rgba(17, 17, 17, 0.85);
+                background: rgba(188, 175, 139, 0.85);
             }
 
-            .header-logo {
+            /* Show logo on mobile after preloader is gone */
+            body:not(.preloading) .header-logo,
+            body.intro-active .header-logo {
                 height: 16px;
                 opacity: 1 !important;
+                visibility: visible;
                 pointer-events: auto !important;
             }
 

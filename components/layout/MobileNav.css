@@ -153,7 +153,8 @@
            RESPONSIVE — MOBILE (≤1024px)
         ============================================= */
         @media (max-width: 1024px) {
-            .hamburger {
+            body:not(.preloading) .hamburger,
+            body.intro-active .hamburger {
                 display: flex;
             }
 

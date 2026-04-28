@@ -4,6 +4,7 @@ import MobileNav from '@/components/layout/MobileNav';
 import CursorFollower from '@/components/layout/CursorFollower';
 import SplashIntro from '@/components/hero/SplashIntro';
 import HeroSection from '@/components/hero/HeroSection';
+import PropertiesSection from '@/components/sections/PropertiesSection';
 import ValuationSection from '@/components/sections/ValuationSection';
 
 export default function Home() {
@@ -15,6 +16,7 @@ export default function Home() {
       <SplashIntro />
       <HeroSection />
       <ValuationSection />
+      <PropertiesSection />
       <section style={{ height: '100svh', background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <h2 style={{ fontWeight: 300 }}>Rest of the website...</h2>
       </section>

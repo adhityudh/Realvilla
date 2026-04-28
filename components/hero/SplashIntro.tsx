@@ -217,11 +217,15 @@ function useIntroOrchestrator() {
     const tl = gsap.timeline({
       delay: 0,
       paused: true,
+      onStart: () => {
+        document.body.classList.add('intro-active');
+      },
       onComplete: () => {
         window.scrollTo(0, 0);
         lenis.scrollTo(0, { immediate: true });
         lenis.start();
         document.body.classList.remove('preloading');
+        document.body.classList.remove('intro-active');
       },
     });
 
