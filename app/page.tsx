@@ -6,6 +6,8 @@ import HeroSection from '@/components/hero/HeroSection';
 import ValuationSection from '@/components/sections/ValuationSection';
 import AnimationOrchestrator from '@/components/AnimationOrchestrator';
 
+export const dynamic = 'force-dynamic';
+
 export default function Home() {
   return (
     <>
