@@ -4,7 +4,6 @@ import CursorFollower from '@/components/layout/CursorFollower';
 import SplashIntro from '@/components/hero/SplashIntro';
 import HeroSection from '@/components/hero/HeroSection';
 import ValuationSection from '@/components/sections/ValuationSection';
-import CollectionSection from '@/components/sections/CollectionSection';
 import AnimationOrchestrator from '@/components/AnimationOrchestrator';
 
 export default function Home() {
