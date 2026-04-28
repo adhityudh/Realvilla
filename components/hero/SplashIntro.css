@@ -1,0 +1,538 @@
+        /* =============================================
+           SPLASH SCREEN
+        ============================================= */
+        .splash-intro {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100svh;
+            z-index: 99999;
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            padding: 6rem 3rem 6rem 3rem;
+            gap: 3rem;
+            overflow: hidden;
+            opacity: 1;
+            /* Hide main-hero behind splash-bg initially */
+            pointer-events: auto;
+        }
+
+        .main-hero {
+            will-change: clip-path;
+            /* Updated for 105svh height: (105 - 50)/2 centered around 50svh viewport center */
+            /* Top inset: 50svh - 25svh = 25svh. Bottom inset: 105svh - (25svh + 50svh) = 30svh */
+            clip-path: inset(25svh calc(50vw - min(17.5svh, 40vw)) 30svh calc(50vw - min(17.5svh, 40vw)) round 24px);
+        }
+
+        .splash-bg {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at center, #ffffff 0%, #f8f8f8 100%);
+            z-index: -2;
+            opacity: 0;
+            /* Hidden so the video rectangle is visible during preloading */
+            will-change: transform;
+        }
+
+        .preloader-border-box {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: calc(min(35svh, 80vw) + 36px);
+            height: calc(50svh + 36px);
+            z-index: 9998;
+            pointer-events: none;
+            opacity: 1;
+        }
+
+        #preloader-rect {
+            width: calc(100% - 2px);
+            height: calc(100% - 2px);
+            /* Pure CSS animation guarantees it runs instantly before JS loads */
+            animation: preloaderDraw 10s cubic-bezier(0.1, 0.7, 0.1, 1) forwards;
+        }
+
+        @keyframes preloaderDraw {
+            0% {
+                stroke-dashoffset: 100;
+            }
+
+            100% {
+                stroke-dashoffset: 10;
+            }
+
+            /* Draws up to 90% while waiting for real load */
+        }
+
+        .preloader-border-box svg {
+            display: block;
+        }
+
+        /* Running shine effect */
+        #preloader-shine {
+            width: calc(100% - 2px);
+            height: calc(100% - 2px);
+            stroke-dasharray: 8 92;
+            stroke-dashoffset: 100;
+            animation: preloaderShine 1.5s linear infinite;
+            opacity: 0.9;
+        }
+
+        @keyframes preloaderShine {
+            0% {
+                stroke-dashoffset: 100;
+            }
+
+            100% {
+                stroke-dashoffset: 0;
+            }
+        }
+
+        .splash-grid {
+            position: absolute;
+            inset: -25%;
+            z-index: -1;
+            opacity: 0.25;
+            transform: scale(1.5);
+            will-change: transform, opacity;
+        }
+
+        .v-line,
+        .h-line {
+            position: absolute;
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+
+        .v-line {
+            width: 1px;
+            height: 100%;
+            top: 0;
+            left: 50%;
+        }
+
+        .h-line {
+            height: 1px;
+            width: 100%;
+            left: 0;
+            top: 50%;
+        }
+
+        .grid-glider {
+            position: absolute;
+            width: 6px;
+            height: 40svh;
+            background: linear-gradient(to top, transparent, #f3e2b3 50%, transparent);
+            left: 50%;
+            transform: translateX(-50%);
+            top: 0;
+            opacity: 1;
+            z-index: 10;
+            will-change: transform;
+        }
+
+        .logo-content-area {
+            display: flex;
+            flex-direction: column;
+            gap: 4rem;
+            align-items: flex-start;
+            pointer-events: auto;
+            z-index: 10000;
+            align-self: center;
+        }
+
+        .word-container {
+            display: flex;
+            gap: 0.1vw;
+            /* IMPROVED: Pre-hint GPU layer for logo morph */
+            will-change: transform;
+        }
+
+        .hero-ctas {
+            display: flex;
+            gap: 2rem;
+            opacity: 1;
+            pointer-events: auto;
+            will-change: transform, opacity;
+        }
+
+        .mobile-hero-ctas {
+            display: none;
+        }
+
+        .cta-link {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+            color: #ffffff;
+            font-size: 1.25rem;
+            font-weight: 700;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            padding-bottom: 6px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+            transition: border-bottom-color 0.4s ease, transform 0.4s ease, opacity 0.4s ease;
+            opacity: 0;
+            transform: translateY(20px) scale(0.9);
+            filter: blur(5px);
+            will-change: transform, opacity, filter;
+        }
+
+        .cta-link:hover {
+            opacity: 1;
+            border-bottom-color: #ffffff;
+            transform: translateY(-4px);
+        }
+
+        /* Hero CTA variant — starts collapsed, expands on hover */
+        .cta-stretch-arrow {
+            width: 0;
+            opacity: 0;
+            margin-left: 0;
+            transition: width 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+                opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+                margin-left 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            transform: translateX(-10px);
+        }
+
+        .cta-link:hover .cta-stretch-arrow {
+            width: 36px;
+            opacity: 1;
+            margin-left: 0.75rem;
+            transform: translateX(0);
+        }
+
+        .cta-link:hover .stretch-arrow .arrow-shaft {
+            transform: scaleX(1);
+        }
+
+        .cta-icon {
+            width: 1.3rem;
+            height: 1.3rem;
+            object-fit: contain;
+            filter: brightness(0) invert(1);
+        }
+
+        .hero-description-area {
+            width: 25vw;
+            text-align: left;
+            color: #ffffff;
+            opacity: 1;
+            pointer-events: auto;
+            padding-left: 1rem;
+            padding-right: 1rem;
+            will-change: transform, opacity;
+        }
+
+        .word-mask {
+            display: inline-block;
+            vertical-align: top;
+            overflow: hidden;
+        }
+
+        .word-inner {
+            display: inline-block;
+            will-change: transform, filter, opacity;
+        }
+
+        .hero-title {
+            font-size: 1.25rem;
+            line-height: 1.2;
+            margin-bottom: 1rem;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            overflow: hidden;
+            opacity: 0;
+        }
+
+        .hero-subtitle {
+            font-size: 1rem;
+            font-weight: 400;
+            line-height: 1.6;
+            opacity: 0;
+            max-width: 100%;
+            margin-left: 0;
+        }
+
+        .hero-scroll {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 1rem;
+            opacity: 0;
+            margin-top: 2.5rem;
+            filter: blur(5px);
+            will-change: transform, opacity, filter;
+        }
+
+        .hero-scroll span {
+            font-size: 0.65rem;
+            font-weight: 600;
+            letter-spacing: 0.35em;
+            color: #ffffff;
+            opacity: 1;
+            text-transform: uppercase;
+        }
+
+        .scroll-line-track {
+            width: 1px;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.15);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .scroll-line-thumb {
+            position: absolute;
+            top: -100%;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, transparent 0%, rgba(212, 175, 55, 0.6) 40%, #d4af37 100%);
+            animation: scrollLineMove 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+            animation-play-state: paused;
+        }
+
+        @keyframes scrollLineMove {
+            0% {
+                top: -100%;
+            }
+
+            50% {
+                top: 0%;
+            }
+
+            100% {
+                top: 100%;
+            }
+        }
+
+        /* =============================================
+           LETTER / MOSAIC
+        ============================================= */
+        .letter-wrapper {
+            position: relative;
+            height: 5.6vw;
+            width: calc(5.6vw * var(--letter-w, 0.75));
+            opacity: 0;
+            /* Hidden initially so it only appears when GSAP reveals it */
+        }
+
+        .video-box {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            overflow: hidden;
+            border: 2px solid #fff;
+            box-sizing: border-box;
+            transition: border-radius 0.3s ease;
+        }
+
+        .video-inner {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            inset: 0;
+            overflow: hidden;
+            background-image: url('/img-hero-001.jpg');
+            background-size: 100vw 100svh;
+            background-repeat: no-repeat;
+        }
+
+        .mask-layer {
+            position: absolute;
+            inset: -2px;
+            background-color: var(--bg-white);
+            mix-blend-mode: screen;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+        }
+
+        .letter-font {
+            width: 100%;
+            height: 100%;
+            background-color: #000000;
+            -webkit-mask-image: var(--letter-svg);
+            mask-image: var(--letter-svg);
+            -webkit-mask-size: 100% 100%;
+            mask-size: 100% 100%;
+            -webkit-mask-repeat: no-repeat;
+            mask-repeat: no-repeat;
+            -webkit-mask-position: center;
+            mask-position: center;
+        }
+
+        .morph-shape {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 150%;
+            height: 150%;
+            background-color: #000000;
+        }
+
+        .solid-text {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 1;
+            z-index: 20;
+            transition: background-color 0.4s ease;
+            -webkit-mask-image: var(--letter-svg);
+            mask-image: var(--letter-svg);
+            -webkit-mask-size: 100% 100%;
+            mask-size: 100% 100%;
+            -webkit-mask-repeat: no-repeat;
+            mask-repeat: no-repeat;
+            -webkit-mask-position: center;
+            mask-position: center;
+        }
+
+        .text-black {
+            background-color: #ffffff;
+        }
+
+        .text-gold {
+            background-color: #ffffff;
+        }
+
+        .text-white-reveal {
+            background-color: #ffffff;
+            z-index: 25;
+            clip-path: inset(100% 0 0 0);
+            opacity: 0;
+            will-change: clip-path, opacity;
+            transition: background-color 0.4s ease;
+        }
+
+        /* =============================================
+           RESPONSIVE — MOBILE (≤1024px)
+        ============================================= */
+        @media (max-width: 1024px) {
+            .logo-content-area,
+            .hero-ctas {
+                display: none !important;
+            }
+
+            .cta-stretch-arrow {
+                display: none !important;
+            }
+
+            .splash-intro {
+                padding: 5rem 1.5rem 5rem 1.5rem;
+                flex-direction: column;
+                align-items: flex-start;
+                justify-content: flex-end;
+                gap: 2rem;
+            }
+
+            .logo-content-area {
+                gap: 2.5rem;
+                width: 100%;
+                align-self: center;
+                margin-top: auto;
+                margin-bottom: auto;
+            }
+
+            .word-container {
+                gap: 0.2vw;
+            }
+
+            .letter-wrapper {
+                height: 8vw;
+                width: calc(8vw * var(--letter-w, 0.75));
+            }
+
+            .cta-link {
+                font-size: 1rem;
+                gap: 0.5rem;
+            }
+
+            .cta-icon {
+                width: 1rem;
+                height: 1rem;
+            }
+
+            .mobile-hero-ctas {
+                display: flex;
+                gap: 1.5rem;
+                margin-top: 2rem;
+                flex-wrap: wrap;
+            }
+
+            .mobile-hero-ctas .cta-link {
+                padding-bottom: 4px;
+                font-size: 1rem;
+                letter-spacing: 0.1em;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+                gap: 0.5rem;
+            }
+
+            .hero-description-area {
+                width: 100%;
+                max-width: 100%;
+                padding-left: 0;
+                padding-right: 0;
+            }
+
+            .hero-title {
+                font-size: 2.15rem;
+                margin-bottom: 0.75rem;
+                letter-spacing: -0.01em;
+                line-height: 1.1;
+            }
+
+            .hero-scroll {
+                margin-top: 4rem;
+            }
+
+            .scroll-line-track {
+                height: 16px;
+            }
+
+            .preloader-border-box {
+                width: calc(min(30svh, 50vw) + 24px);
+                height: calc(38svh + 24px);
+            }
+
+            #preloader-rect,
+            #preloader-shine {
+                rx: 32px;
+            }
+
+            .main-hero {
+                will-change: clip-path;
+                clip-path: inset(31svh calc((100vw - min(30svh, 50vw)) / 2) 36svh calc((100vw - min(30svh, 50vw)) / 2) round 22px);
+            }
+        }
+
+        /* =============================================
+           RESPONSIVE — SMALL MOBILE (≤480px)
+        ============================================= */
+        @media (max-width: 480px) {
+            .splash-intro {
+                padding: 3rem 1.25rem 3rem 1.25rem;
+                gap: 3rem;
+            }
+
+            .logo-content-area {
+                gap: 2rem;
+            }
+
+            .letter-wrapper {
+                height: 9.2vw;
+                width: calc(9.2vw * var(--letter-w, 0.75));
+            }
+        }

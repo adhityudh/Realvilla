@@ -1,28 +1,55 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import StretchArrow from '@/components/ui/StretchArrow';
-import { iframeResizer } from 'iframe-resizer';
+import { useEffect, useState, useRef } from 'react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import Button from '@/components/ui/Button';
+import iFrameResize from 'iframe-resizer/js/iframeResizer';
+import './ValuationSection.css';
+
+gsap.registerPlugin(ScrollTrigger);
 
 export default function ValuationSection() {
   const [iframeSrc, setIframeSrc] = useState('');
+  const [isIframeReady, setIsIframeReady] = useState(false);
+  const iframeRef = useRef<HTMLIFrameElement>(null);
 
   useEffect(() => {
-    // Delay loading the iframe src to prevent it from stealing focus/scrolling on page load
+    const valuationSection = document.querySelector('.valuation-section');
+    if (valuationSection) {
+      gsap.set('.valuation-tagline, .valuation-headline, .valuation-body, .valuation-trust, .valuation-cta-desktop, .valuation-cta-mobile, .valuation-card', { opacity: 0, y: 40, filter: 'blur(10px)' });
+      ScrollTrigger.create({
+        trigger: valuationSection, start: 'top 50%',
+        onEnter: () => {
+          gsap.to('.valuation-tagline, .valuation-headline, .valuation-body, .valuation-trust, .valuation-cta-desktop, .valuation-cta-mobile', { y: 0, opacity: 1, filter: 'blur(0px)', duration: 1.2, stagger: 0.2, ease: 'expo.out', clearProps: 'all' });
+          gsap.to('.valuation-card', { y: 0, opacity: 1, filter: 'blur(0px)', duration: 1.5, delay: 0.5, ease: 'expo.out', clearProps: 'all' });
+        },
+        once: true
+      });
+    }
+  }, []);
+
+  useEffect(() => {
     const timer = setTimeout(() => {
       setIframeSrc('https://realvilla.valuation.realadvisor.es/appraise?language=es');
-    }, 2500); // Wait for intro animation to settle
-
+    }, 2000);
     return () => clearTimeout(timer);
   }, []);
 
   useEffect(() => {
-    if (iframeSrc) {
-      iframeResizer({
-        heightCalculationMethod: 'documentElementOffset',
-        log: false,
+    if (iframeSrc && iframeRef.current) {
+      const components = iFrameResize({
+        heightCalculationMethod: 'lowestElement',
         checkOrigin: false,
-      }, '#valuationFrame');
+        onInit: () => setIsIframeReady(true),
+        onResized: () => setIsIframeReady(true),
+      }, iframeRef.current);
+
+      return () => {
+        if (components && components[0] && components[0].iFrameResizer) {
+          components[0].iFrameResizer.close();
+        }
+      };
     }
   }, [iframeSrc]);
 
@@ -38,30 +65,45 @@ export default function ValuationSection() {
             <img src="/icons/shield.svg" alt="Shield" />
             <span>Powered by Local Market Intelligence</span>
           </div>
-          <a href="#" className="service-cta valuation-cta-desktop">
-            <span>Sell Your Property</span>
-            <StretchArrow />
-          </a>
+          <Button label="Sell Your Property" href="#" className="service-cta valuation-cta-desktop" />
         </div>
         <div className="valuation-form-wrapper">
           <div className="valuation-card">
-            <div className="valuation-iframe-container" style={{ display: 'flex', flexDirection: 'column' }}>
+            <div className="valuation-iframe-container" style={{ position: 'relative', minHeight: '600px', background: '#fff' }}>
+              {/* Loader - visible until isIframeReady is true */}
+              <div 
+                className="valuation-loader" 
+                style={{ 
+                  opacity: isIframeReady ? 0 : 1,
+                  visibility: isIframeReady ? 'hidden' : 'visible',
+                  transition: 'opacity 0.5s ease, visibility 0.5s ease',
+                  backgroundColor: '#fff',
+                  zIndex: 200
+                }}
+              >
+                <div className="loader-shimmer"></div>
+                <p style={{ marginTop: '1rem', fontSize: '0.75rem', letterSpacing: '0.1em' }}>Loading Valuation Tool...</p>
+              </div>
+
               {iframeSrc && (
                 <iframe
-                  style={{ width: '100%', border: 'none' }}
+                  ref={iframeRef}
+                  style={{ 
+                    width: '100%', 
+                    border: 'none', 
+                    opacity: isIframeReady ? 1 : 0,
+                    transition: 'opacity 1s ease, height 0.5s cubic-bezier(0.16, 1, 0.3, 1)',
+                    display: 'block'
+                  }}
                   title="valuation"
                   src={iframeSrc}
                   id="valuationFrame"
-                  loading="lazy"
                 />
               )}
             </div>
           </div>
         </div>
-        <a href="#" className="service-cta valuation-cta-mobile">
-          <span>Sell Your Property</span>
-          <StretchArrow />
-        </a>
+        <Button label="Sell Your Property" href="#" className="service-cta valuation-cta-mobile" />
       </div>
     </section>
   );

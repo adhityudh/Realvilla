@@ -1,9 +1,29 @@
 'use client';
 
+import { useEffect } from 'react';
 import { NAV_LINKS } from '@/lib/letters';
 import StretchArrow from '@/components/ui/StretchArrow';
+import { useLenis } from '@/lib/LenisContext';
+import './MobileNav.css';
 
 export default function MobileNav() {
+  const lenis = useLenis();
+
+  useEffect(() => {
+    const hamburgerBtn = document.getElementById('hamburgerBtn');
+    const mobileNavOverlay = document.getElementById('mobileNavOverlay');
+    if (hamburgerBtn && mobileNavOverlay) {
+      hamburgerBtn.addEventListener('click', () => {
+        hamburgerBtn.classList.toggle('active');
+        mobileNavOverlay.classList.toggle('active');
+        document.body.classList.toggle('menu-open');
+        mobileNavOverlay.classList.contains('active') ? lenis?.stop() : lenis?.start();
+      });
+      mobileNavOverlay.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => { hamburgerBtn.classList.remove('active'); mobileNavOverlay.classList.remove('active'); document.body.classList.remove('menu-open'); lenis?.start(); });
+      });
+    }
+  }, [lenis]);
   return (
     <>
       <div className="mobile-pill-nav">

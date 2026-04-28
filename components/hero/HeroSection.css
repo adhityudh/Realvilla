@@ -1,0 +1,35 @@
+        /* =============================================
+           MAIN HERO
+        ============================================= */
+        .main-hero {
+            will-change: clip-path;
+            position: relative;
+            width: 100vw;
+            height: 105svh;
+            overflow: hidden;
+            perspective: 1000px;
+        }
+
+        .hero-bg-video {
+            position: absolute;
+            top: -30%;
+            left: 0;
+            width: 100%;
+            height: 130%;
+            object-fit: cover;
+            object-position: center;
+            z-index: 1;
+            transform: scale(1);
+            opacity: 0;
+            filter: blur(8px);
+            transition: opacity 1.5s cubic-bezier(0.16, 1, 0.3, 1), filter 1.5s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: transform, opacity, filter;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.25) 0%, rgba(45, 35, 15, 0.3) 50%, rgba(0, 0, 0, 0.35) 100%);
+            z-index: 2;
+            will-change: opacity;
+        }

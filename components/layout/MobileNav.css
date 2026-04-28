@@ -1,0 +1,218 @@
+        /* =============================================
+           HAMBURGER MENU (Mobile)
+        ============================================= */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            gap: 6px;
+            width: 28px;
+            height: 20px;
+            cursor: pointer;
+            z-index: 97000;
+            background: none;
+            border: none;
+            padding: 0;
+        }
+
+        .hamburger span {
+            display: block;
+            width: 100%;
+            height: 2px;
+            background-color: #ffffff;
+            border-radius: 2px;
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+                opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+                background-color 0.4s ease;
+            transform-origin: center;
+        }
+
+        .hamburger.active span {
+            background-color: #ffffff !important;
+        }
+
+        .hamburger.active span:nth-child(1) {
+            transform: translateY(4px) rotate(45deg);
+        }
+
+        .hamburger.active span:nth-child(2) {
+            transform: translateY(-4px) rotate(-45deg);
+        }
+
+        /* Mobile Nav Overlay */
+        .mobile-nav-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.92);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            z-index: 190000;
+            transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2rem;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .mobile-nav-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        body.menu-open .header::before {
+            opacity: 0 !important;
+        }
+
+        /* Hide "leaking" elements when menu is open */
+        body.menu-open .hero-description-area,
+        body.menu-open .header-logo,
+        body.menu-open #morph-breakout-logo {
+            opacity: 0 !important;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .mobile-nav-overlay .nav-link-mobile {
+            font-family: var(--font-cormorant), 'Cormorant Garamond', serif;
+            font-size: 1.25rem;
+            font-weight: 600;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            color: #ffffff;
+            text-decoration: none;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+
+        .mobile-nav-overlay.active .nav-link-mobile {
+            opacity: 0.8;
+            transform: translateY(0);
+        }
+
+        .mobile-nav-overlay.active .nav-link-mobile:nth-child(1) {
+            transition-delay: 0.1s;
+        }
+
+        .mobile-nav-overlay.active .nav-link-mobile:nth-child(2) {
+            transition-delay: 0.15s;
+        }
+
+        .mobile-nav-overlay.active .nav-link-mobile:nth-child(3) {
+            transition-delay: 0.2s;
+        }
+
+        .mobile-nav-overlay.active .nav-link-mobile:nth-child(4) {
+            transition-delay: 0.25s;
+        }
+
+        .mobile-nav-overlay .nav-link-mobile:hover {
+            opacity: 1;
+        }
+
+        .mobile-nav-overlay .btn-book-mobile {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.85rem;
+            background-color: #ffffff;
+            color: #000000;
+            padding: 1rem 2.5rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            text-decoration: none;
+            white-space: nowrap;
+            margin-top: 1.5rem;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.4s ease 0.3s, transform 0.4s ease 0.3s;
+        }
+
+        .btn-book-mobile .stretch-arrow {
+            width: 16px;
+            height: 16px;
+        }
+
+        .mobile-nav-overlay.active .btn-book-mobile {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .mobile-pill-nav {
+            display: none;
+        }
+
+        /* =============================================
+           RESPONSIVE — MOBILE (≤1024px)
+        ============================================= */
+        @media (max-width: 1024px) {
+            .hamburger {
+                display: flex;
+            }
+
+            .mobile-pill-nav {
+                display: flex;
+                position: fixed;
+                top: 52px;
+                left: 50%;
+                transform: translateX(-50%) translateY(-20px);
+                width: calc(100% - 1.5rem);
+                background-color: #f0f0f0;
+                /* Muted grey background */
+                border-radius: 50px;
+                padding: 0.85rem 0;
+                justify-content: space-evenly;
+                align-items: center;
+                z-index: 200002;
+                opacity: 0;
+                pointer-events: none;
+                transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            }
+
+            body.header-dark-mode .mobile-pill-nav {
+                opacity: 1;
+                pointer-events: auto;
+                transform: translateX(-50%) translateY(0);
+            }
+
+            body.menu-open .mobile-pill-nav {
+                opacity: 0 !important;
+                pointer-events: none !important;
+                transform: translateX(-50%) translateY(-20px) !important;
+            }
+
+            .pill-link {
+                color: var(--text-black);
+                text-decoration: none;
+                font-family: 'Vidaloka', serif;
+                font-size: 0.75rem;
+                text-transform: uppercase;
+                letter-spacing: 0.15em;
+                display: flex;
+                align-items: center;
+                gap: 0.4rem;
+            }
+
+            .pill-sep {
+                width: 1px;
+                height: 12px;
+                background-color: rgba(0, 0, 0, 0.1);
+            }
+
+            .pill-icon {
+                width: 0.85rem;
+                height: 0.85rem;
+                opacity: 0.7;
+            }
+
+            .pill-link:active {
+                color: var(--text-gold);
+            }
+        }
