@@ -16,7 +16,12 @@ body {
   overflow-x: hidden;
   font-family: var(--font-manrope), 'Manrope', sans-serif;
   -webkit-font-smoothing: antialiased;
-  overflow-y: hidden;
+}
+
+body.preloading {
+  overflow: hidden !important;
+  touch-action: none;
+  -ms-touch-action: none;
 }
 
 h1,

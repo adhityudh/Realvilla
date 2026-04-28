@@ -122,22 +122,15 @@ export function setupLogoMorph(isMobile: boolean, heroEl: HTMLElement) {
   const logoArea = document.querySelector('.logo-content-area') as HTMLElement;
   if (!logoArea || !splashIntro || !headerContent) return { morphTl: null, morphST: null };
 
-  const wordContainer = logoArea.querySelector('.word-container') as HTMLElement;
-  const heroCtas = splashIntro.querySelector('.hero-ctas') as HTMLElement;
-  const heroDesc = splashIntro.querySelector('.hero-description-area') as HTMLElement;
   const logoAreaRect = logoArea.getBoundingClientRect();
-  const wordRect = wordContainer.getBoundingClientRect();
   const headerRectLocal = headerContent.getBoundingClientRect();
 
-  // Detach logo from its original stacking context
-  const logoAnchor = document.createElement('div');
-  logoAnchor.id = 'hero-logo-anchor';
-  logoAnchor.style.cssText = `width:${logoAreaRect.width}px;height:${logoAreaRect.height}px;visibility:hidden;`;
-  logoArea.parentNode!.insertBefore(logoAnchor, logoArea);
-  document.body.appendChild(logoArea);
-  logoArea.id = 'morph-breakout-logo';
-
-  Object.assign(logoArea.style, {
+  // Create CLONE instead of moving the original to prevent flickering/blink
+  const clonedLogo = logoArea.cloneNode(true) as HTMLElement;
+  clonedLogo.id = 'morph-breakout-logo';
+  
+  // Set styles for the clone to match the original position exactly
+  Object.assign(clonedLogo.style, {
     position: 'fixed',
     left: `${logoAreaRect.left + window.scrollX}px`,
     top: `${logoAreaRect.top + window.scrollY}px`,
@@ -147,7 +140,22 @@ export function setupLogoMorph(isMobile: boolean, heroEl: HTMLElement) {
     zIndex: '200001',
     pointerEvents: 'none',
     willChange: 'transform',
-    visibility: '',
+    visibility: 'visible',
+  });
+
+  // Append clone to body
+  document.body.appendChild(clonedLogo);
+
+  // Get references from clone for animation
+  const clonedWordContainer = clonedLogo.querySelector('.word-container') as HTMLElement;
+  const clonedHeroCtas = clonedLogo.querySelector('.hero-ctas') as HTMLElement;
+  const heroDesc = splashIntro.querySelector('.hero-description-area') as HTMLElement;
+
+  const wordRect = clonedWordContainer.getBoundingClientRect();
+
+  // Hide original logo area AFTER the clone is added to ensure overlap
+  requestAnimationFrame(() => {
+    logoArea.style.visibility = 'hidden';
   });
 
   const headerLogoHeight = window.innerWidth <= 480 ? 14 : 20;
@@ -161,17 +169,19 @@ export function setupLogoMorph(isMobile: boolean, heroEl: HTMLElement) {
 
   gsap.set(heroEl, { overflow: 'hidden', clipPath: 'inset(0px 0px 0px 0px round 0px)' });
   gsap.set(splashIntro, { overflow: 'visible' });
-  gsap.set(logoArea, { y: 0 });
-  gsap.set(heroCtas, { opacity: 1, y: 0 });
+  
+  // Initial state for cloned elements
+  gsap.set(clonedLogo, { y: 0 });
+  gsap.set(clonedHeroCtas, { opacity: 1, y: 0 });
   gsap.set(heroDesc, { opacity: 1 });
-  gsap.set(wordContainer, { x: 0, y: 0, scale: 1, transformOrigin: 'left center' });
+  gsap.set(clonedWordContainer, { x: 0, y: 0, scale: 1, transformOrigin: 'left center' });
 
   const morphTl = gsap.timeline({ paused: true });
   morphTl
-    .to(logoArea, { y: -scrollEnd, duration: 1, ease: 'none' }, 0)
-    .to(heroCtas, { opacity: 0, y: '250%', duration: 0.25, ease: 'none' }, 0)
+    .to(clonedLogo, { y: -scrollEnd, duration: 1, ease: 'none' }, 0)
+    .to(clonedHeroCtas, { opacity: 0, y: '250%', duration: 0.25, ease: 'none' }, 0)
     .to(heroDesc, { opacity: 0, duration: 0.5, ease: 'none' }, 0)
-    .to(wordContainer, { x: toX, y: wordLocalY, scale: targetScale, duration: 1, ease: 'none', force3D: true }, 0);
+    .to(clonedWordContainer, { x: toX, y: wordLocalY, scale: targetScale, duration: 1, ease: 'none', force3D: true }, 0);
 
   const morphST = ScrollTrigger.create({
     trigger: '.main-hero',
@@ -184,6 +194,7 @@ export function setupLogoMorph(isMobile: boolean, heroEl: HTMLElement) {
 
   return { morphTl, morphST };
 }
+
 
 import { getHeroRevealAnimation } from './HeroSection';
 

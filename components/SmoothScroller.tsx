@@ -18,6 +18,7 @@ export default function SmoothScroller({ children }: { children: React.ReactNode
 
     if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
     window.scrollTo(0, 0);
+    document.body.classList.add('preloading');
 
     const isMobile = window.innerWidth <= 1024;
     const lenisInstance = new Lenis({
