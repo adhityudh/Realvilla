@@ -2226,46 +2226,11 @@
             window.scrollTo(0, 0);
             if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
 
-            // -------------------------------------------------------
-            // RESPONSIVE RESIZE ARCHITECTURE
-            // -------------------------------------------------------
             let logoArea, heroDesc, logoAnchor;
             let morphTlInstance, morphSTInstance, navSTInstance, mobileHeroFadeST, headerWipeST, headerColorST, headerPillST;
             let isMorphed = false;
 
-            function debounce(func, wait) {
-                let timeout;
-                return function () {
-                    const context = this, args = arguments;
-                    clearTimeout(timeout);
-                    timeout = setTimeout(() => func.apply(context, args), wait);
-                };
-            }
 
-            window.addEventListener('resize', debounce(() => {
-                const currentScroll = window.scrollY;
-
-                // Use Lenis for scroll jump if available for better consistency
-                if (typeof lenis !== 'undefined' && lenis.scrollTo) {
-                    lenis.scrollTo(0, { immediate: true });
-                } else {
-                    window.scrollTo(0, 0);
-                }
-
-                isMobile = window.innerWidth <= 768;
-                if (isMorphed) {
-                    setupLogoMorph();
-                }
-
-                // Restore scroll
-                if (typeof lenis !== 'undefined' && lenis.scrollTo) {
-                    lenis.scrollTo(currentScroll, { immediate: true });
-                } else {
-                    window.scrollTo(0, currentScroll);
-                }
-
-                ScrollTrigger.refresh();
-            }, 250));
 
 
             // -------------------------------------------------------
@@ -2483,31 +2448,7 @@
                 const headerContent = document.querySelector('.header-content');
                 const headerNav = document.querySelector('.header-nav');
 
-                // Cari logoArea yang ada di hero (bukan yang sudah breakout di body)
-                let existingBreakout = document.getElementById('morph-breakout-logo');
-                let existingAnchor = document.getElementById('hero-logo-anchor');
 
-                // Force return to original DOM flow for clean measurement
-                if (existingBreakout && existingAnchor) {
-                    // Hide during re-init to prevent flicker
-                    existingBreakout.style.visibility = 'hidden';
-                    existingAnchor.parentNode.insertBefore(existingBreakout, existingAnchor);
-                    existingBreakout.id = '';
-                    existingAnchor.remove();
-
-                    // Only clearProps on resize re-init (not first call)
-                    const _logo = document.querySelector('.logo-content-area');
-                    if (_logo) {
-                        // CRITICAL: Clear ALL potential GSAP transforms/states on the logo area itself
-                        gsap.set([_logo, heroEl, splashIntro], {
-                            clearProps: "all"
-                        });
-                        const _wc = _logo.querySelector('.word-container');
-                        const _hc = splashIntro.querySelector('.hero-ctas');
-                        const _hd = splashIntro.querySelector('.hero-description-area');
-                        gsap.set([_wc, _hc, _hd], { clearProps: "all" });
-                    }
-                }
 
                 logoArea = document.querySelector('.logo-content-area');
                 if (!logoArea) return;
