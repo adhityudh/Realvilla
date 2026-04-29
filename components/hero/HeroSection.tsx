@@ -21,13 +21,12 @@ function useHeroScrollAnimations() {
       y: isMobile ? '0%' : '30%',
       force3D: true,
       ease: 'none',
-      scrollTrigger: {
+      scrollTrigger: isMobile ? undefined : {
         trigger: '.main-hero',
         start: 'top top',
         end: 'bottom top',
         scrub: true,
         invalidateOnRefresh: true,
-        disabled: isMobile,
       },
     });
 
