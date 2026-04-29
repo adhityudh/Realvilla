@@ -55,12 +55,25 @@
 .faq-item {
     border-bottom: 1px solid rgba(0, 0, 0, 0.1);
     cursor: default;
-    overflow: hidden;
+    position: relative;
+    z-index: 1;
+}
+
+.faq-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100vw;
+    height: 100%;
+    background-color: transparent;
+    z-index: -1;
     transition: background-color 0.3s ease;
 }
 
-.faq-item:hover {
-    background-color: rgba(0, 0, 0, 0.02);
+.faq-item:hover::before {
+    background-color: rgba(0, 0, 0, 0.03);
 }
 
 .faq-trigger {

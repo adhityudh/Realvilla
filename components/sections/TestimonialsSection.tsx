@@ -94,8 +94,12 @@ const TestimonialsSection = () => {
       duration: 35,
     });
 
-    ticker.addEventListener('mouseenter', () => tickerTl.pause());
-    ticker.addEventListener('mouseleave', () => tickerTl.play());
+    ticker.addEventListener('mouseenter', () => {
+      gsap.to(tickerTl, { timeScale: 0.2, duration: 1.0, ease: 'power2.out' });
+    });
+    ticker.addEventListener('mouseleave', () => {
+      gsap.to(tickerTl, { timeScale: 1.0, duration: 1.0, ease: 'power2.out' });
+    });
 
     return () => {
       tickerTl.kill();
