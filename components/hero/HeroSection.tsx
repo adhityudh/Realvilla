@@ -16,14 +16,14 @@ function useHeroScrollAnimations() {
     if (!lenis) return;
 
     const videoST = gsap.to('.hero-bg-video', {
-      yPercent: 30,
+      y: '30%',
       force3D: true,
       ease: 'none',
       scrollTrigger: {
         trigger: '.main-hero',
         start: 'top top',
         end: 'bottom top',
-        scrub: true,
+        scrub: 1,
         invalidateOnRefresh: true,
       },
     });
@@ -35,7 +35,7 @@ function useHeroScrollAnimations() {
         trigger: '.main-hero',
         start: 'top top',
         end: 'bottom top',
-        scrub: true,
+        scrub: 1,
         invalidateOnRefresh: true,
       },
     });
@@ -72,7 +72,7 @@ export function getHeroRevealAnimation(tl: gsap.core.Timeline, isMobile: boolean
     { clipPath: `inset(${insetTop}px ${insetLR}px ${insetBottom}px ${insetLR}px round ${isMobile ? 22 : 24}px)` },
     {
       clipPath: 'inset(0px 0px 0px 0px round 0px)',
-      duration: 2.2,
+      duration: 1.8,
       ease: 'expo.inOut',
       onStart: () => {
         const v = heroEl.querySelector('.hero-bg-video') as HTMLVideoElement;
@@ -85,7 +85,7 @@ export function getHeroRevealAnimation(tl: gsap.core.Timeline, isMobile: boolean
     0,
   );
 
-  tl.to('.hero-bg-video', { scale: 1, ease: 'power3.out', duration: 2 }, 2.3);
+  tl.fromTo('.hero-bg-video', { scale: 1.1 }, { scale: 1, ease: 'power2.out', duration: 2.5 }, 0.2);
 }
 
 export default function HeroSection() {
@@ -97,7 +97,17 @@ export default function HeroSection() {
     const v = videoRef.current;
     if (!v) return;
     if (window.innerWidth <= 768) v.src = '/videos/hero-mobile-video.mp4';
-    const revealMedia = () => { v.style.opacity = '1'; v.style.filter = 'blur(0px)'; };
+    
+    const revealMedia = () => {
+      gsap.to(v, {
+        opacity: 1,
+        filter: 'blur(0px)',
+        duration: 1.5,
+        ease: 'expo.out',
+        overwrite: 'auto'
+      });
+    };
+
     v.currentTime = 0;
     if (v.readyState >= 2) revealMedia();
     else v.addEventListener('loadeddata', revealMedia);

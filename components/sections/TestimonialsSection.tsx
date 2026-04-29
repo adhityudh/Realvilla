@@ -60,7 +60,7 @@ const TestimonialsSection = () => {
       scrollTrigger: {
         trigger: sectionRef.current,
         start: 'top 75%',
-        once: true
+        toggleActions: 'play none none reverse'
       }
     });
 

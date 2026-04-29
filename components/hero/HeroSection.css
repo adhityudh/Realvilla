@@ -7,7 +7,6 @@
             width: 100vw;
             height: 105svh;
             overflow: hidden;
-            perspective: 1000px;
         }
 
         .hero-bg-video {
@@ -19,11 +18,11 @@
             object-fit: cover;
             object-position: center;
             z-index: 1;
-            transform: scale(1);
+            transform: translateZ(0);
             opacity: 0;
             filter: blur(8px);
-            transition: opacity 1.5s cubic-bezier(0.16, 1, 0.3, 1), filter 1.5s cubic-bezier(0.16, 1, 0.3, 1);
             will-change: transform, opacity, filter;
+            backface-visibility: hidden;
         }
 
         .hero-overlay {

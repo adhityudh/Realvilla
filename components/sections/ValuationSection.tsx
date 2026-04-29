@@ -11,22 +11,41 @@ gsap.registerPlugin(ScrollTrigger);
 
 export default function ValuationSection() {
   const [iframeSrc, setIframeSrc] = useState('');
-  const [isIframeReady, setIsIframeReady] = useState(false);
+  const sectionRef = useRef<HTMLElement>(null);
   const iframeRef = useRef<HTMLIFrameElement>(null);
 
   useEffect(() => {
-    const valuationSection = document.querySelector('.valuation-section');
-    if (valuationSection) {
-      gsap.set('.valuation-tagline, .valuation-headline, .valuation-body, .valuation-trust, .valuation-cta-desktop, .valuation-cta-mobile, .valuation-card', { opacity: 0, y: 40, filter: 'blur(10px)' });
-      ScrollTrigger.create({
-        trigger: valuationSection, start: 'top 50%',
-        onEnter: () => {
-          gsap.to('.valuation-tagline, .valuation-headline, .valuation-body, .valuation-trust, .valuation-cta-desktop, .valuation-cta-mobile', { y: 0, opacity: 1, filter: 'blur(0px)', duration: 1.2, stagger: 0.2, ease: 'expo.out', clearProps: 'all' });
-          gsap.to('.valuation-card', { y: 0, opacity: 1, filter: 'blur(0px)', duration: 1.5, delay: 0.5, ease: 'expo.out', clearProps: 'all' });
-        },
-        once: true
-      });
-    }
+    if (!sectionRef.current) return;
+
+    const section = sectionRef.current;
+    const elements = section.querySelectorAll('.valuation-tagline, .valuation-headline, .valuation-body, .valuation-trust, .valuation-cta-desktop, .valuation-cta-mobile, .valuation-card');
+
+    // Initial state to prevent flash
+    gsap.set(elements, { opacity: 0, y: 40, filter: 'blur(10px)' });
+
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: section,
+        start: 'top 80%',
+        toggleActions: 'restart none none reverse'
+      }
+    });
+
+    tl.fromTo(section.querySelectorAll('.valuation-tagline, .valuation-headline, .valuation-body, .valuation-trust, .valuation-cta-desktop, .valuation-cta-mobile'),
+      { y: 40, opacity: 0, filter: 'blur(10px)' },
+      { y: 0, opacity: 1, filter: 'blur(0px)', duration: 1.2, stagger: 0.2, ease: 'expo.out' }
+    );
+
+    tl.fromTo(section.querySelector('.valuation-card'),
+      { y: 40, opacity: 0, filter: 'blur(10px)' },
+      { y: 0, opacity: 1, filter: 'blur(0px)', duration: 1.5, ease: 'expo.out' },
+      '-=1.2'
+    );
+
+    return () => {
+      tl.kill();
+      ScrollTrigger.getAll().filter(st => st.trigger === section).forEach(st => st.kill());
+    };
   }, []);
 
   useEffect(() => {
@@ -41,8 +60,6 @@ export default function ValuationSection() {
       const components = iFrameResize({
         heightCalculationMethod: 'lowestElement',
         checkOrigin: false,
-        onInit: () => setIsIframeReady(true),
-        onResized: () => setIsIframeReady(true),
       }, iframeRef.current);
 
       return () => {
@@ -54,7 +71,7 @@ export default function ValuationSection() {
   }, [iframeSrc]);
 
   return (
-    <section className="valuation-section" id="valuation">
+    <section className="valuation-section" id="valuation" ref={sectionRef}>
       <div className="valuation-container">
         <div className="valuation-content">
           <div className="valuation-tagline">Property Valuation</div>
@@ -63,22 +80,22 @@ export default function ValuationSection() {
           <div className="valuation-trust">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/icons/shield.svg" alt="Shield" />
-            <span>Powered by Local Market Intelligence</span>
+            <span>Your data is secure. <br />Valuations are powered by advanced analytics and Spain's leading experts.</span>
           </div>
           <Button label="Sell Your Property" href="#" className="service-cta valuation-cta-desktop" />
         </div>
         <div className="valuation-form-wrapper">
           <div className="valuation-card">
             <div className="valuation-iframe-container" style={{ position: 'relative', minHeight: '600px', background: '#fff' }}>
-              {/* Loader - visible until isIframeReady is true */}
+              {/* Loader - Always in the background (zIndex 1) */}
               <div
                 className="valuation-loader"
                 style={{
-                  opacity: isIframeReady ? 0 : 1,
-                  visibility: isIframeReady ? 'hidden' : 'visible',
-                  transition: 'opacity 0.5s ease, visibility 0.5s ease',
+                  position: 'absolute',
+                  inset: 0,
                   backgroundColor: '#fff',
-                  zIndex: 200
+                  zIndex: 1,
+                  pointerEvents: 'none'
                 }}
               >
                 <div className="loader-shimmer"></div>
@@ -89,11 +106,13 @@ export default function ValuationSection() {
                 <iframe
                   ref={iframeRef}
                   style={{
+                    position: 'relative',
+                    zIndex: 2, // Higher z-index to cover the loader once painted
                     width: '100%',
                     border: 'none',
-                    opacity: isIframeReady ? 1 : 0,
-                    transition: 'opacity 1s ease, height 0.5s cubic-bezier(0.16, 1, 0.3, 1)',
-                    display: 'block'
+                    opacity: 1,
+                    display: 'block',
+                    background: 'transparent'
                   }}
                   title="valuation"
                   src={iframeSrc}
