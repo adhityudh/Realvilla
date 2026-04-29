@@ -115,31 +115,33 @@ export function getSplashIntroAnimations(tl: gsap.core.Timeline, onReleaseScroll
 /**
  * Handles the desktop logo morph animation on scroll.
  */
-export function setupLogoMorph(isMobile: boolean, heroEl: HTMLElement) {
-  if (isMobile) return { morphTl: null, morphST: null };
+/**
+ * Moves the original logo to the breakout layer immediately to prevent any 
+ * flickering during the intro. This happens before any animation starts.
+ */
+function breakoutLogoSynchronously(logoArea: HTMLElement, splashIntro: HTMLElement) {
+  if (logoArea.id === 'morph-breakout-logo') return;
 
-  const splashIntro = document.querySelector('.splash-intro') as HTMLElement;
-  const headerContent = document.querySelector('.header-content') as HTMLElement;
-  const logoArea = document.querySelector('.logo-content-area') as HTMLElement;
-  if (!logoArea || !splashIntro || !headerContent) return { morphTl: null, morphST: null };
-
-  // IDEMPOTENCY CHECK: If already moved to breakout layer, do nothing to prevent flickering
-  if (logoArea.id === 'morph-breakout-logo') return { morphTl: null, morphST: null };
-
+  // Use a slight delay or RAF to ensure the layout has settled
   const logoAreaRect = logoArea.getBoundingClientRect();
-  const headerRectLocal = headerContent.getBoundingClientRect();
   const scrollY = window.scrollY;
 
-  // Clean up any stale clones
-  const existingBreakout = document.getElementById('morph-breakout-logo');
-  if (existingBreakout) existingBreakout.remove();
+  // 1. Create a spacer to hold the flex layout (prevent description shift)
+  const spacer = logoArea.cloneNode(false) as HTMLElement;
+  spacer.className = 'logo-content-area-spacer';
+  Object.assign(spacer.style, {
+    width: `${logoAreaRect.width}px`,
+    height: `${logoAreaRect.height}px`,
+    flexShrink: '0',
+    visibility: 'hidden',
+    pointerEvents: 'none',
+    margin: window.getComputedStyle(logoArea).margin
+  });
+  logoArea.parentNode?.insertBefore(spacer, logoArea);
 
-  // IMPORTANT: Clone instead of moving to preserve the flex layout (preventing description shift)
-  const clonedLogo = logoArea.cloneNode(true) as HTMLElement;
-  clonedLogo.id = 'morph-breakout-logo';
-  
-  // Set styles for the clone to match the original position exactly
-  Object.assign(clonedLogo.style, {
+  // 2. Convert the ORIGINAL logo to fixed breakout layer
+  logoArea.id = 'morph-breakout-logo';
+  Object.assign(logoArea.style, {
     position: 'fixed',
     left: `${logoAreaRect.left}px`,
     top: `${logoAreaRect.top + scrollY}px`,
@@ -150,19 +152,31 @@ export function setupLogoMorph(isMobile: boolean, heroEl: HTMLElement) {
     pointerEvents: 'none',
     willChange: 'transform',
     visibility: 'visible',
-    opacity: '1' // Start visible for atomic zero-frame handover
+    opacity: '1'
   });
 
-  // Append clone to body
-  document.body.appendChild(clonedLogo);
+  // 3. Move to body permanently
+  document.body.appendChild(logoArea);
+}
 
-  // Get references from clone for animation
-  const clonedWordContainer = clonedLogo.querySelector('.word-container') as HTMLElement;
-  const clonedHeroCtas = clonedLogo.querySelector('.hero-ctas') as HTMLElement;
+/**
+ * Handles the desktop logo morph animation on scroll using the already-breakout logo.
+ */
+export function setupLogoMorph(isMobile: boolean, heroEl: HTMLElement) {
+  if (isMobile) return { morphTl: null, morphST: null };
+
+  const logoArea = document.getElementById('morph-breakout-logo') as HTMLElement;
+  const headerContent = document.querySelector('.header-content') as HTMLElement;
+  if (!logoArea || !headerContent) return { morphTl: null, morphST: null };
+
+  const splashIntro = document.querySelector('.splash-intro') as HTMLElement;
+  const wordContainer = logoArea.querySelector('.word-container') as HTMLElement;
+  const heroCtas = logoArea.querySelector('.hero-ctas') as HTMLElement;
   const heroDesc = splashIntro.querySelector('.hero-description-area') as HTMLElement;
+  const headerRectLocal = headerContent.getBoundingClientRect();
+  const scrollY = window.scrollY;
 
-  const wordRect = clonedWordContainer.getBoundingClientRect();
-
+  const wordRect = wordContainer.getBoundingClientRect();
   const headerLogoHeight = window.innerWidth <= 480 ? 14 : 20;
   const targetScale = headerLogoHeight / wordRect.height;
   const targetLeftPx = 48;
@@ -175,18 +189,16 @@ export function setupLogoMorph(isMobile: boolean, heroEl: HTMLElement) {
   gsap.set(heroEl, { overflow: 'hidden', clipPath: 'inset(0px 0px 0px 0px round 0px)' });
   gsap.set(splashIntro, { overflow: 'visible' });
   
-  // Initial state for cloned elements
-  gsap.set(clonedLogo, { y: 0 });
-  gsap.set(clonedHeroCtas, { opacity: 1, y: 0 });
-  gsap.set(heroDesc, { opacity: 1 });
-  gsap.set(clonedWordContainer, { x: 0, y: 0, scale: 1, transformOrigin: 'left center' });
+  // Ensure the element is ready for animation (already breakout, just need to set defaults)
+  gsap.set(logoArea, { y: 0, opacity: 1, visibility: 'visible' });
+  gsap.set(wordContainer, { x: 0, y: 0, scale: 1, transformOrigin: 'left center' });
 
   const morphTl = gsap.timeline({ paused: true });
   morphTl
-    .to(clonedLogo, { y: -scrollEnd, duration: 1, ease: 'none', force3D: true, overwrite: 'auto' }, 0)
-    .to(clonedHeroCtas, { opacity: 0, y: '250%', duration: 0.25, ease: 'none', force3D: true, overwrite: 'auto' }, 0)
+    .to(logoArea, { y: -scrollEnd, duration: 1, ease: 'none', force3D: true, overwrite: 'auto' }, 0)
+    .to(heroCtas, { opacity: 0, y: '250%', duration: 0.25, ease: 'none', force3D: true, overwrite: 'auto' }, 0)
     .to(heroDesc, { opacity: 0, duration: 0.5, ease: 'none', force3D: true, overwrite: 'auto' }, 0)
-    .to(clonedWordContainer, { x: toX, y: wordLocalY, scale: targetScale, duration: 1, ease: 'none', force3D: true, overwrite: 'auto' }, 0);
+    .to(wordContainer, { x: toX, y: wordLocalY, scale: targetScale, duration: 1, ease: 'none', force3D: true, overwrite: 'auto' }, 0);
 
   const morphST = ScrollTrigger.create({
     trigger: '.main-hero',
@@ -197,12 +209,8 @@ export function setupLogoMorph(isMobile: boolean, heroEl: HTMLElement) {
     invalidateOnRefresh: true,
   });
 
-  // CRITICAL: Force immediate calculation to ensure zero-frame jump
   morphST.refresh();
   morphST.update();
-
-  // ATOMIC HANDOVER: Instant swap in the same frame to prevent flicker
-  gsap.set(logoArea, { opacity: 0, visibility: 'hidden' });
 
   return { morphTl, morphST };
 }
@@ -256,22 +264,24 @@ function useIntroOrchestrator() {
     mainTl.current = tl;
 
     const heroEl = document.querySelector('.main-hero') as HTMLElement;
-    if (!heroEl) return;
+    const logoArea = document.querySelector('.logo-content-area') as HTMLElement;
+    const splashIntro = document.querySelector('.splash-intro') as HTMLElement;
+    if (!heroEl || !logoArea || !splashIntro) return;
+
+    // STEP 0: Zero-Handover Strategy - breakout the original logo immediately
+    // doing it here (before timeline start) ensures NO handover ever happens visually
+    if (!isMobile) {
+      breakoutLogoSynchronously(logoArea, splashIntro);
+    }
 
     // Compose animations
     getHeroRevealAnimation(tl, isMobile);
     getSplashIntroAnimations(tl, releaseScroll);
 
-    // Early Handover: Dock the logo as soon as letters/CTAs are revealed (around 1.8s)
+    // Early Morph Init: No handover needed, just setup the ScrollTrigger
     tl.add(() => {
       initMorph();
-    }, 1.8);
-
-    const originalOnComplete = tl.vars.onComplete;
-    tl.eventCallback('onComplete', () => {
-      if (originalOnComplete) originalOnComplete();
-      initMorph(); // Redundant but safe fallback
-    });
+    }, 1.6); // Slightly earlier than reveal to be ready for scroll
 
     // Smooth Skip Logic
     const handleSkip = () => {
