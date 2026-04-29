@@ -127,10 +127,9 @@
 
     .testimonials-overlap-img {
         display: block;
-        width: 70vw;
-        right: -5%;
-        /* Let it bleed off screen slightly for more dynamic look */
-        top: 0;
+        width: 45vw;
+        right: 2rem;
+        top: -60px;
         transform: translateY(-20px);
         opacity: 0.8;
         z-index: 1;
@@ -154,6 +153,13 @@
 
     .testimonial-text {
         font-size: 0.95rem;
+    }
+
+    .testimonials-overlap-img {
+        width: 75vw;
+        right: -10%;
+        opacity: 0.6;
+        top: -60px;
     }
 }
 
@@ -182,11 +188,12 @@
         left: 0;
         top: 0;
         padding: 0 2rem;
-        margin-bottom: 2rem;
+        margin-bottom: 4rem;
         max-width: 100%;
     }
 
     .testimonials-title {
         font-size: 2.5rem;
+        max-width: 400px;
     }
 }
