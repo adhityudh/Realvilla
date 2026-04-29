@@ -97,9 +97,14 @@ export default function Header() {
   return (
     <header className="header">
       <div className="header-content">
-        <a href="/" className="header-logo">
+        <a href="/" className="header-logo" aria-label="Real Villa">
           {HEADER_LETTERS.map((letter, i) => (
-            <div key={i} className="header-letter" style={{ '--letter-svg': `url('${letter.svg}')`, '--letter-w': letter.width } as React.CSSProperties} />
+            <img 
+              key={i} 
+              src={letter.svg} 
+              className="header-letter-img" 
+              alt="" 
+            />
           ))}
         </a>
         <nav className="header-nav">

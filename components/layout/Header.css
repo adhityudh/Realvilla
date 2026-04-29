@@ -79,19 +79,15 @@
             opacity: 0 !important;
             transition: none;
         }
-
-        .header-letter {
+ 
+        .header-letter-img {
             height: 100%;
-            width: calc(28px * var(--letter-w, 1));
-            background-color: #ffffff;
-            -webkit-mask-image: var(--letter-svg);
-            mask-image: var(--letter-svg);
-            -webkit-mask-size: 100% 100%;
-            mask-size: 100% 100%;
-            -webkit-mask-repeat: no-repeat;
-            mask-repeat: no-repeat;
-            -webkit-mask-position: center;
-            mask-position: center;
+            width: auto;
+            display: block;
+            object-fit: contain;
+            /* Default to white using filters */
+            filter: brightness(0) invert(1);
+            transition: filter 0.4s ease;
         }
 
         .header-nav {
@@ -197,13 +193,8 @@
             left: 150%;
         }
 
-        /* Header dark mode when scrolled past hero */
-        .header-letter {
-            transition: background-color 0.4s ease;
-        }
-
-        body.header-dark-mode .header-letter {
-            background-color: #111111;
+        body.header-dark-mode .header-letter-img {
+            filter: brightness(0); /* Black */
         }
 
         body.header-dark-mode .nav-link {
@@ -245,8 +236,8 @@
         }
 
         /* Header light mode for dark sections (valuation, etc.) */
-        body.header-light-mode .header-letter {
-            background-color: #ffffff;
+        body.header-light-mode .header-letter-img {
+            filter: brightness(0) invert(1); /* White */
         }
 
         body.header-light-mode .nav-link {
@@ -302,12 +293,14 @@
             }
 
             .header::before {
-                background: rgba(255, 255, 255, 0.85);
-                backdrop-filter: blur(15px);
-                -webkit-backdrop-filter: blur(15px);
-                height: 105px;
-                -webkit-mask-image: linear-gradient(to bottom, black 0%, black 40px, transparent 100%);
-                mask-image: linear-gradient(to bottom, black 0%, black 40px, transparent 100%);
+                background: linear-gradient(to bottom, 
+                    rgba(255, 255, 255, 0.95) 0%, 
+                    rgba(255, 255, 255, 0.8) 50%, 
+                    transparent 100%
+                );
+                backdrop-filter: blur(10px);
+                -webkit-backdrop-filter: blur(10px);
+                height: 80px;
                 transform-origin: top;
             }
 
@@ -322,10 +315,6 @@
                 opacity: 1 !important;
                 visibility: visible;
                 pointer-events: auto !important;
-            }
-
-            .header-letter {
-                width: calc(16px * var(--letter-w, 1));
             }
 
             .header-nav {
@@ -350,7 +339,4 @@
                 height: 14px;
             }
 
-            .header-letter {
-                width: calc(14px * var(--letter-w, 1));
-            }
         }

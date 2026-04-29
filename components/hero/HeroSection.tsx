@@ -15,16 +15,19 @@ function useHeroScrollAnimations() {
   useEffect(() => {
     if (!lenis) return;
 
+    const isMobile = window.innerWidth <= 1024;
+
     const videoST = gsap.to('.hero-bg-video', {
-      y: '30%',
+      y: isMobile ? '0%' : '30%',
       force3D: true,
       ease: 'none',
       scrollTrigger: {
         trigger: '.main-hero',
         start: 'top top',
         end: 'bottom top',
-        scrub: 1,
+        scrub: true,
         invalidateOnRefresh: true,
+        disabled: isMobile,
       },
     });
 
@@ -35,7 +38,7 @@ function useHeroScrollAnimations() {
         trigger: '.main-hero',
         start: 'top top',
         end: 'bottom top',
-        scrub: 1,
+        scrub: true,
         invalidateOnRefresh: true,
       },
     });

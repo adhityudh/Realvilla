@@ -73,8 +73,7 @@ const TestimonialsSection = () => {
         filter: 'blur(0px)',
         duration: 1.5,
         stagger: 0.2,
-        ease: 'expo.out',
-        clearProps: 'all'
+        ease: 'expo.out'
       }
     );
 
