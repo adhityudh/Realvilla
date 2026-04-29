@@ -111,8 +111,8 @@ const TestimonialsSection = () => {
 
   return (
     <section className="testimonials-section" ref={sectionRef}>
-      <div className="testimonials-title-wrapper" ref={titleRef}>
-        <h2 className="testimonials-title">100+ Success Stories in Tenerife</h2>
+      <div className="testimonials-title-wrapper">
+        <h2 className="testimonials-title" ref={titleRef}>100+ Success Stories in Tenerife</h2>
       </div>
       <div className="testimonials-ticker-wrapper" ref={tickerWrapperRef}>
         <div className="testimonials-ticker" ref={tickerRef}>

@@ -169,17 +169,19 @@
     top: 5rem;
     z-index: 10;
     max-width: 500px;
-    will-change: transform, opacity;
+    overflow: hidden; /* Prevent text from bleeding out during entrance */
 }
 
 .testimonials-title {
     font-family: var(--font-cormorant), serif;
+    will-change: transform, opacity;
     font-size: clamp(2rem, 5vw, 3.5rem);
     line-height: 1.1;
     font-weight: 300;
     letter-spacing: -0.01em;
     text-transform: uppercase;
     color: var(--text-black);
+    display: block;
 }
 
 @media (max-width: 1200px) {
