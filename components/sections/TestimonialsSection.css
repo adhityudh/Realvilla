@@ -2,8 +2,7 @@
     padding: 25vw 0 80px 0;
     /* Slightly reduced top padding to move items higher */
     background-color: #ffffff;
-    overflow-x: hidden;
-    overflow-y: visible;
+    overflow: visible;
     position: relative;
     border-bottom: 1px solid rgba(0, 0, 0, 0.05);
 }
@@ -95,7 +94,7 @@
 
 .testimonials-overlap-img {
     position: absolute;
-    right: 3rem;
+    right: 0;
     top: 0;
     width: 45vw;
     z-index: 1;
@@ -128,8 +127,8 @@
 
     .testimonials-overlap-img {
         display: block;
-        width: 45vw;
-        right: 2rem;
+        width: 40vw;
+        right: 0;
         top: -60px;
         transform: translateY(-20px);
         opacity: 0.8;
@@ -157,8 +156,8 @@
     }
 
     .testimonials-overlap-img {
-        width: 75vw;
-        right: -10%;
+        width: 65vw;
+        right: 0;
         opacity: 0.6;
         top: -60px;
     }
@@ -170,7 +169,8 @@
     top: 5rem;
     z-index: 10;
     max-width: 500px;
-    overflow: hidden; /* Prevent text from bleeding out during entrance */
+    overflow: hidden;
+    /* Prevent text from bleeding out during entrance */
 }
 
 .testimonials-title {
@@ -191,7 +191,6 @@
         left: 0;
         top: 0;
         padding: 0 2rem;
-        margin-bottom: 4rem;
         max-width: 100%;
     }
 
