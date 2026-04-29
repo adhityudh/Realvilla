@@ -7,6 +7,7 @@ import HeroSection from '@/components/hero/HeroSection';
 import PropertiesSection from '@/components/sections/PropertiesSection';
 import ValuationSection from '@/components/sections/ValuationSection';
 import MortgageFAQSection from '@/components/sections/MortgageFAQSection';
+import TestimonialsSection from '@/components/sections/TestimonialsSection';
 
 export default function Home() {
   return (
@@ -19,9 +20,7 @@ export default function Home() {
       <ValuationSection />
       <PropertiesSection />
       <MortgageFAQSection />
-      <section style={{ height: '100svh', background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <h2 style={{ fontWeight: 300 }}>Rest of the website...</h2>
-      </section>
+      <TestimonialsSection />
     </SmoothScroller>
   );
 }
