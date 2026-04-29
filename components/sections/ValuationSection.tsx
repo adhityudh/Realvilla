@@ -57,7 +57,7 @@ export default function ValuationSection() {
     <section className="valuation-section" id="valuation">
       <div className="valuation-container">
         <div className="valuation-content">
-          <div className="valuation-tagline">Know Your Worth</div>
+          <div className="valuation-tagline">Property Valuation</div>
           <h2 className="valuation-headline">Get an Accurate Property Valuation in Minutes.</h2>
           <p className="valuation-body">Backed by real-time Tenerife market data. Enter your details below for a professional, no-obligation estimate.</p>
           <div className="valuation-trust">
@@ -71,9 +71,9 @@ export default function ValuationSection() {
           <div className="valuation-card">
             <div className="valuation-iframe-container" style={{ position: 'relative', minHeight: '600px', background: '#fff' }}>
               {/* Loader - visible until isIframeReady is true */}
-              <div 
-                className="valuation-loader" 
-                style={{ 
+              <div
+                className="valuation-loader"
+                style={{
                   opacity: isIframeReady ? 0 : 1,
                   visibility: isIframeReady ? 'hidden' : 'visible',
                   transition: 'opacity 0.5s ease, visibility 0.5s ease',
@@ -88,9 +88,9 @@ export default function ValuationSection() {
               {iframeSrc && (
                 <iframe
                   ref={iframeRef}
-                  style={{ 
-                    width: '100%', 
-                    border: 'none', 
+                  style={{
+                    width: '100%',
+                    border: 'none',
                     opacity: isIframeReady ? 1 : 0,
                     transition: 'opacity 1s ease, height 0.5s cubic-bezier(0.16, 1, 0.3, 1)',
                     display: 'block'

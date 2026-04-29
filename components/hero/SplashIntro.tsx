@@ -125,15 +125,21 @@ export function setupLogoMorph(isMobile: boolean, heroEl: HTMLElement) {
   const logoAreaRect = logoArea.getBoundingClientRect();
   const headerRectLocal = headerContent.getBoundingClientRect();
 
+  // Clean up any existing clone first (handles re-runs on soft-reload/HMR)
+  const existingClone = document.getElementById('morph-breakout-logo');
+  if (existingClone) existingClone.remove();
+
   // Create CLONE instead of moving the original to prevent flickering/blink
   const clonedLogo = logoArea.cloneNode(true) as HTMLElement;
   clonedLogo.id = 'morph-breakout-logo';
   
   // Set styles for the clone to match the original position exactly
+  // IMPORTANT: For position: fixed, we use the raw rect values which are viewport-relative.
+  // Adding window.scrollX/Y would incorrectly offset the logo if the page is scrolled.
   Object.assign(clonedLogo.style, {
     position: 'fixed',
-    left: `${logoAreaRect.left + window.scrollX}px`,
-    top: `${logoAreaRect.top + window.scrollY}px`,
+    left: `${logoAreaRect.left}px`,
+    top: `${logoAreaRect.top}px`,
     width: `${logoAreaRect.width}px`,
     margin: '0',
     padding: '0',
@@ -153,10 +159,9 @@ export function setupLogoMorph(isMobile: boolean, heroEl: HTMLElement) {
 
   const wordRect = clonedWordContainer.getBoundingClientRect();
 
-  // Hide original logo area AFTER the clone is added to ensure overlap
-  requestAnimationFrame(() => {
-    logoArea.style.visibility = 'hidden';
-  });
+  // Hide original logo area IMMEDIATELY to ensure seamless handover
+  logoArea.style.visibility = 'hidden';
+  logoArea.style.pointerEvents = 'none';
 
   const headerLogoHeight = window.innerWidth <= 480 ? 14 : 20;
   const targetScale = headerLogoHeight / wordRect.height;
@@ -265,6 +270,8 @@ function useIntroOrchestrator() {
       [morphTlInstance, morphSTInstance].forEach((inst) => {
         if (inst && 'kill' in inst) (inst as { kill: () => void }).kill();
       });
+      const clone = document.getElementById('morph-breakout-logo');
+      if (clone) clone.remove();
     };
   }, [lenis]);
 }

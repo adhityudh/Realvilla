@@ -1,0 +1,215 @@
+.mortgage-faq-section {
+    background-color: #ffffff;
+    color: #111111;
+    padding: 100px 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.mortgage-faq-wrapper {
+    width: 100%;
+    padding: 0 3rem;
+}
+
+.mortgage-faq-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 80px;
+}
+
+.mortgage-faq-tagline {
+    font-family: var(--font-manrope), 'Manrope', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: #bcaf8b;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.mortgage-faq-tagline::before {
+    content: '';
+    width: 30px;
+    height: 1px;
+    background: #bcaf8b;
+}
+
+.mortgage-faq-title {
+    font-family: var(--font-cormorant), serif;
+    font-size: clamp(2.5rem, 6vw, 6rem);
+    line-height: 1;
+    font-weight: 300;
+    letter-spacing: -0.02em;
+    max-width: 800px;
+    text-align: right;
+}
+
+.mortgage-faq-list {
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.faq-item {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    cursor: default;
+    overflow: hidden;
+    transition: background-color 0.3s ease;
+}
+
+.faq-item:hover {
+    background-color: rgba(0, 0, 0, 0.02);
+}
+
+.faq-trigger {
+    display: flex;
+    padding: 2.5rem 0;
+    align-items: flex-start;
+    gap: 2rem;
+}
+
+.faq-index {
+    font-family: var(--font-manrope), sans-serif;
+    font-size: 0.9rem;
+    opacity: 0.4;
+    width: 60px;
+    flex-shrink: 0;
+}
+
+.faq-answer-container {
+    flex-grow: 1;
+    padding-right: 2rem;
+    opacity: 0;
+    transition: opacity 0.4s ease, transform 0.4s ease;
+    transform: translateY(10px);
+}
+
+.faq-item:hover .faq-answer-container {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.faq-answer {
+    font-family: var(--font-manrope), sans-serif;
+    font-size: 1.1rem;
+    line-height: 1.6;
+    opacity: 0.8;
+    max-width: 500px;
+}
+
+.faq-question-container {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    width: 40%;
+    flex-shrink: 0;
+    justify-content: flex-end;
+}
+
+.faq-question {
+    font-family: var(--font-manrope), sans-serif;
+    font-size: 1rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    font-style: italic;
+    text-align: right;
+    letter-spacing: 0.05em;
+    line-height: 1.2;
+}
+
+.faq-icon {
+    display: none; /* Hidden on desktop */
+}
+
+.mortgage-faq-cta {
+    display: flex;
+    gap: 1.5rem;
+    margin-top: 60px;
+    justify-content: flex-start;
+}
+
+@media (max-width: 1024px) {
+    .mortgage-faq-wrapper {
+        padding: 0 1.5rem;
+    }
+
+    .mortgage-faq-header {
+        flex-direction: column;
+        margin-bottom: 60px;
+    }
+
+    .mortgage-faq-title {
+        text-align: right;
+        width: 100%;
+    }
+
+    .faq-item {
+        cursor: pointer;
+    }
+
+    .faq-trigger {
+        flex-direction: column;
+        gap: 0;
+        padding: 2rem 0;
+    }
+
+    .faq-index {
+        display: none;
+    }
+
+    .faq-question-container {
+        width: 100%;
+        justify-content: space-between;
+        order: 1; /* Question first */
+    }
+
+    .faq-question {
+        text-align: left;
+    }
+
+    .faq-icon {
+        display: flex;
+        position: relative;
+        width: 20px;
+        height: 20px;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .faq-icon span {
+        position: absolute;
+        width: 10px;
+        height: 1.5px;
+        background-color: #111111;
+        transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.4s ease;
+    }
+
+    .faq-icon span:first-child { transform: translateX(-4.5px); }
+    .faq-icon span:last-child { transform: translateX(4.5px); }
+
+    .faq-item.active .faq-icon span:first-child { transform: translateX(-3px) rotate(-45deg); }
+    .faq-item.active .faq-icon span:last-child { transform: translateX(3px) rotate(45deg); }
+
+    .faq-answer-container {
+        height: 0;
+        opacity: 0;
+        padding-right: 0;
+        transform: none;
+        overflow: hidden;
+        order: 2; /* Answer second */
+    }
+
+    .faq-answer {
+        padding-top: 1rem;
+        font-size: 1rem;
+    }
+
+    .mortgage-faq-cta {
+        flex-direction: column;
+        align-items: flex-start;
+        margin-top: 40px;
+        gap: 1rem;
+    }
+}

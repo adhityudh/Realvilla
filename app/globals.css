@@ -194,3 +194,20 @@ html.lenis body {
   border-color: var(--text-gold);
   color: var(--text-gold);
 }
+
+.btn-dark {
+  background-color: #000000;
+  color: #ffffff;
+}
+
+.btn-dark:hover {
+  background-color: #111111;
+}
+
+/* Ensure shimmer effect works on dark variant */
+.btn-dark::before {
+  background: linear-gradient(90deg,
+      transparent,
+      rgba(255, 255, 255, 0.2),
+      transparent);
+}

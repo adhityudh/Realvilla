@@ -23,12 +23,12 @@ const PropertyCard = ({ prop }: { prop: typeof properties[0] }) => {
 
   const handleMouseEnter = () => {
     if (!secondaryImgRef.current) return;
-    
+
     if (hoverTl.current) hoverTl.current.kill();
-    
+
     const target = secondaryImgRef.current;
     const obj = { p: 0 };
-    
+
     hoverTl.current = gsap.timeline();
     hoverTl.current.to(obj, {
       p: 1,
@@ -62,12 +62,12 @@ const PropertyCard = ({ prop }: { prop: typeof properties[0] }) => {
 
   const handleMouseLeave = () => {
     if (!secondaryImgRef.current) return;
-    
+
     if (hoverTl.current) hoverTl.current.kill();
-    
+
     const target = secondaryImgRef.current;
     const obj = { p: 1 };
-    
+
     hoverTl.current = gsap.timeline();
     hoverTl.current.to(obj, {
       p: 0,
@@ -100,7 +100,7 @@ const PropertyCard = ({ prop }: { prop: typeof properties[0] }) => {
   };
 
   return (
-    <div 
+    <div
       className="property-card"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
@@ -109,11 +109,11 @@ const PropertyCard = ({ prop }: { prop: typeof properties[0] }) => {
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={prop.image} alt={prop.address} className="property-image primary" />
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img 
+        <img
           ref={secondaryImgRef}
-          src={prop.secondaryImage} 
-          alt={prop.address} 
-          className="property-image secondary" 
+          src={prop.secondaryImage}
+          alt={prop.address}
+          className="property-image secondary"
           style={{ WebkitMaskImage: 'linear-gradient(transparent, transparent)', maskImage: 'linear-gradient(transparent, transparent)' }}
         />
       </div>
@@ -145,7 +145,7 @@ const PropertiesSection = () => {
       scrollTrigger: {
         trigger: sectionRef.current,
         start: 'top 20%',
-        end: 'top -90%',
+        end: 'top -100%',
         scrub: true,
       },
     });

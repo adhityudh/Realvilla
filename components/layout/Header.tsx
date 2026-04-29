@@ -108,7 +108,7 @@ export default function Header() {
           ))}
         </nav>
         <div className="header-actions">
-          <Button label="Speak to an Expert" href="#" className="btn-book" />
+          <Button label="Speak to an Expert" href="#" variant="dark" className="btn-book" />
         </div>
         <button 
           className="hamburger" 
