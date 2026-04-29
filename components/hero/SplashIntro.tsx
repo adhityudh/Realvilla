@@ -150,7 +150,7 @@ export function setupLogoMorph(isMobile: boolean, heroEl: HTMLElement) {
     pointerEvents: 'none',
     willChange: 'transform',
     visibility: 'visible',
-    opacity: '0' // Start invisible for dual-visibility handover
+    opacity: '1' // Start visible for atomic zero-frame handover
   });
 
   // Append clone to body
@@ -201,13 +201,8 @@ export function setupLogoMorph(isMobile: boolean, heroEl: HTMLElement) {
   morphST.refresh();
   morphST.update();
 
-  // DUAL VISIBILITY HANDOVER: Instant swap in next tick to prevent blink
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      gsap.set(clonedLogo, { opacity: 1 });
-      gsap.set(logoArea, { opacity: 0 });
-    });
-  });
+  // ATOMIC HANDOVER: Instant swap in the same frame to prevent flicker
+  gsap.set(logoArea, { opacity: 0, visibility: 'hidden' });
 
   return { morphTl, morphST };
 }
