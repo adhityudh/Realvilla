@@ -156,7 +156,7 @@
     }
 
     .mortgage-faq-title {
-        text-align: right;
+        text-align: left;
         width: 100%;
         font-size: clamp(2rem, 5.5vw, 4rem);
     }
