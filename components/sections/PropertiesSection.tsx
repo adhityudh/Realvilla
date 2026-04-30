@@ -9,12 +9,12 @@ import './PropertiesSection.css';
 gsap.registerPlugin(ScrollTrigger);
 
 const properties = [
-  { id: 1, address: 'Villa Del Mar, Costa Adeje', beds: 5, baths: 4, sqft: '5,150', price: '€4,250,000', image: '/images/buy.jpg', secondaryImage: '/images/sell.jpg' },
-  { id: 2, address: 'Modern Penthouse, Playa de Las Américas', beds: 3, baths: 2, sqft: '2,100', price: '€1,850,000', image: '/images/sell.jpg', secondaryImage: '/images/invest.jpg' },
-  { id: 3, address: 'Cliffs Edge Estate, Los Gigantes', beds: 4, baths: 3, sqft: '3,800', price: '€3,100,000', image: '/images/invest.jpg', secondaryImage: '/images/valuation-bg.jpg' },
-  { id: 4, address: 'Luxury Mansion, Abama Resort', beds: 7, baths: 8, sqft: '12,500', price: '€7,500,000', image: '/images/valuation-bg.jpg', secondaryImage: '/images/buy.jpg' },
-  { id: 5, address: 'Oceanfront Villa, El Duque', beds: 6, baths: 5, sqft: '6,200', price: '€5,900,000', image: '/images/buy.jpg', secondaryImage: '/images/sell.jpg' },
-  { id: 6, address: 'Boutique Residence, La Caleta', beds: 4, baths: 4, sqft: '3,200', price: '€2,400,000', image: '/images/sell.jpg', secondaryImage: '/images/invest.jpg' },
+  { id: 1, address: 'Villa Del Mar, Costa Adeje', beds: 5, baths: 4, sqft: '5,150', price: '€4,250,000', image: '/images/img-dummy-1.jpg', secondaryImage: '/images/img-dummy-3.jpg' },
+  { id: 2, address: 'Modern Penthouse, Playa de Las Américas', beds: 3, baths: 2, sqft: '2,100', price: '€1,850,000', image: '/images/img-dummy-3.jpg', secondaryImage: '/images/img-dummy-2.jpg' },
+  { id: 3, address: 'Cliffs Edge Estate, Los Gigantes', beds: 4, baths: 3, sqft: '3,800', price: '€3,100,000', image: '/images/img-dummy-2.jpg', secondaryImage: '/images/img-dummy-4.jpg' },
+  { id: 4, address: 'Luxury Mansion, Abama Resort', beds: 7, baths: 8, sqft: '12,500', price: '€7,500,000', image: '/images/img-dummy-4.jpg', secondaryImage: '/images/img-dummy-1.jpg' },
+  { id: 5, address: 'Oceanfront Villa, El Duque', beds: 6, baths: 5, sqft: '6,200', price: '€5,900,000', image: '/images/img-dummy-1.jpg', secondaryImage: '/images/img-dummy-3.jpg' },
+  { id: 6, address: 'Boutique Residence, La Caleta', beds: 4, baths: 4, sqft: '3,200', price: '€2,400,000', image: '/images/img-dummy-3.jpg', secondaryImage: '/images/img-dummy-2.jpg' },
 ];
 
 const PropertyCard = ({ prop }: { prop: typeof properties[0] }) => {
