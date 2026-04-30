@@ -24,7 +24,6 @@
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             box-shadow: none;
-            border: 1px solid rgba(188, 175, 139, 0.25);
             transform: scaleY(var(--header-wipe, 0));
             transform-origin: top;
             pointer-events: none;
@@ -79,7 +78,7 @@
             opacity: 0;
             transition: none;
         }
- 
+
         .header-letter-img {
             height: 100%;
             width: auto;
@@ -194,7 +193,8 @@
         }
 
         body.header-dark-mode .header-letter-img {
-            filter: brightness(0); /* Black */
+            filter: brightness(0);
+            /* Black */
         }
 
         body.header-dark-mode .nav-link {
@@ -237,7 +237,8 @@
 
         /* Header light mode for dark sections (valuation, etc.) */
         body.header-light-mode .header-letter-img {
-            filter: brightness(0) invert(1); /* White */
+            filter: brightness(0) invert(1);
+            /* White */
         }
 
         body.header-light-mode .nav-link {
@@ -293,11 +294,10 @@
             }
 
             .header::before {
-                background: linear-gradient(to bottom, 
-                    rgba(255, 255, 255, 0.95) 0%, 
-                    rgba(255, 255, 255, 0.8) 50%, 
-                    transparent 100%
-                );
+                background: linear-gradient(to bottom,
+                        rgba(255, 255, 255, 0.95) 0%,
+                        rgba(255, 255, 255, 0.8) 50%,
+                        transparent 100%);
                 backdrop-filter: blur(10px);
                 -webkit-backdrop-filter: blur(10px);
                 height: 80px;
