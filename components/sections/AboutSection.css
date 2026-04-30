@@ -191,19 +191,9 @@
 }
 
 .profile-socials a:hover {
-    transform: translateY(-4px) scale(1.1);
+    transform: scale(1.1);
     background: rgba(255, 255, 255, 0.2);
-}
-
-.profile-socials img {
-    width: 18px;
-    height: 18px;
-    display: block;
-}
-
-.profile-socials a:hover {
-    transform: translateY(-2px);
-    opacity: 0.7;
+    opacity: 0.8;
 }
 
 .profile-socials img {
@@ -511,6 +501,8 @@
         padding: 0 1.5rem 1rem 1.5rem;
         -webkit-overflow-scrolling: touch;
         scrollbar-width: none;
+        justify-content: center;
+        align-items: center;
     }
 
     .about-certificates>div::-webkit-scrollbar {
@@ -519,7 +511,7 @@
 
     .about-cert-item {
         flex: 0 0 55%;
-        max-width: 260px;
+        max-width: 180px;
         /* Prevent items from becoming too large on tablet portrait */
         scroll-snap-align: center;
     }

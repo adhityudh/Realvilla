@@ -1,0 +1,118 @@
+.partner-section {
+    padding: 100px 5%;
+    background-color: #ffffff;
+    position: relative;
+    overflow: hidden;
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.partner-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1400px;
+    margin: 0 auto;
+    gap: 4rem;
+}
+
+.partner-title-wrapper {
+    flex: 0 0 40%;
+}
+
+.partner-title {
+    font-family: var(--font-cormorant), serif;
+    font-size: clamp(1.8rem, 3.5vw, 2.75rem);
+    line-height: 1.1;
+    font-weight: 300;
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+    color: var(--text-black);
+    max-width: 400px;
+}
+
+.partner-logos {
+    flex: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+}
+
+.partner-logo-item {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex: 0 0 auto;
+}
+
+.partner-logo-item img {
+    height: 30px;
+    width: auto;
+    object-fit: contain;
+    filter: grayscale(1) opacity(0.5);
+    transition: filter 0.4s ease, transform 0.4s ease;
+}
+
+.partner-logo-item img:hover {
+    filter: grayscale(0) opacity(1);
+    transform: scale(1.05);
+}
+
+@media (max-width: 1024px) {
+    .partner-section {
+        padding: 80px 5%;
+    }
+
+    .partner-container {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 3rem;
+    }
+
+    .partner-title-wrapper {
+        flex: auto;
+        max-width: 100%;
+    }
+
+    .partner-title {
+        font-size: clamp(1.8rem, 5vw, 2.5rem);
+        max-width: 100%;
+    }
+
+    .partner-logos {
+        width: 100%;
+        justify-content: flex-start;
+        gap: 3rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .partner-section {
+        padding: 60px 1.5rem;
+    }
+
+    .partner-container {
+        align-items: center;
+    }
+
+    .partner-title {
+        font-size: clamp(1.8rem, 6vw, 2.2rem);
+        max-width: 100%;
+        text-align: center;
+    }
+
+    .partner-logos {
+        gap: 1.5rem;
+        justify-content: center;
+    }
+
+    .partner-logo-item {
+        flex: 0 0 auto;
+    }
+
+    .partner-logo-item img {
+        height: 24px; /* Slightly smaller for mobile */
+    }
+}

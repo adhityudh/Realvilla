@@ -5,6 +5,7 @@ import CursorFollower from '@/components/layout/CursorFollower';
 import SplashIntro from '@/components/hero/SplashIntro';
 import HeroSection from '@/components/hero/HeroSection';
 import AboutSection from '@/components/sections/AboutSection';
+import PartnerSection from '@/components/sections/PartnerSection';
 import ValuationSection from '@/components/sections/ValuationSection';
 import PropertiesSection from '@/components/sections/PropertiesSection';
 import MortgageFAQSection from '@/components/sections/MortgageFAQSection';
@@ -23,6 +24,7 @@ export default function Home() {
       <MortgageFAQSection />
       <TestimonialsSection />
       <AboutSection />
+      <PartnerSection />
     </SmoothScroller>
   );
 }
