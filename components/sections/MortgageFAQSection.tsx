@@ -56,12 +56,6 @@ const MortgageFAQSection = () => {
       { y: 0, opacity: 1, filter: 'blur(0px)', duration: 1.5, stagger: 0.2, ease: 'expo.out' }
     );
 
-    tl.fromTo(
-      listRef.current.querySelectorAll('.faq-item'),
-      { y: 40, opacity: 0, filter: 'blur(10px)' },
-      { y: 0, opacity: 1, filter: 'blur(0px)', duration: 1.2, stagger: 0.1, ease: 'expo.out' },
-      '-=1'
-    );
 
     tl.fromTo(
       ctaRef.current,

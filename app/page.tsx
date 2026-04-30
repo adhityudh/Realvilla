@@ -4,8 +4,9 @@ import MobileNav from '@/components/layout/MobileNav';
 import CursorFollower from '@/components/layout/CursorFollower';
 import SplashIntro from '@/components/hero/SplashIntro';
 import HeroSection from '@/components/hero/HeroSection';
-import PropertiesSection from '@/components/sections/PropertiesSection';
+import AboutSection from '@/components/sections/AboutSection';
 import ValuationSection from '@/components/sections/ValuationSection';
+import PropertiesSection from '@/components/sections/PropertiesSection';
 import MortgageFAQSection from '@/components/sections/MortgageFAQSection';
 import TestimonialsSection from '@/components/sections/TestimonialsSection';
 
@@ -21,6 +22,7 @@ export default function Home() {
       <PropertiesSection />
       <MortgageFAQSection />
       <TestimonialsSection />
+      <AboutSection />
     </SmoothScroller>
   );
 }

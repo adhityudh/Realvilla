@@ -168,7 +168,7 @@ const PropertiesSection = () => {
         opacity: 1,
         filter: 'blur(0px)',
         duration: 0.6,
-        stagger: 0.1,
+        stagger: 0.2,
         ease: 'power3.out'
       },
       0.8 // Pushed back further to avoid premature reveal

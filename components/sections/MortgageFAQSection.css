@@ -107,10 +107,10 @@
 
 .faq-answer {
     font-family: var(--font-manrope), sans-serif;
-    font-size: 1.1rem;
+    font-size: 1rem;
     line-height: 1.6;
-    opacity: 0.8;
     max-width: 500px;
+    color: #111;
 }
 
 .faq-question-container {

@@ -146,7 +146,7 @@ const TestimonialsSection = () => {
 
       <div className="testimonials-overlap-img" ref={overlapImgRef}>
         <div className="img-aspect-box">
-          <img src="images/img-review.png" alt="Sell Property" />
+          <img src="images/img-review.jpg" alt="Sell Property" />
         </div>
       </div>
     </section>
