@@ -37,11 +37,11 @@ const AboutSection = () => {
       if (bgLayerRef.current && objectLayerRef.current) {
         tl.fromTo(
           [bgLayerRef.current, objectLayerRef.current],
-          { 
-            x: isDesktop ? -50 : 0, 
+          {
+            x: isDesktop ? -50 : 0,
             y: isDesktop ? 0 : 30,
-            opacity: 0, 
-            filter: 'blur(10px)' 
+            opacity: 0,
+            filter: 'blur(10px)'
           },
           { x: 0, y: 0, opacity: 1, filter: 'blur(0px)', duration: 1.5, stagger: 0.1, ease: 'expo.out' }
         );
@@ -59,11 +59,11 @@ const AboutSection = () => {
       if (headlineRef.current) {
         tl.fromTo(
           headlineRef.current,
-          { 
-            x: isDesktop ? 50 : 0, 
+          {
+            x: isDesktop ? 50 : 0,
             y: isDesktop ? 0 : 30,
-            opacity: 0, 
-            filter: 'blur(20px)' 
+            opacity: 0,
+            filter: 'blur(20px)'
           },
           { x: 0, y: 0, opacity: 1, filter: 'blur(0px)', duration: 1.8, ease: 'expo.out' },
           '-=1'
@@ -76,7 +76,7 @@ const AboutSection = () => {
           paragraphs,
           { y: 30, opacity: 0 },
           { y: 0, opacity: 1, duration: 1, stagger: 0.2, ease: 'power3.out' },
-          '-=0.8'
+          '-=1.4'
         );
       }
     });
@@ -90,7 +90,6 @@ const AboutSection = () => {
         {/* Layer 1: Background */}
         <div className="about-bg-layer" ref={bgLayerRef}>
           <img src="images/img-about-bg.webp" alt="" />
-          <div className="about-bg-gradient" />
         </div>
 
         {/* Layer 2: Object (In front of text) */}

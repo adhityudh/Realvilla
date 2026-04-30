@@ -43,21 +43,10 @@
     object-fit: cover;
 }
 
-/* Gradient only on BG for Desktop */
-.about-bg-gradient {
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 40%;
-    height: 100%;
-    background: linear-gradient(to right, transparent, #ffffff);
-    z-index: 1;
-    /* Below headline */
-}
 
 .about-headline {
     position: absolute;
-    left: 40%;
+    left: 45%;
     /* Shifted further right to match design balance */
     right: 5%;
     top: 280px;
@@ -84,7 +73,7 @@
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
-    padding: 80px 4rem 80px 4rem;
+    padding: 3rem;
     position: relative;
     z-index: 4;
 }
@@ -151,17 +140,6 @@
         z-index: 3;
     }
 
-    .about-bg-gradient {
-        display: block;
-        width: 100%;
-        height: 40%;
-        top: auto;
-        bottom: 0;
-        right: 0;
-        background: linear-gradient(to bottom, transparent, #ffffff);
-        z-index: 2;
-    }
-
     .about-object-layer::after {
         content: '';
         position: absolute;
@@ -171,6 +149,8 @@
         background: linear-gradient(to bottom, transparent, #ffffff);
         z-index: 4;
     }
+
+
 
     .about-visual-container {
         width: 100%;
@@ -187,6 +167,17 @@
         position: absolute;
         left: 0;
         top: 0;
+    }
+
+    .about-bg-layer::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 40%;
+        background: linear-gradient(to bottom, transparent, #ffffff);
+        z-index: 2;
     }
 
     .about-bg-layer {
@@ -229,7 +220,7 @@
         white-space: normal;
         text-align: center;
         font-size: clamp(2rem, 5.5vw, 4rem);
-        line-height: 1.05;
+        line-height: 1.1;
         max-width: 100%;
         color: #111111;
         z-index: 11;

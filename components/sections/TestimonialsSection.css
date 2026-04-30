@@ -1,10 +1,10 @@
 .testimonials-section {
-    padding: 25vw 0 80px 0;
+    padding: 25vw 0 120px 0;
     /* Slightly reduced top padding to move items higher */
     background-color: #ffffff;
     overflow: visible;
     position: relative;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    /* border-bottom: 1px solid rgba(0, 0, 0, 0.05); removed as per request */
 }
 
 .testimonials-ticker-wrapper {
