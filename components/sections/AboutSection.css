@@ -532,5 +532,5 @@
 
 /* Fix PhotoSwipe z-index to appear above header */
 .pswp {
-    z-index: 200001 !important;
+    z-index: 200005 !important;
 }
