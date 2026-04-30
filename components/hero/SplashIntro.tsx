@@ -36,12 +36,20 @@ function useSplashIntroAnimations() {
   // Mobile only: fade out hero description as user scrolls into the hero
   useEffect(() => {
     if (!lenis || window.innerWidth > 1024) return;
+    const fadeTl = gsap.timeline();
+    fadeTl
+      .to('.logo-content-area', { opacity: 0, y: -20, ease: 'none' }, 0)
+      .to('.hero-title', { opacity: 0, y: -15, ease: 'none' }, 0.1)
+      .to('.hero-subtitle', { opacity: 0, y: -10, ease: 'none' }, 0.2)
+      .to('.mobile-hero-ctas', { opacity: 0, y: -5, ease: 'none' }, 0.3)
+      .to('.hero-scroll', { opacity: 0, y: -2, ease: 'none' }, 0.4);
+
     const st = ScrollTrigger.create({
       trigger: '.main-hero',
       start: 'top top',
-      end: '25% top',
+      end: '40% top', // Slightly longer scroll range to accommodate the stagger
       scrub: true,
-      animation: gsap.to('.hero-description-area', { opacity: 0, ease: 'none' }),
+      animation: fadeTl,
     });
     return () => st.kill();
   }, [lenis]);

@@ -22,8 +22,8 @@
     justify-content: center;
     text-align: center;
     color: #ffffff;
-    min-height: 85vh;
-    margin-bottom: 15vh;
+    min-height: 70vh;
+    margin-bottom: 10vh;
     will-change: transform, opacity, filter;
 }
 
@@ -170,8 +170,8 @@
     }
 
     .properties-intro-container {
-        min-height: 70vh;
-        margin-bottom: 10vh;
+        min-height: 40vh;
+        margin-bottom: 5vh;
     }
 
     .properties-grid {

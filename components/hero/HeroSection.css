@@ -6,7 +6,14 @@
             position: relative;
             width: 100vw;
             height: 105svh;
+            min-height: 800px;
             overflow: hidden;
+        }
+
+        @media (max-width: 1024px) {
+            .main-hero {
+                min-height: 600px;
+            }
         }
 
         .hero-bg-video {

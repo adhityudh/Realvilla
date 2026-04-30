@@ -42,26 +42,62 @@ const MortgageFAQSection = () => {
   useEffect(() => {
     if (!sectionRef.current || !headerRef.current || !listRef.current || !ctaRef.current) return;
 
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: sectionRef.current,
-        start: 'top 75%',
-        toggleActions: 'play none none reverse'
-      }
-    });
-
-    tl.fromTo(
+    // 1. Header Animation
+    gsap.fromTo(
       headerRef.current.querySelectorAll('.mortgage-faq-tagline, .mortgage-faq-title'),
       { y: 60, opacity: 0, filter: 'blur(15px)' },
-      { y: 0, opacity: 1, filter: 'blur(0px)', duration: 1.5, stagger: 0.2, ease: 'expo.out' }
+      {
+        y: 0,
+        opacity: 1,
+        filter: 'blur(0px)',
+        duration: 1.2,
+        stagger: 0.2,
+        ease: 'expo.out',
+        scrollTrigger: {
+          trigger: headerRef.current,
+          start: 'top 85%',
+          toggleActions: 'play none none reverse'
+        }
+      }
     );
 
+    // 2. FAQ List Animation
+    const faqItems = listRef.current.querySelectorAll('.faq-item');
+    gsap.fromTo(
+      faqItems,
+      { y: 40, opacity: 0 },
+      {
+        y: 0,
+        opacity: 1,
+        duration: 0.8,
+        stagger: 0.15,
+        ease: 'power3.out',
+        scrollTrigger: {
+          trigger: listRef.current,
+          start: 'top 85%',
+          toggleActions: 'play none none reverse'
+        }
+      }
+    );
 
-    tl.fromTo(
-      ctaRef.current,
+    // 3. CTA Animation
+    const ctaButtons = ctaRef.current.children;
+    gsap.fromTo(
+      ctaButtons,
       { y: 30, opacity: 0, filter: 'blur(5px)' },
-      { y: 0, opacity: 1, filter: 'blur(0px)', duration: 1, ease: 'expo.out' },
-      '-=0.8'
+      {
+        y: 0,
+        opacity: 1,
+        filter: 'blur(0px)',
+        duration: 1,
+        stagger: 0.2,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: ctaRef.current,
+          start: 'top 90%',
+          toggleActions: 'play none none reverse'
+        }
+      }
     );
 
     // Default expand first item on mobile
@@ -69,6 +105,15 @@ const MortgageFAQSection = () => {
       setActiveIndex(0);
       gsap.set(answerRefs.current[0], { height: 'auto', opacity: 1 });
     }
+
+    return () => {
+      const triggers = [headerRef.current, listRef.current, ctaRef.current, sectionRef.current];
+      ScrollTrigger.getAll().forEach(st => {
+        if (triggers.includes(st.trigger as any)) {
+          st.kill();
+        }
+      });
+    };
   }, []);
 
   const toggleFAQ = (index: number) => {

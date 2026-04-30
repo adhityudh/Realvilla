@@ -141,51 +141,62 @@ const PropertiesSection = () => {
   useEffect(() => {
     if (!sectionRef.current || !containerRef.current || !gridRef.current || !ctaRef.current) return;
 
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: sectionRef.current,
-        start: 'top 20%',
-        end: 'top -100%',
-        scrub: true,
-      },
-    });
-
-    // Animate Header Content
-    tl.fromTo(
-      containerRef.current,
-      { y: 50, opacity: 0, filter: 'blur(10px)' },
-      { y: 0, opacity: 1, filter: 'blur(0px)', duration: 0.4, ease: 'power2.out' },
-      0
-    );
-
-    // Animate Grid Items with Stagger
-    const cards = gridRef.current.querySelectorAll('.property-card');
-    tl.fromTo(
-      cards,
-      { y: 100, opacity: 0, filter: 'blur(15px)' },
+    // 1. Header Animation (Triggered by the center where text is)
+    const headerElements = containerRef.current.children;
+    gsap.fromTo(
+      headerElements,
+      { y: 100, opacity: 0, filter: 'blur(20px)' },
       {
         y: 0,
         opacity: 1,
         filter: 'blur(0px)',
-        duration: 0.6,
-        stagger: 0.2,
-        ease: 'power3.out'
-      },
-      0.8 // Pushed back further to avoid premature reveal
+        duration: 1.5,
+        stagger: 0.3,
+        ease: 'expo.out',
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: 'center 95%',
+          toggleActions: 'play none none reverse',
+        }
+      }
     );
 
-    // Animate CTA Button
-    tl.fromTo(
+    // 2. Grid Animation (Triggers when grid enters)
+    const cards = gridRef.current.querySelectorAll('.property-card');
+    gsap.fromTo(
+      cards,
+      { y: 60, opacity: 0, filter: 'blur(15px)' },
+      {
+        y: 0,
+        opacity: 1,
+        filter: 'blur(0px)',
+        duration: 1,
+        stagger: 0.15,
+        ease: 'power3.out',
+        scrollTrigger: {
+          trigger: gridRef.current,
+          start: 'top 85%',
+          toggleActions: 'play none none reverse',
+        }
+      }
+    );
+
+    // 3. CTA Animation (Triggers after grid)
+    gsap.fromTo(
       ctaRef.current,
       { y: 30, opacity: 0, filter: 'blur(5px)' },
       {
         y: 0,
         opacity: 1,
         filter: 'blur(0px)',
-        duration: 0.5,
-        ease: 'power2.out'
-      },
-      1.1 // Show after cards start appearing
+        duration: 0.8,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: ctaRef.current,
+          start: 'top 90%',
+          toggleActions: 'play none none reverse',
+        }
+      }
     );
 
     // Handle header mode toggle (remains same)
@@ -200,7 +211,12 @@ const PropertiesSection = () => {
     });
 
     return () => {
-      ScrollTrigger.getAll().filter(st => st.trigger === sectionRef.current).forEach(st => st.kill());
+      const triggers = [containerRef.current, gridRef.current, ctaRef.current, sectionRef.current];
+      ScrollTrigger.getAll().forEach(st => {
+        if (triggers.includes(st.trigger as any)) {
+          st.kill();
+        }
+      });
     };
   }, []);
 

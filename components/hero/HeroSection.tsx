@@ -18,7 +18,7 @@ function useHeroScrollAnimations() {
     const isMobile = window.innerWidth <= 1024;
 
     const videoST = gsap.to('.hero-bg-video', {
-      y: isMobile ? '0%' : '30%',
+      yPercent: isMobile ? 0 : 30,
       force3D: true,
       ease: 'none',
       scrollTrigger: isMobile ? undefined : {
@@ -26,7 +26,6 @@ function useHeroScrollAnimations() {
         start: 'top top',
         end: 'bottom top',
         scrub: true,
-        invalidateOnRefresh: true,
       },
     });
 
@@ -38,7 +37,6 @@ function useHeroScrollAnimations() {
         start: 'top top',
         end: 'bottom top',
         scrub: true,
-        invalidateOnRefresh: true,
       },
     });
 
@@ -83,6 +81,11 @@ export function getHeroRevealAnimation(tl: gsap.core.Timeline, isMobile: boolean
           v.play().catch(() => {});
         }
       },
+      onComplete: () => {
+        // Performance Optimization: Set clip-path to 'none' once done.
+        // This ensures it stays full-screen while removing the calculation overhead.
+        gsap.set(heroEl, { clipPath: 'none' });
+      }
     },
     0,
   );

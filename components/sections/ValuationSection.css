@@ -246,6 +246,19 @@
                 margin-bottom: 2rem;
             }
 
+            .valuation-tagline {
+                justify-content: center;
+                width: 100%;
+                gap: 1.5rem;
+            }
+
+            .valuation-tagline::after {
+                content: '';
+                width: 30px;
+                height: 1px;
+                background: #bcaf8b;
+            }
+
             .valuation-headline {
                 font-size: clamp(2rem, 5.5vw, 4rem);
             }

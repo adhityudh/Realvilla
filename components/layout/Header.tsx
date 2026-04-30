@@ -42,10 +42,20 @@ function useHeaderScrollAnimations() {
 
     const colorST = ScrollTrigger.create({
       trigger: '.main-hero',
-      start: () => `bottom ${header.offsetHeight}px`,
+      start: () => isMobile ? 'bottom top' : `bottom ${header.offsetHeight}px`,
       end: 'max',
-      onEnter: () => document.body.classList.add('header-dark-mode'),
-      onLeaveBack: () => document.body.classList.remove('header-dark-mode'),
+      onEnter: () => {
+        document.body.classList.add('header-dark-mode');
+        if (isMobile) {
+          gsap.to('.header-logo', { opacity: 1, visibility: 'visible', pointerEvents: 'auto', duration: 0.4, ease: 'power2.out', overwrite: 'auto' });
+        }
+      },
+      onLeaveBack: () => {
+        document.body.classList.remove('header-dark-mode');
+        if (isMobile) {
+          gsap.to('.header-logo', { opacity: 0, visibility: 'hidden', pointerEvents: 'none', duration: 0.3, ease: 'power2.in', overwrite: 'auto' });
+        }
+      },
     });
 
     let pillST: ScrollTrigger | null = null;

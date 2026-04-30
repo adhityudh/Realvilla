@@ -18,10 +18,19 @@ export default function ValuationSection() {
     if (!sectionRef.current) return;
 
     const section = sectionRef.current;
-    const elements = section.querySelectorAll('.valuation-tagline, .valuation-headline, .valuation-body, .valuation-trust, .valuation-cta-desktop, .valuation-cta-mobile, .valuation-card');
+    const isMobile = window.innerWidth <= 1024;
+    const elements = section.querySelectorAll('.valuation-tagline, .valuation-headline, .valuation-body, .valuation-trust, .valuation-cta-desktop, .valuation-cta-mobile');
+    const card = section.querySelector('.valuation-card');
 
     // Initial state to prevent flash
     gsap.set(elements, { opacity: 0, y: 40, filter: 'blur(10px)' });
+    
+    // On mobile, hide the card too. On desktop, keep it visible (static).
+    if (isMobile) {
+      gsap.set(card, { opacity: 0, y: 40, filter: 'blur(10px)' });
+    } else {
+      gsap.set(card, { opacity: 1, y: 0, filter: 'blur(0px)' });
+    }
 
     const tl = gsap.timeline({
       scrollTrigger: {
@@ -36,11 +45,16 @@ export default function ValuationSection() {
       { y: 0, opacity: 1, filter: 'blur(0px)', duration: 1.2, stagger: 0.2, ease: 'expo.out' }
     );
 
-    tl.fromTo(section.querySelector('.valuation-card'),
-      { y: 40, opacity: 0, filter: 'blur(10px)' },
-      { y: 0, opacity: 1, filter: 'blur(0px)', duration: 1.5, ease: 'expo.out' },
-      '-=1.2'
-    );
+    if (isMobile) {
+      tl.fromTo(section.querySelector('.valuation-card'),
+        { y: 40, opacity: 0, filter: 'blur(10px)' },
+        { y: 0, opacity: 1, filter: 'blur(0px)', duration: 1.5, ease: 'expo.out' },
+        '-=1.2'
+      );
+    } else {
+      // On desktop, ensure it's visible immediately once the trigger hits
+      tl.set(section.querySelector('.valuation-card'), { opacity: 1, y: 0, filter: 'blur(0px)' }, '-=1.2');
+    }
 
     return () => {
       tl.kill();

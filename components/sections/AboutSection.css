@@ -60,7 +60,7 @@
     left: 45%;
     /* Shifted further right to match design balance */
     right: 5%;
-    top: 280px;
+    top: 240px;
     /* Higher up as per design */
     transform: translateY(-50%);
     font-family: var(--font-cormorant), serif;
@@ -101,8 +101,8 @@
     gap: 1rem;
     justify-content: flex-end;
     position: absolute;
-    right: 8%;
-    top: 80px;
+    right: 3rem;
+    top: 3rem;
     z-index: 5;
 }
 
@@ -128,6 +128,88 @@
     text-align: left;
 
     font-weight: 400;
+}
+
+.about-profile-card {
+    position: absolute;
+    bottom: 4rem;
+    left: 50%;
+    z-index: 10;
+    color: #ffffff;
+    pointer-events: auto;
+    text-align: center;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 1rem;
+    --profile-pill-h: 3rem;
+}
+
+.profile-info {
+    display: inline-flex;
+    align-items: center;
+    height: var(--profile-pill-h);
+    padding: 0 1.75rem;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 100px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    white-space: nowrap;
+}
+
+.profile-name {
+    font-family: var(--font-cormorant), serif;
+    font-size: 1.25rem;
+    font-weight: 800;
+    letter-spacing: 0.2em;
+    margin: 0;
+    line-height: 1;
+    color: #ffffff;
+    text-transform: uppercase;
+}
+
+.profile-socials {
+    display: flex;
+    gap: 0.65rem;
+}
+
+.profile-socials a {
+    width: var(--profile-pill-h);
+    height: var(--profile-pill-h);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 50%;
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), background 0.4s ease;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.profile-socials a:hover {
+    transform: translateY(-4px) scale(1.1);
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.profile-socials img {
+    width: 18px;
+    height: 18px;
+    display: block;
+}
+
+.profile-socials a:hover {
+    transform: translateY(-2px);
+    opacity: 0.7;
+}
+
+.profile-socials img {
+    width: 16px;
+    height: 16px;
+    display: block;
 }
 
 /* Responsive Overrides */
@@ -198,29 +280,54 @@
         /* Keeps the flow space */
     }
 
-    .about-tagline {
-        position: relative;
-        right: auto;
-        top: auto;
-        order: 2;
-        margin: -40px 0 1rem;
-        /* Overlap image slightly */
-        justify-content: center;
-        flex-direction: row;
-        gap: 0.75rem;
-        font-size: 0.65rem;
-        letter-spacing: 0.4em;
-        opacity: 0.9;
-        z-index: 12;
+    .about-profile-card {
+        bottom: 2.5rem;
+        left: 50%;
+        --profile-pill-h: 2.5rem;
+        gap: 0.5rem;
     }
 
-    .about-tagline::after,
-    .about-tagline::before {
-        display: block;
-        width: 20px;
-        height: 1px;
-        background: #bcaf8b;
-        content: '';
+    .profile-info {
+        height: auto;
+        min-height: var(--profile-pill-h);
+        padding: 0.6rem 1.25rem;
+        white-space: normal;
+        max-width: 180px;
+        background: rgba(188, 175, 139, 0.95);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .profile-name {
+        font-size: 0.85rem;
+        letter-spacing: 0.15em;
+        text-align: center;
+    }
+
+    .profile-socials img {
+        width: 14px;
+        height: 14px;
+    }
+
+    .profile-title {
+        font-size: 0.65rem;
+    }
+
+    .profile-creds {
+        font-size: 0.55rem;
+        margin-bottom: 1rem;
+    }
+
+    .profile-socials {
+        gap: 0.5rem;
+    }
+
+    .profile-socials a {
+        background: rgba(188, 175, 139, 0.95);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .about-tagline {
+        display: none;
     }
 
     .about-headline {
@@ -267,10 +374,6 @@
         text-align: center;
         margin: 0 auto;
         max-width: 90%;
-        font-size: 0.9rem;
-        line-height: 1.7;
-        color: #444444;
-        font-weight: 400;
     }
 }
 
@@ -292,7 +395,6 @@
     }
 
     .about-paragraph {
-        font-size: 0.85rem;
         max-width: 100%;
     }
 }

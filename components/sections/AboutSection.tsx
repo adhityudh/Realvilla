@@ -14,6 +14,7 @@ const AboutSection = () => {
   const objectLayerRef = useRef<HTMLDivElement>(null);
   const taglineRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
+  const profileRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!sectionRef.current) return;
@@ -41,6 +42,15 @@ const AboutSection = () => {
             filter: 'blur(10px)'
           },
           { y: 0, opacity: 1, filter: 'blur(0px)', duration: 1.2, stagger: 0.1, ease: 'expo.out' }
+        );
+      }
+
+      if (profileRef.current) {
+        tl.fromTo(
+          profileRef.current,
+          { y: 30, opacity: 0, xPercent: -50 },
+          { y: 0, opacity: 1, xPercent: -50, duration: 1, ease: 'power3.out' },
+          '-=0.8'
         );
       }
 
@@ -91,6 +101,24 @@ const AboutSection = () => {
         {/* Layer 2: Object (In front of text) */}
         <div className="about-object-layer" ref={objectLayerRef}>
           <img src="images/img-about-p.webp" alt="Luxury Real Estate Object" />
+        </div>
+
+        {/* Floating Profile Element */}
+        <div className="about-profile-card" ref={profileRef}>
+          <div className="profile-info">
+            <h3 className="profile-name">LUIS VILLARREAL</h3>
+          </div>
+          <div className="profile-socials">
+            <a href="#" target="_blank" rel="noopener noreferrer">
+              <img src="icons/logo-fb-light.svg" alt="Facebook" />
+            </a>
+            <a href="#" target="_blank" rel="noopener noreferrer">
+              <img src="icons/logo-ig-light.svg" alt="Instagram" />
+            </a>
+            <a href="#" target="_blank" rel="noopener noreferrer">
+              <img src="icons/logo-linkedin-light.svg" alt="LinkedIn" />
+            </a>
+          </div>
         </div>
       </div>
 
