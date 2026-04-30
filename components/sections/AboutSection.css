@@ -1,8 +1,8 @@
 .about-section {
     display: flex;
     background-color: #ffffff;
-    min-height: 100vh;
-    min-height: clamp(800px, 100vh, 1200px);
+    min-height: 850px;
+    /* Memberi ruang agar bisa bernafas tanpa dipaksa 100vh */
     position: relative;
     overflow: hidden;
 }
@@ -84,7 +84,7 @@
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
-    padding: 3rem;
+    padding: 2rem 3rem 2rem 2rem;
     position: relative;
     z-index: 4;
 }
@@ -102,7 +102,7 @@
     justify-content: flex-end;
     position: absolute;
     right: 3rem;
-    top: 3rem;
+    top: 2rem;
     z-index: 5;
 }
 
@@ -231,6 +231,12 @@
         position: absolute;
         top: 0;
         z-index: 3;
+    }
+
+    .about-object-layer img {
+        max-width: 400px;
+        margin: 0 auto;
+        display: block;
     }
 
     .about-object-layer::after {
@@ -397,4 +403,134 @@
     .about-paragraph {
         max-width: 100%;
     }
+}
+
+/* =============================================
+   CERTIFICATE GALLERY
+============================================= */
+.about-certificates {
+    margin-top: 3rem;
+    width: 100%;
+}
+
+.about-certificates>div {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
+}
+
+.about-cert-item {
+    cursor: pointer;
+    will-change: transform, opacity;
+}
+
+.cert-thumb-wrapper {
+    position: relative;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    background: #f0f0f0;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.cert-thumb-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), filter 0.8s ease;
+}
+
+.cert-hover-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(188, 175, 139, 0.85);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+.cert-hover-overlay span {
+    color: #ffffff;
+    font-family: var(--font-manrope), sans-serif;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    transform: translateY(10px);
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.cert-thumb-wrapper:hover {
+    /* No floating animation */
+}
+
+.cert-thumb-wrapper:hover img {
+    transform: scale(1.05);
+    filter: blur(2px);
+}
+
+.cert-thumb-wrapper:hover .cert-hover-overlay {
+    opacity: 1;
+}
+
+.cert-thumb-wrapper:hover .cert-hover-overlay span {
+    transform: translateY(0);
+}
+
+@media (max-width: 1024px) {
+    .about-certificates {
+        margin-top: 2rem;
+        max-width: 700px;
+        width: 100%;
+    }
+
+    .about-certificates>div {
+        gap: 1rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .about-certificates {
+        align-self: stretch;
+        /* Forces it to fill parent width despite align-items: center */
+        margin-left: -1.5rem;
+        margin-right: -1.5rem;
+        width: auto;
+        /* Let it grow naturally */
+        max-width: none;
+    }
+
+    .about-certificates>div {
+        display: flex;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        gap: 1rem;
+        padding: 0 1.5rem 1rem 1.5rem;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+    }
+
+    .about-certificates>div::-webkit-scrollbar {
+        display: none;
+    }
+
+    .about-cert-item {
+        flex: 0 0 55%;
+        max-width: 260px;
+        /* Prevent items from becoming too large on tablet portrait */
+        scroll-snap-align: center;
+    }
+
+    .about-cert-item:last-child {
+        display: block;
+        /* ensure the 3rd item is shown */
+    }
+}
+
+/* Fix PhotoSwipe z-index to appear above header */
+.pswp {
+    z-index: 200001 !important;
 }

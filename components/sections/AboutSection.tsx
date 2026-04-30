@@ -1,8 +1,10 @@
 'use client';
 
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { Gallery, Item } from 'react-photoswipe-gallery';
+import 'photoswipe/dist/photoswipe.css';
 import './AboutSection.css';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -15,6 +17,8 @@ const AboutSection = () => {
   const taglineRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const profileRef = useRef<HTMLDivElement>(null);
+
+  const [imageSizes, setImageSizes] = useState<Record<number, { w: number; h: number }>>({});
 
   useEffect(() => {
     if (!sectionRef.current) return;
@@ -134,8 +138,62 @@ const AboutSection = () => {
       <div className="about-content" ref={contentRef}>
         <div className="about-paragraph-wrapper">
           <p className="about-paragraph">
-            With an unwavering commitment to discretion and precision, we guide our clients through Tenerife’s most exclusive property opportunities. Every transaction is a testament to our profound local insight and a global standard of excellence, ensuring your investment is handled with absolute care.
+            Certified real estate advisor in Commercial Management and Sales from the prestigious EAE Business School, and accredited as a Real Estate Agent (API), with the required qualifications to operate in Spain, including Catalonia, the Balearic Islands, and Valencia, within the corresponding real estate registries.
           </p>
+        </div>
+
+        {/* Certificates Gallery */}
+        <div className="about-certificates">
+          <Gallery>
+            <div>
+              {[1, 2, 3].map((num) => (
+                <Item
+                  key={num}
+                  original={`/images/img-dummy-default.webp`}
+                  thumbnail={`/images/img-dummy-default.webp`}
+                  width={imageSizes[num]?.w || 800}
+                  height={imageSizes[num]?.h || 600}
+                >
+                  {({ ref, open }) => (
+                    <div
+                      className="about-cert-item"
+                      ref={ref as any}
+                      onClick={open}
+                    >
+                      <div className="cert-thumb-wrapper">
+                        <img
+                          src={`/images/img-dummy-default.webp`}
+                          alt={`Certificate ${num}`}
+                          ref={(node) => {
+                            if (node && node.complete && node.naturalWidth) {
+                              setImageSizes(prev => {
+                                if (!prev[num] || prev[num].w !== node.naturalWidth) {
+                                  return { ...prev, [num]: { w: node.naturalWidth, h: node.naturalHeight } };
+                                }
+                                return prev;
+                              });
+                            }
+                          }}
+                          onLoad={(e) => {
+                            const img = e.target as HTMLImageElement;
+                            setImageSizes(prev => {
+                              if (!prev[num] || prev[num].w !== img.naturalWidth) {
+                                return { ...prev, [num]: { w: img.naturalWidth, h: img.naturalHeight } };
+                              }
+                              return prev;
+                            });
+                          }}
+                        />
+                        <div className="cert-hover-overlay">
+                          <span>View Certificate</span>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </Item>
+              ))}
+            </div>
+          </Gallery>
         </div>
       </div>
     </section>

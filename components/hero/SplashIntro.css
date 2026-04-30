@@ -435,7 +435,7 @@
             }
 
             .splash-intro {
-                padding: 5rem 1.5rem 1rem 1.5rem;
+                padding: 5rem 1.5rem 3rem 1.5rem;
                 flex-direction: column;
                 align-items: flex-start;
                 justify-content: flex-end;
@@ -448,7 +448,7 @@
                 align-self: center;
                 margin-top: auto;
                 margin-bottom: 0;
-                transform: translateY(1rem);
+                transform: translateY(-2rem);
                 z-index: 20;
             }
 
@@ -457,8 +457,8 @@
             }
 
             .letter-wrapper {
-                height: 6.5vw;
-                width: calc(6.5vw * var(--letter-w, 0.75));
+                height: 6vw;
+                width: calc(6vw * var(--letter-w, 0.75));
             }
 
             .cta-link {
@@ -497,6 +497,10 @@
                 display: none;
             }
 
+            .hero-subtitle {
+                max-width: 720px;
+            }
+
             .hero-scroll {
                 margin-top: 3rem;
             }
@@ -532,6 +536,7 @@
 
             .logo-content-area {
                 gap: 2rem;
+                transform: translateY(1rem);
             }
 
             .letter-wrapper {
