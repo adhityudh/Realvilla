@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import Button from '@/components/ui/Button';
 import './ContactSection.css';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -215,7 +216,7 @@ export default function ContactSection() {
         ← Go Back
       </button>
       <h3 className="form-title">Send us a message</h3>
-      <p className="form-subtitle">Our manager will contact you as soon as possible.</p>
+      <p className="form-subtitle">We will contact you as soon as possible.</p>
       <div className="form-group">
         <label htmlFor="name">Full Name</label>
         <input type="text" id="name" placeholder="Enter your full name" />
@@ -232,7 +233,13 @@ export default function ContactSection() {
         <label htmlFor="message">Message</label>
         <textarea id="message" rows={4} placeholder="How can we help you?"></textarea>
       </div>
-      <button type="submit" className="form-submit-btn">SEND MESSAGE</button>
+      <Button 
+        type="submit" 
+        variant="dark" 
+        label="SEND MESSAGE" 
+        className="form-submit-btn" 
+        showArrow={true} 
+      />
     </form>
   );
 
@@ -290,7 +297,13 @@ export default function ContactSection() {
         </label>
       </div>
 
-      <button type="submit" className="form-submit-btn">START SELLING</button>
+      <Button 
+        type="submit" 
+        variant="dark" 
+        label="START SELLING" 
+        className="form-submit-btn" 
+        showArrow={true} 
+      />
     </form>
   );
 

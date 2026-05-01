@@ -111,10 +111,10 @@ export default function HeroSection() {
         ease: 'expo.out',
         overwrite: 'auto',
         onComplete: () => {
-          // Clear filter entirely so the browser doesn't keep a filter-capable GPU layer
-          // for the oversized (130% height) video texture during scroll.
           v.style.filter = 'none';
           v.style.willChange = 'transform';
+          // Notify preloader that hero video is ready
+          window.dispatchEvent(new CustomEvent('hero-video-ready'));
         }
       });
     };

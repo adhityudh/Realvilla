@@ -363,12 +363,25 @@ export default function SplashIntro() {
       });
     };
 
+    // Safety timeout: reveal site anyway if load takes too long (e.g. slow video download)
+    const safetyTimeout = setTimeout(finishPreloader, 6000); // 6s safety for large video
+
+    const hasHeroVideo = !!document.querySelector('.hero-bg-video');
+
     if (document.readyState === 'complete') {
-      // Small delay to ensure everything is rendered
       setTimeout(finishPreloader, 100);
     } else {
-      window.addEventListener('load', finishPreloader);
-      return () => window.removeEventListener('load', finishPreloader);
+      if (hasHeroVideo) {
+        window.addEventListener('hero-video-ready', finishPreloader, { once: true });
+      } else {
+        window.addEventListener('load', finishPreloader, { once: true });
+      }
+      
+      return () => {
+        window.removeEventListener('hero-video-ready', finishPreloader);
+        window.removeEventListener('load', finishPreloader);
+        clearTimeout(safetyTimeout);
+      };
     }
   }, []);
 

@@ -257,27 +257,9 @@
 
 .form-submit-btn {
     margin-top: 2rem;
-    background: #111;
-    color: #fff;
-    border: none;
-    padding: 1.25rem 4rem;
-    border-radius: 100px;
-    font-family: var(--font-manrope), sans-serif;
-    font-size: 0.85rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.15em;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-    width: fit-content;
     align-self: center;
-}
-
-.form-submit-btn:hover {
-    background: #bcaf8b;
+    padding: 1.1rem 3.5rem !important;
+    font-size: 0.85rem !important;
 }
 
 /* Back Button */

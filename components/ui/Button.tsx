@@ -12,6 +12,7 @@ interface ButtonProps {
   className?: string;
   showArrow?: boolean;
   id?: string;
+  type?: 'button' | 'submit' | 'reset';
 }
 
 /**
@@ -29,6 +30,7 @@ export default function Button({
   className = '',
   showArrow = true,
   id,
+  type = 'button',
 }: ButtonProps) {
   const Component = href ? 'a' : 'button';
   
@@ -43,6 +45,7 @@ export default function Button({
       id={id}
       href={href}
       onClick={onClick}
+      type={Component === 'button' ? type : undefined}
       className={`${variantClass} ${className}`}
     >
       {icon && (
