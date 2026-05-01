@@ -25,7 +25,7 @@ function useHeroScrollAnimations() {
         trigger: '.main-hero',
         start: 'top top',
         end: 'bottom top',
-        scrub: true,
+        scrub: 0.6,
       },
     });
 
@@ -36,7 +36,7 @@ function useHeroScrollAnimations() {
         trigger: '.main-hero',
         start: 'top top',
         end: 'bottom top',
-        scrub: true,
+        scrub: 0.6,
       },
     });
 
@@ -84,7 +84,7 @@ export function getHeroRevealAnimation(tl: gsap.core.Timeline, isMobile: boolean
       onComplete: () => {
         // Performance Optimization: Set clip-path to 'none' once done.
         // This ensures it stays full-screen while removing the calculation overhead.
-        gsap.set(heroEl, { clipPath: 'none' });
+        gsap.set(heroEl, { clipPath: 'none', willChange: 'auto' });
       }
     },
     0,
@@ -109,7 +109,13 @@ export default function HeroSection() {
         filter: 'blur(0px)',
         duration: 1.5,
         ease: 'expo.out',
-        overwrite: 'auto'
+        overwrite: 'auto',
+        onComplete: () => {
+          // Clear filter entirely so the browser doesn't keep a filter-capable GPU layer
+          // for the oversized (130% height) video texture during scroll.
+          v.style.filter = 'none';
+          v.style.willChange = 'transform';
+        }
       });
     };
 

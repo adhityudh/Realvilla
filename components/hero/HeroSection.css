@@ -2,7 +2,6 @@
            MAIN HERO
         ============================================= */
         .main-hero {
-            will-change: clip-path;
             position: relative;
             width: 100vw;
             height: 105svh;
@@ -28,7 +27,7 @@
             transform: translateZ(0);
             opacity: 0;
             filter: blur(8px);
-            will-change: transform, opacity, filter;
+            will-change: transform;
             backface-visibility: hidden;
         }
 
@@ -37,5 +36,4 @@
             inset: 0;
             background: linear-gradient(to bottom, rgba(0, 0, 0, 0.25) 0%, rgba(45, 35, 15, 0.3) 50%, rgba(0, 0, 0, 0.35) 100%);
             z-index: 2;
-            will-change: opacity;
         }

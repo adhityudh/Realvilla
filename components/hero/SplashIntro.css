@@ -20,7 +20,6 @@
         }
 
         .main-hero {
-            will-change: clip-path;
             /* Updated for 105svh height: (105 - 50)/2 centered around 50svh viewport center */
             /* Top inset: 50svh - 25svh = 25svh. Bottom inset: 105svh - (25svh + 50svh) = 30svh */
             clip-path: inset(25svh calc(50vw - min(17.5svh, 40vw)) 30svh calc(50vw - min(17.5svh, 40vw)) round 24px);
@@ -33,7 +32,6 @@
             z-index: -2;
             opacity: 0;
             /* Hidden so the video rectangle is visible during preloading */
-            will-change: transform;
         }
 
         .preloader-border-box {
@@ -97,7 +95,6 @@
             z-index: -1;
             opacity: 0.25;
             transform: scale(1.5);
-            will-change: transform, opacity;
         }
 
         .v-line,
@@ -130,7 +127,6 @@
             top: 0;
             opacity: 1;
             z-index: 10;
-            will-change: transform;
         }
 
         .logo-content-area {
@@ -147,7 +143,6 @@
             display: flex;
             gap: 0.1vw;
             /* IMPROVED: Pre-hint GPU layer for logo morph */
-            will-change: transform;
         }
 
         .hero-ctas {
@@ -155,7 +150,6 @@
             gap: 2rem;
             opacity: 1;
             pointer-events: auto;
-            will-change: transform, opacity;
         }
 
         .mobile-hero-ctas {
@@ -178,7 +172,6 @@
             opacity: 0;
             transform: translateY(20px) scale(0.9);
             filter: blur(5px);
-            will-change: transform, opacity, filter;
         }
 
         .cta-link:hover {
@@ -224,7 +217,6 @@
             pointer-events: auto;
             padding-left: 1rem;
             padding-right: 1rem;
-            will-change: transform, opacity;
         }
 
         .word-mask {
@@ -235,7 +227,6 @@
 
         .word-inner {
             display: inline-block;
-            will-change: transform, filter, opacity;
         }
 
         .hero-title {
@@ -267,7 +258,6 @@
             opacity: 0;
             margin-top: 2.5rem;
             filter: blur(5px);
-            will-change: transform, opacity, filter;
         }
 
         .hero-scroll span {
@@ -414,7 +404,6 @@
             z-index: 25;
             clip-path: inset(100% 0 0 0);
             opacity: 0;
-            will-change: clip-path, opacity;
             transition: background-color 0.4s ease;
         }
 
@@ -520,7 +509,6 @@
             }
 
             .main-hero {
-                will-change: clip-path;
                 clip-path: inset(31svh calc((100vw - min(30svh, 50vw)) / 2) 36svh calc((100vw - min(30svh, 50vw)) / 2) round 22px);
             }
         }
