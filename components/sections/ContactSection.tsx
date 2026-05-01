@@ -113,9 +113,9 @@ export default function ContactSection() {
     const card = section.querySelector('.contact-card');
 
     if (isMobile) {
-      gsap.set(card, { opacity: 0, y: 40, filter: 'blur(10px)' });
+      gsap.set(card, { opacity: 0, y: 120, filter: 'blur(10px)' });
     } else {
-      gsap.set(card, { opacity: 1, y: 0, filter: 'blur(0px)' });
+      gsap.set(card, { opacity: 0, y: 200, filter: 'blur(10px)' });
     }
 
     const tl = gsap.timeline({
@@ -149,12 +149,16 @@ export default function ContactSection() {
 
     if (isMobile) {
       tl.fromTo(card,
-        { y: 40 + 80, opacity: 0, filter: 'blur(10px)' },
+        { y: 120, opacity: 0, filter: 'blur(10px)' },
         { y: 80, opacity: 1, filter: 'blur(0px)', duration: 1.5, ease: 'expo.out' },
         '-=1.2'
       );
     } else {
-      tl.set(card, { opacity: 1, y: 150, filter: 'blur(0px)' }, '-=1.2');
+      tl.fromTo(card,
+        { y: 200, opacity: 0, filter: 'blur(10px)' },
+        { y: 150, opacity: 1, filter: 'blur(0px)', duration: 1.5, ease: 'expo.out' },
+        '-=1.2'
+      );
     }
 
     // Toggle header light mode when section overlaps header

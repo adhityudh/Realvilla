@@ -407,6 +407,7 @@
     /* Muncul saat hover */
     transform: translateX(0);
     /* Bergeser ke posisi asli */
+    color: #bcaf8b;
 }
 
 /* Select Dropdown */
