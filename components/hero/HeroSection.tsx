@@ -78,7 +78,7 @@ export function getHeroRevealAnimation(tl: gsap.core.Timeline, isMobile: boolean
         const v = heroEl.querySelector('.hero-bg-video') as HTMLVideoElement;
         if (v?.tagName?.toLowerCase() === 'video') {
           v.currentTime = 0;
-          v.play().catch(() => {});
+          v.play().catch(() => { });
         }
       },
       onComplete: () => {
@@ -104,9 +104,9 @@ export default function HeroSection() {
 
     // Set correct source before loading to prevent double-downloading on mobile
     const isMobile = window.innerWidth <= 768;
-    v.src = isMobile ? '/videos/hero-mobile-video.mp4' : '/videos/hero-video.mp4';
+    v.src = isMobile ? '/videos/hero-mobile-video-2.mp4' : '/videos/hero-video.mp4';
     v.load();
-    
+
     const revealMedia = () => {
       gsap.to(v, {
         opacity: 1,
