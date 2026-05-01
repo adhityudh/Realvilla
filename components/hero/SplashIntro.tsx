@@ -196,7 +196,7 @@ export function setupLogoMorph(isMobile: boolean, heroEl: HTMLElement) {
 
   gsap.set(heroEl, { overflow: 'hidden', clipPath: 'inset(0px 0px 0px 0px round 0px)' });
   gsap.set(splashIntro, { overflow: 'visible' });
-  
+
   // Ensure the element is ready for animation (already breakout, just need to set defaults)
   gsap.set(logoArea, { y: 0, opacity: 1, visibility: 'visible' });
   gsap.set(wordContainer, { x: 0, y: 0, scale: 1, transformOrigin: 'left center' });
@@ -363,18 +363,45 @@ export default function SplashIntro() {
       });
     };
 
-    // Safety timeout: reveal site anyway if load takes too long (e.g. 5s)
-    const safetyTimeout = setTimeout(finishPreloader, 5000);
+    // New logic: Wait for DOM ready AND hero video readyState
+    const waitForDOM = new Promise((resolve) => {
+      if (document.readyState === 'interactive' || document.readyState === 'complete') resolve(true);
+      else document.addEventListener('DOMContentLoaded', () => resolve(true), { once: true });
+    });
 
-    if (document.readyState === 'complete') {
-      finishPreloader();
-    } else {
-      window.addEventListener('load', finishPreloader, { once: true });
-      return () => {
-        window.removeEventListener('load', finishPreloader);
-        clearTimeout(safetyTimeout);
+    const waitForVideo = new Promise((resolve) => {
+      const checkVideo = () => {
+        const video = document.querySelector('.hero-bg-video') as HTMLVideoElement;
+        if (video) {
+          if (video.readyState >= 2) resolve(true);
+          else video.addEventListener('loadeddata', () => resolve(true), { once: true });
+        } else {
+          // If no video found, resolve immediately or check again briefly
+          setTimeout(() => {
+            const retry = document.querySelector('.hero-bg-video') as HTMLVideoElement;
+            if (retry) {
+              if (retry.readyState >= 2) resolve(true);
+              else retry.addEventListener('loadeddata', () => resolve(true), { once: true });
+            } else {
+              resolve(true);
+            }
+          }, 100);
+        }
       };
-    }
+      checkVideo();
+    });
+
+    // Safety timeout: reveal site anyway after 6s
+    const safetyTimeout = setTimeout(finishPreloader, 6000);
+
+    Promise.all([waitForDOM, waitForVideo]).then(() => {
+      clearTimeout(safetyTimeout);
+      finishPreloader();
+    });
+
+    return () => {
+      clearTimeout(safetyTimeout);
+    };
   }, []);
 
   return (
