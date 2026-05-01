@@ -18,6 +18,24 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* Image Reveal Animation */
+.img-reveal {
+  opacity: 0;
+  filter: blur(20px);
+  transform: scale(1.08);
+  transition: 
+    opacity 1.4s cubic-bezier(0.19, 1, 0.22, 1),
+    filter 1.6s cubic-bezier(0.19, 1, 0.22, 1),
+    transform 1.6s cubic-bezier(0.19, 1, 0.22, 1);
+  will-change: opacity, filter, transform;
+}
+
+.img-reveal.loaded {
+  opacity: 1;
+  filter: blur(0);
+  transform: scale(1);
+}
+
 body.preloading {
   overflow: hidden !important;
   touch-action: none;

@@ -110,10 +110,11 @@ const PropertyCard = ({ prop }: { prop: typeof properties[0] }) => {
         <Image 
           src={prop.image} 
           alt={prop.address} 
-          className="property-image primary" 
+          className="property-image primary img-reveal" 
           fill
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           style={{ objectFit: 'cover' }}
+          onLoad={(e) => e.currentTarget.classList.add('loaded')}
         />
         <Image
           ref={secondaryImgRef}

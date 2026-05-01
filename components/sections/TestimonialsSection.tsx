@@ -151,7 +151,16 @@ const TestimonialsSection = () => {
 
       <div className="testimonials-overlap-img" ref={overlapImgRef}>
         <div className="img-aspect-box">
-          <Image src="/images/img-review.jpg" alt="Sell Property" fill sizes="(max-width: 1024px) 100vw, 50vw" style={{ objectFit: 'cover' }} loading="lazy" />
+          <Image 
+            src="/images/img-review.jpg" 
+            alt="Sell Property" 
+            fill 
+            sizes="(max-width: 1024px) 100vw, 50vw" 
+            style={{ objectFit: 'cover' }} 
+            loading="lazy" 
+            className="img-reveal"
+            onLoad={(e) => e.currentTarget.classList.add('loaded')}
+          />
         </div>
       </div>
     </section>

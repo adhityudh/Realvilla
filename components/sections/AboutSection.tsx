@@ -100,12 +100,28 @@ const AboutSection = () => {
       <div className="about-visual-container">
         {/* Layer 1: Background */}
         <div className="about-bg-layer" ref={bgLayerRef}>
-          <Image src="/images/img-about-bg.webp" alt="" fill sizes="50vw" style={{ objectFit: 'cover' }} />
+          <Image 
+            src="/images/img-about-bg.webp" 
+            alt="" 
+            fill 
+            sizes="50vw" 
+            style={{ objectFit: 'cover' }} 
+            className="img-reveal"
+            onLoad={(e) => e.currentTarget.classList.add('loaded')}
+          />
         </div>
 
         {/* Layer 2: Object (In front of text) */}
         <div className="about-object-layer" ref={objectLayerRef}>
-          <Image src="/images/img-about-p.webp" alt="Luxury Real Estate Object" fill sizes="(max-width: 1024px) 100vw, 50vw" style={{ objectFit: 'contain', objectPosition: 'bottom' }} />
+          <Image 
+            src="/images/img-about-p.webp" 
+            alt="Luxury Real Estate Object" 
+            fill 
+            sizes="(max-width: 1024px) 100vw, 50vw" 
+            style={{ objectFit: 'contain', objectPosition: 'bottom' }} 
+            className="img-reveal"
+            onLoad={(e) => e.currentTarget.classList.add('loaded')}
+          />
         </div>
 
         {/* Floating Profile Element */}
@@ -168,8 +184,10 @@ const AboutSection = () => {
                           fill
                           sizes="(max-width: 768px) 100vw, 200px"
                           style={{ objectFit: 'cover' }}
+                          className="img-reveal"
                           onLoad={(e) => {
                             const img = e.target as HTMLImageElement;
+                            img.classList.add('loaded');
                             setImageSizes(prev => {
                               if (!prev[num] || prev[num].w !== img.naturalWidth) {
                                 return { ...prev, [num]: { w: img.naturalWidth, h: img.naturalHeight } };

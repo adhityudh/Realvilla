@@ -316,16 +316,18 @@ export default function ContactSection() {
           alt=""
           fill
           sizes="100vw"
-          className="desktop-only"
+          className="desktop-only img-reveal"
           style={{ objectFit: 'cover' }}
+          onLoad={(e) => e.currentTarget.classList.add('loaded')}
         />
         <Image
           src="/images/img-cta-mobile.webp"
           alt=""
           fill
           sizes="100vw"
-          className="mobile-only"
+          className="mobile-only img-reveal"
           style={{ objectFit: 'cover' }}
+          onLoad={(e) => e.currentTarget.classList.add('loaded')}
         />
       </div>
       <div className="contact-grain"></div>

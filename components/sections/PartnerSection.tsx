@@ -54,7 +54,16 @@ const PartnerSection = () => {
         <div className="partner-logos" ref={logosRef}>
           {[1, 2, 3, 4, 5].map((num) => (
             <div className="partner-logo-item" key={num}>
-              <Image src={`/images/logo-dummy-${num}.png`} alt={`Partner ${num}`} fill sizes="120px" style={{ objectFit: 'contain' }} loading="lazy" />
+              <Image 
+                src={`/images/logo-dummy-${num}.png`} 
+                alt={`Partner ${num}`} 
+                fill 
+                sizes="120px" 
+                style={{ objectFit: 'contain' }} 
+                loading="lazy" 
+                className="img-reveal"
+                onLoad={(e) => e.currentTarget.classList.add('loaded')}
+              />
             </div>
           ))}
         </div>
