@@ -51,8 +51,9 @@
     justify-content: center;
     align-items: center;
     flex: 0 0 auto;
-    height: 30px;
-    width: 120px; /* Memberikan area box untuk logo */
+    height: 32px;
+    width: 120px;
+    /* Memberikan area box untuk logo */
 }
 
 .partner-logo-item img {

@@ -149,12 +149,12 @@ export default function ContactSection() {
 
     if (isMobile) {
       tl.fromTo(card,
-        { y: 40, opacity: 0, filter: 'blur(10px)' },
-        { y: 0, opacity: 1, filter: 'blur(0px)', duration: 1.5, ease: 'expo.out' },
+        { y: 40 + 80, opacity: 0, filter: 'blur(10px)' },
+        { y: 80, opacity: 1, filter: 'blur(0px)', duration: 1.5, ease: 'expo.out' },
         '-=1.2'
       );
     } else {
-      tl.set(card, { opacity: 1, y: 0, filter: 'blur(0px)' }, '-=1.2');
+      tl.set(card, { opacity: 1, y: 150, filter: 'blur(0px)' }, '-=1.2');
     }
 
     // Toggle header light mode when section overlaps header
@@ -165,20 +165,28 @@ export default function ContactSection() {
         start: () => `top ${header.offsetHeight}px`,
         end: () => `bottom ${header.offsetHeight}px`,
         onEnter: () => {
-          document.body.classList.add('header-light-mode');
-          document.body.classList.add('header-contact-bg');
+          if (!isMobile) {
+            document.body.classList.add('header-light-mode');
+            document.body.classList.add('header-contact-bg');
+          }
         },
         onLeave: () => {
-          document.body.classList.remove('header-light-mode');
-          document.body.classList.remove('header-contact-bg');
+          if (!isMobile) {
+            document.body.classList.remove('header-light-mode');
+            document.body.classList.remove('header-contact-bg');
+          }
         },
         onEnterBack: () => {
-          document.body.classList.add('header-light-mode');
-          document.body.classList.add('header-contact-bg');
+          if (!isMobile) {
+            document.body.classList.add('header-light-mode');
+            document.body.classList.add('header-contact-bg');
+          }
         },
         onLeaveBack: () => {
-          document.body.classList.remove('header-light-mode');
-          document.body.classList.remove('header-contact-bg');
+          if (!isMobile) {
+            document.body.classList.remove('header-light-mode');
+            document.body.classList.remove('header-contact-bg');
+          }
         }
       });
     }
@@ -312,28 +320,29 @@ export default function ContactSection() {
 
   return (
     <section className="contact-section" id="contact" ref={sectionRef}>
-      <div className="contact-bg">
-        <Image
-          src="/images/img-cta-desktop.webp"
-          alt=""
-          fill
-          sizes="100vw"
-          className="desktop-only img-reveal"
-          style={{ objectFit: 'cover' }}
-          onLoad={(e) => e.currentTarget.classList.add('loaded')}
-        />
-        <Image
-          src="/images/img-cta-mobile.webp"
-          alt=""
-          fill
-          sizes="100vw"
-          className="mobile-only img-reveal"
-          style={{ objectFit: 'cover' }}
-          onLoad={(e) => e.currentTarget.classList.add('loaded')}
-        />
+      <div className="contact-bg-wrapper">
+        <div className="contact-bg">
+          <Image
+            src="/images/img-cta-desktop.webp"
+            alt=""
+            fill
+            sizes="100vw"
+            className="desktop-only img-reveal"
+            style={{ objectFit: 'cover' }}
+            onLoad={(e) => e.currentTarget.classList.add('loaded')}
+          />
+          <Image
+            src="/images/img-cta-mobile.webp"
+            alt=""
+            fill
+            sizes="100vw"
+            className="mobile-only img-reveal"
+            style={{ objectFit: 'cover' }}
+            onLoad={(e) => e.currentTarget.classList.add('loaded')}
+          />
+        </div>
+        <div className="contact-grain"></div>
       </div>
-      <div className="contact-grain"></div>
-      <div className="contact-bottom-fade"></div>
       <div className="contact-container">
         <div className="contact-content">
           <div className="contact-description-area">

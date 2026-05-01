@@ -57,6 +57,7 @@ export default function MobileNav() {
         {NAV_LINKS.map((link) => (
           <a key={link.label} href={link.href} className="nav-link-mobile">{link.label}</a>
         ))}
+        <a href="#about" className="nav-link-mobile">About</a>
         <a href="#" className="btn-book-mobile">
           <span>Speak to an Expert</span>
           <StretchArrow />

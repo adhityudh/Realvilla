@@ -11,6 +11,7 @@ import PropertiesSection from '@/components/sections/PropertiesSection';
 import MortgageFAQSection from '@/components/sections/MortgageFAQSection';
 import TestimonialsSection from '@/components/sections/TestimonialsSection';
 import ContactSection from '@/components/sections/ContactSection';
+import FooterSection from '@/components/sections/FooterSection';
 
 export default function Home() {
   return (
@@ -27,6 +28,7 @@ export default function Home() {
       <PartnerSection />
       <TestimonialsSection />
       <ContactSection />
+      <FooterSection />
     </SmoothScroller>
   );
 }

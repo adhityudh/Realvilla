@@ -267,7 +267,7 @@
         }
 
         body.header-light-mode .header::before {
-            background: rgba(17, 17, 17, 0.25);
+            background: rgba(17, 17, 17, 0.45);
             border-color: rgba(255, 255, 255, 0.1);
         }
 
@@ -294,8 +294,8 @@
 
             .header::before {
                 background: linear-gradient(to bottom,
-                        rgba(255, 255, 255, 0.95) 0%,
-                        rgba(255, 255, 255, 0.8) 50%,
+                        rgba(255, 255, 255, 0.5) 0%,
+                        rgba(255, 255, 255, 0.25) 50%,
                         transparent 100%);
                 backdrop-filter: blur(10px);
                 -webkit-backdrop-filter: blur(10px);

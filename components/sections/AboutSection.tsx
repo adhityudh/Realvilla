@@ -100,12 +100,12 @@ const AboutSection = () => {
       <div className="about-visual-container">
         {/* Layer 1: Background */}
         <div className="about-bg-layer" ref={bgLayerRef}>
-          <Image 
-            src="/images/img-about-bg.webp" 
-            alt="" 
-            fill 
-            sizes="50vw" 
-            style={{ objectFit: 'cover' }} 
+          <Image
+            src="/images/img-about-bg.webp"
+            alt=""
+            fill
+            sizes="50vw"
+            style={{ objectFit: 'cover' }}
             className="img-reveal"
             onLoad={(e) => e.currentTarget.classList.add('loaded')}
           />
@@ -113,12 +113,12 @@ const AboutSection = () => {
 
         {/* Layer 2: Object (In front of text) */}
         <div className="about-object-layer" ref={objectLayerRef}>
-          <Image 
-            src="/images/img-about-p.webp" 
-            alt="Luxury Real Estate Object" 
-            fill 
-            sizes="(max-width: 1024px) 100vw, 50vw" 
-            style={{ objectFit: 'contain', objectPosition: 'bottom' }} 
+          <Image
+            src="/images/img-about-p.webp"
+            alt="Luxury Real Estate Object"
+            fill
+            sizes="(max-width: 1024px) 100vw, 50vw"
+            style={{ objectFit: 'contain', objectPosition: 'bottom' }}
             className="img-reveal"
             onLoad={(e) => e.currentTarget.classList.add('loaded')}
           />
@@ -130,8 +130,8 @@ const AboutSection = () => {
             <h3 className="profile-name">LUIS VILLARREAL</h3>
           </div>
           <div className="profile-socials">
-            <a href="#" target="_blank" rel="noopener noreferrer">
-              <Image src="/icons/logo-fb-light.svg" alt="Facebook" width={20} height={20} />
+            <a href="mailto:luis.villarreal@realvilla.es" target="_blank" rel="noopener noreferrer">
+              <Image src="/icons/logo-email-light.svg" alt="Email" width={20} height={20} />
             </a>
             <a href="#" target="_blank" rel="noopener noreferrer">
               <Image src="/icons/logo-ig-light.svg" alt="Instagram" width={20} height={20} />
