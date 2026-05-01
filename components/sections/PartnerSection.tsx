@@ -7,7 +7,7 @@ const PartnerSection = () => {
     <section className="partner-section">
       <div className="partner-container">
         <div className="partner-title-wrapper">
-          <h2 className="partner-title">Collaborating<br/>with Excellence</h2>
+          <h2 className="partner-title">Collaborating with Excellence</h2>
         </div>
         <div className="partner-logos">
           {[1, 2, 3, 4, 5].map((num) => (

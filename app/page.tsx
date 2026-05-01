@@ -22,9 +22,9 @@ export default function Home() {
       <ValuationSection />
       <PropertiesSection />
       <MortgageFAQSection />
-      <TestimonialsSection />
       <AboutSection />
       <PartnerSection />
+      <TestimonialsSection />
     </SmoothScroller>
   );
 }

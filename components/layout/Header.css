@@ -158,7 +158,6 @@
         }
 
         .btn-book:hover {
-            transform: translateY(-4px);
             background-color: #ffffff;
             box-shadow: 0 12px 25px rgba(0, 0, 0, 0.1);
         }
