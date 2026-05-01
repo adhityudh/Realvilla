@@ -20,19 +20,20 @@ body {
 
 /* Image Reveal Animation */
 .img-reveal {
+  --reveal-blur: blur(20px);
   opacity: 0;
-  filter: blur(20px);
-  transform: scale(1.08);
+  transform: scale(1.06);
+  filter: var(--reveal-blur) var(--extra-filter, );
   transition: 
     opacity 1.4s cubic-bezier(0.19, 1, 0.22, 1),
-    filter 1.6s cubic-bezier(0.19, 1, 0.22, 1),
-    transform 1.6s cubic-bezier(0.19, 1, 0.22, 1);
-  will-change: opacity, filter, transform;
+    transform 1.6s cubic-bezier(0.19, 1, 0.22, 1),
+    filter 1.6s cubic-bezier(0.19, 1, 0.22, 1);
+  will-change: opacity, transform, filter;
 }
 
 .img-reveal.loaded {
+  --reveal-blur: blur(0px);
   opacity: 1;
-  filter: blur(0);
   transform: scale(1);
 }
 

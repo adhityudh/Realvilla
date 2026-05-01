@@ -46,22 +46,29 @@
 }
 
 .partner-logo-item {
+    position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
     flex: 0 0 auto;
+    height: 30px;
+    width: 120px; /* Memberikan area box untuk logo */
 }
 
 .partner-logo-item img {
-    height: 30px;
-    width: auto;
     object-fit: contain;
-    filter: grayscale(1) opacity(0.5);
-    transition: filter 0.4s ease, transform 0.4s ease;
+    --extra-filter: grayscale(1);
+    opacity: 0;
+    transition: transform 0.4s ease, opacity 0.8s ease, filter 1.2s ease;
 }
 
-.partner-logo-item img:hover {
-    filter: grayscale(0) opacity(1);
+.partner-logo-item img.loaded {
+    opacity: 0.5;
+}
+
+.partner-logo-item img.loaded:hover {
+    --extra-filter: grayscale(0);
+    opacity: 1;
     transform: scale(1.05);
 }
 
@@ -102,10 +109,7 @@
 
     .partner-logo-item {
         flex: 0 0 auto;
-    }
-
-    .partner-logo-item img {
         height: 24px;
-        /* Slightly smaller for mobile */
+        width: 100px;
     }
 }

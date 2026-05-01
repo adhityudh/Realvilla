@@ -61,6 +61,8 @@ const PartnerSection = () => {
                 sizes="120px" 
                 style={{ objectFit: 'contain' }} 
                 loading="lazy" 
+                className="img-reveal"
+                onLoad={(e) => e.currentTarget.classList.add('loaded')}
               />
             </div>
           ))}
