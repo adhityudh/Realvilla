@@ -101,7 +101,11 @@ export default function HeroSection() {
   useEffect(() => {
     const v = videoRef.current;
     if (!v) return;
-    if (window.innerWidth <= 768) v.src = '/videos/hero-mobile-video.mp4';
+
+    // Set correct source before loading to prevent double-downloading on mobile
+    const isMobile = window.innerWidth <= 768;
+    v.src = isMobile ? '/videos/hero-mobile-video.mp4' : '/videos/hero-video.mp4';
+    v.load();
     
     const revealMedia = () => {
       gsap.to(v, {
@@ -125,7 +129,7 @@ export default function HeroSection() {
 
   return (
     <main className="main-hero">
-      <video ref={videoRef} className="hero-bg-video" src="/videos/hero-video.mp4" preload="auto" muted playsInline />
+      <video ref={videoRef} className="hero-bg-video" preload="auto" muted playsInline />
       <div className="hero-overlay" />
     </main>
   );
