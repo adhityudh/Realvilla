@@ -113,8 +113,6 @@ export default function HeroSection() {
         onComplete: () => {
           v.style.filter = 'none';
           v.style.willChange = 'transform';
-          // Notify preloader that hero video is ready
-          window.dispatchEvent(new CustomEvent('hero-video-ready'));
         }
       });
     };
