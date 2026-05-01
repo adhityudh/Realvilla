@@ -71,29 +71,31 @@ export default function ContactSection() {
     const section = sectionRef.current;
     const isMobile = window.innerWidth <= 1024;
 
-    // Background parallax
-    gsap.to(section.querySelector('.contact-bg'), {
-      yPercent: 20,
-      ease: "none",
-      scrollTrigger: {
-        trigger: section,
-        start: "top bottom",
-        end: "bottom top",
-        scrub: true
-      }
-    });
+    // Background parallax - Desktop only
+    if (!isMobile) {
+      gsap.to(section.querySelector('.contact-bg'), {
+        yPercent: 20,
+        ease: "none",
+        scrollTrigger: {
+          trigger: section,
+          start: "top bottom",
+          end: "bottom top",
+          scrub: true
+        }
+      });
 
-    // Content parallax
-    gsap.to(section.querySelector('.contact-content'), {
-      y: -50,
-      ease: "none",
-      scrollTrigger: {
-        trigger: section,
-        start: "top bottom",
-        end: "bottom top",
-        scrub: true
-      }
-    });
+      // Content parallax - Desktop only
+      gsap.to(section.querySelector('.contact-content'), {
+        y: -50,
+        ease: "none",
+        scrollTrigger: {
+          trigger: section,
+          start: "top bottom",
+          end: "bottom top",
+          scrub: true
+        }
+      });
+    }
 
     // Text splitting logic for hero-style animations
     const splitText = (selector: string) => {
@@ -164,19 +166,19 @@ export default function ContactSection() {
         end: () => `bottom ${header.offsetHeight}px`,
         onEnter: () => {
           document.body.classList.add('header-light-mode');
-          document.body.classList.add('header-black-bg');
+          document.body.classList.add('header-contact-bg');
         },
         onLeave: () => {
           document.body.classList.remove('header-light-mode');
-          document.body.classList.remove('header-black-bg');
+          document.body.classList.remove('header-contact-bg');
         },
         onEnterBack: () => {
           document.body.classList.add('header-light-mode');
-          document.body.classList.add('header-black-bg');
+          document.body.classList.add('header-contact-bg');
         },
         onLeaveBack: () => {
           document.body.classList.remove('header-light-mode');
-          document.body.classList.remove('header-black-bg');
+          document.body.classList.remove('header-contact-bg');
         }
       });
     }
