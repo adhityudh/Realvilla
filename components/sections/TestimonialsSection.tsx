@@ -1,6 +1,7 @@
 'use client';
 
 import { useRef, useEffect } from 'react';
+import Image from 'next/image';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import './TestimonialsSection.css';
@@ -126,10 +127,14 @@ const TestimonialsSection = () => {
                     </svg>
                   ))}
                 </div>
-                <img
+                <Image
                   src="https://www.gstatic.com/images/branding/googleg/1x/googleg_standard_color_128dp.png"
                   alt="Google"
                   className="google-g-icon"
+                  width={24}
+                  height={24}
+                  loading="lazy"
+                  decoding="async"
                 />
               </div>
               <p className="testimonial-text">"{item.text}"</p>
@@ -146,7 +151,7 @@ const TestimonialsSection = () => {
 
       <div className="testimonials-overlap-img" ref={overlapImgRef}>
         <div className="img-aspect-box">
-          <img src="images/img-review.jpg" alt="Sell Property" />
+          <Image src="/images/img-review.jpg" alt="Sell Property" fill sizes="(max-width: 1024px) 100vw, 50vw" style={{ objectFit: 'cover' }} loading="lazy" />
         </div>
       </div>
     </section>

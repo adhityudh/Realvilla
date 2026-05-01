@@ -1,6 +1,7 @@
 'use client';
 
 import { useRef, useEffect, useState } from 'react';
+import Image from 'next/image';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Gallery, Item } from 'react-photoswipe-gallery';
@@ -99,12 +100,12 @@ const AboutSection = () => {
       <div className="about-visual-container">
         {/* Layer 1: Background */}
         <div className="about-bg-layer" ref={bgLayerRef}>
-          <img src="images/img-about-bg.webp" alt="" />
+          <Image src="/images/img-about-bg.webp" alt="" fill sizes="50vw" style={{ objectFit: 'cover' }} />
         </div>
 
         {/* Layer 2: Object (In front of text) */}
         <div className="about-object-layer" ref={objectLayerRef}>
-          <img src="images/img-about-p.webp" alt="Luxury Real Estate Object" />
+          <Image src="/images/img-about-p.webp" alt="Luxury Real Estate Object" fill sizes="(max-width: 1024px) 100vw, 50vw" style={{ objectFit: 'contain', objectPosition: 'bottom' }} />
         </div>
 
         {/* Floating Profile Element */}
@@ -114,13 +115,13 @@ const AboutSection = () => {
           </div>
           <div className="profile-socials">
             <a href="#" target="_blank" rel="noopener noreferrer">
-              <img src="icons/logo-fb-light.svg" alt="Facebook" />
+              <Image src="/icons/logo-fb-light.svg" alt="Facebook" width={20} height={20} />
             </a>
             <a href="#" target="_blank" rel="noopener noreferrer">
-              <img src="icons/logo-ig-light.svg" alt="Instagram" />
+              <Image src="/icons/logo-ig-light.svg" alt="Instagram" width={20} height={20} />
             </a>
             <a href="#" target="_blank" rel="noopener noreferrer">
-              <img src="icons/logo-linkedin-light.svg" alt="LinkedIn" />
+              <Image src="/icons/logo-linkedin-light.svg" alt="LinkedIn" width={20} height={20} />
             </a>
           </div>
         </div>
@@ -161,19 +162,12 @@ const AboutSection = () => {
                       onClick={open}
                     >
                       <div className="cert-thumb-wrapper">
-                        <img
-                          src={`/images/img-dummy-default.webp`}
+                        <Image
+                          src="/images/img-dummy-default.webp"
                           alt={`Certificate ${num}`}
-                          ref={(node) => {
-                            if (node && node.complete && node.naturalWidth) {
-                              setImageSizes(prev => {
-                                if (!prev[num] || prev[num].w !== node.naturalWidth) {
-                                  return { ...prev, [num]: { w: node.naturalWidth, h: node.naturalHeight } };
-                                }
-                                return prev;
-                              });
-                            }
-                          }}
+                          fill
+                          sizes="(max-width: 768px) 100vw, 200px"
+                          style={{ objectFit: 'cover' }}
                           onLoad={(e) => {
                             const img = e.target as HTMLImageElement;
                             setImageSizes(prev => {

@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -309,7 +310,24 @@ export default function ContactSection() {
 
   return (
     <section className="contact-section" id="contact" ref={sectionRef}>
-      <div className="contact-bg"></div>
+      <div className="contact-bg">
+        <Image
+          src="/images/img-cta-desktop.webp"
+          alt=""
+          fill
+          sizes="100vw"
+          className="desktop-only"
+          style={{ objectFit: 'cover' }}
+        />
+        <Image
+          src="/images/img-cta-mobile.webp"
+          alt=""
+          fill
+          sizes="100vw"
+          className="mobile-only"
+          style={{ objectFit: 'cover' }}
+        />
+      </div>
       <div className="contact-grain"></div>
       <div className="contact-bottom-fade"></div>
       <div className="contact-container">

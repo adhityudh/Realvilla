@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import Image from 'next/image';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Button from '../ui/Button';
@@ -106,15 +107,26 @@ const PropertyCard = ({ prop }: { prop: typeof properties[0] }) => {
       onMouseLeave={handleMouseLeave}
     >
       <div className="property-image-wrapper">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={prop.image} alt={prop.address} className="property-image primary" />
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
+        <Image 
+          src={prop.image} 
+          alt={prop.address} 
+          className="property-image primary" 
+          fill
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          style={{ objectFit: 'cover' }}
+        />
+        <Image
           ref={secondaryImgRef}
           src={prop.secondaryImage}
           alt={prop.address}
           className="property-image secondary"
-          style={{ WebkitMaskImage: 'linear-gradient(transparent, transparent)', maskImage: 'linear-gradient(transparent, transparent)' }}
+          fill
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          style={{ 
+            objectFit: 'cover',
+            WebkitMaskImage: 'linear-gradient(transparent, transparent)', 
+            maskImage: 'linear-gradient(transparent, transparent)' 
+          }}
         />
       </div>
       <div className="property-info">

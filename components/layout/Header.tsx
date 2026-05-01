@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
+import Image from 'next/image';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { HEADER_LETTERS, NAV_LINKS } from '@/lib/letters';
@@ -109,11 +110,14 @@ export default function Header() {
       <div className="header-content">
         <a href="/" className="header-logo" aria-label="Real Villa">
           {HEADER_LETTERS.map((letter, i) => (
-            <img 
+            <Image 
               key={i} 
               src={letter.svg} 
               className="header-letter-img" 
               alt="" 
+              width={20}
+              height={20}
+              unoptimized
             />
           ))}
         </a>

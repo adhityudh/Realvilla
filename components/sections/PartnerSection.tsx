@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import Image from 'next/image';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import './PartnerSection.css';
@@ -53,7 +54,7 @@ const PartnerSection = () => {
         <div className="partner-logos" ref={logosRef}>
           {[1, 2, 3, 4, 5].map((num) => (
             <div className="partner-logo-item" key={num}>
-              <img src={`/images/logo-dummy-${num}.png`} alt={`Partner ${num}`} />
+              <Image src={`/images/logo-dummy-${num}.png`} alt={`Partner ${num}`} fill sizes="120px" style={{ objectFit: 'contain' }} loading="lazy" />
             </div>
           ))}
         </div>

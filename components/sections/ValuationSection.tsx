@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState, useRef } from 'react';
+import Image from 'next/image';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Button from '@/components/ui/Button';
@@ -93,7 +94,7 @@ export default function ValuationSection() {
           <p className="valuation-body">Backed by real-time Tenerife market data. Enter your details below for a professional, no-obligation estimate.</p>
           <div className="valuation-trust">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/icons/shield.svg" alt="Shield" />
+            <Image src="/icons/shield.svg" alt="Shield" width={24} height={24} loading="lazy" unoptimized />
             <span>Your data is secure. <br />Valuations are powered by advanced analytics and Spain's leading experts.</span>
           </div>
           <Button label="Sell Your Property" href="#" className="service-cta valuation-cta-desktop" />

@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Image from 'next/image';
 import StretchArrow from './StretchArrow';
 
 interface ButtonProps {
@@ -49,7 +50,7 @@ export default function Button({
       className={`${variantClass} ${className}`}
     >
       {icon && (
-        <img src={icon} alt="" className="btn-icon" />
+        <Image src={icon} alt="" className="btn-icon" width={16} height={16} unoptimized />
       )}
       <span>{label}</span>
       {showArrow && <StretchArrow className="btn-stretch-arrow" />}
