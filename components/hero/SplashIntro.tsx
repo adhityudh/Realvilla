@@ -340,6 +340,22 @@ export default function SplashIntro() {
 
     if (!preloaderRectEl || !preloaderBox) return;
 
+    let videoReady = false;
+    let assetsReady = false;
+    let finished = false;
+
+    const tryFinish = () => {
+      if (finished) return;
+      
+      const hasHeroVideo = !!document.querySelector('.hero-bg-video');
+      const canFinish = (hasHeroVideo ? videoReady : true) && assetsReady;
+
+      if (canFinish) {
+        finished = true;
+        finishPreloader();
+      }
+    };
+
     const finishPreloader = () => {
       const currentOffset = window.getComputedStyle(preloaderRectEl).strokeDashoffset;
       preloaderRectEl.style.animation = 'none';
@@ -363,26 +379,52 @@ export default function SplashIntro() {
       });
     };
 
-    // Safety timeout: reveal site anyway if load takes too long (e.g. slow video download)
-    const safetyTimeout = setTimeout(finishPreloader, 6000); // 6s safety for large video
+    // Safety timeout: reveal site anyway if load takes too long
+    const safetyTimeout = setTimeout(() => {
+      videoReady = true;
+      assetsReady = true;
+      tryFinish();
+    }, 6000);
+
+    // 1. Wait for Critical UI Assets (Logos, Icons)
+    const preloadCriticalAssets = async () => {
+      const urls = [
+        ...REALVILLA_LETTERS.map(l => l.svg),
+        ...HERO_CTAS.map(c => c.icon)
+      ];
+      
+      await Promise.all(urls.map(url => {
+        return new Promise((resolve) => {
+          const img = new Image();
+          img.src = url;
+          img.onload = resolve;
+          img.onerror = resolve;
+        });
+      }));
+      
+      assetsReady = true;
+      tryFinish();
+    };
+    preloadCriticalAssets();
+
+    // 2. Wait for Hero Video
+    const handleVideoReady = () => {
+      videoReady = true;
+      tryFinish();
+    };
 
     const hasHeroVideo = !!document.querySelector('.hero-bg-video');
-
-    if (document.readyState === 'complete') {
-      setTimeout(finishPreloader, 100);
+    if (hasHeroVideo) {
+      window.addEventListener('hero-video-ready', handleVideoReady, { once: true });
     } else {
-      if (hasHeroVideo) {
-        window.addEventListener('hero-video-ready', finishPreloader, { once: true });
-      } else {
-        window.addEventListener('load', finishPreloader, { once: true });
-      }
-      
-      return () => {
-        window.removeEventListener('hero-video-ready', finishPreloader);
-        window.removeEventListener('load', finishPreloader);
-        clearTimeout(safetyTimeout);
-      };
+      videoReady = true;
+      tryFinish();
     }
+
+    return () => {
+      window.removeEventListener('hero-video-ready', handleVideoReady);
+      clearTimeout(safetyTimeout);
+    };
   }, []);
 
   return (
