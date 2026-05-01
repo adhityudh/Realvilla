@@ -14,6 +14,7 @@ interface ButtonProps {
   showArrow?: boolean;
   id?: string;
   type?: 'button' | 'submit' | 'reset';
+  priority?: boolean;
 }
 
 /**
@@ -32,6 +33,7 @@ export default function Button({
   showArrow = true,
   id,
   type = 'button',
+  priority = false,
 }: ButtonProps) {
   const Component = href ? 'a' : 'button';
   
@@ -50,7 +52,16 @@ export default function Button({
       className={`${variantClass} ${className}`}
     >
       {icon && (
-        <Image src={icon} alt="" className="btn-icon" width={16} height={16} unoptimized />
+        <Image 
+          src={icon} 
+          alt="" 
+          className="btn-icon" 
+          width={16} 
+          height={16} 
+          unoptimized 
+          priority={priority} 
+          loading={priority ? "eager" : "lazy"} 
+        />
       )}
       <span>{label}</span>
       {showArrow && <StretchArrow className="btn-stretch-arrow" />}

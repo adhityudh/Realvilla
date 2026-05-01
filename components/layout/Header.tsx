@@ -118,6 +118,7 @@ export default function Header() {
               width={20}
               height={20}
               unoptimized
+              priority
             />
           ))}
         </a>

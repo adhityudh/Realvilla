@@ -424,7 +424,7 @@ export default function SplashIntro() {
         </div>
         <div className="hero-ctas">
           {HERO_CTAS.map((cta) => (
-            <Button key={cta.label} label={cta.label} href="#" icon={cta.icon} variant="link" className="cta-link" />
+            <Button key={cta.label} label={cta.label} href="#" icon={cta.icon} variant="link" className="cta-link" priority={true} />
           ))}
         </div>
       </div>
@@ -433,7 +433,7 @@ export default function SplashIntro() {
         <p className="hero-subtitle">Premium Tenerife real estate. Expert guidance for buyers, sellers, and investors looking for exclusive opportunities.</p>
         <div className="mobile-hero-ctas">
           {HERO_CTAS.map((cta) => (
-            <Button key={cta.label} label={cta.label} href="#" icon={cta.icon} variant="link" className="cta-link" />
+            <Button key={cta.label} label={cta.label} href="#" icon={cta.icon} variant="link" className="cta-link" priority={true} />
           ))}
         </div>
         <div className="hero-scroll">
