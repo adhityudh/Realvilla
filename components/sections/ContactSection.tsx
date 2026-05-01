@@ -310,6 +310,8 @@ export default function ContactSection() {
   return (
     <section className="contact-section" id="contact" ref={sectionRef}>
       <div className="contact-bg"></div>
+      <div className="contact-grain"></div>
+      <div className="contact-bottom-fade"></div>
       <div className="contact-container">
         <div className="contact-content">
           <div className="contact-description-area">
