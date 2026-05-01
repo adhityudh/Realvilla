@@ -10,6 +10,7 @@ import ValuationSection from '@/components/sections/ValuationSection';
 import PropertiesSection from '@/components/sections/PropertiesSection';
 import MortgageFAQSection from '@/components/sections/MortgageFAQSection';
 import TestimonialsSection from '@/components/sections/TestimonialsSection';
+import ContactSection from '@/components/sections/ContactSection';
 
 export default function Home() {
   return (
@@ -25,6 +26,7 @@ export default function Home() {
       <AboutSection />
       <PartnerSection />
       <TestimonialsSection />
+      <ContactSection />
     </SmoothScroller>
   );
 }

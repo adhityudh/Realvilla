@@ -307,6 +307,13 @@
                 background: rgba(188, 175, 139, 0.85);
             }
 
+            body.header-light-mode.header-black-bg .header::before {
+                background: linear-gradient(to bottom,
+                        rgba(17, 17, 17, 0.95) 0%,
+                        rgba(17, 17, 17, 0.8) 50%,
+                        transparent 100%);
+            }
+
             /* Hide logo on mobile initially (will be revealed by GSAP after hero) */
             body:not(.preloading) .header-logo,
             body.intro-active .header-logo {
