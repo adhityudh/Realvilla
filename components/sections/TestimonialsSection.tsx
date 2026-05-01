@@ -159,7 +159,10 @@ const TestimonialsSection = () => {
             style={{ objectFit: 'cover' }} 
             loading="lazy" 
             className="img-reveal"
-            onLoad={(e) => e.currentTarget.classList.add('loaded')}
+            onLoad={(e) => {
+              const img = e.currentTarget;
+              if (img.complete) img.classList.add('loaded');
+            }}
           />
         </div>
       </div>

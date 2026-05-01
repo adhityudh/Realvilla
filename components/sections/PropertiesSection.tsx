@@ -114,7 +114,10 @@ const PropertyCard = ({ prop }: { prop: typeof properties[0] }) => {
           fill
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           style={{ objectFit: 'cover' }}
-          onLoad={(e) => e.currentTarget.classList.add('loaded')}
+          onLoad={(e) => {
+            const img = e.currentTarget;
+            if (img.complete) img.classList.add('loaded');
+          }}
         />
         <Image
           ref={secondaryImgRef}

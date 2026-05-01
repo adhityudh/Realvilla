@@ -107,7 +107,10 @@ const AboutSection = () => {
             sizes="50vw" 
             style={{ objectFit: 'cover' }} 
             className="img-reveal"
-            onLoad={(e) => e.currentTarget.classList.add('loaded')}
+            onLoad={(e) => {
+              const img = e.currentTarget;
+              if (img.complete) img.classList.add('loaded');
+            }}
           />
         </div>
 
@@ -120,7 +123,10 @@ const AboutSection = () => {
             sizes="(max-width: 1024px) 100vw, 50vw" 
             style={{ objectFit: 'contain', objectPosition: 'bottom' }} 
             className="img-reveal"
-            onLoad={(e) => e.currentTarget.classList.add('loaded')}
+            onLoad={(e) => {
+              const img = e.currentTarget;
+              if (img.complete) img.classList.add('loaded');
+            }}
           />
         </div>
 
@@ -187,7 +193,7 @@ const AboutSection = () => {
                           className="img-reveal"
                           onLoad={(e) => {
                             const img = e.target as HTMLImageElement;
-                            img.classList.add('loaded');
+                            if (img.complete) img.classList.add('loaded');
                             setImageSizes(prev => {
                               if (!prev[num] || prev[num].w !== img.naturalWidth) {
                                 return { ...prev, [num]: { w: img.naturalWidth, h: img.naturalHeight } };
