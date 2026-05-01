@@ -110,15 +110,11 @@ export default function Header() {
       <div className="header-content">
         <a href="/" className="header-logo" aria-label="Real Villa">
           {HEADER_LETTERS.map((letter, i) => (
-            <Image 
+            <img 
               key={i} 
               src={letter.svg} 
               className="header-letter-img" 
               alt="" 
-              width={20}
-              height={20}
-              unoptimized
-              priority
             />
           ))}
         </a>
