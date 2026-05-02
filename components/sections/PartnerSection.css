@@ -1,6 +1,6 @@
 .partner-section {
     padding: 100px 3rem;
-    background-color: #ffffff;
+    background-color: var(--bg-white);
     position: relative;
     overflow: hidden;
 }

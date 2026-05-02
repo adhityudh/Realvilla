@@ -1,6 +1,6 @@
 .about-section {
     display: flex;
-    background-color: #ffffff;
+    background-color: var(--bg-white);
     min-height: 850px;
     /* Memberi ruang agar bisa bernafas tanpa dipaksa 100vh */
     position: relative;

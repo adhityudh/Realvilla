@@ -1,5 +1,5 @@
 .mortgage-faq-section {
-    background-color: #ffffff;
+    background-color: var(--bg-white);
     color: #111111;
     padding: 100px 0;
     position: relative;

@@ -1,7 +1,7 @@
 .testimonials-section {
     padding: 25vw 0 120px 0;
     /* Slightly reduced top padding to move items higher */
-    background-color: #ffffff;
+    background-color: var(--bg-white);
     overflow: visible;
     position: relative;
     /* border-bottom: 1px solid rgba(0, 0, 0, 0.05); removed as per request */

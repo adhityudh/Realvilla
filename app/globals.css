@@ -1,5 +1,5 @@
 :root {
-  --bg-white: #ffffff;
+  --bg-white: #fdfcfb;
   --text-black: #111111;
   --text-gold: #bcaf8b;
 }
@@ -127,7 +127,6 @@ html.lenis body {
 }
 
 .btn-pill:hover {
-  transform: translateY(-4px);
   box-shadow: 0 12px 25px rgba(0, 0, 0, 0.1);
 }
 
@@ -168,7 +167,6 @@ html.lenis body {
 
 .btn-link-styled:hover {
   border-bottom-color: var(--btn-link-color, #ffffff);
-  transform: translateY(-4px);
 }
 
 .btn-icon {

@@ -73,7 +73,7 @@
 }
 
 .property-card {
-    background: #ffffff;
+    background: var(--bg-white);
     /* Premium white card */
     display: flex;
     flex-direction: column;

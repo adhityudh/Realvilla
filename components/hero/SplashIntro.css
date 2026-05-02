@@ -28,7 +28,7 @@
         .splash-bg {
             position: absolute;
             inset: 0;
-            background: radial-gradient(circle at center, #ffffff 0%, #f8f8f8 100%);
+            background: radial-gradient(circle at center, #fdfcfb 0%, #f8f8f8 100%);
             z-index: -2;
             opacity: 0;
             /* Hidden so the video rectangle is visible during preloading */
@@ -177,7 +177,6 @@
         .cta-link:hover {
             opacity: 1;
             border-bottom-color: #ffffff;
-            transform: translateY(-4px);
         }
 
         /* Hero CTA variant — starts collapsed, expands on hover */
@@ -392,15 +391,15 @@
         }
 
         .text-black {
-            background-color: #ffffff;
+            background-color: #fdfcfb;
         }
 
         .text-gold {
-            background-color: #ffffff;
+            background-color: #fdfcfb;
         }
 
         .text-white-reveal {
-            background-color: #ffffff;
+            background-color: #fdfcfb;
             z-index: 25;
             clip-path: inset(100% 0 0 0);
             opacity: 0;
