@@ -6,32 +6,11 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Button from '../ui/Button';
 import './MortgageFAQSection.css';
 
-gsap.registerPlugin(ScrollTrigger);
+if (typeof window !== 'undefined') {
+  gsap.registerPlugin(ScrollTrigger);
+}
 
-const faqData = [
-  {
-    id: 1,
-    question: "Can non-residents get a mortgage in Spain?",
-    answer: "Yes. Non-residents can typically finance up to 60-70% of the property's valuation or purchase price, while Spanish residents can access up to 80%."
-  },
-  {
-    id: 2,
-    question: "How long does the mortgage process usually take?",
-    answer: "On average, the formal approval and processing take between 4 to 6 weeks once all required documentation is submitted to the bank."
-  },
-  {
-    id: 3,
-    question: "Fixed vs. Variable rates: Which is better?",
-    answer: "It depends on your financial goals. Fixed rates offer stability against Euribor fluctuations, while variable rates often start lower. Our experts can help you compare options from top local banks."
-  },
-  {
-    id: 4,
-    question: "Do I need a Spanish bank account?",
-    answer: "Yes. To finalize a mortgage and property purchase in Tenerife, you will need a Spanish bank account and an NIE (Foreigner Identity Number). We guide you through this setup."
-  }
-];
-
-const MortgageFAQSection = () => {
+const MortgageFAQSection = ({ data }: { data?: any }) => {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const sectionRef = useRef<HTMLElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
@@ -39,10 +18,19 @@ const MortgageFAQSection = () => {
   const ctaRef = useRef<HTMLDivElement>(null);
   const answerRefs = useRef<(HTMLDivElement | null)[]>([]);
 
+  if (!data) return null;
+
+  const tagline = data.tagline;
+  const title = data.title;
+  const faqData = data.faqs;
+  const ctaPrimaryLabel = data.ctaPrimaryLabel;
+  const ctaPrimaryLink = data.ctaPrimaryLink;
+  const ctaSecondaryLabel = data.ctaSecondaryLabel;
+  const ctaSecondaryLink = data.ctaSecondaryLink;
+
   useEffect(() => {
     if (!sectionRef.current || !headerRef.current || !listRef.current || !ctaRef.current) return;
 
-    // 1. Header Animation
     gsap.fromTo(
       headerRef.current.querySelectorAll('.mortgage-faq-tagline, .mortgage-faq-title'),
       { y: 60, opacity: 0, filter: 'blur(15px)' },
@@ -61,7 +49,6 @@ const MortgageFAQSection = () => {
       }
     );
 
-    // 2. FAQ List Animation
     const faqItems = listRef.current.querySelectorAll('.faq-item');
     gsap.fromTo(
       faqItems,
@@ -80,7 +67,6 @@ const MortgageFAQSection = () => {
       }
     );
 
-    // 3. CTA Animation
     const ctaButtons = ctaRef.current.children;
     gsap.fromTo(
       ctaButtons,
@@ -100,16 +86,14 @@ const MortgageFAQSection = () => {
       }
     );
 
-    // Default expand first item on mobile
     if (window.innerWidth <= 1024) {
       setActiveIndex(0);
       gsap.set(answerRefs.current[0], { height: 'auto', opacity: 1 });
     }
 
     return () => {
-      const triggers = [headerRef.current, listRef.current, ctaRef.current, sectionRef.current];
       ScrollTrigger.getAll().forEach(st => {
-        if (triggers.includes(st.trigger as any)) {
+        if (st.trigger === sectionRef.current || st.trigger === headerRef.current || st.trigger === listRef.current || st.trigger === ctaRef.current) {
           st.kill();
         }
       });
@@ -117,31 +101,15 @@ const MortgageFAQSection = () => {
   }, []);
 
   const toggleFAQ = (index: number) => {
-    if (window.innerWidth > 1024) return; // Only accordion on mobile
-
+    if (window.innerWidth > 1024) return;
     const isClosing = activeIndex === index;
     const newIndex = isClosing ? null : index;
-
-    // Animate closing of current
     if (activeIndex !== null) {
-      gsap.to(answerRefs.current[activeIndex], {
-        height: 0,
-        opacity: 0,
-        duration: 0.5,
-        ease: 'power3.inOut'
-      });
+      gsap.to(answerRefs.current[activeIndex], { height: 0, opacity: 0, duration: 0.5, ease: 'power3.inOut' });
     }
-
-    // Animate opening of new
     if (!isClosing) {
-      gsap.to(answerRefs.current[index], {
-        height: 'auto',
-        opacity: 1,
-        duration: 0.5,
-        ease: 'power3.inOut'
-      });
+      gsap.to(answerRefs.current[index], { height: 'auto', opacity: 1, duration: 0.5, ease: 'power3.inOut' });
     }
-
     setActiveIndex(newIndex);
   };
 
@@ -149,16 +117,14 @@ const MortgageFAQSection = () => {
     <section className="mortgage-faq-section" id="mortgage" ref={sectionRef}>
       <div className="mortgage-faq-wrapper">
         <div className="mortgage-faq-header" ref={headerRef}>
-          <div className="mortgage-faq-tagline">Mortgages</div>
-          <h2 className="mortgage-faq-title">
-            Simplified Property Financing
-          </h2>
+          <div className="mortgage-faq-tagline">{tagline}</div>
+          <h2 className="mortgage-faq-title">{title}</h2>
         </div>
 
         <div className="mortgage-faq-list" ref={listRef}>
-          {faqData.map((item, index) => (
+          {faqData?.map((item: any, index: number) => (
             <div
-              key={item.id}
+              key={index}
               className={`faq-item ${activeIndex === index ? 'active' : ''}`}
               onClick={() => toggleFAQ(index)}
             >
@@ -169,10 +135,7 @@ const MortgageFAQSection = () => {
                 </div>
                 <div className="faq-question-container">
                   <div className="faq-question">{item.question}</div>
-                  <div className="faq-icon">
-                    <span></span>
-                    <span></span>
-                  </div>
+                  <div className="faq-icon"><span></span><span></span></div>
                 </div>
               </div>
             </div>
@@ -180,8 +143,10 @@ const MortgageFAQSection = () => {
         </div>
 
         <div className="mortgage-faq-cta" ref={ctaRef}>
-          <Button label="Speak to an Expert" href="#" variant="dark" />
-          <Button label="Know More" href="#" variant="pill" className="service-cta" />
+          {ctaPrimaryLabel && <Button label={ctaPrimaryLabel} href={ctaPrimaryLink || '#'} variant="dark" />}
+          {(data.showSecondaryCta !== false && ctaSecondaryLabel) && (
+            <Button label={ctaSecondaryLabel} href={ctaSecondaryLink || '#'} variant="pill" className="service-cta" />
+          )}
         </div>
       </div>
     </section>

@@ -1,0 +1,84 @@
+[
+  {
+    "_type": "page",
+    "title": "Home",
+    "slug": { "_type": "slug", "current": "home" },
+    "sections": [
+      {
+        "_type": "splashIntro",
+        "title": "Elevate Your Tenerife Lifestyle.",
+        "subtitle": "Premium Tenerife real estate. Expert guidance for buyers, sellers, and investors looking for exclusive opportunities."
+      },
+      {
+        "_type": "heroSection",
+        "desktopVideo": "https://player.vimeo.com/progressive_redirect/playback/1025096531/rendition/1080p/file.mp4?loc=external&log_user=0&signature=10c0576e1a6773347514d35eb7b37d7a8d562f026f8b9613146f6f966085023d",
+        "mobileVideo": "https://player.vimeo.com/progressive_redirect/playback/1025101683/rendition/1080p/file.mp4?loc=external&log_user=0&signature=63c2003c2055745138f670f5e5dfc9ca621a6900f07df5902f232b78119859f5"
+      },
+      {
+        "_type": "valuationSection",
+        "tagline": "Property Valuation",
+        "headline": "Get an Accurate Property Valuation in Minutes.",
+        "body": "Backed by real-time Tenerife market data. Enter your details below for a professional, no-obligation estimate.",
+        "trustText": "Your data is secure. Valuations are powered by advanced analytics and Spain's leading experts.",
+        "ctaLabel": "Sell Your Property",
+        "ctaLink": "#",
+        "iframeUrl": "https://realvilla.valuation.realadvisor.es/appraise?language=es"
+      },
+      {
+        "_type": "propertiesSection",
+        "tagline": "PROPERTIES",
+        "headline": "CURATED COLLECTIONS OF FINEST ESTATES IN TENERIFE",
+        "properties": [
+          { "address": "Villa Del Mar, Costa Adeje", "beds": 5, "baths": 4, "sqft": "5,150", "price": "€4,250,000" },
+          { "address": "Modern Penthouse, Playa de Las Américas", "beds": 3, "baths": 2, "sqft": "2,100", "price": "€1,850,000" },
+          { "address": "Cliffs Edge Estate, Los Gigantes", "beds": 4, "baths": 3, "sqft": "3,800", "price": "€3,100,000" }
+        ]
+      },
+      {
+        "_type": "mortgageFAQSection",
+        "tagline": "Mortgages",
+        "title": "Simplified Property Financing",
+        "faqs": [
+          { "question": "Can non-residents get a mortgage in Spain?", "answer": "Yes. Non-residents can typically finance up to 60-70% of the property's valuation or purchase price, while Spanish residents can access up to 80%." },
+          { "question": "How long does the mortgage process usually take?", "answer": "On average, the formal approval and processing take between 4 to 6 weeks once all required documentation is submitted to the bank." }
+        ],
+        "ctaPrimaryLabel": "Speak to an Expert",
+        "ctaSecondaryLabel": "Know More"
+      },
+      {
+        "_type": "aboutSection",
+        "tagline": "Local Expertise",
+        "headline": "Redefining Tenerife Real Estate",
+        "content": [
+          "Certified real estate advisor in Commercial Management and Sales from the prestigious EAE Business School, and accredited as a Real Estate Agent (API), with the required qualifications to operate in Spain, including Catalonia, the Balearic Islands, and Valencia, within the corresponding real estate registries."
+        ],
+        "profileName": "LUIS VILLARREAL",
+        "email": "luis.villarreal@realvilla.es",
+        "instagram": "https://instagram.com/luisvillarreal",
+        "linkedin": "https://linkedin.com/in/luisvillarreal"
+      },
+      {
+        "_type": "partnerSection",
+        "title": "Collaborating with Excellence"
+      },
+      {
+        "_type": "testimonialsSection",
+        "title": "100+ Success Stories in Tenerife",
+        "testimonials": [
+          { "name": "James Robertson", "text": "The team at Real Villa made our move to Tenerife effortless. Their knowledge of the local mortgage landscape was invaluable.", "stars": 5, "title": "Property Owner" },
+          { "name": "Elena Sanchez", "text": "Professional, transparent, and incredibly efficient. They found us the perfect villa in Costa Adeje within weeks.", "stars": 5, "title": "Investor" }
+        ]
+      },
+      {
+        "_type": "contactSection",
+        "headline": "Your Best Window of Opportunity",
+        "subtitle": "Capitalize on favorable market trends. Whether you are seeking a lucrative investment or a bespoke island sanctuary, our experts are ready to guide your next move.",
+        "marketData": [
+          { "value": "2,850", "prefix": "€", "unit": "per m²", "label": "average market valuation in tenerife." },
+          { "value": "8.4", "prefix": "+", "unit": "%", "label": "steady annual property appreciation." },
+          { "value": "3.75", "prefix": "", "unit": "%", "label": "current euribor rate for financing." }
+        ]
+      }
+    ]
+  }
+]

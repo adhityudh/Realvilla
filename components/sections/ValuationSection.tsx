@@ -8,12 +8,24 @@ import Button from '@/components/ui/Button';
 import iFrameResize from 'iframe-resizer/js/iframeResizer';
 import './ValuationSection.css';
 
-gsap.registerPlugin(ScrollTrigger);
+if (typeof window !== 'undefined') {
+  gsap.registerPlugin(ScrollTrigger);
+}
 
-export default function ValuationSection() {
+export default function ValuationSection({ data }: { data?: any }) {
   const [iframeSrc, setIframeSrc] = useState('');
   const sectionRef = useRef<HTMLElement>(null);
   const iframeRef = useRef<HTMLIFrameElement>(null);
+
+  if (!data) return null;
+
+  const tagline = data.tagline;
+  const headline = data.headline;
+  const body = data.body;
+  const trustText = data.trustText;
+  const ctaLabel = data.ctaLabel;
+  const ctaLink = data.ctaLink;
+  const finalIframeUrl = data.iframeUrl;
 
   useEffect(() => {
     if (!sectionRef.current) return;
@@ -23,10 +35,8 @@ export default function ValuationSection() {
     const elements = section.querySelectorAll('.valuation-tagline, .valuation-headline, .valuation-body, .valuation-trust, .valuation-cta-desktop, .valuation-cta-mobile');
     const card = section.querySelector('.valuation-card');
 
-    // Initial state to prevent flash
     gsap.set(elements, { opacity: 0, y: 40, filter: 'blur(10px)' });
     
-    // On mobile, hide the card too. On desktop, keep it visible (static).
     if (isMobile) {
       gsap.set(card, { opacity: 0, y: 40, filter: 'blur(10px)' });
     } else {
@@ -41,20 +51,17 @@ export default function ValuationSection() {
       }
     });
 
-    tl.fromTo(section.querySelectorAll('.valuation-tagline, .valuation-headline, .valuation-body, .valuation-trust, .valuation-cta-desktop, .valuation-cta-mobile'),
+    tl.fromTo(elements,
       { y: 40, opacity: 0, filter: 'blur(10px)' },
       { y: 0, opacity: 1, filter: 'blur(0px)', duration: 1.2, stagger: 0.2, ease: 'expo.out' }
     );
 
     if (isMobile) {
-      tl.fromTo(section.querySelector('.valuation-card'),
+      tl.fromTo(card,
         { y: 40, opacity: 0, filter: 'blur(10px)' },
         { y: 0, opacity: 1, filter: 'blur(0px)', duration: 1.5, ease: 'expo.out' },
         '-=1.2'
       );
-    } else {
-      // On desktop, ensure it's visible immediately once the trigger hits
-      tl.set(section.querySelector('.valuation-card'), { opacity: 1, y: 0, filter: 'blur(0px)' }, '-=1.2');
     }
 
     return () => {
@@ -64,11 +71,12 @@ export default function ValuationSection() {
   }, []);
 
   useEffect(() => {
+    if (!finalIframeUrl) return;
     const timer = setTimeout(() => {
-      setIframeSrc('https://realvilla.valuation.realadvisor.es/appraise?language=es');
+      setIframeSrc(finalIframeUrl);
     }, 2000);
     return () => clearTimeout(timer);
-  }, []);
+  }, [finalIframeUrl]);
 
   useEffect(() => {
     if (iframeSrc && iframeRef.current) {
@@ -89,20 +97,18 @@ export default function ValuationSection() {
     <section className="valuation-section" id="valuation" ref={sectionRef}>
       <div className="valuation-container">
         <div className="valuation-content">
-          <div className="valuation-tagline">Property Valuation</div>
-          <h2 className="valuation-headline">Get an Accurate Property Valuation in Minutes.</h2>
-          <p className="valuation-body">Backed by real-time Tenerife market data. Enter your details below for a professional, no-obligation estimate.</p>
+          <div className="valuation-tagline">{tagline}</div>
+          <h2 className="valuation-headline">{headline}</h2>
+          <p className="valuation-body">{body}</p>
           <div className="valuation-trust">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
             <Image src="/icons/shield.svg" alt="Shield" width={24} height={24} loading="lazy" unoptimized />
-            <span>Your data is secure. <br />Valuations are powered by advanced analytics and Spain's leading experts.</span>
+            <span>{trustText}</span>
           </div>
-          <Button label="Sell Your Property" href="#" className="service-cta valuation-cta-desktop" />
+          {ctaLabel && <Button label={ctaLabel} href={ctaLink || '#'} className="service-cta valuation-cta-desktop" />}
         </div>
         <div className="valuation-form-wrapper">
           <div className="valuation-card">
             <div className="valuation-iframe-container" style={{ position: 'relative', minHeight: '600px', background: '#fff' }}>
-              {/* Loader - Always in the background (zIndex 1) */}
               <div
                 className="valuation-loader"
                 style={{
@@ -122,7 +128,7 @@ export default function ValuationSection() {
                   ref={iframeRef}
                   style={{
                     position: 'relative',
-                    zIndex: 2, // Higher z-index to cover the loader once painted
+                    zIndex: 2,
                     width: '100%',
                     border: 'none',
                     opacity: 1,
@@ -137,7 +143,7 @@ export default function ValuationSection() {
             </div>
           </div>
         </div>
-        <Button label="Sell Your Property" href="#" className="service-cta valuation-cta-mobile" />
+        {ctaLabel && <Button label={ctaLabel} href={ctaLink || '#'} className="service-cta valuation-cta-mobile" />}
       </div>
     </section>
   );

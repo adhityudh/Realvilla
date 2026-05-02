@@ -6,9 +6,10 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useLenis } from '@/lib/LenisContext';
 import './HeroSection.css';
 
-gsap.registerPlugin(ScrollTrigger);
+if (typeof window !== 'undefined') {
+  gsap.registerPlugin(ScrollTrigger);
+}
 
-/** Parallax on the bg video + overlay darkening as the hero scrolls out. */
 function useHeroScrollAnimations() {
   const lenis = useLenis();
 
@@ -47,10 +48,6 @@ function useHeroScrollAnimations() {
   }, [lenis]);
 }
 
-/**
- * The intro reveal animation (clip-path opening).
- * Called by useAnimationOrchestrator to keep timings synchronized.
- */
 export function getHeroRevealAnimation(tl: gsap.core.Timeline, isMobile: boolean) {
   const heroEl = document.querySelector('.main-hero') as HTMLElement;
   if (!heroEl) return;
@@ -82,8 +79,6 @@ export function getHeroRevealAnimation(tl: gsap.core.Timeline, isMobile: boolean
         }
       },
       onComplete: () => {
-        // Performance Optimization: Set clip-path to 'none' once done.
-        // This ensures it stays full-screen while removing the calculation overhead.
         gsap.set(heroEl, { clipPath: 'none', willChange: 'auto' });
       }
     },
@@ -93,18 +88,22 @@ export function getHeroRevealAnimation(tl: gsap.core.Timeline, isMobile: boolean
   tl.fromTo('.hero-bg-video', { scale: 1.1 }, { scale: 1, ease: 'power2.out', duration: 2.5 }, 0.2);
 }
 
-export default function HeroSection() {
+export default function HeroSection({ data }: { data?: any }) {
   const videoRef = useRef<HTMLVideoElement>(null);
+
+  if (!data) return null;
+
+  const desktopVideo = data.desktopVideo;
+  const mobileVideo = data.mobileVideo;
 
   useHeroScrollAnimations();
 
   useEffect(() => {
     const v = videoRef.current;
-    if (!v) return;
+    if (!v || !desktopVideo || !mobileVideo) return;
 
-    // Set correct source before loading to prevent double-downloading on mobile
     const isMobile = window.innerWidth <= 768;
-    v.src = isMobile ? '/videos/hero-mobile-video-2.mp4' : '/videos/hero-video.mp4';
+    v.src = isMobile ? mobileVideo : desktopVideo;
     v.load();
 
     const revealMedia = () => {
@@ -125,7 +124,7 @@ export default function HeroSection() {
     if (v.readyState >= 2) revealMedia();
     else v.addEventListener('loadeddata', revealMedia);
     return () => { v.removeEventListener('loadeddata', revealMedia); };
-  }, []);
+  }, [desktopVideo, mobileVideo]);
 
   return (
     <main className="main-hero">

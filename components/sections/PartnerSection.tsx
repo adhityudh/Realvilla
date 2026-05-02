@@ -5,13 +5,21 @@ import Image from 'next/image';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import './PartnerSection.css';
+import { urlForImage } from '@/sanity/lib/image';
 
-gsap.registerPlugin(ScrollTrigger);
+if (typeof window !== 'undefined') {
+  gsap.registerPlugin(ScrollTrigger);
+}
 
-const PartnerSection = () => {
+const PartnerSection = ({ data }: { data?: any }) => {
   const sectionRef = useRef<HTMLElement>(null);
   const titleRef = useRef<HTMLDivElement>(null);
   const logosRef = useRef<HTMLDivElement>(null);
+
+  if (!data) return null;
+
+  const title = data.title;
+  const partners = data.partners;
 
   useEffect(() => {
     if (!sectionRef.current || !titleRef.current || !logosRef.current) return;
@@ -49,14 +57,15 @@ const PartnerSection = () => {
     <section className="partner-section" ref={sectionRef}>
       <div className="partner-container">
         <div className="partner-title-wrapper" ref={titleRef}>
-          <h2 className="partner-title">Collaborating with Excellence</h2>
+          <h2 className="partner-title">{title}</h2>
         </div>
         <div className="partner-logos" ref={logosRef}>
-          {[1, 2, 3, 4, 5].map((num) => (
-            <div className="partner-logo-item" key={num}>
+          {partners?.map((partner: any, idx: number) => {
+            const logoSrc = partner.logo;
+            const content = (
               <Image 
-                src={`/images/logo-dummy-${num}.png`} 
-                alt={`Partner ${num}`} 
+                src={logoSrc} 
+                alt={partner.name || `Partner ${idx + 1}`} 
                 fill 
                 sizes="120px" 
                 style={{ objectFit: 'contain' }} 
@@ -64,8 +73,20 @@ const PartnerSection = () => {
                 className="img-reveal"
                 onLoad={(e) => e.currentTarget.classList.add('loaded')}
               />
-            </div>
-          ))}
+            );
+
+            return (
+              <div className="partner-logo-item" key={idx}>
+                {partner.link ? (
+                  <a href={partner.link} target="_blank" rel="noopener noreferrer" className="partner-link">
+                    {content}
+                  </a>
+                ) : (
+                  content
+                )}
+              </div>
+            );
+          })}
         </div>
       </div>
     </section>

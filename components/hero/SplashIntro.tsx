@@ -3,22 +3,19 @@
 import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { REALVILLA_LETTERS, HERO_CTAS } from '@/lib/letters';
+import { REALVILLA_LETTERS } from '@/lib/letters';
 import { useLenis } from '@/lib/LenisContext';
 import Button from '@/components/ui/Button';
 import './SplashIntro.css';
+import { getHeroRevealAnimation } from './HeroSection';
 
-gsap.registerPlugin(ScrollTrigger);
+if (typeof window !== 'undefined') {
+  gsap.registerPlugin(ScrollTrigger);
+}
 
-/**
- * Splits .hero-title and .hero-subtitle into word-mask spans so the
- * orchestrator's intro timeline can animate them. Runs on mount before
- * lenis is ready so the DOM is prepared in time.
- */
 function useSplashIntroAnimations() {
   const lenis = useLenis();
 
-  // Text split — no lenis dependency, must run before intro timeline
   useEffect(() => {
     const splitText = (selector: string) => {
       document.querySelectorAll(selector).forEach((el) => {
@@ -33,7 +30,6 @@ function useSplashIntroAnimations() {
     gsap.set('.hero-title, .hero-subtitle', { opacity: 1 });
   }, []);
 
-  // Mobile only: fade out hero description as user scrolls into the hero
   useEffect(() => {
     if (!lenis || window.innerWidth > 1024) return;
     const fadeTl = gsap.timeline();
@@ -47,7 +43,7 @@ function useSplashIntroAnimations() {
     const st = ScrollTrigger.create({
       trigger: '.main-hero',
       start: 'top top',
-      end: '40% top', // Slightly longer scroll range to accommodate the stagger
+      end: '40% top',
       scrub: true,
       animation: fadeTl,
     });
@@ -55,9 +51,6 @@ function useSplashIntroAnimations() {
   }, [lenis]);
 }
 
-/**
- * Intro animations for the splash content (letters, titles, CTAs, etc.)
- */
 export function getSplashIntroAnimations(tl: gsap.core.Timeline, onReleaseScroll: () => void) {
   tl.to('.preloader-border-box', { opacity: 0, duration: 0.8, ease: 'power2.out' }, 0);
 
@@ -74,7 +67,7 @@ export function getSplashIntroAnimations(tl: gsap.core.Timeline, onReleaseScroll
       yPercent: -100,
       ease: 'expo.inOut',
       duration: 1.2,
-      onStart: onReleaseScroll, // Release scroll lock as soon as BG starts moving
+      onStart: onReleaseScroll,
     },
     1.8,
   );
@@ -120,21 +113,10 @@ export function getSplashIntroAnimations(tl: gsap.core.Timeline, onReleaseScroll
   tl.set('.splash-intro', { pointerEvents: 'none' });
 }
 
-/**
- * Handles the desktop logo morph animation on scroll.
- */
-/**
- * Moves the original logo to the breakout layer immediately to prevent any 
- * flickering during the intro. This happens before any animation starts.
- */
 function breakoutLogoSynchronously(logoArea: HTMLElement, splashIntro: HTMLElement) {
   if (logoArea.id === 'morph-breakout-logo') return;
-
-  // Use a slight delay or RAF to ensure the layout has settled
   const logoAreaRect = logoArea.getBoundingClientRect();
   const scrollY = window.scrollY;
-
-  // 1. Create a spacer to hold the flex layout (prevent description shift)
   const spacer = logoArea.cloneNode(false) as HTMLElement;
   spacer.className = 'logo-content-area-spacer';
   Object.assign(spacer.style, {
@@ -146,8 +128,6 @@ function breakoutLogoSynchronously(logoArea: HTMLElement, splashIntro: HTMLEleme
     margin: window.getComputedStyle(logoArea).margin
   });
   logoArea.parentNode?.insertBefore(spacer, logoArea);
-
-  // 2. Convert the ORIGINAL logo to fixed breakout layer
   logoArea.id = 'morph-breakout-logo';
   Object.assign(logoArea.style, {
     position: 'fixed',
@@ -162,28 +142,20 @@ function breakoutLogoSynchronously(logoArea: HTMLElement, splashIntro: HTMLEleme
     visibility: 'visible',
     opacity: '1'
   });
-
-  // 3. Move to body permanently
   document.body.appendChild(logoArea);
 }
 
-/**
- * Handles the desktop logo morph animation on scroll using the already-breakout logo.
- */
 export function setupLogoMorph(isMobile: boolean, heroEl: HTMLElement) {
   if (isMobile) return { morphTl: null, morphST: null };
-
   const logoArea = document.getElementById('morph-breakout-logo') as HTMLElement;
   const headerContent = document.querySelector('.header-content') as HTMLElement;
   if (!logoArea || !headerContent) return { morphTl: null, morphST: null };
-
   const splashIntro = document.querySelector('.splash-intro') as HTMLElement;
   const wordContainer = logoArea.querySelector('.word-container') as HTMLElement;
   const heroCtas = logoArea.querySelector('.hero-ctas') as HTMLElement;
   const heroDesc = splashIntro.querySelector('.hero-description-area') as HTMLElement;
   const headerRectLocal = headerContent.getBoundingClientRect();
   const scrollY = window.scrollY;
-
   const wordRect = wordContainer.getBoundingClientRect();
   const headerLogoHeight = window.innerWidth <= 480 ? 14 : 20;
   const targetScale = headerLogoHeight / wordRect.height;
@@ -193,43 +165,22 @@ export function setupLogoMorph(isMobile: boolean, heroEl: HTMLElement) {
   const scrollEnd = heroEl.offsetHeight;
   const wordLocalY = targetHeaderCenterY - initialWordCenterY + scrollEnd;
   const toX = targetLeftPx - wordRect.left;
-
   gsap.set(heroEl, { overflow: 'hidden', clipPath: 'inset(0px 0px 0px 0px round 0px)' });
   gsap.set(splashIntro, { overflow: 'visible' });
-
-  // Ensure the element is ready for animation (already breakout, just need to set defaults)
   gsap.set(logoArea, { y: 0, opacity: 1, visibility: 'visible' });
   gsap.set(wordContainer, { x: 0, y: 0, scale: 1, transformOrigin: 'left center' });
-
   const morphTl = gsap.timeline({ paused: true });
   morphTl
     .to(logoArea, { y: -scrollEnd, duration: 1, ease: 'none', force3D: true, overwrite: 'auto' }, 0)
     .to(heroCtas, { opacity: 0, y: '250%', duration: 0.25, ease: 'none', force3D: true, overwrite: 'auto' }, 0)
     .to(heroDesc, { opacity: 0, duration: 0.5, ease: 'none', force3D: true, overwrite: 'auto' }, 0)
     .to(wordContainer, { x: toX, y: wordLocalY, scale: targetScale, duration: 1, ease: 'none', force3D: true, overwrite: 'auto' }, 0);
-
   const morphST = ScrollTrigger.create({
-    trigger: '.main-hero',
-    start: 'top top',
-    end: '50% top',
-    scrub: true,
-    animation: morphTl,
-    invalidateOnRefresh: true,
+    trigger: '.main-hero', start: 'top top', end: '50% top', scrub: true, animation: morphTl, invalidateOnRefresh: true,
   });
-
-  morphST.refresh();
-  morphST.update();
-
   return { morphTl, morphST };
 }
 
-
-import { getHeroRevealAnimation } from './HeroSection';
-
-/**
- * High-level timing and sequencing for the intro animations.
- * Replaces the separate lib/useAnimationOrchestrator.ts.
- */
 function useIntroOrchestrator() {
   const lenis = useLenis();
   const initialized = useRef(false);
@@ -238,84 +189,53 @@ function useIntroOrchestrator() {
   useEffect(() => {
     if (!lenis || initialized.current) return;
     initialized.current = true;
-
     const isMobile = window.innerWidth <= 1024;
     let morphTlInstance: gsap.core.Timeline | null = null;
     let morphSTInstance: ScrollTrigger | null = null;
-
     const releaseScroll = () => {
       lenis.start();
       document.body.classList.remove('preloading');
       document.body.classList.remove('intro-active');
     };
-
     let morphInitialized = false;
     const initMorph = () => {
       if (isMobile || morphInitialized) return;
       morphInitialized = true;
+      const heroEl = document.querySelector('.main-hero') as HTMLElement;
+      if (!heroEl) return;
       const { morphTl, morphST } = setupLogoMorph(isMobile, heroEl);
       morphTlInstance = morphTl;
       morphSTInstance = morphST;
     };
-
     const tl = gsap.timeline({
-      delay: 0,
       paused: true,
-      onStart: () => {
-        document.body.classList.add('intro-active');
-      },
-      onComplete: () => {
-        releaseScroll();
-        initMorph(); // Fallback for skip scenarios
-      },
+      onStart: () => { document.body.classList.add('intro-active'); },
+      onComplete: () => { releaseScroll(); initMorph(); },
     });
     mainTl.current = tl;
-
     const heroEl = document.querySelector('.main-hero') as HTMLElement;
     const logoArea = document.querySelector('.logo-content-area') as HTMLElement;
     const splashIntro = document.querySelector('.splash-intro') as HTMLElement;
     if (!heroEl || !logoArea || !splashIntro) return;
-
-    // STEP 0: Zero-Handover Strategy - breakout the original logo immediately
-    // doing it here (before timeline start) ensures NO handover ever happens visually
-    if (!isMobile) {
-      breakoutLogoSynchronously(logoArea, splashIntro);
-    }
-
-    // Compose animations
+    if (!isMobile) breakoutLogoSynchronously(logoArea, splashIntro);
     getHeroRevealAnimation(tl, isMobile);
     getSplashIntroAnimations(tl, releaseScroll);
-
-    // Early Morph Init: No handover needed, just setup the ScrollTrigger
-    tl.add(() => {
-      initMorph();
-    }, 1.6); // Slightly earlier than reveal to be ready for scroll
-
-    // Smooth Skip Logic
+    tl.add(() => { initMorph(); }, 1.6);
     const handleSkip = () => {
-      // ONLY allow skip if we are past the logo reveal threshold (1.4s for luxurious pacing)
       if (tl.time() < 1.4) return;
-
       if (tl.progress() < 1 && tl.isActive()) {
         gsap.to(tl, { progress: 1, duration: 0.6, ease: 'power2.out' });
         cleanupSkip();
       }
     };
-
     const cleanupSkip = () => {
       window.removeEventListener('wheel', handleSkip);
       window.removeEventListener('touchstart', handleSkip);
     };
-
     window.addEventListener('wheel', handleSkip);
     window.addEventListener('touchstart', handleSkip);
-
-    const handlePreloaderComplete = () => {
-      tl.play();
-    };
-
+    const handlePreloaderComplete = () => { tl.play(); };
     window.addEventListener('preloader-complete', handlePreloaderComplete);
-
     return () => {
       cleanupSkip();
       window.removeEventListener('preloader-complete', handlePreloaderComplete);
@@ -328,47 +248,40 @@ function useIntroOrchestrator() {
   }, [lenis]);
 }
 
-export default function SplashIntro() {
+export default function SplashIntro({ data }: { data?: any }) {
   useSplashIntroAnimations();
   useIntroOrchestrator();
 
-  // Handle preloader logic internally
+  if (!data) return null;
+
+  const title = data.title;
+  const subtitle = data.subtitle;
+  const ctas = data.ctas;
+
   useEffect(() => {
     const preloaderRectEl = document.querySelector('#preloader-rect') as SVGRectElement;
     const preloaderBox = document.querySelector('.preloader-border-box') as HTMLElement;
     const preloaderShine = document.getElementById('preloader-shine');
-
     if (!preloaderRectEl || !preloaderBox) return;
-
     const finishPreloader = () => {
       const currentOffset = window.getComputedStyle(preloaderRectEl).strokeDashoffset;
       preloaderRectEl.style.animation = 'none';
       gsap.set(preloaderRectEl, { strokeDashoffset: currentOffset });
       if (preloaderShine) gsap.to(preloaderShine, { opacity: 0, duration: 0.4, ease: 'power2.out' });
-
       gsap.to(preloaderRectEl, {
-        strokeDashoffset: 0,
-        duration: 0.5,
-        ease: 'power2.out',
+        strokeDashoffset: 0, duration: 0.5, ease: 'power2.out',
         onComplete: () => {
           gsap.to(preloaderBox, {
-            opacity: 0,
-            duration: 0.8,
-            ease: 'power2.out',
-            onComplete: () => {
-              window.dispatchEvent(new CustomEvent('preloader-complete'));
-            }
+            opacity: 0, duration: 0.8, ease: 'power2.out',
+            onComplete: () => { window.dispatchEvent(new CustomEvent('preloader-complete')); }
           });
         },
       });
     };
-
-    // New logic: Wait for DOM ready AND hero video readyState
     const waitForDOM = new Promise((resolve) => {
       if (document.readyState === 'interactive' || document.readyState === 'complete') resolve(true);
       else document.addEventListener('DOMContentLoaded', () => resolve(true), { once: true });
     });
-
     const waitForVideo = new Promise((resolve) => {
       const checkVideo = () => {
         const video = document.querySelector('.hero-bg-video') as HTMLVideoElement;
@@ -376,32 +289,20 @@ export default function SplashIntro() {
           if (video.readyState >= 2) resolve(true);
           else video.addEventListener('loadeddata', () => resolve(true), { once: true });
         } else {
-          // If no video found, resolve immediately or check again briefly
           setTimeout(() => {
             const retry = document.querySelector('.hero-bg-video') as HTMLVideoElement;
             if (retry) {
               if (retry.readyState >= 2) resolve(true);
               else retry.addEventListener('loadeddata', () => resolve(true), { once: true });
-            } else {
-              resolve(true);
-            }
+            } else resolve(true);
           }, 100);
         }
       };
       checkVideo();
     });
-
-    // Safety timeout: reveal site anyway after 6s
     const safetyTimeout = setTimeout(finishPreloader, 6000);
-
-    Promise.all([waitForDOM, waitForVideo]).then(() => {
-      clearTimeout(safetyTimeout);
-      finishPreloader();
-    });
-
-    return () => {
-      clearTimeout(safetyTimeout);
-    };
+    Promise.all([waitForDOM, waitForVideo]).then(() => { clearTimeout(safetyTimeout); finishPreloader(); });
+    return () => clearTimeout(safetyTimeout);
   }, []);
 
   return (
@@ -423,17 +324,17 @@ export default function SplashIntro() {
           ))}
         </div>
         <div className="hero-ctas">
-          {HERO_CTAS.map((cta) => (
-            <Button key={cta.label} label={cta.label} href="#" icon={cta.icon} variant="link" className="cta-link" priority={true} />
+          {ctas?.map((cta: any, i: number) => (
+            <Button key={i} label={cta.label} href={cta.link || '#'} icon={cta.icon} variant="link" className="cta-link" priority={true} />
           ))}
         </div>
       </div>
       <div className="hero-description-area">
-        <h1 className="hero-title">Elevate Your Tenerife Lifestyle.</h1>
-        <p className="hero-subtitle">Premium Tenerife real estate. Expert guidance for buyers, sellers, and investors looking for exclusive opportunities.</p>
+        <h1 className="hero-title">{title}</h1>
+        <p className="hero-subtitle">{subtitle}</p>
         <div className="mobile-hero-ctas">
-          {HERO_CTAS.map((cta) => (
-            <Button key={cta.label} label={cta.label} href="#" icon={cta.icon} variant="link" className="cta-link" priority={true} />
+          {ctas?.map((cta: any, i: number) => (
+            <Button key={i} label={cta.label} href={cta.link || '#'} icon={cta.icon} variant="link" className="cta-link" priority={true} />
           ))}
         </div>
         <div className="hero-scroll">

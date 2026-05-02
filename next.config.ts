@@ -11,6 +11,11 @@ const nextConfig: NextConfig = {
         hostname: 'www.gstatic.com',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'cdn.sanity.io',
+        pathname: '/**',
+      },
     ],
   },
   trailingSlash: true,
