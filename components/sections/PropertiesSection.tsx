@@ -98,6 +98,8 @@ const PropertyCard = ({ prop }: { prop: any }) => {
           className="property-image primary img-reveal" 
           fill
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          placeholder={prop.image?.asset?.metadata?.lqip ? "blur" : "empty"}
+          blurDataURL={prop.image?.asset?.metadata?.lqip}
           style={{ objectFit: 'cover' }}
           onLoad={(e) => e.currentTarget.classList.add('loaded')}
         />
@@ -109,6 +111,8 @@ const PropertyCard = ({ prop }: { prop: any }) => {
             className="property-image secondary"
             fill
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            placeholder={prop.secondaryImage?.asset?.metadata?.lqip ? "blur" : "empty"}
+            blurDataURL={prop.secondaryImage?.asset?.metadata?.lqip}
             style={{ 
               objectFit: 'cover',
               WebkitMaskImage: 'linear-gradient(transparent, transparent)', 

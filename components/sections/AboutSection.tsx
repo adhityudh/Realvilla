@@ -111,6 +111,8 @@ const AboutSection = ({ data }: { data?: any }) => {
               alt=""
               fill
               sizes="50vw"
+              placeholder={data.bgImage?.asset?.metadata?.lqip ? "blur" : "empty"}
+              blurDataURL={data.bgImage?.asset?.metadata?.lqip}
               style={{ objectFit: 'cover' }}
               className="img-reveal"
               onLoad={(e) => e.currentTarget.classList.add('loaded')}
@@ -125,6 +127,8 @@ const AboutSection = ({ data }: { data?: any }) => {
               alt="Luxury Real Estate Object"
               fill
               sizes="(max-width: 1024px) 100vw, 50vw"
+              placeholder={data.objectImage?.asset?.metadata?.lqip ? "blur" : "empty"}
+              blurDataURL={data.objectImage?.asset?.metadata?.lqip}
               style={{ objectFit: 'contain', objectPosition: 'bottom' }}
               className="img-reveal"
               onLoad={(e) => e.currentTarget.classList.add('loaded')}
@@ -181,6 +185,8 @@ const AboutSection = ({ data }: { data?: any }) => {
                             alt={`Certificate ${num}`}
                             fill
                             sizes="(max-width: 768px) 100vw, 200px"
+                            placeholder={cert.asset?.metadata?.lqip ? "blur" : "empty"}
+                            blurDataURL={cert.asset?.metadata?.lqip}
                             style={{ objectFit: 'cover' }}
                             className="img-reveal"
                             onLoad={(e) => {

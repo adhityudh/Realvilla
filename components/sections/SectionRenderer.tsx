@@ -1,11 +1,13 @@
-import HeroCombined from './HeroCombined'
-import AboutSection from './AboutSection'
-import PropertiesSection from './PropertiesSection'
-import ValuationSection from './ValuationSection'
-import PartnerSection from './PartnerSection'
-import TestimonialsSection from './TestimonialsSection'
-import ContactSection from './ContactSection'
-import MortgageFAQSection from './MortgageFAQSection'
+import dynamic from 'next/dynamic'
+
+const HeroCombined = dynamic(() => import('./HeroCombined'), { ssr: true })
+const AboutSection = dynamic(() => import('./AboutSection'), { ssr: true })
+const PropertiesSection = dynamic(() => import('./PropertiesSection'), { ssr: true })
+const ValuationSection = dynamic(() => import('./ValuationSection'), { ssr: true })
+const PartnerSection = dynamic(() => import('./PartnerSection'), { ssr: true })
+const TestimonialsSection = dynamic(() => import('./TestimonialsSection'), { ssr: true })
+const ContactSection = dynamic(() => import('./ContactSection'), { ssr: true })
+const MortgageFAQSection = dynamic(() => import('./MortgageFAQSection'), { ssr: true })
 
 const sectionMap: Record<string, any> = {
   heroSection: HeroCombined,

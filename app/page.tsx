@@ -12,7 +12,11 @@ export default async function Home() {
   // We use slug 'home' for the homepage by convention
   let data = null;
   try {
-    data = await client.fetch(PAGE_QUERY, { slug: 'home' });
+    data = await client.fetch(
+      PAGE_QUERY, 
+      { slug: 'home' },
+      { next: { revalidate: 60, tags: ['page', 'home'] } }
+    );
   } catch (error) {
     console.error('Sanity fetch error:', error);
   }
