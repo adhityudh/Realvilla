@@ -16,16 +16,28 @@ export const heroSection = defineType({
       type: 'text',
     }),
     defineField({
-      name: 'desktopVideo',
-      title: 'Desktop Video',
+      name: 'desktopVideoMP4',
+      title: 'Desktop Video (MP4 - H.265)',
       type: 'file',
-      options: { accept: 'video/*' }
+      options: { accept: 'video/mp4' }
     }),
     defineField({
-      name: 'mobileVideo',
-      title: 'Mobile Video',
+      name: 'desktopVideoWebM',
+      title: 'Desktop Video (WebM - VP9)',
       type: 'file',
-      options: { accept: 'video/*' }
+      options: { accept: 'video/webm' }
+    }),
+    defineField({
+      name: 'mobileVideoMP4',
+      title: 'Mobile Video (MP4 - H.265)',
+      type: 'file',
+      options: { accept: 'video/mp4' }
+    }),
+    defineField({
+      name: 'mobileVideoWebM',
+      title: 'Mobile Video (WebM - VP9)',
+      type: 'file',
+      options: { accept: 'video/webm' }
     }),
     defineField({
       name: 'ctas',

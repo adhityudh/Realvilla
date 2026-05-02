@@ -9,8 +9,10 @@ export const PAGE_QUERY = groq`
       _type == "heroSection" => {
         title,
         subtitle,
-        "desktopVideo": desktopVideo.asset->url,
-        "mobileVideo": mobileVideo.asset->url,
+        "desktopVideoMP4": desktopVideoMP4.asset->url,
+        "desktopVideoWebM": desktopVideoWebM.asset->url,
+        "mobileVideoMP4": mobileVideoMP4.asset->url,
+        "mobileVideoWebM": mobileVideoWebM.asset->url,
         "ctas": ctas[] {
           label,
           "icon": icon.asset->url,

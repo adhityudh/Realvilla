@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useLenis } from '@/lib/LenisContext';
@@ -90,20 +90,33 @@ export function getHeroRevealAnimation(tl: gsap.core.Timeline, isMobile: boolean
 
 export default function HeroSection({ data }: { data?: any }) {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const [device, setDevice] = useState<'desktop' | 'mobile' | null>(null);
 
   if (!data) return null;
 
-  const desktopVideo = data.desktopVideo;
-  const mobileVideo = data.mobileVideo;
+  const desktopVideoMP4 = data.desktopVideoMP4;
+  const desktopVideoWebM = data.desktopVideoWebM;
+  const mobileVideoMP4 = data.mobileVideoMP4;
+  const mobileVideoWebM = data.mobileVideoWebM;
 
   useHeroScrollAnimations();
 
   useEffect(() => {
-    const v = videoRef.current;
-    if (!v || !desktopVideo || !mobileVideo) return;
+    const checkDevice = () => {
+      const mobile = window.innerWidth <= 768;
+      setDevice(mobile ? 'mobile' : 'desktop');
+    };
 
-    const isMobile = window.innerWidth <= 768;
-    v.src = isMobile ? mobileVideo : desktopVideo;
+    checkDevice();
+    window.addEventListener('resize', checkDevice);
+    return () => window.removeEventListener('resize', checkDevice);
+  }, []);
+
+  useEffect(() => {
+    const v = videoRef.current;
+    if (!v || !device) return;
+
+    // Force video reload when source changes
     v.load();
 
     const revealMedia = () => {
@@ -124,11 +137,24 @@ export default function HeroSection({ data }: { data?: any }) {
     if (v.readyState >= 2) revealMedia();
     else v.addEventListener('loadeddata', revealMedia);
     return () => { v.removeEventListener('loadeddata', revealMedia); };
-  }, [desktopVideo, mobileVideo]);
+  }, [device, desktopVideoMP4, mobileVideoMP4]);
+
+  const currentMP4 = device === 'mobile' ? mobileVideoMP4 : desktopVideoMP4;
+  const currentWebM = device === 'mobile' ? mobileVideoWebM : desktopVideoWebM;
 
   return (
     <main className="main-hero">
-      <video ref={videoRef} className="hero-bg-video" preload="auto" muted playsInline />
+      <video 
+        ref={videoRef} 
+        className="hero-bg-video" 
+        preload="auto" 
+        muted 
+        playsInline 
+        key={device} // Re-mount video element when device changes to ensure sources are re-evaluated
+      >
+        {currentMP4 && <source src={currentMP4} type='video/mp4; codecs="hvc1"' />}
+        {currentWebM && <source src={currentWebM} type="video/webm" />}
+      </video>
       <div className="hero-overlay" />
     </main>
   );
