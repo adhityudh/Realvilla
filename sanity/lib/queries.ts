@@ -63,6 +63,11 @@ export const PAGE_QUERY = groq`
         headline,
         selectionType,
         limit,
+        ctaLabel,
+        "ctaLink": select(
+          linkType == "internal" => "/" + internalLink->slug.current,
+          linkType == "external" => externalLink
+        ),
         "properties": select(
           selectionType == "manual" => manualProperties[]-> {
             _id,

@@ -239,9 +239,14 @@ const PropertiesSection = ({ data }: { data?: any }) => {
           ))}
         </div>
 
-        <div className="properties-cta-container" ref={ctaRef}>
-          <Button label="VIEW ALL PROPERTIES" href="/properties" />
-        </div>
+        {data.ctaLabel && data.ctaLink && (
+          <div className="properties-cta-container" ref={ctaRef}>
+            <Button 
+              label={data.ctaLabel} 
+              href={data.ctaLink} 
+            />
+          </div>
+        )}
       </div>
     </section>
   );
