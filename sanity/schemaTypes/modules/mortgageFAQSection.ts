@@ -103,4 +103,15 @@ export const mortgageFAQSection = defineType({
       hidden: ({ parent }) => !parent?.showSecondaryCta || parent?.ctaSecondaryLinkType !== 'external',
     }),
   ],
+  preview: {
+    select: {
+      title: 'title',
+    },
+    prepare({ title }) {
+      return {
+        title: title || 'No Title',
+        subtitle: 'Mortgage FAQ Section',
+      }
+    },
+  },
 })

@@ -46,4 +46,15 @@ export const testimonialsSection = defineType({
       options: { hotspot: true },
     }),
   ],
+  preview: {
+    select: {
+      title: 'title',
+    },
+    prepare({ title }) {
+      return {
+        title: title || 'No Title',
+        subtitle: 'Testimonials Section',
+      }
+    },
+  },
 })

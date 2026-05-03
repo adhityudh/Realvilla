@@ -63,4 +63,15 @@ export const valuationSection = defineType({
       type: 'url',
     }),
   ],
+  preview: {
+    select: {
+      title: 'headline',
+    },
+    prepare({ title }) {
+      return {
+        title: title || 'No Headline',
+        subtitle: 'Valuation Section',
+      }
+    },
+  },
 })

@@ -96,4 +96,15 @@ export const heroSection = defineType({
       ]
     }),
   ],
+  preview: {
+    select: {
+      title: 'title',
+    },
+    prepare({ title }) {
+      return {
+        title: title || 'No Title',
+        subtitle: 'Hero Section',
+      }
+    },
+  },
 })

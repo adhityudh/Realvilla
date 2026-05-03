@@ -45,4 +45,15 @@ export const contactSection = defineType({
       options: { hotspot: true },
     }),
   ],
+  preview: {
+    select: {
+      title: 'headline',
+    },
+    prepare({ title }) {
+      return {
+        title: title || 'No Headline',
+        subtitle: 'Contact Section',
+      }
+    },
+  },
 })

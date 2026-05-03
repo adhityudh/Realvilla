@@ -84,4 +84,15 @@ export const aboutSection = defineType({
       ],
     }),
   ],
+  preview: {
+    select: {
+      title: 'headline',
+    },
+    prepare({ title }) {
+      return {
+        title: title || 'No Headline',
+        subtitle: 'About Section',
+      }
+    },
+  },
 })

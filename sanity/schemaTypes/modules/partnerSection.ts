@@ -67,4 +67,15 @@ export const partnerSection = defineType({
       ],
     }),
   ],
+  preview: {
+    select: {
+      title: 'title',
+    },
+    prepare({ title }) {
+      return {
+        title: title || 'No Title',
+        subtitle: 'Partner Section',
+      }
+    },
+  },
 })

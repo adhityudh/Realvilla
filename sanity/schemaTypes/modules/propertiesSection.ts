@@ -67,4 +67,15 @@ export const propertiesSection = defineType({
       hidden: ({ parent }) => parent?.selectionType !== 'manual',
     }),
   ],
+  preview: {
+    select: {
+      title: 'headline',
+    },
+    prepare({ title }) {
+      return {
+        title: title || 'No Headline',
+        subtitle: 'Properties Section',
+      }
+    },
+  },
 })
