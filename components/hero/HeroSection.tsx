@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import { usePathname } from 'next/navigation';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useLenis } from '@/lib/LenisContext';
@@ -90,6 +91,7 @@ export function getHeroRevealAnimation(tl: gsap.core.Timeline, isMobile: boolean
 
 export default function HeroSection({ data }: { data?: any }) {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const pathname = usePathname();
   const [device, setDevice] = useState<'desktop' | 'mobile' | null>(null);
 
   if (!data) return null;
@@ -150,7 +152,7 @@ export default function HeroSection({ data }: { data?: any }) {
         preload="auto" 
         muted 
         playsInline 
-        key={device} // Re-mount video element when device changes to ensure sources are re-evaluated
+        key={`${device}-${pathname}`} // Force clean re-mount on device OR locale change
       >
         {currentMP4 && <source src={currentMP4} type='video/mp4; codecs="hvc1"' />}
         {currentWebM && <source src={currentWebM} type="video/webm" />}

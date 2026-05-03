@@ -66,13 +66,10 @@ export default function SmoothScroller({ children }: { children: React.ReactNode
     lenis.scrollTo(0, { immediate: true });
     document.body.classList.add('preloading');
     
-    // Kill existing triggers to avoid ghosting during transition
-    ScrollTrigger.getAll().forEach(st => st.kill());
-
     // Give a small delay for the new content to be in the DOM
     const timer = setTimeout(() => {
       ScrollTrigger.refresh();
-    }, 100);
+    }, 200);
 
     return () => clearTimeout(timer);
   }, [pathname, lenis]);
