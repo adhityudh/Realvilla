@@ -33,18 +33,42 @@ function useSplashIntroAnimations() {
 
   useEffect(() => {
     if (!lenis || window.innerWidth > 1024) return;
+    
+    // Ensure the logo area is fully visible before we start the scroll trigger
+    gsap.set('.logo-content-area', { opacity: 1, visibility: 'visible' });
+
     const fadeTl = gsap.timeline();
     fadeTl
-      .to('.logo-content-area', { opacity: 0, y: -20, ease: 'none' }, 0)
-      .to('.hero-title', { opacity: 0, y: -15, ease: 'none' }, 0.1)
-      .to('.hero-subtitle', { opacity: 0, y: -10, ease: 'none' }, 0.2)
-      .to('.mobile-hero-ctas', { opacity: 0, y: -5, ease: 'none' }, 0.3)
-      .to('.hero-scroll', { opacity: 0, y: -2, ease: 'none' }, 0.4);
+      .fromTo('.logo-content-area', 
+        { opacity: 1, visibility: 'visible' },
+        { opacity: 0, y: '-=40', ease: 'none' }, 
+        0
+      )
+      .fromTo('.hero-title',
+        { opacity: 1 },
+        { opacity: 0, y: '-=30', ease: 'none' },
+        0.1
+      )
+      .fromTo('.hero-subtitle',
+        { opacity: 1 },
+        { opacity: 0, y: '-=20', ease: 'none' },
+        0.2
+      )
+      .fromTo('.mobile-hero-ctas',
+        { opacity: 1 },
+        { opacity: 0, y: '-=15', ease: 'none' },
+        0.3
+      )
+      .fromTo('.hero-scroll',
+        { opacity: 1 },
+        { opacity: 0, y: '-=10', ease: 'none' },
+        0.4
+      );
 
     const st = ScrollTrigger.create({
       trigger: '.main-hero',
       start: 'top top',
-      end: '40% top',
+      end: '50% top',
       scrub: true,
       animation: fadeTl,
     });
@@ -140,7 +164,7 @@ function breakoutLogoSynchronously(logoArea: HTMLElement, splashIntro: HTMLEleme
     width: `${logoAreaRect.width}px`,
     margin: '0',
     padding: '0',
-    zIndex: '200001',
+    zIndex: '300000',
     pointerEvents: 'none',
     willChange: 'transform',
     visibility: 'hidden',

@@ -6,6 +6,12 @@ export const page = defineType({
   type: 'document',
   fields: [
     defineField({
+      name: 'language',
+      type: 'string',
+      readOnly: true,
+      hidden: true,
+    }),
+    defineField({
       name: 'title',
       title: 'Title',
       type: 'string',
@@ -18,6 +24,18 @@ export const page = defineType({
       options: {
         source: 'title',
         maxLength: 96,
+        isUnique: async (slug, context) => {
+          const { document, getClient } = context
+          const client = getClient({ apiVersion: '2024-05-02' })
+          const id = document?._id.replace(/^drafts\./, '')
+          const language = document?.language
+
+          // Only check uniqueness within the same language
+          const query = `*[_type == "page" && slug.current == $slug && language == $language && _id != $id && !(_id in path("drafts.**"))][0]`
+          const result = await client.fetch(query, { slug, language, id })
+          
+          return !result
+        }
       },
       validation: (Rule) => Rule.required(),
     }),
@@ -37,4 +55,15 @@ export const page = defineType({
       ],
     }),
   ],
+  preview: {
+    select: {
+      title: 'title',
+      language: 'language',
+    },
+    prepare({ title, language }) {
+      return {
+        title: `${language ? `[${language.toUpperCase()}] ` : ''}${title}`,
+      }
+    },
+  },
 })

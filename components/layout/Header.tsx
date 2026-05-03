@@ -7,6 +7,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { HEADER_LETTERS, NAV_LINKS } from '@/lib/letters';
 import { useLenis } from '@/lib/LenisContext';
 import Button from '@/components/ui/Button';
+import LanguageSwitcher from './LanguageSwitcher';
 import './Header.css';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -118,6 +119,14 @@ export default function Header() {
 
   return (
     <header className="header">
+      <div className="mobile-pill-nav">
+        {NAV_LINKS.map((link, i) => (
+          <span key={link.label} style={{ display: 'contents' }}>
+            <a href={link.href} className="pill-link"><span>{link.label}</span></a>
+            {i < NAV_LINKS.length - 1 && <div className="pill-sep" />}
+          </span>
+        ))}
+      </div>
       <div className="header-content">
         <a href="/" className="header-logo" aria-label="Real Villa">
           {HEADER_LETTERS.map((letter, i) => (
@@ -135,6 +144,7 @@ export default function Header() {
           ))}
         </nav>
         <div className="header-actions">
+          <LanguageSwitcher />
           <Button label="Speak to an Expert" href="#" variant="dark" className="btn-book" />
         </div>
         <button 

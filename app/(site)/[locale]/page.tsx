@@ -7,15 +7,17 @@ import FooterSection from '@/components/sections/FooterSection';
 import { client } from '@/sanity/lib/client';
 import { PAGE_QUERY } from '@/sanity/lib/queries';
 
-export default async function Home() {
+export default async function Home({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+
   // Fetch homepage data from Sanity
   // We use slug 'home' for the homepage by convention
   let data = null;
   try {
     data = await client.fetch(
       PAGE_QUERY, 
-      { slug: 'home' },
-      { next: { revalidate: 60, tags: ['page', 'home'] } }
+      { slug: 'home', language: locale },
+      { next: { revalidate: 60, tags: ['page', 'home', 'property'] } }
     );
   } catch (error) {
     console.error('Sanity fetch error:', error);

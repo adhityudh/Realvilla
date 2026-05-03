@@ -10,17 +10,19 @@ export async function POST(req: NextRequest) {
     );
 
     if (!isValidSignature) {
+      console.error('Revalidation error: Invalid signature');
       return new NextResponse('Invalid signature', { status: 401 });
     }
 
     if (!body?._type) {
+      console.error('Revalidation error: Missing body type');
       return new NextResponse('Bad Request', { status: 400 });
     }
 
-    // Revalidate by tag based on document type
+    // 1. Revalidate by specific document type
     revalidateTag(body._type, { expire: 0 });
 
-    // If it's a page, we might want to revalidate the 'page' tag as well
+    // 2. If it's a 'page' document, revalidate the 'page' tag and its specific slug
     if (body._type === 'page') {
       revalidateTag('page', { expire: 0 });
       if (body.slug?.current) {
@@ -28,7 +30,13 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    console.log(`Revalidated: ${body._type} ${body.slug?.current || ''}`);
+    // 3. Since the homepage depends on many document types (like properties),
+    // we also revalidate the 'page' tag when those types change to be safe.
+    if (['property'].includes(body._type)) {
+      revalidateTag('page', { expire: 0 });
+    }
+
+    console.log(`[Webhook] Revalidated: ${body._type} ${body.slug?.current || ''}`);
 
     return NextResponse.json({
       status: 200,
@@ -37,7 +45,7 @@ export async function POST(req: NextRequest) {
       body,
     });
   } catch (err: any) {
-    console.error(err);
+    console.error('Revalidation Error:', err);
     return new NextResponse(err.message, { status: 500 });
   }
 }

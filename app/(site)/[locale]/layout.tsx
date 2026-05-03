@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { Cormorant_Garamond, Manrope } from 'next/font/google';
-import './globals.css';
+import '../../globals.css';
 
 const cormorant = Cormorant_Garamond({
   subsets: ['latin'],
@@ -27,9 +27,17 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ 
+  children,
+  params
+}: { 
+  children: React.ReactNode;
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+
   return (
-    <html lang="en" className={`${cormorant.variable} ${manrope.variable}`}>
+    <html lang={locale} className={`${cormorant.variable} ${manrope.variable}`}>
       <body>{children}</body>
     </html>
   );

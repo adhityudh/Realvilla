@@ -1,7 +1,7 @@
 import { groq } from 'next-sanity'
 
 export const PAGE_QUERY = groq`
-  *[_type == "page" && slug.current == $slug][0] {
+  *[_type == "page" && slug.current == $slug && (language == $language || (!defined(language) && $language == "en"))][0] {
     title,
     sections[] {
       _type,
@@ -75,7 +75,7 @@ export const PAGE_QUERY = groq`
             image { asset->{ _id, url, metadata { lqip, dimensions } } },
             secondaryImage { asset->{ _id, url, metadata { lqip, dimensions } } }
           },
-          selectionType == "dynamic" || !selectionType => *[_type == "property" && (showSold == true || status != "sold")] | order(_createdAt desc) [0...10] {
+          selectionType == "dynamic" || !selectionType => *[_type == "property" && (language == $language || (!defined(language) && $language == "en")) && (showSold == true || status != "sold")] | order(_createdAt desc) [0...10] {
             _id,
             address,
             price,
