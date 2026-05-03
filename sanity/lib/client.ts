@@ -11,4 +11,5 @@ export const client = createClient({
     enabled: process.env.NEXT_PUBLIC_SANITY_STEGA === 'true',
     studioUrl: '/studio',
   },
+  token: process.env.SANITY_API_READ_TOKEN,
 })
