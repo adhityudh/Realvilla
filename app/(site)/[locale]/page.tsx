@@ -4,11 +4,13 @@ import MobileNav from '@/components/layout/MobileNav';
 import SplashIntro from '@/components/hero/SplashIntro';
 import SectionRenderer from '@/components/sections/SectionRenderer';
 import FooterSection from '@/components/sections/FooterSection';
+import { draftMode } from 'next/headers';
 import { client } from '@/sanity/lib/client';
 import { PAGE_QUERY } from '@/sanity/lib/queries';
 
 export default async function Home({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
+  const isDraftMode = (await draftMode()).isEnabled;
 
   // Fetch homepage data from Sanity
   // We use slug 'home' for the homepage by convention
@@ -17,7 +19,14 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
     data = await client.fetch(
       PAGE_QUERY, 
       { slug: 'home', language: locale },
-      { next: { revalidate: 60, tags: ['page', 'home', 'property'] } }
+      { 
+        perspective: isDraftMode ? 'previewDrafts' : 'published',
+        stega: isDraftMode,
+        next: { 
+          revalidate: isDraftMode ? 0 : 60, 
+          tags: ['page', 'home', 'property'] 
+        } 
+      }
     );
   } catch (error) {
     console.error('Sanity fetch error:', error);

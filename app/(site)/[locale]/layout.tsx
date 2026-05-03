@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
 import { Cormorant_Garamond, Manrope } from 'next/font/google';
+import { VisualEditing } from 'next-sanity/visual-editing';
+import { draftMode } from 'next/headers';
 import '../../globals.css';
 
 const cormorant = Cormorant_Garamond({
@@ -35,10 +37,14 @@ export default async function RootLayout({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
+  const isDraftMode = (await draftMode()).isEnabled;
 
   return (
     <html lang={locale} className={`${cormorant.variable} ${manrope.variable}`}>
-      <body>{children}</body>
+      <body>
+        {children}
+        {isDraftMode && <VisualEditing />}
+      </body>
     </html>
   );
 }

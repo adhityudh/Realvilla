@@ -7,6 +7,7 @@
 import { visionTool } from '@sanity/vision'
 import { defineConfig } from 'sanity'
 import { structureTool } from 'sanity/structure'
+import { presentationTool } from 'sanity/presentation'
 import { documentInternationalization } from '@sanity/document-internationalization'
 
 // Go to https://www.sanity.io/docs/api-versioning for how versioning works
@@ -21,6 +22,14 @@ export default defineConfig({
   schema,
   plugins: [
     structureTool(),
+    presentationTool({
+      previewUrl: {
+        origin: typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000',
+        previewMode: {
+          enable: '/api/draft',
+        },
+      },
+    }),
     documentInternationalization({
       supportedLanguages: [
         { id: 'en', title: 'English' },
