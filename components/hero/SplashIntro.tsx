@@ -117,6 +117,7 @@ function breakoutLogoSynchronously(logoArea: HTMLElement, splashIntro: HTMLEleme
   if (logoArea.id === 'morph-breakout-logo') return;
   const logoAreaRect = logoArea.getBoundingClientRect();
   const scrollY = window.scrollY;
+  
   const spacer = logoArea.cloneNode(false) as HTMLElement;
   spacer.className = 'logo-content-area-spacer';
   Object.assign(spacer.style, {
@@ -128,6 +129,7 @@ function breakoutLogoSynchronously(logoArea: HTMLElement, splashIntro: HTMLEleme
     margin: window.getComputedStyle(logoArea).margin
   });
   logoArea.parentNode?.insertBefore(spacer, logoArea);
+
   logoArea.id = 'morph-breakout-logo';
   Object.assign(logoArea.style, {
     position: 'fixed',
@@ -140,7 +142,7 @@ function breakoutLogoSynchronously(logoArea: HTMLElement, splashIntro: HTMLEleme
     pointerEvents: 'none',
     willChange: 'transform',
     visibility: 'visible',
-    opacity: '1'
+    opacity: '1' // Restored to 1 so intro is visible again
   });
   document.body.appendChild(logoArea);
 }
@@ -165,16 +167,19 @@ export function setupLogoMorph(isMobile: boolean, heroEl: HTMLElement) {
   const scrollEnd = heroEl.offsetHeight;
   const wordLocalY = targetHeaderCenterY - initialWordCenterY + scrollEnd;
   const toX = targetLeftPx - wordRect.left;
+  
   gsap.set(heroEl, { overflow: 'hidden', clipPath: 'inset(0px 0px 0px 0px round 0px)' });
   gsap.set(splashIntro, { overflow: 'visible' });
   gsap.set(logoArea, { y: 0, opacity: 1, visibility: 'visible' });
   gsap.set(wordContainer, { x: 0, y: 0, scale: 1, transformOrigin: 'left center' });
+  
   const morphTl = gsap.timeline({ paused: true });
   morphTl
     .to(logoArea, { y: -scrollEnd, duration: 1, ease: 'none', force3D: true, overwrite: 'auto' }, 0)
     .to(heroCtas, { opacity: 0, y: '250%', duration: 0.25, ease: 'none', force3D: true, overwrite: 'auto' }, 0)
     .to(heroDesc, { opacity: 0, duration: 0.5, ease: 'none', force3D: true, overwrite: 'auto' }, 0)
     .to(wordContainer, { x: toX, y: wordLocalY, scale: targetScale, duration: 1, ease: 'none', force3D: true, overwrite: 'auto' }, 0);
+  
   const morphST = ScrollTrigger.create({
     trigger: '.main-hero', start: 'top top', end: '50% top', scrub: true, animation: morphTl, invalidateOnRefresh: true,
   });
@@ -211,11 +216,6 @@ function useIntroOrchestrator() {
       paused: true,
       onStart: () => { 
         document.body.classList.add('intro-active'); 
-        const logoArea = document.querySelector('.logo-content-area') as HTMLElement;
-        const splashIntro = document.querySelector('.splash-intro') as HTMLElement;
-        if (!isMobile && logoArea && splashIntro) {
-          breakoutLogoSynchronously(logoArea, splashIntro);
-        }
       },
       onComplete: () => { releaseScroll(); initMorph(); },
     });
@@ -224,6 +224,7 @@ function useIntroOrchestrator() {
     const logoArea = document.querySelector('.logo-content-area') as HTMLElement;
     const splashIntro = document.querySelector('.splash-intro') as HTMLElement;
     if (!heroEl || !logoArea || !splashIntro) return;
+    if (!isMobile) breakoutLogoSynchronously(logoArea, splashIntro);
     
     getHeroRevealAnimation(tl, isMobile);
     getSplashIntroAnimations(tl, releaseScroll);
