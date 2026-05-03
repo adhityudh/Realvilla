@@ -11,6 +11,9 @@ if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
 }
 
+// Global variable to persist device type across navigations (SPA)
+let globalDevice: 'desktop' | 'mobile' | null = null;
+
 function useHeroScrollAnimations() {
   const lenis = useLenis();
 
@@ -92,7 +95,7 @@ export function getHeroRevealAnimation(tl: gsap.core.Timeline, isMobile: boolean
 export default function HeroSection({ data }: { data?: any }) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const pathname = usePathname();
-  const [device, setDevice] = useState<'desktop' | 'mobile' | null>(null);
+  const [device, setDevice] = useState<'desktop' | 'mobile' | null>(globalDevice);
 
   if (!data) return null;
 
@@ -104,9 +107,13 @@ export default function HeroSection({ data }: { data?: any }) {
   useHeroScrollAnimations();
 
   useEffect(() => {
+    if (globalDevice) return; // Only detect once
+
     const checkDevice = () => {
       const mobile = window.innerWidth <= 768;
-      setDevice(mobile ? 'mobile' : 'desktop');
+      const current = mobile ? 'mobile' : 'desktop';
+      globalDevice = current;
+      setDevice(current);
     };
 
     checkDevice();
@@ -114,12 +121,19 @@ export default function HeroSection({ data }: { data?: any }) {
     return () => window.removeEventListener('resize', checkDevice);
   }, []);
 
+  const lastSrcRef = useRef<string | null>(null);
+
   useEffect(() => {
     const v = videoRef.current;
     if (!v || !device) return;
 
-    // Force video reload when source changes
-    v.load();
+    const currentSrc = device === 'mobile' ? mobileVideoMP4 : desktopVideoMP4;
+    
+    // Only call load() if the source has actually changed since the last mount/update
+    if (lastSrcRef.current && lastSrcRef.current !== currentSrc) {
+      v.load();
+    }
+    lastSrcRef.current = currentSrc;
 
     const revealMedia = () => {
       gsap.to(v, {
@@ -135,7 +149,6 @@ export default function HeroSection({ data }: { data?: any }) {
       });
     };
 
-    v.currentTime = 0;
     if (v.readyState >= 2) revealMedia();
     else v.addEventListener('loadeddata', revealMedia);
     return () => { v.removeEventListener('loadeddata', revealMedia); };
@@ -148,13 +161,13 @@ export default function HeroSection({ data }: { data?: any }) {
     <main className="main-hero">
       <video 
         ref={videoRef} 
-        className="hero-bg-video" 
+        className={`hero-bg-video ${!device ? 'is-loading' : ''}`} 
         preload="auto" 
         muted 
         playsInline 
-        key={`${device}-${pathname}`} // Force clean re-mount on device OR locale change
+        style={{ opacity: 0 }} // Start invisible, revealed by GSAP
       >
-        {currentMP4 && <source src={currentMP4} type='video/mp4; codecs="hvc1"' />}
+        {currentMP4 && <source src={currentMP4} type='video/mp4' />}
         {currentWebM && <source src={currentWebM} type="video/webm" />}
       </video>
       <div className="hero-overlay" />
