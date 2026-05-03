@@ -35,7 +35,7 @@ export default defineConfig({
         { id: 'en', title: 'English' },
         { id: 'es', title: 'Spanish' },
       ],
-      schemaTypes: ['page', 'property'],
+      schemaTypes: ['page', 'property', 'settings'],
     }),
     // Vision is a tool that lets you query your content with GROQ in the studio
     // https://www.sanity.io/docs/the-vision-plugin

@@ -1,4 +1,3 @@
-import SmoothScroller from '@/components/SmoothScroller';
 import Header from '@/components/layout/Header';
 import MobileNav from '@/components/layout/MobileNav';
 import SplashIntro from '@/components/hero/SplashIntro';
@@ -6,28 +5,29 @@ import SectionRenderer from '@/components/sections/SectionRenderer';
 import FooterSection from '@/components/sections/FooterSection';
 import { draftMode } from 'next/headers';
 import { client } from '@/sanity/lib/client';
-import { PAGE_QUERY } from '@/sanity/lib/queries';
+import { PAGE_QUERY, SETTINGS_QUERY } from '@/sanity/lib/queries';
 
 export default async function Home({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   const isDraftMode = (await draftMode()).isEnabled;
 
-  // Fetch homepage data from Sanity
-  // We use slug 'home' for the homepage by convention
+  // Fetch homepage and settings data from Sanity
   let data = null;
+  let settingsData = null;
   try {
-    data = await client.fetch(
-      PAGE_QUERY, 
-      { slug: 'home', language: locale },
-      { 
-        perspective: isDraftMode ? 'previewDrafts' : 'published',
-        stega: isDraftMode,
-        next: { 
-          revalidate: isDraftMode ? 0 : 60, 
-          tags: ['page', 'home', 'property'] 
-        } 
-      }
-    );
+    const fetchOptions = { 
+      perspective: isDraftMode ? 'previewDrafts' : 'published',
+      stega: isDraftMode,
+      next: { 
+        revalidate: isDraftMode ? 0 : 60, 
+        tags: ['page', 'home', 'settings'] 
+      } 
+    };
+
+    [data, settingsData] = await Promise.all([
+      client.fetch(PAGE_QUERY, { slug: 'home', language: locale }, fetchOptions),
+      client.fetch(SETTINGS_QUERY, { language: locale }, fetchOptions)
+    ]);
   } catch (error) {
     console.error('Sanity fetch error:', error);
   }
@@ -63,11 +63,11 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
   }
 
   return (
-    <SmoothScroller>
-      <Header />
-      <MobileNav />
+    <>
+      <Header settings={settingsData} />
+      <MobileNav settings={settingsData} />
       <SectionRenderer sections={data.sections} />
       <FooterSection />
-    </SmoothScroller>
+    </>
   );
 }

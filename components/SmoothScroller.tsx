@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import { usePathname } from 'next/navigation';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Lenis from 'lenis';
@@ -55,6 +56,26 @@ export default function SmoothScroller({ children }: { children: React.ReactNode
       lenisInstance.destroy();
     };
   }, []);
+
+  const pathname = usePathname();
+
+  useEffect(() => {
+    if (!lenis) return;
+    
+    // On every route change, reset scroll and refresh triggers
+    lenis.scrollTo(0, { immediate: true });
+    document.body.classList.add('preloading');
+    
+    // Kill existing triggers to avoid ghosting during transition
+    ScrollTrigger.getAll().forEach(st => st.kill());
+
+    // Give a small delay for the new content to be in the DOM
+    const timer = setTimeout(() => {
+      ScrollTrigger.refresh();
+    }, 100);
+
+    return () => clearTimeout(timer);
+  }, [pathname, lenis]);
 
   return (
     <LenisContext.Provider value={lenis}>

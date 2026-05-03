@@ -114,16 +114,19 @@ function useHeaderScrollAnimations() {
   }, [lenis]);
 }
 
-export default function Header() {
+export default function Header({ settings }: { settings?: any }) {
   useHeaderScrollAnimations();
+
+  const navLinks = settings?.mainNav || NAV_LINKS.map(l => ({ label: l.label, link: l.href }));
+  const cta = settings?.headerCta;
 
   return (
     <header className="header">
       <div className="mobile-pill-nav">
-        {NAV_LINKS.map((link, i) => (
+        {navLinks.map((link: any, i: number) => (
           <span key={link.label} style={{ display: 'contents' }}>
-            <a href={link.href} className="pill-link"><span>{link.label}</span></a>
-            {i < NAV_LINKS.length - 1 && <div className="pill-sep" />}
+            <a href={link.link} className="pill-link"><span>{link.label}</span></a>
+            {i < navLinks.length - 1 && <div className="pill-sep" />}
           </span>
         ))}
       </div>
@@ -139,13 +142,20 @@ export default function Header() {
           ))}
         </a>
         <nav className="header-nav">
-          {NAV_LINKS.map((link) => (
-            <a key={link.label} href={link.href} className="nav-link">{link.label}</a>
+          {navLinks.map((link: any) => (
+            <a key={link.label} href={link.link} className="nav-link">{link.label}</a>
           ))}
         </nav>
         <div className="header-actions">
           <LanguageSwitcher />
-          <Button label="Speak to an Expert" href="#" variant="dark" className="btn-book" />
+          {cta?.label && (
+            <Button 
+              label={cta.label} 
+              href={cta.link || "#"} 
+              variant="dark" 
+              className="btn-book" 
+            />
+          )}
         </div>
         <button 
           className="hamburger" 

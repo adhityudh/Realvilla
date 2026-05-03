@@ -6,10 +6,11 @@ import StretchArrow from '@/components/ui/StretchArrow';
 import { useLenis } from '@/lib/LenisContext';
 import './MobileNav.css';
 
-export default function MobileNav() {
+export default function MobileNav({ settings }: { settings?: any }) {
   const lenis = useLenis();
 
   useEffect(() => {
+    // ... existing effect logic stays the same ...
     const handleToggle = () => {
       const hamburgerBtn = document.getElementById('hamburgerBtn');
       const mobileNavOverlay = document.getElementById('mobileNavOverlay');
@@ -43,17 +44,22 @@ export default function MobileNav() {
       links?.forEach(link => link.removeEventListener('click', handleLinkClick));
     };
   }, [lenis]);
+
+  const navLinks = settings?.mobileNav || NAV_LINKS.map(l => ({ label: l.label, link: l.href }));
+  const cta = settings?.headerCta;
+
   return (
     <>
       <div className="mobile-nav-overlay" id="mobileNavOverlay">
-        {NAV_LINKS.map((link) => (
-          <a key={link.label} href={link.href} className="nav-link-mobile">{link.label}</a>
+        {navLinks.map((link: any) => (
+          <a key={link.label} href={link.link} className="nav-link-mobile">{link.label}</a>
         ))}
-        <a href="#about" className="nav-link-mobile">About</a>
-        <a href="#" className="btn-book-mobile">
-          <span>Speak to an Expert</span>
-          <StretchArrow />
-        </a>
+        {cta?.label && (
+          <a href={cta.link || "#"} className="btn-book-mobile">
+            <span>{cta.label}</span>
+            <StretchArrow />
+          </a>
+        )}
       </div>
     </>
   );

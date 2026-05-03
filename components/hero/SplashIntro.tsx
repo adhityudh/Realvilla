@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import { usePathname } from 'next/navigation';
 import { preload } from 'react-dom';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -16,6 +17,7 @@ if (typeof window !== 'undefined') {
 
 function useSplashIntroAnimations() {
   const lenis = useLenis();
+  const pathname = usePathname();
 
   useEffect(() => {
     const splitText = (selector: string) => {
@@ -29,7 +31,7 @@ function useSplashIntroAnimations() {
     splitText('.hero-title');
     splitText('.hero-subtitle');
     gsap.set('.hero-title, .hero-subtitle', { opacity: 1 });
-  }, []);
+  }, [pathname]);
 
   useEffect(() => {
     if (!lenis || window.innerWidth > 1024) return;
@@ -214,20 +216,33 @@ export function setupLogoMorph(isMobile: boolean, heroEl: HTMLElement) {
 
 function useIntroOrchestrator() {
   const lenis = useLenis();
+  const pathname = usePathname();
   const initialized = useRef(false);
   const mainTl = useRef<gsap.core.Timeline | null>(null);
 
   useEffect(() => {
-    if (!lenis || initialized.current) return;
-    initialized.current = true;
+    // Immediate cleanup for SPA navigations
+    const existingLogo = document.getElementById('morph-breakout-logo');
+    if (existingLogo) existingLogo.remove();
+    document.body.classList.remove('intro-active');
+    document.body.classList.add('preloading');
+
+    if (!lenis) return;
+
+    // Lock scroll and reset to top for the new intro
+    lenis.stop();
+    lenis.scrollTo(0, { immediate: true });
+
     const isMobile = window.innerWidth <= 1024;
     let morphTlInstance: gsap.core.Timeline | null = null;
     let morphSTInstance: ScrollTrigger | null = null;
+
     const releaseScroll = () => {
       lenis.start();
       document.body.classList.remove('preloading');
       document.body.classList.remove('intro-active');
     };
+
     let morphInitialized = false;
     const initMorph = () => {
       if (isMobile || morphInitialized) return;
@@ -238,24 +253,29 @@ function useIntroOrchestrator() {
       morphTlInstance = morphTl;
       morphSTInstance = morphST;
     };
+
     const tl = gsap.timeline({
       paused: true,
       onStart: () => { document.body.classList.add('intro-active'); },
       onComplete: () => { releaseScroll(); initMorph(); },
     });
     mainTl.current = tl;
-    const heroEl = document.querySelector('.main-hero') as HTMLElement;
-    const logoArea = document.querySelector('.logo-content-area') as HTMLElement;
-    const splashIntro = document.querySelector('.splash-intro') as HTMLElement;
-    if (!heroEl || !logoArea || !splashIntro) return;
-    
-    // Breakout synchronously
-    if (!isMobile) breakoutLogoSynchronously(logoArea, splashIntro);
-    else gsap.set(logoArea, { opacity: 1, visibility: 'visible' });
 
-    getHeroRevealAnimation(tl, isMobile);
-    getSplashIntroAnimations(tl, releaseScroll);
-    tl.add(() => { initMorph(); }, 1.6);
+    // Small delay to ensure siblings (HeroSection) are rendered
+    const initTimer = setTimeout(() => {
+      const heroEl = document.querySelector('.main-hero') as HTMLElement;
+      const logoArea = document.querySelector('.logo-content-area') as HTMLElement;
+      const splashIntro = document.querySelector('.splash-intro') as HTMLElement;
+      if (!heroEl || !logoArea || !splashIntro) return;
+      
+      if (!isMobile) breakoutLogoSynchronously(logoArea, splashIntro);
+      else gsap.set(logoArea, { opacity: 1, visibility: 'visible' });
+
+      getHeroRevealAnimation(tl, isMobile);
+      getSplashIntroAnimations(tl, releaseScroll);
+      tl.add(() => { initMorph(); }, 1.6);
+    }, 50);
+
     const handleSkip = () => {
       if (tl.time() < 1.4) return;
       if (tl.progress() < 1 && tl.isActive()) {
@@ -271,7 +291,9 @@ function useIntroOrchestrator() {
     window.addEventListener('touchstart', handleSkip);
     const handlePreloaderComplete = () => { tl.play(); };
     window.addEventListener('preloader-complete', handlePreloaderComplete);
+
     return () => {
+      clearTimeout(initTimer);
       cleanupSkip();
       window.removeEventListener('preloader-complete', handlePreloaderComplete);
       mainTl.current?.kill();
@@ -280,7 +302,7 @@ function useIntroOrchestrator() {
       const clone = document.getElementById('morph-breakout-logo');
       if (clone) clone.remove();
     };
-  }, [lenis]);
+  }, [lenis, pathname]); // Re-run on pathname change to ensure fresh start
 }
 
 export default function SplashIntro({ data }: { data?: any }) {

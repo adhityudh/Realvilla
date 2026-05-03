@@ -148,3 +148,29 @@ export const PAGE_QUERY = groq`
     }
   }
 `
+
+export const SETTINGS_QUERY = groq`
+  *[_type == "settings" && (language == $language || (!defined(language) && $language == "en"))][0] {
+    mainNav[] {
+      label,
+      "link": select(
+        linkType == "internal" => "/" + internalLink->slug.current,
+        linkType == "external" => externalLink
+      )
+    },
+    mobileNav[] {
+      label,
+      "link": select(
+        linkType == "internal" => "/" + internalLink->slug.current,
+        linkType == "external" => externalLink
+      )
+    },
+    headerCta {
+      label,
+      "link": select(
+        linkType == "internal" => "/" + internalLink->slug.current,
+        linkType == "external" => externalLink
+      )
+    }
+  }
+`
