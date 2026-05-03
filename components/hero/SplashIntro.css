@@ -142,7 +142,7 @@
         .word-container {
             display: flex;
             gap: 0.1vw;
-            /* IMPROVED: Pre-hint GPU layer for logo morph */
+            will-change: transform;
         }
 
         .hero-ctas {
@@ -309,7 +309,8 @@
             height: 5.6vw;
             width: calc(5.6vw * var(--letter-w, 0.75));
             opacity: 0;
-            /* Hidden initially so it only appears when GSAP reveals it */
+            will-change: transform, opacity, filter;
+            /* Hidden initially, revealed by GSAP to ensure smooth entrance */
         }
 
         .video-box {

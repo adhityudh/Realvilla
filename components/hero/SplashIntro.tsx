@@ -209,7 +209,14 @@ function useIntroOrchestrator() {
     };
     const tl = gsap.timeline({
       paused: true,
-      onStart: () => { document.body.classList.add('intro-active'); },
+      onStart: () => { 
+        document.body.classList.add('intro-active'); 
+        const logoArea = document.querySelector('.logo-content-area') as HTMLElement;
+        const splashIntro = document.querySelector('.splash-intro') as HTMLElement;
+        if (!isMobile && logoArea && splashIntro) {
+          breakoutLogoSynchronously(logoArea, splashIntro);
+        }
+      },
       onComplete: () => { releaseScroll(); initMorph(); },
     });
     mainTl.current = tl;
@@ -217,9 +224,10 @@ function useIntroOrchestrator() {
     const logoArea = document.querySelector('.logo-content-area') as HTMLElement;
     const splashIntro = document.querySelector('.splash-intro') as HTMLElement;
     if (!heroEl || !logoArea || !splashIntro) return;
-    if (!isMobile) breakoutLogoSynchronously(logoArea, splashIntro);
+    
     getHeroRevealAnimation(tl, isMobile);
     getSplashIntroAnimations(tl, releaseScroll);
+
     tl.add(() => { initMorph(); }, 1.6);
     const handleSkip = () => {
       if (tl.time() < 1.4) return;
@@ -300,7 +308,7 @@ export default function SplashIntro({ data }: { data?: any }) {
       };
       checkVideo();
     });
-    const safetyTimeout = setTimeout(finishPreloader, 6000);
+    const safetyTimeout = setTimeout(finishPreloader, 2500);
     Promise.all([waitForDOM, waitForVideo]).then(() => { clearTimeout(safetyTimeout); finishPreloader(); });
     return () => clearTimeout(safetyTimeout);
   }, []);
