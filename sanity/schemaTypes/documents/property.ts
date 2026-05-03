@@ -32,7 +32,11 @@ export const property = defineType({
 
           // Only check uniqueness within the same language
           const query = `*[_type == "property" && slug.current == $slug && language == $language && _id != $id && !(_id in path("drafts.**"))][0]`
-          const result = await client.fetch(query, { slug, language, id })
+          const result = await client.fetch(query, { 
+            slug, 
+            language: language || null, 
+            id 
+          })
           
           return !result
         }
