@@ -25,7 +25,7 @@ export default function LanguageSwitcher() {
     const newSegments = [...segments];
     newSegments[1] = newLocale;
     const newPathname = newSegments.join('/') || '/';
-    
+
     setIsOpen(false);
     router.push(newPathname);
   };
@@ -44,14 +44,14 @@ export default function LanguageSwitcher() {
 
   return (
     <div className={`language-switcher-wrapper ${isOpen ? 'is-open' : ''}`} ref={dropdownRef}>
-      <button 
-        className="lang-current-btn" 
+      <button
+        className="lang-current-btn"
         onClick={() => setIsOpen(!isOpen)}
         aria-label="Select Language"
       >
         <span className="lang-label">{currentLocale.toUpperCase()}</span>
-        <svg 
-          className={`lang-chevron ${isOpen ? 'up' : ''}`} 
+        <svg
+          className={`lang-chevron ${isOpen ? 'up' : ''}`}
           viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"
         >
           <path d="M6 9l6 6 6-6" />
@@ -65,7 +65,7 @@ export default function LanguageSwitcher() {
             onClick={() => handleLocaleChange(locale)}
             className={`lang-option ${currentLocale === locale ? 'active' : ''}`}
           >
-            {locale === 'en' ? 'English' : 'Español'}
+            {locale === 'en' ? 'English' : 'Spanish'}
             {currentLocale === locale && (
               <svg className="lang-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
                 <path d="M20 6L9 17l-5-5" />
