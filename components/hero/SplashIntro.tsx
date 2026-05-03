@@ -52,14 +52,15 @@ function useSplashIntroAnimations() {
 }
 
 export function getSplashIntroAnimations(tl: gsap.core.Timeline, onReleaseScroll: () => void) {
-  tl.to('.preloader-border-box', { opacity: 0, duration: 0.8, ease: 'power2.out' }, 0);
-
+  // Start logo reveal earlier in the timeline
   tl.fromTo(
     '.letter-wrapper',
     { opacity: 0, y: 40, filter: 'blur(10px)', scale: 0.95 },
     { opacity: 1, y: 0, filter: 'blur(0px)', scale: 1, duration: 0.8, stagger: 0.08, ease: 'power3.out' },
-    0.4,
+    0.2, // Started much earlier (from 0.4)
   );
+
+  tl.to('.preloader-border-box', { opacity: 0, duration: 0.8, ease: 'power2.out' }, 0);
 
   tl.to(
     '.splash-bg',
@@ -117,7 +118,6 @@ function breakoutLogoSynchronously(logoArea: HTMLElement, splashIntro: HTMLEleme
   if (logoArea.id === 'morph-breakout-logo') return;
   const logoAreaRect = logoArea.getBoundingClientRect();
   const scrollY = window.scrollY;
-  
   const spacer = logoArea.cloneNode(false) as HTMLElement;
   spacer.className = 'logo-content-area-spacer';
   Object.assign(spacer.style, {
@@ -129,8 +129,9 @@ function breakoutLogoSynchronously(logoArea: HTMLElement, splashIntro: HTMLEleme
     margin: window.getComputedStyle(logoArea).margin
   });
   logoArea.parentNode?.insertBefore(spacer, logoArea);
-
   logoArea.id = 'morph-breakout-logo';
+  
+  // Set fixed position but keep invisible until ready
   Object.assign(logoArea.style, {
     position: 'fixed',
     left: `${logoAreaRect.left}px`,
@@ -141,10 +142,13 @@ function breakoutLogoSynchronously(logoArea: HTMLElement, splashIntro: HTMLEleme
     zIndex: '200001',
     pointerEvents: 'none',
     willChange: 'transform',
-    visibility: 'visible',
-    opacity: '1' // Restored to 1 so intro is visible again
+    visibility: 'hidden',
+    opacity: '0'
   });
   document.body.appendChild(logoArea);
+
+  // Use GSAP to reveal synchronously to ensure no flicker
+  gsap.set(logoArea, { visibility: 'visible', opacity: 1 });
 }
 
 export function setupLogoMorph(isMobile: boolean, heroEl: HTMLElement) {
@@ -167,19 +171,16 @@ export function setupLogoMorph(isMobile: boolean, heroEl: HTMLElement) {
   const scrollEnd = heroEl.offsetHeight;
   const wordLocalY = targetHeaderCenterY - initialWordCenterY + scrollEnd;
   const toX = targetLeftPx - wordRect.left;
-  
   gsap.set(heroEl, { overflow: 'hidden', clipPath: 'inset(0px 0px 0px 0px round 0px)' });
   gsap.set(splashIntro, { overflow: 'visible' });
   gsap.set(logoArea, { y: 0, opacity: 1, visibility: 'visible' });
   gsap.set(wordContainer, { x: 0, y: 0, scale: 1, transformOrigin: 'left center' });
-  
   const morphTl = gsap.timeline({ paused: true });
   morphTl
     .to(logoArea, { y: -scrollEnd, duration: 1, ease: 'none', force3D: true, overwrite: 'auto' }, 0)
     .to(heroCtas, { opacity: 0, y: '250%', duration: 0.25, ease: 'none', force3D: true, overwrite: 'auto' }, 0)
     .to(heroDesc, { opacity: 0, duration: 0.5, ease: 'none', force3D: true, overwrite: 'auto' }, 0)
     .to(wordContainer, { x: toX, y: wordLocalY, scale: targetScale, duration: 1, ease: 'none', force3D: true, overwrite: 'auto' }, 0);
-  
   const morphST = ScrollTrigger.create({
     trigger: '.main-hero', start: 'top top', end: '50% top', scrub: true, animation: morphTl, invalidateOnRefresh: true,
   });
@@ -214,9 +215,7 @@ function useIntroOrchestrator() {
     };
     const tl = gsap.timeline({
       paused: true,
-      onStart: () => { 
-        document.body.classList.add('intro-active'); 
-      },
+      onStart: () => { document.body.classList.add('intro-active'); },
       onComplete: () => { releaseScroll(); initMorph(); },
     });
     mainTl.current = tl;
@@ -224,11 +223,13 @@ function useIntroOrchestrator() {
     const logoArea = document.querySelector('.logo-content-area') as HTMLElement;
     const splashIntro = document.querySelector('.splash-intro') as HTMLElement;
     if (!heroEl || !logoArea || !splashIntro) return;
-    if (!isMobile) breakoutLogoSynchronously(logoArea, splashIntro);
     
+    // Breakout synchronously
+    if (!isMobile) breakoutLogoSynchronously(logoArea, splashIntro);
+    else gsap.set(logoArea, { opacity: 1, visibility: 'visible' });
+
     getHeroRevealAnimation(tl, isMobile);
     getSplashIntroAnimations(tl, releaseScroll);
-
     tl.add(() => { initMorph(); }, 1.6);
     const handleSkip = () => {
       if (tl.time() < 1.4) return;
@@ -309,7 +310,7 @@ export default function SplashIntro({ data }: { data?: any }) {
       };
       checkVideo();
     });
-    const safetyTimeout = setTimeout(finishPreloader, 2500);
+    const safetyTimeout = setTimeout(finishPreloader, 6000);
     Promise.all([waitForDOM, waitForVideo]).then(() => { clearTimeout(safetyTimeout); finishPreloader(); });
     return () => clearTimeout(safetyTimeout);
   }, []);

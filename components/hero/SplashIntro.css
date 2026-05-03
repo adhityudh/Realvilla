@@ -137,12 +137,15 @@
             pointer-events: auto;
             z-index: 10000;
             align-self: center;
+            /* Prevent flash at original position before JS breakout */
+            opacity: 0;
+            visibility: hidden;
         }
 
         .word-container {
             display: flex;
             gap: 0.1vw;
-            will-change: transform;
+            /* IMPROVED: Pre-hint GPU layer for logo morph */
         }
 
         .hero-ctas {
@@ -309,8 +312,7 @@
             height: 5.6vw;
             width: calc(5.6vw * var(--letter-w, 0.75));
             opacity: 0;
-            will-change: transform, opacity, filter;
-            /* Hidden initially, revealed by GSAP to ensure smooth entrance */
+            /* Hidden initially so it only appears when GSAP reveals it */
         }
 
         .video-box {
