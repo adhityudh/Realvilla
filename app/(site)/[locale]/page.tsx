@@ -16,7 +16,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
   let settingsData = null;
   try {
     const fetchOptions = { 
-      perspective: isDraftMode ? 'previewDrafts' : 'published',
+      perspective: isDraftMode ? ('previewDrafts' as const) : ('published' as const),
       stega: isDraftMode,
       next: { 
         revalidate: isDraftMode ? 0 : 60, 
