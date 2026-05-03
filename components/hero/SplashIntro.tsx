@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import { preload } from 'react-dom';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { REALVILLA_LETTERS } from '@/lib/letters';
@@ -268,6 +269,14 @@ export default function SplashIntro({ data }: { data?: any }) {
   const subtitle = data.subtitle;
   const ctas = data.ctas;
 
+  // Preload logo letters and CTA icons
+  REALVILLA_LETTERS.forEach((letter) => {
+    preload(letter.svg, { as: 'image' });
+  });
+  ctas?.forEach((cta: any) => {
+    if (cta.icon) preload(cta.icon, { as: 'image' });
+  });
+
   useEffect(() => {
     const preloaderRectEl = document.querySelector('#preloader-rect') as SVGRectElement;
     const preloaderBox = document.querySelector('.preloader-border-box') as HTMLElement;
@@ -310,8 +319,39 @@ export default function SplashIntro({ data }: { data?: any }) {
       };
       checkVideo();
     });
+
+    const waitForAssets = new Promise((resolve) => {
+      const assets: string[] = [
+        ...REALVILLA_LETTERS.map(l => l.svg),
+        ...(ctas?.map((c: any) => c.icon).filter(Boolean) || [])
+      ];
+      
+      if (assets.length === 0) {
+        resolve(true);
+        return;
+      }
+
+      let loadedCount = 0;
+      const total = assets.length;
+
+      const onAssetLoaded = () => {
+        loadedCount++;
+        if (loadedCount === total) resolve(true);
+      };
+
+      assets.forEach(src => {
+        const img = new Image();
+        img.onload = onAssetLoaded;
+        img.onerror = onAssetLoaded; // Resolve anyway on error to avoid hanging
+        img.src = src;
+      });
+    });
+
     const safetyTimeout = setTimeout(finishPreloader, 6000);
-    Promise.all([waitForDOM, waitForVideo]).then(() => { clearTimeout(safetyTimeout); finishPreloader(); });
+    Promise.all([waitForDOM, waitForVideo, waitForAssets]).then(() => { 
+      clearTimeout(safetyTimeout); 
+      finishPreloader(); 
+    });
     return () => clearTimeout(safetyTimeout);
   }, []);
 
