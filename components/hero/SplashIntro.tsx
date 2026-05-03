@@ -58,7 +58,7 @@ export function getSplashIntroAnimations(tl: gsap.core.Timeline, onReleaseScroll
     '.letter-wrapper',
     { opacity: 0, y: 40, filter: 'blur(10px)', scale: 0.95 },
     { opacity: 1, y: 0, filter: 'blur(0px)', scale: 1, duration: 0.8, stagger: 0.08, ease: 'power3.out' },
-    0.2, // Started much earlier (from 0.4)
+    1.0, // Delayed to sync with hero reveal
   );
 
   tl.to('.preloader-border-box', { opacity: 0, duration: 0.8, ease: 'power2.out' }, 0);
@@ -347,8 +347,14 @@ export default function SplashIntro({ data }: { data?: any }) {
       });
     });
 
-    const safetyTimeout = setTimeout(finishPreloader, 6000);
-    Promise.all([waitForDOM, waitForVideo, waitForAssets]).then(() => { 
+    const waitForVideoWithTimeout = Promise.race([
+      waitForVideo,
+      new Promise(resolve => setTimeout(resolve, 2500)) // Max 2.5s wait for video background
+    ]);
+
+    const safetyTimeout = setTimeout(finishPreloader, 5000);
+    // Wait for DOM, Assets (Logo/Icons), and the Video Background (with timeout)
+    Promise.all([waitForDOM, waitForAssets, waitForVideoWithTimeout]).then(() => { 
       clearTimeout(safetyTimeout); 
       finishPreloader(); 
     });
