@@ -160,7 +160,7 @@ export function getSplashIntroAnimations(tl: gsap.core.Timeline, onReleaseScroll
     1.6,
   );
 
-  tl.set('.splash-intro', { pointerEvents: 'none', visibility: 'hidden', display: 'none' });
+  tl.set('.splash-intro', { pointerEvents: 'none' });
 }
 
 function breakoutLogoSynchronously(logoArea: HTMLElement, splashIntro: HTMLElement) {
@@ -413,13 +413,20 @@ export default function SplashIntro({ data }: { data?: any }) {
         const video = document.querySelector('.hero-bg-video') as HTMLVideoElement;
         if (video) {
           if (video.readyState >= 2) resolve(true);
-          else video.addEventListener('loadeddata', () => resolve(true), { once: true });
+          else {
+            video.addEventListener('loadeddata', () => resolve(true), { once: true });
+            video.addEventListener('error', () => resolve(true), { once: true });
+            video.addEventListener('stalled', () => resolve(true), { once: true });
+          }
         } else {
           setTimeout(() => {
             const retry = document.querySelector('.hero-bg-video') as HTMLVideoElement;
             if (retry) {
               if (retry.readyState >= 2) resolve(true);
-              else retry.addEventListener('loadeddata', () => resolve(true), { once: true });
+              else {
+                retry.addEventListener('loadeddata', () => resolve(true), { once: true });
+                retry.addEventListener('error', () => resolve(true), { once: true });
+              }
             } else resolve(true);
           }, 100);
         }

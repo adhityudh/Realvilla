@@ -157,8 +157,14 @@ export default function HeroSection({ data }: { data?: any }) {
     };
 
     if (v.readyState >= 2) revealMedia();
-    else v.addEventListener('loadeddata', revealMedia);
-    return () => { v.removeEventListener('loadeddata', revealMedia); };
+    else {
+      v.addEventListener('loadeddata', revealMedia);
+      v.addEventListener('error', revealMedia); // Reveal even on error so it doesn't stay invisible
+    }
+    return () => { 
+      v.removeEventListener('loadeddata', revealMedia); 
+      v.removeEventListener('error', revealMedia);
+    };
   }, [device, desktopVideoMP4, mobileVideoMP4]);
 
   const currentMP4 = device === 'mobile' ? mobileVideoMP4 : desktopVideoMP4;
@@ -174,8 +180,8 @@ export default function HeroSection({ data }: { data?: any }) {
         playsInline 
         style={{ opacity: 0 }} // Start invisible, revealed by GSAP
       >
-        {currentMP4 && <source src={currentMP4} type='video/mp4' />}
         {currentWebM && <source src={currentWebM} type="video/webm" />}
+        {currentMP4 && <source src={currentMP4} type='video/mp4' />}
       </video>
       <div className="hero-overlay" />
     </main>

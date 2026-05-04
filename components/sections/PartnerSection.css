@@ -3,7 +3,6 @@
     background-color: var(--bg-white);
     position: relative;
     overflow: hidden;
-    contain: paint;
 }
 
 .partner-container {
