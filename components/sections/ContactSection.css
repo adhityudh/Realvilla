@@ -29,20 +29,6 @@
     width: 100%;
     max-width: 90vw;
     justify-content: center;
-
-    /* Extremely soft and gradual fade from top to bottom, matching footer */
-    mask-image: linear-gradient(to bottom,
-            rgba(0, 0, 0, 0.7) 0%,
-            rgba(0, 0, 0, 0.5) 25%,
-            rgba(0, 0, 0, 0.3) 50%,
-            rgba(0, 0, 0, 0.2) 75%,
-            transparent 100%);
-    -webkit-mask-image: linear-gradient(to bottom,
-            rgba(0, 0, 0, 0.7) 0%,
-            rgba(0, 0, 0, 0.5) 25%,
-            rgba(0, 0, 0, 0.3) 50%,
-            rgba(0, 0, 0, 0.2) 75%,
-            transparent 100%);
     opacity: 0.9;
 }
 
@@ -520,16 +506,6 @@
     }
 
     .contact-big-logo {
-        mask-image: linear-gradient(to bottom,
-                rgba(0, 0, 0, 1) 0%,
-                rgba(0, 0, 0, 0.5) 30%,
-                rgba(0, 0, 0, 0.1) 70%,
-                transparent 100%);
-        -webkit-mask-image: linear-gradient(to bottom,
-                rgba(0, 0, 0, 1) 0%,
-                rgba(0, 0, 0, 0.5) 30%,
-                rgba(0, 0, 0, 0.1) 70%,
-                transparent 100%);
         opacity: 1;
     }
 

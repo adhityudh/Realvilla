@@ -309,34 +309,53 @@ function useIntroOrchestrator() {
         onComplete: () => { releaseScroll(); initMorph(); },
       });
 
-      // Small delay to ensure siblings (HeroSection) are rendered
-      const initTimer = setTimeout(() => {
+      // Populate timeline as soon as elements are ready
+      const initIntro = () => {
         const heroEl = document.querySelector('.main-hero') as HTMLElement;
         const logoArea = document.querySelector('.logo-content-area') as HTMLElement;
         const splashIntro = document.querySelector('.splash-intro') as HTMLElement;
-        if (!heroEl || !logoArea || !splashIntro) return;
         
-        // BATCH READS across components to prevent reflows
-        // We know breakoutLogoSynchronously and getHeroRevealAnimation both read.
-        // Let's call them in order but keep them efficient.
-        
-        if (!isMobile) breakoutLogoSynchronously(logoArea, splashIntro);
-        else gsap.set(logoArea, { opacity: 1, visibility: 'visible' });
+        // If not ready yet, retry next frame
+        if (!heroEl || !logoArea || !splashIntro) {
+          requestAnimationFrame(initIntro);
+          return;
+        }
 
+        // Prepare logo
+        if (!isMobile) {
+          breakoutLogoSynchronously(logoArea, splashIntro);
+        } else {
+          gsap.set(logoArea, { opacity: 1, visibility: 'visible' });
+        }
+
+        // Build timeline
         getHeroRevealAnimation(tl, isMobile);
         getSplashIntroAnimations(tl, releaseScroll);
         tl.add(() => { initMorph(); }, 1.6);
 
+        // If preloader already finished while we were initializing, play now
         if (globalPreloaderFinished) {
           tl.play();
         }
-      }, 50);
+      };
 
-      const handlePreloaderComplete = () => { tl.play(); };
+      // Start initialization immediately
+      initIntro();
+
+      const handlePreloaderComplete = () => { 
+        // Ensure we only play if timeline has been populated
+        if (tl.getChildren().length > 0) {
+          tl.play();
+        } else {
+          // If event fired before population, the check inside initIntro will handle it
+          globalPreloaderFinished = true;
+        }
+      };
+      
       window.addEventListener('preloader-complete', handlePreloaderComplete);
       
       const handleSkip = () => {
-        if (tl.time() < 1.4) return;
+        if (tl.time() < 1.0) return;
         if (tl.progress() < 1 && tl.isActive()) {
           gsap.to(tl, { progress: 1, duration: 0.6, ease: 'power2.out' });
           cleanupSkip();
@@ -349,9 +368,7 @@ function useIntroOrchestrator() {
       window.addEventListener('wheel', handleSkip);
       window.addEventListener('touchstart', handleSkip);
 
-      // Store cleanup in context
       return () => {
-        clearTimeout(initTimer);
         cleanupSkip();
         window.removeEventListener('preloader-complete', handlePreloaderComplete);
         morphTlInstance?.kill();
@@ -362,7 +379,7 @@ function useIntroOrchestrator() {
     });
 
     return () => ctx.current?.revert();
-  }, [lenis, pathname]); // Re-run on pathname change to ensure fresh start
+  }, [lenis, pathname]);
 }
 
 export default function SplashIntro({ data }: { data?: any }) {
@@ -463,7 +480,7 @@ export default function SplashIntro({ data }: { data?: any }) {
 
     const waitForVideoWithTimeout = Promise.race([
       waitForVideo,
-      new Promise(resolve => setTimeout(resolve, 800)) // Shorter wait (was 2.5s)
+      new Promise(resolve => setTimeout(resolve, 1200)) // Balanced wait (was 800ms)
     ]);
 
     const safetyTimeout = setTimeout(finishPreloader, 5000);
