@@ -309,45 +309,44 @@ function useIntroOrchestrator() {
         onComplete: () => { releaseScroll(); initMorph(); },
       });
 
-      // Populate timeline as soon as elements are ready
-      const initIntro = () => {
-        const heroEl = document.querySelector('.main-hero') as HTMLElement;
-        const logoArea = document.querySelector('.logo-content-area') as HTMLElement;
-        const splashIntro = document.querySelector('.splash-intro') as HTMLElement;
-        
-        // If not ready yet, retry next frame
-        if (!heroEl || !logoArea || !splashIntro) {
-          requestAnimationFrame(initIntro);
-          return;
-        }
+      // Prepare local elements immediately without waiting for a frame
+      const logoArea = document.querySelector('.logo-content-area') as HTMLElement;
+      const splashIntro = document.querySelector('.splash-intro') as HTMLElement;
 
-        // Prepare logo
+      if (logoArea && splashIntro) {
         if (!isMobile) {
           breakoutLogoSynchronously(logoArea, splashIntro);
         } else {
           gsap.set(logoArea, { opacity: 1, visibility: 'visible' });
         }
+      }
 
-        // Build timeline
+      // Populate timeline once siblings are ready
+      const populateTimeline = () => {
+        const heroEl = document.querySelector('.main-hero') as HTMLElement;
+        const logoAreaActive = document.querySelector('.logo-content-area') as HTMLElement;
+        const splashIntroActive = document.querySelector('.splash-intro') as HTMLElement;
+        
+        if (!heroEl || !logoAreaActive || !splashIntroActive) {
+          requestAnimationFrame(populateTimeline);
+          return;
+        }
+
         getHeroRevealAnimation(tl, isMobile);
         getSplashIntroAnimations(tl, releaseScroll);
         tl.add(() => { initMorph(); }, 1.6);
 
-        // If preloader already finished while we were initializing, play now
         if (globalPreloaderFinished) {
           tl.play();
         }
       };
 
-      // Start initialization immediately
-      initIntro();
+      populateTimeline();
 
       const handlePreloaderComplete = () => { 
-        // Ensure we only play if timeline has been populated
         if (tl.getChildren().length > 0) {
           tl.play();
         } else {
-          // If event fired before population, the check inside initIntro will handle it
           globalPreloaderFinished = true;
         }
       };
