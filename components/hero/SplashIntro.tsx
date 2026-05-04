@@ -15,6 +15,9 @@ if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
 }
 
+// Global state to track preloader completion across re-renders (SPA)
+let globalPreloaderFinished = false;
+
 function useSplashIntroAnimations() {
   const lenis = useLenis();
   const pathname = usePathname();
@@ -84,7 +87,7 @@ export function getSplashIntroAnimations(tl: gsap.core.Timeline, onReleaseScroll
     '.letter-wrapper',
     { opacity: 0, y: 40, filter: 'blur(10px)', scale: 0.95 },
     { opacity: 1, y: 0, filter: 'blur(0px)', scale: 1, duration: 0.8, stagger: 0.08, ease: 'power3.out' },
-    1.0, // Delayed to sync with hero reveal
+    0.4, // Faster reveal (was 1.0)
   );
 
   tl.to('.preloader-border-box', { opacity: 0, duration: 0.8, ease: 'power2.out' }, 0);
@@ -274,6 +277,11 @@ function useIntroOrchestrator() {
       getHeroRevealAnimation(tl, isMobile);
       getSplashIntroAnimations(tl, releaseScroll);
       tl.add(() => { initMorph(); }, 1.6);
+
+      // If preloader already finished (e.g. on re-render), play now that animations are added
+      if (globalPreloaderFinished) {
+        tl.play();
+      }
     }, 50);
 
     const handleSkip = () => {
@@ -336,6 +344,7 @@ export default function SplashIntro({ data }: { data?: any }) {
       gsap.to(preloaderRectEl, {
         strokeDashoffset: 0, duration: 0.5, ease: 'power2.out',
         onComplete: () => {
+          globalPreloaderFinished = true;
           gsap.to(preloaderBox, {
             opacity: 0, duration: 0.8, ease: 'power2.out',
             onComplete: () => { window.dispatchEvent(new CustomEvent('preloader-complete')); }
@@ -395,7 +404,7 @@ export default function SplashIntro({ data }: { data?: any }) {
 
     const waitForVideoWithTimeout = Promise.race([
       waitForVideo,
-      new Promise(resolve => setTimeout(resolve, 2500)) // Max 2.5s wait for video background
+      new Promise(resolve => setTimeout(resolve, 800)) // Shorter wait (was 2.5s)
     ]);
 
     const safetyTimeout = setTimeout(finishPreloader, 5000);

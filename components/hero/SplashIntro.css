@@ -405,7 +405,7 @@
             background-color: #fdfcfb;
             z-index: 25;
             clip-path: inset(100% 0 0 0);
-            opacity: 0;
+            opacity: 1;
             transition: background-color 0.4s ease;
         }
 
