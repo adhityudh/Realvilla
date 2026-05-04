@@ -180,8 +180,8 @@ export default function HeroSection({ data }: { data?: any }) {
         playsInline 
         style={{ opacity: 0 }} // Start invisible, revealed by GSAP
       >
-        {currentWebM && <source src={currentWebM} type="video/webm" />}
         {currentMP4 && <source src={currentMP4} type='video/mp4' />}
+        {currentWebM && <source src={currentWebM} type="video/webm" />}
       </video>
       <div className="hero-overlay" />
     </main>
