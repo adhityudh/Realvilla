@@ -13,10 +13,7 @@ export type SeoData = {
 
 export async function getGlobalSettings(locale: string) {
   return await client.fetch(SETTINGS_QUERY, { language: locale }, {
-    next: { 
-      revalidate: 3600, // Cache for 1 hour
-      tags: ['settings'] 
-    }
+    next: { tags: ['settings'] }
   })
 }
 
@@ -42,24 +39,23 @@ export function constructMetadata(
     metadataBase: baseUrl ? new URL(baseUrl) : undefined,
     icons: activeFavicon ? {
       icon: [
-        // 1. Small PNG first for maximum loading speed
+        {
+          url: activeFavicon,
+          type: activeFavicon.endsWith('.svg') ? 'image/svg+xml' : undefined,
+        },
+        // PNG fallback for scrapers like WhatsApp
         {
           url: `${activeFavicon}${activeFavicon.includes('?') ? '&' : '?'}fm=png&w=32&h=32`,
           type: 'image/png',
           sizes: '32x32',
         },
-        // 2. SVG as alternative
-        {
-          url: activeFavicon,
-          type: activeFavicon.includes('.svg') ? 'image/svg+xml' : undefined,
-        },
-        // 3. Apple Touch Icon
         {
           url: `${activeFavicon}${activeFavicon.includes('?') ? '&' : '?'}fm=png&w=180&h=180`,
           type: 'image/png',
           sizes: '180x180',
         }
       ],
+      shortcut: activeFavicon,
       apple: `${activeFavicon}${activeFavicon.includes('?') ? '&' : '?'}fm=png&w=180&h=180`,
     } : undefined,
     robots: {
