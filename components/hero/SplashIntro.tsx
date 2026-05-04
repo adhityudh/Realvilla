@@ -10,6 +10,7 @@ import { useLenis } from '@/lib/LenisContext';
 import Button from '@/components/ui/Button';
 import './SplashIntro.css';
 import { getHeroRevealAnimation } from './HeroSection';
+import { LogoLetter } from '@/components/ui/LogoLetter';
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
@@ -391,11 +392,7 @@ export default function SplashIntro({ data }: { data?: any }) {
   const title = data.title;
   const subtitle = data.subtitle;
   const ctas = data.ctas;
-
-  // Preload logo letters and CTA icons
-  REALVILLA_LETTERS.forEach((letter) => {
-    preload(letter.svg, { as: 'image' });
-  });
+  // Preload CTA icons (logo letters are now inlined)
   ctas?.forEach((cta: any) => {
     if (cta.icon) preload(cta.icon, { as: 'image' });
   });
@@ -454,7 +451,6 @@ export default function SplashIntro({ data }: { data?: any }) {
 
     const waitForAssets = new Promise((resolve) => {
       const assets: string[] = [
-        ...REALVILLA_LETTERS.map(l => l.svg),
         ...(ctas?.map((c: any) => c.icon).filter(Boolean) || [])
       ];
       
@@ -485,7 +481,7 @@ export default function SplashIntro({ data }: { data?: any }) {
     ]);
 
     const safetyTimeout = setTimeout(finishPreloader, 5000);
-    // Wait for DOM, Assets (Logo/Icons), and the Video Background (with timeout)
+    // Wait for DOM, Assets (Icons), and the Video Background (with timeout)
     Promise.all([waitForDOM, waitForAssets, waitForVideoWithTimeout]).then(() => { 
       clearTimeout(safetyTimeout); 
       finishPreloader(); 
@@ -505,9 +501,9 @@ export default function SplashIntro({ data }: { data?: any }) {
       <div className="logo-content-area">
         <div className="word-container">
           {REALVILLA_LETTERS.map((letter, i) => (
-            <div key={i} className="letter-wrapper" style={{ '--letter-svg': `url('${letter.svg}')`, '--letter-w': letter.width } as React.CSSProperties}>
-              <div className={`solid-text ${letter.colorClass}`} />
-              <div className="solid-text text-white-reveal" />
+            <div key={i} className="letter-wrapper" style={{ '--letter-w': letter.width } as React.CSSProperties}>
+              <LogoLetter letter={letter.svg} className={`solid-text ${letter.colorClass}`} />
+              <LogoLetter letter={letter.svg} className="solid-text text-white-reveal" />
             </div>
           ))}
         </div>
