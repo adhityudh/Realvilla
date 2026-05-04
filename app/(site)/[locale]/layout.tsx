@@ -29,7 +29,7 @@ export async function generateMetadata(
   const { locale } = await params;
   const settings = await getGlobalSettings(locale);
   
-  return constructMetadata(undefined, settings?.seo, `/${locale}`);
+  return constructMetadata(undefined, settings?.seo, `/${locale}`, settings?.favicon);
 }
 
 export default async function RootLayout({ 

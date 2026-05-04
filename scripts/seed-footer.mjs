@@ -76,73 +76,70 @@ const sharedSocialLinks = [
 const footerEnRaw = {
   columns: [
     {
-      title: 'Properties for Sale',
+      title: 'PROPERTIES',
       subgroups: [{
         links: [
-          { label: 'Penthouses with Terrace', linkType: 'external', externalLink: '#' },
-          { label: 'Apartments', linkType: 'external', externalLink: '#' },
-          { label: 'Villas', linkType: 'external', externalLink: '#' },
-          { label: 'Rustic Homes', linkType: 'external', externalLink: '#' },
-          { label: 'Investment Properties', linkType: 'external', externalLink: '#' }
+          { label: 'Residential Listings', linkType: 'external', externalLink: '#' },
+          { label: 'Investment Properties', linkType: 'external', externalLink: '#' },
+          { label: 'Featured Properties', linkType: 'external', externalLink: '#' }
         ]
       }]
     },
     {
-      title: 'Main Services',
+      title: 'MAIN SERVICES',
       subgroups: [
         {
-          title: 'Sellers',
+          title: 'SELLERS',
           links: [
             { label: 'Free Property Valuation', linkType: 'external', externalLink: '#' },
             { label: 'Selling Process', linkType: 'external', externalLink: '#' }
           ]
         },
         {
-          title: 'Buyers',
+          title: 'BUYERS',
           links: [
             { label: 'Mortgages & Financing', linkType: 'external', externalLink: '#' },
-            { label: 'Buying Guide', linkType: 'external', externalLink: '#' }
+            { label: 'View all properties', linkType: 'external', externalLink: '#' }
           ]
         },
         {
-          title: 'Investors',
+          title: 'INVESTORS',
           links: [
-            { label: 'Investment Opportunities', linkType: 'external', externalLink: '#' }
+            { label: 'Investment Properties', linkType: 'external', externalLink: '#' }
           ]
         }
       ]
     },
     {
-      title: 'Market & Resources',
+      title: 'MARKET & RESOURCES',
       subgroups: [
         {
-          title: 'Market Data',
+          title: 'MARKET DATA',
           links: [
             { label: 'Tenerife Insights', linkType: 'external', externalLink: '#' },
             { label: 'Current Euribor Rate', linkType: 'external', externalLink: '#' }
           ]
         },
         {
-          title: 'Resources',
+          title: 'RESOURCES',
           links: [
-            { label: 'FAQs', linkType: 'external', externalLink: '#' },
             { label: 'News & Blog', linkType: 'external', externalLink: '#' }
           ]
         }
       ]
     },
     {
-      title: 'About REALVILLA',
+      title: 'ABOUT REALVILLA',
       subgroups: [
         {
-          title: 'The Agency',
+          title: 'THE AGENCY',
           links: [
             { label: 'About Us', linkType: 'external', externalLink: '#' },
             { label: 'Client Reviews', linkType: 'external', externalLink: '#' }
           ]
         },
         {
-          title: 'Support',
+          title: 'SUPPORT',
           links: [
             { label: 'Contact Us', linkType: 'external', externalLink: '#' }
           ]
@@ -163,73 +160,70 @@ const footerEnRaw = {
 const footerEsRaw = {
   columns: [
     {
-      title: 'Propiedades en Venta',
+      title: 'PROPIEDADES',
       subgroups: [{
         links: [
-          { label: 'Áticos con Terraza', linkType: 'external', externalLink: '#' },
-          { label: 'Apartamentos', linkType: 'external', externalLink: '#' },
-          { label: 'Villas', linkType: 'external', externalLink: '#' },
-          { label: 'Casas Rústicas', linkType: 'external', externalLink: '#' },
-          { label: 'Propiedades de Inversión', linkType: 'external', externalLink: '#' }
+          { label: 'Listados Residenciales', linkType: 'external', externalLink: '#' },
+          { label: 'Propiedades de Inversión', linkType: 'external', externalLink: '#' },
+          { label: 'Propiedades Destacadas', linkType: 'external', externalLink: '#' }
         ]
       }]
     },
     {
-      title: 'Servicios Principales',
+      title: 'SERVICIOS PRINCIPALES',
       subgroups: [
         {
-          title: 'Vendedores',
+          title: 'VENDEDORES',
           links: [
-            { label: 'Valoración Gratuita', linkType: 'external', externalLink: '#' },
+            { label: 'Valoración Gratuita de Inmuebles', linkType: 'external', externalLink: '#' },
             { label: 'Proceso de Venta', linkType: 'external', externalLink: '#' }
           ]
         },
         {
-          title: 'Compradores',
+          title: 'COMPRADORES',
           links: [
             { label: 'Hipotecas y Financiación', linkType: 'external', externalLink: '#' },
-            { label: 'Guía de Compra', linkType: 'external', externalLink: '#' }
+            { label: 'Ver todas las propiedades', linkType: 'external', externalLink: '#' }
           ]
         },
         {
-          title: 'Inversores',
+          title: 'INVERSORES',
           links: [
-            { label: 'Oportunidades de Inversión', linkType: 'external', externalLink: '#' }
+            { label: 'Propiedades de Inversión', linkType: 'external', externalLink: '#' }
           ]
         }
       ]
     },
     {
-      title: 'Mercado y Recursos',
+      title: 'MERCADO Y RECURSOS',
       subgroups: [
         {
-          title: 'Datos de Mercado',
+          title: 'DATOS DE MERCADO',
           links: [
             { label: 'Perspectivas de Tenerife', linkType: 'external', externalLink: '#' },
             { label: 'Tasa Euribor Actual', linkType: 'external', externalLink: '#' }
           ]
         },
         {
-          title: 'Recursos',
+          title: 'RECURSOS',
           links: [
-            { label: 'Preguntas Frecuentes', linkType: 'external', externalLink: '#' },
             { label: 'Noticias y Blog', linkType: 'external', externalLink: '#' }
           ]
         }
       ]
     },
     {
-      title: 'Sobre REALVILLA',
+      title: 'SOBRE REALVILLA',
       subgroups: [
         {
-          title: 'La Agencia',
+          title: 'LA AGENCIA',
           links: [
             { label: 'Sobre Nosotros', linkType: 'external', externalLink: '#' },
             { label: 'Reseñas de Clientes', linkType: 'external', externalLink: '#' }
           ]
         },
         {
-          title: 'Soporte',
+          title: 'SOPORTE',
           links: [
             { label: 'Contáctanos', linkType: 'external', externalLink: '#' }
           ]

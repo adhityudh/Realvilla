@@ -8,6 +8,7 @@ export type SeoData = {
   ogImage?: { asset: { url: string } }
   noIndex?: boolean
   canonicalUrl?: string
+  favicon?: string
 }
 
 export async function getGlobalSettings(locale: string) {
@@ -19,13 +20,15 @@ export async function getGlobalSettings(locale: string) {
 export function constructMetadata(
   seo?: SeoData,
   globalSeo?: SeoData,
-  path?: string
+  path?: string,
+  favicon?: string
 ): Metadata {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || ''
   const title = seo?.metaTitle || globalSeo?.metaTitle || 'RealVilla - Premium Real Estate'
   const description = seo?.metaDescription || globalSeo?.metaDescription || 'Premium Tenerife real estate. Expert guidance for buyers, sellers, and investors.'
   const ogImage = seo?.ogImage?.asset?.url || globalSeo?.ogImage?.asset?.url
   const noIndex = seo?.noIndex || globalSeo?.noIndex
+  const activeFavicon = favicon || globalSeo?.favicon
 
   const metadata: Metadata = {
     title: {
@@ -34,6 +37,16 @@ export function constructMetadata(
     },
     description,
     metadataBase: baseUrl ? new URL(baseUrl) : undefined,
+    icons: activeFavicon ? {
+      icon: [
+        {
+          url: activeFavicon,
+          type: activeFavicon.endsWith('.svg') ? 'image/svg+xml' : undefined,
+        }
+      ],
+      shortcut: activeFavicon,
+      apple: activeFavicon,
+    } : undefined,
     robots: {
       index: !noIndex,
       follow: !noIndex,
