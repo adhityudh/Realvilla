@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Cormorant_Garamond, Manrope } from 'next/font/google';
 import { VisualEditing } from 'next-sanity/visual-editing';
 import { draftMode } from 'next/headers';
+import Script from 'next/script';
 import '../../globals.css';
 
 const cormorant = Cormorant_Garamond({
@@ -41,8 +42,10 @@ export default async function RootLayout({
 
   return (
     <html lang={locale} className={`${cormorant.variable} ${manrope.variable}`}>
-      <head>
-        <script
+      <body>
+        <Script
+          id="scroll-restoration"
+          strategy="beforeInteractive"
           dangerouslySetInnerHTML={{
             __html: `
               if ('scrollRestoration' in history) {
@@ -52,8 +55,6 @@ export default async function RootLayout({
             `,
           }}
         />
-      </head>
-      <body>
         {children}
         {isDraftMode && <VisualEditing />}
       </body>
