@@ -1,12 +1,11 @@
 .footer-section {
-    background-color: #bcaf8b;
-    /* Gold background as requested */
-    color: #ffffff;
-    /* White text for contrast */
-    padding: 160px 0 60px;
+    background-color: var(--bg-white);
+    color: #111111;
+    padding: 120px 0 60px;
     position: relative;
     overflow: hidden;
     z-index: 5;
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 .footer-container {
@@ -15,11 +14,9 @@
     padding: 0 3rem;
     display: flex;
     flex-direction: column;
-    min-height: 60vh;
-    /* Adjusted for new content */
+    min-height: auto;
     justify-content: flex-start;
-    /* Changed from space-between to allow more control */
-    gap: 7.5rem;
+    gap: 6rem;
 }
 
 .footer-links-container {
@@ -42,14 +39,14 @@
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.3em;
-    color: rgba(255, 255, 255, 0.6);
+    color: rgba(0, 0, 0, 0.4);
     flex-shrink: 0;
     min-width: 120px;
 }
 
 .footer-link-dots {
     flex-grow: 1;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
     margin: 0 1.5rem;
     height: 1px;
     position: relative;
@@ -71,7 +68,7 @@
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.15em;
-    color: #ffffff;
+    color: #111111;
     text-decoration: none;
     padding-bottom: 4px;
     border-bottom: 1.5px solid transparent;
@@ -79,63 +76,16 @@
 }
 
 .footer-link-item:hover {
-    border-bottom-color: #ffffff;
+    border-bottom-color: #111111;
 }
 
 .footer-link-slash {
-    color: #ffffff;
-    opacity: 0.6;
+    color: #111111;
+    opacity: 0.4;
     font-size: 1.05rem;
     font-family: var(--font-cormorant), serif;
     position: relative;
     top: -2px;
-}
-
-.footer-big-logo-wrapper {
-    width: 100%;
-    margin-left: 0;
-    /* Cancel container padding */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex: 1;
-    pointer-events: none;
-    position: relative;
-}
-
-.footer-big-logo {
-    display: flex;
-    align-items: flex-end;
-    gap: 0;
-    width: auto;
-    max-width: 100%;
-    justify-content: center;
-
-    /* Extremely soft and gradual fade from top to bottom */
-    mask-image: linear-gradient(to bottom,
-            rgba(0, 0, 0, 0.7) 0%,
-            rgba(0, 0, 0, 0.5) 25%,
-            rgba(0, 0, 0, 0.3) 50%,
-            rgba(0, 0, 0, 0.2) 75%,
-            transparent 100%);
-    -webkit-mask-image: linear-gradient(to bottom,
-            rgba(0, 0, 0, 0.7) 0%,
-            rgba(0, 0, 0, 0.5) 25%,
-            rgba(0, 0, 0, 0.3) 50%,
-            rgba(0, 0, 0, 0.2) 75%,
-            transparent 100%);
-    opacity: 0.9;
-    /* Slight increase in base opacity to compensate for the softer mask */
-}
-
-.footer-big-letter {
-    height: auto;
-    /* Uniform height for all letters */
-    width: auto;
-    /* Automatic width based on aspect ratio */
-    /* Normalize all SVGs to a consistent, elegant gold tone */
-    filter: brightness(0) invert(1) sepia(1) saturate(1.5) hue-rotate(10deg) brightness(0.85);
-    transition: transform 0.4s ease;
 }
 
 .footer-bottom {
@@ -143,10 +93,11 @@
     justify-content: space-between;
     align-items: flex-end;
     width: 100%;
-    margin-top: -2rem;
-    /* Reduced from 4rem */
+    margin-top: 0;
     position: relative;
     z-index: 10;
+    padding-top: 4rem;
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 .footer-left {
@@ -168,8 +119,7 @@
 .footer-logo-letter {
     height: 14px;
     width: auto;
-    filter: brightness(0) invert(1);
-    /* White logo letters */
+    filter: none; /* Black/Original logo letters */
 }
 
 .footer-copyright {
@@ -178,11 +128,9 @@
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.1em;
-    opacity: 0.8;
-    /* Increased opacity for white text */
+    opacity: 0.5;
     white-space: nowrap;
-    color: #ffffff;
-    /* Changed to white */
+    color: #111111;
 }
 
 .footer-right {
@@ -202,6 +150,7 @@
     justify-content: center;
     text-decoration: none;
     transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
+    filter: invert(1); /* Turn light icons to dark */
 }
 
 .social-link.email-link {
@@ -212,13 +161,13 @@
     font-family: var(--font-manrope), sans-serif;
     font-size: 0.85rem;
     font-weight: 500;
-    color: #ffffff;
+    color: #000000;
     opacity: 0.9;
 }
 
 .footer-social .social-separator {
-    color: #ffffff;
-    opacity: 0.3;
+    color: #111111;
+    opacity: 0.2;
     font-size: 1.1rem;
     font-family: var(--font-cormorant), serif;
     user-select: none;
@@ -232,14 +181,8 @@
 @media (max-width: 1024px) {
     .footer-container {
         padding: 0 2rem;
-        min-height: 50vh;
-        gap: 5rem;
-    }
-
-    .footer-big-logo-wrapper {
-        margin-left: 0;
-        /* Adjusted for tablet padding */
-        width: 100%;
+        min-height: auto;
+        gap: 4rem;
     }
 
     .footer-links-container {
@@ -260,25 +203,8 @@
     .footer-link-items {
         flex-wrap: wrap;
         gap: 0.5rem 0.75rem;
-    }
-
-    .footer-big-letter {
-        height: 20vw;
-        /* Larger on mobile */
-    }
-
-    .footer-big-logo {
-        mask-image: linear-gradient(to bottom,
-                rgba(0, 0, 0, 1) 0%,
-                rgba(0, 0, 0, 0.5) 30%,
-                rgba(0, 0, 0, 0.1) 70%,
-                transparent 100%);
-        -webkit-mask-image: linear-gradient(to bottom,
-                rgba(0, 0, 0, 1) 0%,
-                rgba(0, 0, 0, 0.5) 30%,
-                rgba(0, 0, 0, 0.1) 70%,
-                transparent 100%);
-        opacity: 1;
+        justify-content: flex-start;
+        align-self: flex-start;
     }
 
     .footer-bottom {
@@ -286,6 +212,7 @@
         align-items: center;
         gap: 3rem;
         text-align: center;
+        padding-top: 3rem;
     }
 
     .footer-left {
@@ -296,16 +223,6 @@
 
 @media (max-width: 768px) {
     .footer-section {
-        padding: 120px 0 40px;
-    }
-
-    .footer-big-letter {
-        height: 25vw;
-        /* Even larger on small mobile */
-    }
-
-    .footer-big-logo-wrapper {
-        margin-left: 0;
-        /* Adjusted for mobile padding */
+        padding: 80px 0 40px;
     }
 }

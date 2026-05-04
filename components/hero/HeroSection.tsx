@@ -56,14 +56,21 @@ export function getHeroRevealAnimation(tl: gsap.core.Timeline, isMobile: boolean
   const heroEl = document.querySelector('.main-hero') as HTMLElement;
   if (!heroEl) return;
 
-  const heroRect = heroEl.getBoundingClientRect();
-  const heroW = heroRect.width;
-  const heroH = heroRect.height;
+  // BATCH READS
+  const vW = window.innerWidth;
+  const vH = window.innerHeight;
+  const hRect = heroEl.getBoundingClientRect();
+  
+  const heroW = hRect.width;
+  const heroH = hRect.height;
+  const heroTop = hRect.top;
+
   const boxW = isMobile
-    ? Math.min(window.innerHeight * 0.3, window.innerWidth * 0.5)
-    : Math.min(window.innerHeight * 0.35, window.innerWidth * 0.8);
-  const boxH = isMobile ? window.innerHeight * 0.38 : window.innerHeight * 0.5;
-  const heroLocalCenterY = window.innerHeight / 2 - heroRect.top;
+    ? Math.min(vH * 0.3, vW * 0.5)
+    : Math.min(vH * 0.35, vW * 0.8);
+  const boxH = isMobile ? vH * 0.38 : vH * 0.5;
+  
+  const heroLocalCenterY = vH / 2 - heroTop;
   const insetTop = heroLocalCenterY - boxH / 2;
   const insetBottom = heroH - (insetTop + boxH);
   const insetLR = (heroW - boxW) / 2;

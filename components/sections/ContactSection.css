@@ -3,76 +3,54 @@
     position: relative;
     padding-top: 120px;
     padding-bottom: 64px;
-    /* Reduced bottom padding */
-    overflow: visible;
-    /* Allow overlap */
+    background-color: #bcaf8b;
+    /* Gold background matching footer */
+    color: #ffffff;
     display: flex;
     align-items: center;
     z-index: 10;
-    /* Ensure it stays above the footer */
 }
 
-.contact-bg-wrapper {
+.contact-big-logo-wrapper {
     position: absolute;
     inset: 0;
-    overflow: hidden;
-    /* Clips the parallax background */
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    pointer-events: none;
     z-index: 1;
 }
 
-.contact-bg {
-    position: absolute;
-    top: -20%;
-    left: 0;
+.contact-big-logo {
+    display: flex;
+    align-items: flex-end;
+    gap: 0;
     width: 100%;
-    height: 140%;
-    will-change: transform;
+    max-width: 90vw;
+    justify-content: center;
+
+    /* Extremely soft and gradual fade from top to bottom, matching footer */
+    mask-image: linear-gradient(to bottom,
+            rgba(0, 0, 0, 0.7) 0%,
+            rgba(0, 0, 0, 0.5) 25%,
+            rgba(0, 0, 0, 0.3) 50%,
+            rgba(0, 0, 0, 0.2) 75%,
+            transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom,
+            rgba(0, 0, 0, 0.7) 0%,
+            rgba(0, 0, 0, 0.5) 25%,
+            rgba(0, 0, 0, 0.3) 50%,
+            rgba(0, 0, 0, 0.2) 75%,
+            transparent 100%);
+    opacity: 0.9;
 }
 
-.desktop-only {
-    display: block;
-}
-
-.mobile-only {
-    display: none;
-}
-
-.contact-bg::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    /* Richer bronze-to-gold transition, less 'heavy' than black */
-    background: linear-gradient(to right,
-            rgba(40, 36, 28, 0.75) 0%,
-            rgba(188, 175, 139, 0.45) 100%);
-    z-index: 2;
-}
-
-.contact-grain {
-    position: absolute;
-    inset: 0;
-    z-index: 2;
-    /* Moved inside wrapper but kept above bg */
-    opacity: 0.12;
-    pointer-events: none;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-    mix-blend-mode: overlay;
-}
-
-.contact-bottom-fade {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 250px;
-    background: linear-gradient(to bottom,
-            transparent 0%,
-            rgba(188, 175, 139, 0.05) 40%,
-            rgba(188, 175, 139, 0.2) 65%,
-            rgba(188, 175, 139, 0.6) 90%,
-            #bcaf8b 100%);
-    z-index: 4;
-    pointer-events: none;
+.contact-big-letter {
+    height: auto;
+    width: auto;
+    /* Normalize all SVGs to a consistent, elegant gold tone matching footer */
+    filter: brightness(0) invert(1) sepia(1) saturate(1.5) hue-rotate(10deg) brightness(0.85);
 }
 
 .contact-container {
@@ -533,6 +511,26 @@
         margin-top: 0;
         transform: translateY(80px);
         /* Push card down on mobile */
+        z-index: 20;
+    }
+
+    .contact-big-letter {
+        height: 20vw;
+        /* Larger on mobile matching footer */
+    }
+
+    .contact-big-logo {
+        mask-image: linear-gradient(to bottom,
+                rgba(0, 0, 0, 1) 0%,
+                rgba(0, 0, 0, 0.5) 30%,
+                rgba(0, 0, 0, 0.1) 70%,
+                transparent 100%);
+        -webkit-mask-image: linear-gradient(to bottom,
+                rgba(0, 0, 0, 1) 0%,
+                rgba(0, 0, 0, 0.5) 30%,
+                rgba(0, 0, 0, 0.1) 70%,
+                transparent 100%);
+        opacity: 1;
     }
 
     .form-title {
@@ -606,6 +604,11 @@
 
     .contact-card {
         padding: 2.5rem 1.5rem;
+    }
+
+    .contact-big-letter {
+        height: 25vw;
+        /* Even larger on small mobile matching footer */
     }
 
     .form-group {

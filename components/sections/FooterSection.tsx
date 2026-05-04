@@ -35,21 +35,6 @@ const FooterSection = () => {
             </div>
           </div>
         </div>
-
-        <div className="footer-big-logo-wrapper">
-          <div className="footer-big-logo">
-            {HEADER_LETTERS.map((letter, i) => (
-              <img
-                key={i}
-                src={letter.svg}
-                alt=""
-                className="footer-big-letter"
-                style={{ width: `${(letter.width / totalWidth) * 100}%` }}
-              />
-            ))}
-          </div>
-        </div>
-
         <div className="footer-bottom">
           <div className="footer-left">
             <div className="footer-logo">

@@ -24,11 +24,30 @@ function useSplashIntroAnimations() {
 
   useEffect(() => {
     const splitText = (selector: string) => {
-      document.querySelectorAll(selector).forEach((el) => {
-        const words = (el as HTMLElement).innerText.split(' ');
-        el.innerHTML = words
-          .map((w) => `<span class="word-mask"><span class="word-inner">${w}</span></span>`)
-          .join(' ');
+      const elements = document.querySelectorAll(selector);
+      elements.forEach((el) => {
+        const htmlElement = el as HTMLElement;
+        const text = htmlElement.textContent || '';
+        if (htmlElement.querySelector('.word-mask')) return; // Avoid re-splitting
+
+        const words = text.split(' ');
+        const fragment = document.createDocumentFragment();
+        
+        words.forEach((w, i) => {
+          const mask = document.createElement('span');
+          mask.className = 'word-mask';
+          const inner = document.createElement('span');
+          inner.className = 'word-inner';
+          inner.textContent = w;
+          mask.appendChild(inner);
+          fragment.appendChild(mask);
+          if (i < words.length - 1) {
+            fragment.appendChild(document.createTextNode(' '));
+          }
+        });
+
+        htmlElement.textContent = '';
+        htmlElement.appendChild(fragment);
       });
     };
     splitText('.hero-title');
@@ -146,8 +165,14 @@ export function getSplashIntroAnimations(tl: gsap.core.Timeline, onReleaseScroll
 
 function breakoutLogoSynchronously(logoArea: HTMLElement, splashIntro: HTMLElement) {
   if (logoArea.id === 'morph-breakout-logo') return;
+  
+  // BATCH READS
   const logoAreaRect = logoArea.getBoundingClientRect();
+  const computedStyle = window.getComputedStyle(logoArea);
+  const margin = computedStyle.margin;
   const scrollY = window.scrollY;
+
+  // BATCH WRITES
   const spacer = logoArea.cloneNode(false) as HTMLElement;
   spacer.className = 'logo-content-area-spacer';
   Object.assign(spacer.style, {
@@ -156,8 +181,9 @@ function breakoutLogoSynchronously(logoArea: HTMLElement, splashIntro: HTMLEleme
     flexShrink: '0',
     visibility: 'hidden',
     pointerEvents: 'none',
-    margin: window.getComputedStyle(logoArea).margin
+    margin: margin
   });
+  
   logoArea.parentNode?.insertBefore(spacer, logoArea);
   logoArea.id = 'morph-breakout-logo';
   
@@ -183,45 +209,64 @@ function breakoutLogoSynchronously(logoArea: HTMLElement, splashIntro: HTMLEleme
 
 export function setupLogoMorph(isMobile: boolean, heroEl: HTMLElement) {
   if (isMobile) return { morphTl: null, morphST: null };
+  
   const logoArea = document.getElementById('morph-breakout-logo') as HTMLElement;
   const headerContent = document.querySelector('.header-content') as HTMLElement;
-  if (!logoArea || !headerContent) return { morphTl: null, morphST: null };
   const splashIntro = document.querySelector('.splash-intro') as HTMLElement;
+  
+  if (!logoArea || !headerContent || !splashIntro) return { morphTl: null, morphST: null };
+
   const wordContainer = logoArea.querySelector('.word-container') as HTMLElement;
   const heroCtas = logoArea.querySelector('.hero-ctas') as HTMLElement;
   const heroDesc = splashIntro.querySelector('.hero-description-area') as HTMLElement;
+
+  if (!wordContainer || !heroCtas || !heroDesc) return { morphTl: null, morphST: null };
+
+  // BATCH READS
   const headerRectLocal = headerContent.getBoundingClientRect();
-  const scrollY = window.scrollY;
   const wordRect = wordContainer.getBoundingClientRect();
-  const headerLogoHeight = window.innerWidth <= 480 ? 14 : 20;
+  const logoAreaRect = logoArea.getBoundingClientRect();
+  const scrollY = window.scrollY;
+  const viewportWidth = window.innerWidth;
+  const heroHeight = heroEl.offsetHeight;
+
+  const headerLogoHeight = viewportWidth <= 480 ? 14 : 20;
   const targetScale = headerLogoHeight / wordRect.height;
   const targetLeftPx = 48;
   const initialWordCenterY = wordRect.top + scrollY + wordRect.height / 2;
   const targetHeaderCenterY = headerRectLocal.top + scrollY + headerRectLocal.height / 2;
-  const scrollEnd = heroEl.offsetHeight;
-  const wordLocalY = targetHeaderCenterY - initialWordCenterY + scrollEnd;
+  const wordLocalY = targetHeaderCenterY - initialWordCenterY + heroHeight;
   const toX = targetLeftPx - wordRect.left;
+
+  // BATCH WRITES
   gsap.set(heroEl, { overflow: 'hidden', clipPath: 'inset(0px 0px 0px 0px round 0px)' });
   gsap.set(splashIntro, { overflow: 'visible' });
   gsap.set(logoArea, { y: 0, opacity: 1, visibility: 'visible' });
   gsap.set(wordContainer, { x: 0, y: 0, scale: 1, transformOrigin: 'left center' });
+
   const morphTl = gsap.timeline({ paused: true });
   morphTl
-    .to(logoArea, { y: -scrollEnd, duration: 1, ease: 'none', force3D: true, overwrite: 'auto' }, 0)
+    .to(logoArea, { y: -heroHeight, duration: 1, ease: 'none', force3D: true, overwrite: 'auto' }, 0)
     .to(heroCtas, { opacity: 0, y: '250%', duration: 0.25, ease: 'none', force3D: true, overwrite: 'auto' }, 0)
     .to(heroDesc, { opacity: 0, duration: 0.5, ease: 'none', force3D: true, overwrite: 'auto' }, 0)
     .to(wordContainer, { x: toX, y: wordLocalY, scale: targetScale, duration: 1, ease: 'none', force3D: true, overwrite: 'auto' }, 0);
+
   const morphST = ScrollTrigger.create({
-    trigger: '.main-hero', start: 'top top', end: '50% top', scrub: true, animation: morphTl, invalidateOnRefresh: true,
+    trigger: '.main-hero', 
+    start: 'top top', 
+    end: '50% top', 
+    scrub: true, 
+    animation: morphTl, 
+    invalidateOnRefresh: true,
   });
+
   return { morphTl, morphST };
 }
 
 function useIntroOrchestrator() {
   const lenis = useLenis();
   const pathname = usePathname();
-  const initialized = useRef(false);
-  const mainTl = useRef<gsap.core.Timeline | null>(null);
+  const ctx = useRef<gsap.Context | null>(null);
 
   useEffect(() => {
     // Immediate cleanup for SPA navigations
@@ -257,59 +302,66 @@ function useIntroOrchestrator() {
       morphSTInstance = morphST;
     };
 
-    const tl = gsap.timeline({
-      paused: true,
-      onStart: () => { document.body.classList.add('intro-active'); },
-      onComplete: () => { releaseScroll(); initMorph(); },
-    });
-    mainTl.current = tl;
+    ctx.current = gsap.context(() => {
+      const tl = gsap.timeline({
+        paused: true,
+        onStart: () => { document.body.classList.add('intro-active'); },
+        onComplete: () => { releaseScroll(); initMorph(); },
+      });
 
-    // Small delay to ensure siblings (HeroSection) are rendered
-    const initTimer = setTimeout(() => {
-      const heroEl = document.querySelector('.main-hero') as HTMLElement;
-      const logoArea = document.querySelector('.logo-content-area') as HTMLElement;
-      const splashIntro = document.querySelector('.splash-intro') as HTMLElement;
-      if (!heroEl || !logoArea || !splashIntro) return;
+      // Small delay to ensure siblings (HeroSection) are rendered
+      const initTimer = setTimeout(() => {
+        const heroEl = document.querySelector('.main-hero') as HTMLElement;
+        const logoArea = document.querySelector('.logo-content-area') as HTMLElement;
+        const splashIntro = document.querySelector('.splash-intro') as HTMLElement;
+        if (!heroEl || !logoArea || !splashIntro) return;
+        
+        // BATCH READS across components to prevent reflows
+        // We know breakoutLogoSynchronously and getHeroRevealAnimation both read.
+        // Let's call them in order but keep them efficient.
+        
+        if (!isMobile) breakoutLogoSynchronously(logoArea, splashIntro);
+        else gsap.set(logoArea, { opacity: 1, visibility: 'visible' });
+
+        getHeroRevealAnimation(tl, isMobile);
+        getSplashIntroAnimations(tl, releaseScroll);
+        tl.add(() => { initMorph(); }, 1.6);
+
+        if (globalPreloaderFinished) {
+          tl.play();
+        }
+      }, 50);
+
+      const handlePreloaderComplete = () => { tl.play(); };
+      window.addEventListener('preloader-complete', handlePreloaderComplete);
       
-      if (!isMobile) breakoutLogoSynchronously(logoArea, splashIntro);
-      else gsap.set(logoArea, { opacity: 1, visibility: 'visible' });
+      const handleSkip = () => {
+        if (tl.time() < 1.4) return;
+        if (tl.progress() < 1 && tl.isActive()) {
+          gsap.to(tl, { progress: 1, duration: 0.6, ease: 'power2.out' });
+          cleanupSkip();
+        }
+      };
+      const cleanupSkip = () => {
+        window.removeEventListener('wheel', handleSkip);
+        window.removeEventListener('touchstart', handleSkip);
+      };
+      window.addEventListener('wheel', handleSkip);
+      window.addEventListener('touchstart', handleSkip);
 
-      getHeroRevealAnimation(tl, isMobile);
-      getSplashIntroAnimations(tl, releaseScroll);
-      tl.add(() => { initMorph(); }, 1.6);
-
-      // If preloader already finished (e.g. on re-render), play now that animations are added
-      if (globalPreloaderFinished) {
-        tl.play();
-      }
-    }, 50);
-
-    const handleSkip = () => {
-      if (tl.time() < 1.4) return;
-      if (tl.progress() < 1 && tl.isActive()) {
-        gsap.to(tl, { progress: 1, duration: 0.6, ease: 'power2.out' });
+      // Store cleanup in context
+      return () => {
+        clearTimeout(initTimer);
         cleanupSkip();
-      }
-    };
-    const cleanupSkip = () => {
-      window.removeEventListener('wheel', handleSkip);
-      window.removeEventListener('touchstart', handleSkip);
-    };
-    window.addEventListener('wheel', handleSkip);
-    window.addEventListener('touchstart', handleSkip);
-    const handlePreloaderComplete = () => { tl.play(); };
-    window.addEventListener('preloader-complete', handlePreloaderComplete);
+        window.removeEventListener('preloader-complete', handlePreloaderComplete);
+        morphTlInstance?.kill();
+        morphSTInstance?.kill();
+        const clone = document.getElementById('morph-breakout-logo');
+        if (clone) clone.remove();
+      };
+    });
 
-    return () => {
-      clearTimeout(initTimer);
-      cleanupSkip();
-      window.removeEventListener('preloader-complete', handlePreloaderComplete);
-      mainTl.current?.kill();
-      morphTlInstance?.kill();
-      morphSTInstance?.kill();
-      const clone = document.getElementById('morph-breakout-logo');
-      if (clone) clone.remove();
-    };
+    return () => ctx.current?.revert();
   }, [lenis, pathname]); // Re-run on pathname change to ensure fresh start
 }
 

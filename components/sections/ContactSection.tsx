@@ -9,6 +9,8 @@ import Button from '@/components/ui/Button';
 import './ContactSection.css';
 import { urlForImage } from '@/sanity/lib/image';
 
+import { HEADER_LETTERS } from '@/lib/letters';
+
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
 }
@@ -32,8 +34,7 @@ export default function ContactSection({ data }: { data?: any }) {
   const headline = data.headline;
   const subtitle = data.subtitle;
   const marketData = data.marketData;
-  const bgImage = data.bgImage?.asset ? urlForImage(data.bgImage).url() : null;
-  const mobileBgImage = data.mobileBgImage?.asset ? urlForImage(data.mobileBgImage).url() : null;
+  const totalWidth = HEADER_LETTERS.reduce((acc, l) => acc + l.width, 0);
 
   const handleIntentClick = (key: string) => {
     switch (key) {
@@ -50,10 +51,6 @@ export default function ContactSection({ data }: { data?: any }) {
     const isMobile = window.innerWidth <= 1024;
 
     if (!isMobile) {
-      gsap.to(section.querySelector('.contact-bg'), {
-        yPercent: 20, ease: "none",
-        scrollTrigger: { trigger: section, start: "top bottom", end: "bottom top", scrub: true }
-      });
       gsap.to(section.querySelector('.contact-content'), {
         y: -50, ease: "none",
         scrollTrigger: { trigger: section, start: "top bottom", end: "bottom top", scrub: true }
@@ -94,6 +91,16 @@ export default function ContactSection({ data }: { data?: any }) {
       { y: isMobile ? 80 : 150, opacity: 1, filter: 'blur(0px)', duration: 1.5, ease: 'expo.out' },
       '-=1.2'
     );
+
+    ScrollTrigger.create({
+      trigger: section,
+      start: 'top 50px',
+      end: 'bottom 50px',
+      onEnter: () => document.body.classList.add('header-light-mode'),
+      onLeave: () => document.body.classList.remove('header-light-mode'),
+      onEnterBack: () => document.body.classList.add('header-light-mode'),
+      onLeaveBack: () => document.body.classList.remove('header-light-mode'),
+    });
 
     return () => {
       tl.kill();
@@ -159,12 +166,18 @@ export default function ContactSection({ data }: { data?: any }) {
 
   return (
     <section className="contact-section" id="contact" ref={sectionRef}>
-      <div className="contact-bg-wrapper">
-        <div className="contact-bg">
-          {bgImage && <Image src={bgImage} alt="" fill sizes="100vw" className="desktop-only img-reveal" style={{ objectFit: 'cover' }} onLoad={(e) => e.currentTarget.classList.add('loaded')} />}
-          {mobileBgImage && <Image src={mobileBgImage} alt="" fill sizes="100vw" className="mobile-only img-reveal" style={{ objectFit: 'cover' }} onLoad={(e) => e.currentTarget.classList.add('loaded')} />}
+      <div className="contact-big-logo-wrapper">
+        <div className="contact-big-logo">
+          {HEADER_LETTERS.map((letter, i) => (
+            <img
+              key={i}
+              src={letter.svg}
+              alt=""
+              className="contact-big-letter"
+              style={{ width: `${(letter.width / totalWidth) * 100}%` }}
+            />
+          ))}
         </div>
-        <div className="contact-grain"></div>
       </div>
       <div className="contact-container">
         <div className="contact-content">
