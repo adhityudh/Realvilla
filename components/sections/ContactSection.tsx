@@ -168,15 +168,37 @@ export default function ContactSection({ data }: { data?: any }) {
     <section className="contact-section" id="contact" ref={sectionRef}>
       <div className="contact-big-logo-wrapper">
         <div className="contact-big-logo">
-          {HEADER_LETTERS.map((letter, i) => (
-            <img
-              key={i}
-              src={letter.svg}
-              alt=""
-              className="contact-big-letter"
-              style={{ width: `${(letter.width / totalWidth) * 100}%` }}
-            />
-          ))}
+          {(() => {
+            let currentPos = 0;
+            const displayedLetters = HEADER_LETTERS.slice(0, 5);
+            const totalWidth = displayedLetters.reduce((acc, l) => acc + l.width, 0);
+            
+            return displayedLetters.map((letter, i) => {
+              const widthPercent = (letter.width / totalWidth) * 100;
+              // background-position percentage is (offset / (imageWidth - containerWidth)) * 100
+              const posPercent = totalWidth > letter.width 
+                ? (currentPos / (totalWidth - letter.width)) * 100 
+                : 0;
+              
+              const bgSize = (totalWidth / letter.width) * 100;
+              
+              const element = (
+                <div
+                  key={i}
+                  className="contact-big-letter"
+                  style={{ 
+                    width: `${widthPercent}%`,
+                    '--letter-svg': `url(${letter.svg})`,
+                    '--bg-size': `${bgSize}%`,
+                    '--bg-pos': `${posPercent}%`
+                  } as any}
+                />
+              );
+              
+              currentPos += letter.width;
+              return element;
+            });
+          })()}
         </div>
       </div>
       <div className="contact-container">

@@ -14,29 +14,43 @@
 .contact-big-logo-wrapper {
     position: absolute;
     inset: 0;
-    width: 100%;
+    width: 100vw;
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
+    padding-left: 35vw;
     pointer-events: none;
     z-index: 1;
+    overflow: hidden;
+
 }
 
 .contact-big-logo {
     display: flex;
     align-items: flex-end;
     gap: 0;
-    width: 100%;
-    max-width: 90vw;
-    justify-content: center;
-    opacity: 0.9;
+    min-width: 70vw;
+    max-width: none;
+    justify-content: flex-start;
+    opacity: 0.4;
+    transform: scale(1) translateY(-40%);
+    transform-origin: left center;
 }
 
 .contact-big-letter {
-    height: auto;
-    width: auto;
-    /* Normalize all SVGs to a consistent, elegant gold tone matching footer */
-    filter: brightness(0) invert(1) sepia(1) saturate(1.5) hue-rotate(10deg) brightness(0.85);
+    height: 35vw;
+    background-image: url('/images/img-contact.webp');
+    background-size: var(--bg-size) auto;
+    background-position: var(--bg-pos) center;
+    background-repeat: no-repeat;
+    -webkit-mask-image: var(--letter-svg);
+    mask-image: var(--letter-svg);
+    -webkit-mask-size: 100% 100%;
+    mask-size: 100% 100%;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    mask-position: center;
 }
 
 .contact-container {
@@ -456,6 +470,11 @@
         padding: 100px 0 48px 0;
     }
 
+    .contact-big-logo-wrapper {
+        padding-left: 0;
+        justify-content: center;
+    }
+
     .form-title {
         font-size: clamp(2rem, 5.5vw, 4rem);
         margin-bottom: 1.5rem;
@@ -501,12 +520,15 @@
     }
 
     .contact-big-letter {
-        height: 20vw;
+        height: 40vw;
         /* Larger on mobile matching footer */
     }
 
     .contact-big-logo {
         opacity: 1;
+        width: 100%;
+        justify-content: center;
+        transform: scale(1) translateY(0);
     }
 
     .form-title {
@@ -583,7 +605,7 @@
     }
 
     .contact-big-letter {
-        height: 25vw;
+        height: 50vw;
         /* Even larger on small mobile matching footer */
     }
 
