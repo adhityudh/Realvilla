@@ -351,6 +351,7 @@ function useIntroOrchestrator() {
         }
       };
       
+      window.addEventListener('preloader-start-fade', handlePreloaderComplete);
       window.addEventListener('preloader-complete', handlePreloaderComplete);
       
       const handleSkip = () => {
@@ -413,6 +414,7 @@ export default function SplashIntro({ data }: { data?: any }) {
         strokeDashoffset: 0, duration: 0.5, ease: 'power2.out',
         onComplete: () => {
           globalPreloaderFinished = true;
+          window.dispatchEvent(new CustomEvent('preloader-start-fade'));
           gsap.to(preloaderBox, {
             opacity: 0, duration: 0.8, ease: 'power2.out',
             onComplete: () => { window.dispatchEvent(new CustomEvent('preloader-complete')); }
