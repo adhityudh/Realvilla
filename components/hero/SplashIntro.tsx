@@ -10,7 +10,6 @@ import { useLenis } from '@/lib/LenisContext';
 import Button from '@/components/ui/Button';
 import './SplashIntro.css';
 import { getHeroRevealAnimation } from './HeroSection';
-import { LogoLetter } from '@/components/ui/LogoLetter';
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
@@ -310,28 +309,19 @@ function useIntroOrchestrator() {
         onComplete: () => { releaseScroll(); initMorph(); },
       });
 
-      // Prepare local elements immediately without waiting for a frame
-      const logoArea = document.querySelector('.logo-content-area') as HTMLElement;
-      const splashIntro = document.querySelector('.splash-intro') as HTMLElement;
-
-      if (logoArea && splashIntro) {
-        if (!isMobile) {
-          breakoutLogoSynchronously(logoArea, splashIntro);
-        } else {
-          gsap.set(logoArea, { opacity: 1, visibility: 'visible' });
-        }
-      }
-
-      // Populate timeline once siblings are ready
-      const populateTimeline = () => {
+      // Small delay to ensure siblings (HeroSection) are rendered
+      const initTimer = setTimeout(() => {
         const heroEl = document.querySelector('.main-hero') as HTMLElement;
-        const logoAreaActive = document.querySelector('.logo-content-area') as HTMLElement;
-        const splashIntroActive = document.querySelector('.splash-intro') as HTMLElement;
+        const logoArea = document.querySelector('.logo-content-area') as HTMLElement;
+        const splashIntro = document.querySelector('.splash-intro') as HTMLElement;
+        if (!heroEl || !logoArea || !splashIntro) return;
         
-        if (!heroEl || !logoAreaActive || !splashIntroActive) {
-          requestAnimationFrame(populateTimeline);
-          return;
-        }
+        // BATCH READS across components to prevent reflows
+        // We know breakoutLogoSynchronously and getHeroRevealAnimation both read.
+        // Let's call them in order but keep them efficient.
+        
+        if (!isMobile) breakoutLogoSynchronously(logoArea, splashIntro);
+        else gsap.set(logoArea, { opacity: 1, visibility: 'visible' });
 
         getHeroRevealAnimation(tl, isMobile);
         getSplashIntroAnimations(tl, releaseScroll);
@@ -340,23 +330,13 @@ function useIntroOrchestrator() {
         if (globalPreloaderFinished) {
           tl.play();
         }
-      };
+      }, 50);
 
-      populateTimeline();
-
-      const handlePreloaderComplete = () => { 
-        if (tl.getChildren().length > 0) {
-          tl.play();
-        } else {
-          globalPreloaderFinished = true;
-        }
-      };
-      
-      window.addEventListener('preloader-start-fade', handlePreloaderComplete);
+      const handlePreloaderComplete = () => { tl.play(); };
       window.addEventListener('preloader-complete', handlePreloaderComplete);
       
       const handleSkip = () => {
-        if (tl.time() < 1.0) return;
+        if (tl.time() < 1.4) return;
         if (tl.progress() < 1 && tl.isActive()) {
           gsap.to(tl, { progress: 1, duration: 0.6, ease: 'power2.out' });
           cleanupSkip();
@@ -369,7 +349,9 @@ function useIntroOrchestrator() {
       window.addEventListener('wheel', handleSkip);
       window.addEventListener('touchstart', handleSkip);
 
+      // Store cleanup in context
       return () => {
+        clearTimeout(initTimer);
         cleanupSkip();
         window.removeEventListener('preloader-complete', handlePreloaderComplete);
         morphTlInstance?.kill();
@@ -380,7 +362,7 @@ function useIntroOrchestrator() {
     });
 
     return () => ctx.current?.revert();
-  }, [lenis, pathname]);
+  }, [lenis, pathname]); // Re-run on pathname change to ensure fresh start
 }
 
 export default function SplashIntro({ data }: { data?: any }) {
@@ -392,7 +374,11 @@ export default function SplashIntro({ data }: { data?: any }) {
   const title = data.title;
   const subtitle = data.subtitle;
   const ctas = data.ctas;
-  // Preload CTA icons (logo letters are now inlined)
+
+  // Preload logo letters and CTA icons
+  REALVILLA_LETTERS.forEach((letter) => {
+    preload(letter.svg, { as: 'image' });
+  });
   ctas?.forEach((cta: any) => {
     if (cta.icon) preload(cta.icon, { as: 'image' });
   });
@@ -411,7 +397,6 @@ export default function SplashIntro({ data }: { data?: any }) {
         strokeDashoffset: 0, duration: 0.5, ease: 'power2.out',
         onComplete: () => {
           globalPreloaderFinished = true;
-          window.dispatchEvent(new CustomEvent('preloader-start-fade'));
           gsap.to(preloaderBox, {
             opacity: 0, duration: 0.8, ease: 'power2.out',
             onComplete: () => { window.dispatchEvent(new CustomEvent('preloader-complete')); }
@@ -451,6 +436,7 @@ export default function SplashIntro({ data }: { data?: any }) {
 
     const waitForAssets = new Promise((resolve) => {
       const assets: string[] = [
+        ...REALVILLA_LETTERS.map(l => l.svg),
         ...(ctas?.map((c: any) => c.icon).filter(Boolean) || [])
       ];
       
@@ -477,11 +463,11 @@ export default function SplashIntro({ data }: { data?: any }) {
 
     const waitForVideoWithTimeout = Promise.race([
       waitForVideo,
-      new Promise(resolve => setTimeout(resolve, 1200)) // Balanced wait (was 800ms)
+      new Promise(resolve => setTimeout(resolve, 800)) // Shorter wait (was 2.5s)
     ]);
 
     const safetyTimeout = setTimeout(finishPreloader, 5000);
-    // Wait for DOM, Assets (Icons), and the Video Background (with timeout)
+    // Wait for DOM, Assets (Logo/Icons), and the Video Background (with timeout)
     Promise.all([waitForDOM, waitForAssets, waitForVideoWithTimeout]).then(() => { 
       clearTimeout(safetyTimeout); 
       finishPreloader(); 
@@ -501,9 +487,9 @@ export default function SplashIntro({ data }: { data?: any }) {
       <div className="logo-content-area">
         <div className="word-container">
           {REALVILLA_LETTERS.map((letter, i) => (
-            <div key={i} className="letter-wrapper" style={{ '--letter-w': letter.width } as React.CSSProperties}>
-              <LogoLetter letter={letter.svg} className={`solid-text ${letter.colorClass}`} />
-              <LogoLetter letter={letter.svg} className="solid-text text-white-reveal" />
+            <div key={i} className="letter-wrapper" style={{ '--letter-svg': `url('${letter.svg}')`, '--letter-w': letter.width } as React.CSSProperties}>
+              <div className={`solid-text ${letter.colorClass}`} />
+              <div className="solid-text text-white-reveal" />
             </div>
           ))}
         </div>

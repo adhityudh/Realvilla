@@ -6,7 +6,6 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { HEADER_LETTERS, NAV_LINKS } from '@/lib/letters';
 import { useLenis } from '@/lib/LenisContext';
-import { LogoLetter } from '@/components/ui/LogoLetter';
 import Button from '@/components/ui/Button';
 import LanguageSwitcher from './LanguageSwitcher';
 import './Header.css';
@@ -135,11 +134,11 @@ export default function Header({ settings }: { settings?: any }) {
       <div className="header-content">
         <a href="/" className="header-logo" aria-label="Real Villa">
           {HEADER_LETTERS.map((letter, i) => (
-            <LogoLetter 
+            <img 
               key={i} 
-              letter={letter.svg} 
+              src={letter.svg} 
               className="header-letter-img" 
-              style={{ width: `calc(1.4rem * ${letter.width})`, height: '1.4rem' }}
+              alt="" 
             />
           ))}
         </a>
