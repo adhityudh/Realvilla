@@ -42,10 +42,21 @@ export function constructMetadata(
         {
           url: activeFavicon,
           type: activeFavicon.endsWith('.svg') ? 'image/svg+xml' : undefined,
+        },
+        // PNG fallback for scrapers like WhatsApp
+        {
+          url: `${activeFavicon}${activeFavicon.includes('?') ? '&' : '?'}fm=png&w=32&h=32`,
+          type: 'image/png',
+          sizes: '32x32',
+        },
+        {
+          url: `${activeFavicon}${activeFavicon.includes('?') ? '&' : '?'}fm=png&w=180&h=180`,
+          type: 'image/png',
+          sizes: '180x180',
         }
       ],
       shortcut: activeFavicon,
-      apple: activeFavicon,
+      apple: `${activeFavicon}${activeFavicon.includes('?') ? '&' : '?'}fm=png&w=180&h=180`,
     } : undefined,
     robots: {
       index: !noIndex,
