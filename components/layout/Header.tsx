@@ -93,15 +93,6 @@ function useHeaderScrollAnimations() {
           },
         });
       }
-
-      // Add footer transition
-      footerST = ScrollTrigger.create({
-        trigger: '.footer-section',
-        start: () => `top ${header.offsetHeight}px`,
-        end: 'bottom top',
-        onEnter: () => document.body.classList.add('header-light-mode'),
-        onLeaveBack: () => document.body.classList.remove('header-light-mode'),
-      });
     }
 
     return () => {
@@ -109,7 +100,6 @@ function useHeaderScrollAnimations() {
       colorST.kill();
       pillST?.kill();
       navST?.kill();
-      footerST?.kill();
     };
   }, [lenis]);
 }

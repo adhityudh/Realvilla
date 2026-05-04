@@ -35,7 +35,7 @@
             font-weight: 700;
             letter-spacing: 0.3em;
             text-transform: uppercase;
-            color: #bcaf8b;
+            color: #D1C39B;
             margin-bottom: 1.5rem;
             display: flex;
             align-items: center;
@@ -46,7 +46,7 @@
             content: '';
             width: 30px;
             height: 1px;
-            background: #bcaf8b;
+            background: #D1C39B;
         }
 
         .valuation-headline {
@@ -133,7 +133,7 @@
             width: 40px;
             height: 40px;
             border: 2px solid rgba(188, 175, 139, 0.1);
-            border-top-color: #bcaf8b;
+            border-top-color: #D1C39B;
             border-radius: 50%;
             margin-bottom: 1rem;
             animation: spin 1s linear infinite;
@@ -253,7 +253,7 @@
                 content: '';
                 width: 30px;
                 height: 1px;
-                background: #bcaf8b;
+                background: #D1C39B;
             }
 
             .valuation-headline {

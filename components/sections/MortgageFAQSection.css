@@ -24,7 +24,7 @@
     font-weight: 700;
     letter-spacing: 0.3em;
     text-transform: uppercase;
-    color: #bcaf8b;
+    color: #D1C39B;
     margin-bottom: 1.5rem;
     display: flex;
     align-items: center;
@@ -35,7 +35,7 @@
     content: '';
     width: 30px;
     height: 1px;
-    background: #bcaf8b;
+    background: #D1C39B;
 }
 
 .mortgage-faq-title {

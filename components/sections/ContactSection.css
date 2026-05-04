@@ -3,9 +3,9 @@
     position: relative;
     padding-top: 8rem;
     padding-bottom: 4rem;
-    background-color: #bcaf8b;
+    background-color: #D1C39B;
     /* Gold background matching footer */
-    color: #ffffff;
+    color: var(--text-black);
     display: flex;
     align-items: center;
     z-index: 10;
@@ -71,7 +71,7 @@
 .contact-content {
     display: flex;
     flex-direction: column;
-    color: #ffffff;
+    color: var(--text-black);
     padding-right: 4rem;
 }
 
@@ -81,7 +81,8 @@
     font-weight: 700;
     letter-spacing: 0.3em;
     text-transform: uppercase;
-    color: #bcaf8b;
+    color: var(--text-black);
+    opacity: 0.7;
     margin-bottom: 1.5rem;
     display: flex;
     align-items: center;
@@ -92,12 +93,13 @@
     content: '';
     width: 30px;
     height: 1px;
-    background: #bcaf8b;
+    background: var(--text-black);
+    opacity: 0.4;
 }
 
 .contact-description-area {
     margin-bottom: 3.5rem;
-    max-width: 400px;
+    max-width: 320px;
     /* Removed opacity: 0.7 to keep text pure white */
 }
 
@@ -119,7 +121,7 @@
     font-weight: 800;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: #ffffff;
+    color: var(--text-black);
     opacity: 0;
     /* Hidden until GSAP splitting is done */
 }
@@ -129,7 +131,7 @@
     font-size: 1rem;
     font-weight: 400;
     line-height: 1.6;
-    color: #ffffff;
+    color: var(--text-black);
     max-width: 100%;
     opacity: 0;
     /* Hidden until GSAP splitting is done */
@@ -159,7 +161,7 @@
     line-height: 0.9;
     font-weight: 300;
     letter-spacing: -0.03em;
-    color: #ffffff;
+    color: var(--text-black);
 }
 
 .market-data-prefix {
@@ -189,7 +191,7 @@
     max-width: 280px;
     line-height: 1.6;
     font-weight: 500;
-    color: rgba(255, 255, 255, 0.9);
+    color: rgba(0, 0, 0, 0.7);
 }
 
 /* Form Right Side Styling */
@@ -285,7 +287,7 @@
 
 .form-group input:focus,
 .form-group textarea:focus {
-    border-bottom-color: #bcaf8b;
+    border-bottom-color: #D1C39B;
 }
 
 .form-submit-btn {
@@ -303,7 +305,7 @@
     font-size: 0.8rem;
     font-weight: 500;
     letter-spacing: 0.05em;
-    color: #bcaf8b;
+    color: #D1C39B;
     cursor: pointer;
     padding: 0;
     margin-bottom: 1.5rem;
@@ -364,7 +366,7 @@
 }
 
 .intent-option-btn:hover .intent-option-label {
-    color: #bcaf8b;
+    color: #D1C39B;
 }
 
 .intent-option-arrow {
@@ -387,7 +389,7 @@
     /* Muncul saat hover */
     transform: translateX(0);
     /* Bergeser ke posisi asli */
-    color: #bcaf8b;
+    color: #D1C39B;
 }
 
 /* Select Dropdown */
@@ -412,12 +414,12 @@
 }
 
 .form-select:focus {
-    border-bottom-color: #bcaf8b;
+    border-bottom-color: #D1C39B;
 }
 
 /* Required / Optional Labels */
 .form-required {
-    color: #bcaf8b;
+    color: #D1C39B;
     font-weight: 700;
 }
 
@@ -449,7 +451,7 @@
     width: 18px;
     height: 18px;
     margin-top: 2px;
-    accent-color: #bcaf8b;
+    accent-color: #D1C39B;
     cursor: pointer;
 }
 

@@ -2,7 +2,7 @@
     position: relative;
     width: 100%;
     height: auto;
-    background-color: #bcaf8b;
+    background-color: #D1C39B;
     padding: 0;
     overflow: hidden;
     z-index: 5;
@@ -22,7 +22,7 @@
     align-items: center;
     justify-content: center;
     text-align: center;
-    color: #ffffff;
+    color: var(--text-black);
     min-height: 70vh;
     margin-bottom: 10vh;
     will-change: transform, opacity, filter;
@@ -34,7 +34,8 @@
     font-weight: 700;
     letter-spacing: 0.4em;
     text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--text-black);
+    opacity: 0.8;
     margin-bottom: 1.5rem;
     display: flex;
     align-items: center;
@@ -46,7 +47,7 @@
     content: '';
     width: 30px;
     height: 1px;
-    background: rgba(255, 255, 255, 0.4);
+    background: rgba(0, 0, 0, 0.2);
 }
 
 .properties-headline {
