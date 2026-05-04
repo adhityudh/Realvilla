@@ -122,6 +122,7 @@ export default function Header({ settings }: { settings?: any }) {
 
   return (
     <header className="header">
+      <div className="header-bg" />
       <div className="mobile-pill-nav">
         {navLinks.map((link: any, i: number) => (
           <span key={link.label} style={{ display: 'contents' }}>

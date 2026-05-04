@@ -14,25 +14,26 @@
             margin-top: 0.5rem;
         }
 
-        .header::before {
-            content: '';
+        .header-bg {
             position: absolute;
             inset: 0;
-            z-index: 1; 
-            background: rgba(188, 175, 139, 0.15);
-            /* Gold tone glassmorphism */
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
+            z-index: 1;
+            background-color: rgba(188, 175, 139, 0.15);
+            /* Force preservation by using percentages and explicit order */
+            -webkit-backdrop-filter: blur(20px) brightness(102%);
+            backdrop-filter: blur(20px) brightness(102%);
             box-shadow: none;
-            transform: scaleY(var(--header-wipe, 0));
+            /* translateZ(0) helps Chrome stabilize the blur layer */
+            transform: scaleY(var(--header-wipe, 0)) translateZ(0);
             transform-origin: top;
             pointer-events: none;
-            will-change: transform;
+            will-change: transform, backdrop-filter;
         }
-        
+
         /* The Pill Nav inside Header */
         .header .mobile-pill-nav {
-            z-index: 2; /* Middle child: above blur, below content */
+            z-index: 2;
+            /* Middle child: above blur, below content */
             position: absolute !important;
             top: 52px !important;
             left: 50% !important;
@@ -50,6 +51,7 @@
         }
 
         @media (max-width: 1024px) {
+
             body:not(.preloading) .header .mobile-pill-nav,
             body.intro-active .header .mobile-pill-nav {
                 display: flex;
@@ -95,7 +97,7 @@
                     margin-left 0.5s cubic-bezier(0.16, 1, 0.3, 1);
             }
 
-            .header::before {
+            .header-bg {
                 transition: border-radius 0.5s cubic-bezier(0.16, 1, 0.3, 1);
             }
 
@@ -106,7 +108,7 @@
                 margin-left: 1.5rem;
             }
 
-            body.header-pill-mode .header::before {
+            body.header-pill-mode .header-bg {
                 border-radius: 999px;
                 transform: scaleY(1) !important;
                 /* Background is naturally handled by the existing wipe scrub */
@@ -243,14 +245,12 @@
             left: -150%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(
-                90deg,
-                transparent,
-                rgba(255, 255, 255, 0.2),
-                rgba(188, 175, 139, 0.5),
-                rgba(255, 255, 255, 0.2),
-                transparent
-            );
+            background: linear-gradient(90deg,
+                    transparent,
+                    rgba(255, 255, 255, 0.2),
+                    rgba(188, 175, 139, 0.5),
+                    rgba(255, 255, 255, 0.2),
+                    transparent);
             transform: skewX(-25deg);
             transition: left 0.8s cubic-bezier(0.16, 1, 0.3, 1);
         }
@@ -334,7 +334,7 @@
             background-color: #ffffff;
         }
 
-        body.header-light-mode .header::before {
+        body.header-light-mode .header-bg {
             background: rgba(17, 17, 17, 0.45);
             border-color: rgba(255, 255, 255, 0.1);
         }
@@ -360,22 +360,23 @@
                 padding-right: 1.5rem;
             }
 
-            .header::before {
+            .header-bg {
                 background: linear-gradient(to bottom,
                         rgba(255, 255, 255, 0.5) 0%,
                         rgba(255, 255, 255, 0.25) 50%,
                         transparent 100%);
-                backdrop-filter: blur(10px);
-                -webkit-backdrop-filter: blur(10px);
+                -webkit-backdrop-filter: blur(10px) brightness(102%);
+                backdrop-filter: blur(10px) brightness(102%);
                 height: 80px;
                 transform-origin: top;
+                transform: translateZ(0);
             }
 
-            body.header-light-mode .header::before {
+            body.header-light-mode .header-bg {
                 background: rgba(188, 175, 139, 0.85);
             }
 
-            body.header-light-mode.header-black-bg .header::before {
+            body.header-light-mode.header-black-bg .header-bg {
                 background: linear-gradient(to bottom,
                         rgba(17, 17, 17, 0.95) 0%,
                         rgba(17, 17, 17, 0.8) 50%,
