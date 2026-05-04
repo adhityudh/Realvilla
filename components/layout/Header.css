@@ -132,7 +132,7 @@
         .header-logo {
             display: flex;
             align-items: center;
-            gap: 0px;
+            gap: 1px;
             height: 28px;
             text-decoration: none;
             pointer-events: none;

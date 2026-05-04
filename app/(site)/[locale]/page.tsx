@@ -81,7 +81,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
       <Header settings={settingsData} />
       <MobileNav settings={settingsData} />
       <SectionRenderer sections={data.sections} />
-      <FooterSection />
+      <FooterSection data={settingsData?.footer} />
     </>
   );
 }

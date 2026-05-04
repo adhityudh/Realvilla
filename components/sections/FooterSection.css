@@ -204,7 +204,7 @@
 .footer-logo-letters {
     display: flex;
     align-items: center;
-    gap: 0;
+    gap: 1px;
 }
 
 .footer-logo-letter {

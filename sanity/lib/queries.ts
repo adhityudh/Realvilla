@@ -163,10 +163,14 @@ export const PAGE_QUERY = groq`
 export const SETTINGS_QUERY = groq`
   *[_type == "settings" && (language == $language || (!defined(language) && $language == "en"))][0] {
     ${SEO_FIELDS},
-    "logo": logo.asset->url,
+    "favicon": favicon.asset->url,
     socialLinks[] {
-      platform,
-      url
+      label,
+      "icon": icon.asset->url,
+      "link": select(
+        linkType == "internal" => "/" + internalLink->slug.current,
+        linkType == "external" => externalLink
+      )
     },
     mainNav[] {
       label,
@@ -188,6 +192,38 @@ export const SETTINGS_QUERY = groq`
         linkType == "internal" => "/" + internalLink->slug.current,
         linkType == "external" => externalLink
       )
+    },
+    footer {
+      columns[] {
+        title,
+        subgroups[] {
+          title,
+          links[] {
+            label,
+            "link": select(
+              linkType == "internal" => "/" + internalLink->slug.current,
+              linkType == "external" => externalLink
+            )
+          }
+        }
+      },
+      legalLinks[] {
+        label,
+        "link": select(
+          linkType == "internal" => "/" + internalLink->slug.current,
+          linkType == "external" => externalLink
+        )
+      },
+      copyright,
+      disclaimer,
+      socialLinks[] {
+        label,
+        "icon": icon.asset->url,
+        "link": select(
+          linkType == "internal" => "/" + internalLink->slug.current,
+          linkType == "external" => externalLink
+        )
+      }
     }
   }
 `
