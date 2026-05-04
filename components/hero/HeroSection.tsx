@@ -99,7 +99,7 @@ export function getHeroRevealAnimation(tl: gsap.core.Timeline, isMobile: boolean
   tl.fromTo('.hero-bg-video', { scale: 1.1 }, { scale: 1, ease: 'power2.out', duration: 2.5 }, 0.2);
 }
 
-export default function HeroSection({ data }: { data?: any }) {
+export default function HeroSection({ data, dict }: { data?: any; dict?: any }) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const pathname = usePathname();
   const [device, setDevice] = useState<'desktop' | 'mobile' | null>(globalDevice);

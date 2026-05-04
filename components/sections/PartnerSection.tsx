@@ -11,7 +11,7 @@ if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
 }
 
-const PartnerSection = ({ data }: { data?: any }) => {
+const PartnerSection = ({ data, dict }: { data?: any, dict?: any }) => {
   const sectionRef = useRef<HTMLElement>(null);
   const titleRef = useRef<HTMLDivElement>(null);
   const logosRef = useRef<HTMLDivElement>(null);

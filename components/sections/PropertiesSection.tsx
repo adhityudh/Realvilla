@@ -136,7 +136,7 @@ const PropertyCard = ({ prop }: { prop: any }) => {
   );
 };
 
-const PropertiesSection = ({ data }: { data?: any }) => {
+const PropertiesSection = ({ data, dict }: { data?: any, dict?: any }) => {
   const sectionRef = useRef<HTMLElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);

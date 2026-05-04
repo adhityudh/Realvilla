@@ -12,7 +12,7 @@ if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
 }
 
-export default function ValuationSection({ data }: { data?: any }) {
+export default function ValuationSection({ data, dict }: { data?: any, dict?: any }) {
   const [iframeSrc, setIframeSrc] = useState('');
   const sectionRef = useRef<HTMLElement>(null);
   const iframeRef = useRef<HTMLIFrameElement>(null);

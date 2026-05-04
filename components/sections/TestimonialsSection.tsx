@@ -11,7 +11,7 @@ if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
 }
 
-const TestimonialsSection = ({ data }: { data?: any }) => {
+const TestimonialsSection = ({ data, dict }: { data?: any, dict?: any }) => {
   const sectionRef = useRef<HTMLElement>(null);
   const titleRef = useRef<HTMLDivElement>(null);
   const tickerWrapperRef = useRef<HTMLDivElement>(null);

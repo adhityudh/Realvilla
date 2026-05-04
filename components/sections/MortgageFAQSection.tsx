@@ -10,7 +10,7 @@ if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
 }
 
-const MortgageFAQSection = ({ data }: { data?: any }) => {
+const MortgageFAQSection = ({ data, dict }: { data?: any, dict?: any }) => {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const sectionRef = useRef<HTMLElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
