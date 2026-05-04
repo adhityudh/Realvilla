@@ -19,7 +19,7 @@ export async function generateMetadata(
     getGlobalSettings(locale)
   ]);
   
-  return constructMetadata(page?.seo, settings?.seo, `/${locale}`);
+  return constructMetadata(page?.seo, settings?.seo, `/${locale}`, settings?.favicon);
 }
 
 export default async function Home({ params }: { params: Promise<{ locale: string }> }) {
