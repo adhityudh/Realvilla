@@ -186,7 +186,6 @@
 
 
 .profile-socials a:hover {
-    transform: scale(1.1);
     background: rgba(255, 255, 255, 0.2);
     opacity: 0.8;
 }
@@ -437,7 +436,6 @@
 }
 
 .cert-thumb-wrapper:hover img {
-    transform: scale(1.05);
     filter: blur(2px);
 }
 
