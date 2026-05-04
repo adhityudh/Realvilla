@@ -41,6 +41,18 @@ export default async function RootLayout({
 
   return (
     <html lang={locale} className={`${cormorant.variable} ${manrope.variable}`}>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              if ('scrollRestoration' in history) {
+                history.scrollRestoration = 'manual';
+              }
+              window.scrollTo(0, 0);
+            `,
+          }}
+        />
+      </head>
       <body>
         {children}
         {isDraftMode && <VisualEditing />}

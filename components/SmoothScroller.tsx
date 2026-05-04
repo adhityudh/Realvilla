@@ -40,18 +40,29 @@ export default function SmoothScroller({ children }: { children: React.ReactNode
     lenisInstance.on('scroll', ScrollTrigger.update);
     gsap.ticker.add((time) => { lenisInstance.raf(time * 1000); });
     gsap.ticker.lagSmoothing(0);
+
+    // Initial reset
     lenisInstance.stop();
     lenisInstance.scrollTo(0, { immediate: true });
     window.scrollTo(0, 0);
 
-    setTimeout(() => {
+    // Repeated reset to fight browser scroll restoration
+    const resetScroll = () => {
       window.scrollTo(0, 0);
       lenisInstance.scrollTo(0, { immediate: true });
-    }, 50);
+    };
+
+    const timers = [
+      setTimeout(resetScroll, 0),
+      setTimeout(resetScroll, 50),
+      setTimeout(resetScroll, 150),
+      setTimeout(resetScroll, 300),
+    ];
 
     setLenis(lenisInstance);
 
     return () => {
+      timers.forEach(clearTimeout);
       ScrollTrigger.getAll().forEach((st) => st.kill());
       lenisInstance.destroy();
     };
