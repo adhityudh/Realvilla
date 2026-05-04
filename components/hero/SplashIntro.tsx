@@ -160,7 +160,7 @@ export function getSplashIntroAnimations(tl: gsap.core.Timeline, onReleaseScroll
     1.6,
   );
 
-  tl.set('.splash-intro', { pointerEvents: 'none' });
+  tl.set('.splash-intro', { pointerEvents: 'none', visibility: 'hidden', display: 'none' });
 }
 
 function breakoutLogoSynchronously(logoArea: HTMLElement, splashIntro: HTMLElement) {

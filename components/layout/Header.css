@@ -21,8 +21,8 @@
             z-index: 1; 
             background: rgba(188, 175, 139, 0.15);
             /* Gold tone glassmorphism */
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             box-shadow: none;
             transform: scaleY(var(--header-wipe, 0));
             transform-origin: top;
