@@ -20,7 +20,7 @@ const sectionMap: Record<string, any> = {
   mortgageFAQSection: MortgageFAQSection,
 }
 
-export default function SectionRenderer({ sections }: { sections: any[] }) {
+export default function SectionRenderer({ sections, dict }: { sections: any[], dict?: any }) {
   if (!sections) return null
 
   return (
@@ -31,7 +31,7 @@ export default function SectionRenderer({ sections }: { sections: any[] }) {
           console.warn(`No component found for section type: ${section._type}`)
           return null
         }
-        return <Component key={section._key || index} data={section} />
+        return <Component key={section._key || index} data={section} dict={dict} />
       })}
     </>
   )

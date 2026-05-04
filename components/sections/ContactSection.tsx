@@ -24,12 +24,51 @@ const intentOptions = [
   { key: 'invest' as const, label: 'Invest' },
 ];
 
-export default function ContactSection({ data }: { data?: any }) {
+export default function ContactSection({ data, dict }: { data?: any, dict?: any }) {
   const sectionRef = useRef<HTMLElement>(null);
   const [step, setStep] = useState<FormStep>('intent');
   const router = useRouter();
 
   if (!data) return null;
+
+  // Dictionary helpers for easier access
+  const c = dict?.contact || {};
+  const intentDict = c.intent || {
+    title: "How can we assist you?",
+    subtitle: "Select an option below to get started with your inquiry.",
+    options: { general: "General Inquiry", sell: "Sell a Property", buy: "Buy a Property", invest: "Invest" }
+  };
+  const generalDict = c.general || {
+    back: "Go Back",
+    title: "Send us a message",
+    subtitle: "We will contact you as soon as possible.",
+    fields: { 
+      name: "Full Name", name_placeholder: "Enter your full name",
+      email: "Email Address", email_placeholder: "Enter your email address",
+      phone: "Phone Number", phone_placeholder: "Enter your phone number",
+      message: "Message", message_placeholder: "How can we help you?"
+    },
+    submit: "SEND MESSAGE"
+  };
+  const sellDict = c.sell || {
+    back: "Go Back",
+    title: "Start selling your property",
+    subtitle: "Fill in the details below and an expert will reach out to you.",
+    fields: {
+      name: "Full Name", name_placeholder: "Enter your full name",
+      phone: "Phone Number", phone_placeholder: "Enter your phone number",
+      email: "Email Address", email_placeholder: "Enter your email address",
+      optional: "(Optional)", required: "*",
+      municipality: "Municipality (Tenerife)", municipality_placeholder: "e.g. Adeje, Arona, Santa Cruz...",
+      property_type: "Property Type", select_type: "Select property type",
+      types: { apartment: "Apartment", house: "House", townhouse: "Townhouse", villa: "Villa", land: "Land" }
+    },
+    legal: {
+      authorize: "I authorize a REALVILLA associate to contact me for informational purposes",
+      terms: "I have read, understand, and accept the Terms and Conditions and the Privacy Policy"
+    },
+    submit: "START SELLING"
+  };
 
   const headline = data.headline;
   const subtitle = data.subtitle;
@@ -110,12 +149,12 @@ export default function ContactSection({ data }: { data?: any }) {
 
   const renderIntentStep = () => (
     <div className="contact-form contact-intent">
-      <h3 className="form-title">How can we assist you?</h3>
-      <p className="form-subtitle">Select an option below to get started with your inquiry.</p>
+      <h3 className="form-title">{intentDict.title}</h3>
+      <p className="form-subtitle">{intentDict.subtitle}</p>
       <div className="intent-options">
         {intentOptions.map((option) => (
           <button key={option.key} type="button" className="intent-option-btn" onClick={() => handleIntentClick(option.key)}>
-            <span className="intent-option-label">{option.label}</span>
+            <span className="intent-option-label">{intentDict.options[option.key] || option.label}</span>
             <span className="intent-option-arrow">→</span>
           </button>
         ))}
@@ -125,42 +164,40 @@ export default function ContactSection({ data }: { data?: any }) {
 
   const renderGeneralForm = () => (
     <form className="contact-form" onSubmit={(e) => e.preventDefault()}>
-      <button type="button" className="form-back-btn" onClick={() => setStep('intent')}>← Go Back</button>
-      <h3 className="form-title">Send us a message</h3>
-      <p className="form-subtitle">We will contact you as soon as possible.</p>
-      <div className="form-group"><label htmlFor="name">Full Name</label><input type="text" id="name" placeholder="Enter your full name" /></div>
-      <div className="form-group"><label htmlFor="email">Email Address</label><input type="email" id="email" placeholder="Enter your email address" /></div>
-      <div className="form-group"><label htmlFor="phone">Phone Number</label><input type="tel" id="phone" placeholder="Enter your phone number" /></div>
-      <div className="form-group"><label htmlFor="message">Message</label><textarea id="message" rows={4} placeholder="How can we help you?"></textarea></div>
-      <Button type="submit" variant="dark" label="SEND MESSAGE" className="form-submit-btn" showArrow={true} />
+      <button type="button" className="form-back-btn" onClick={() => setStep('intent')}>← {generalDict.back}</button>
+      <h3 className="form-title">{generalDict.title}</h3>
+      <p className="form-subtitle">{generalDict.subtitle}</p>
+      <div className="form-group"><label htmlFor="name">{generalDict.fields.name}</label><input type="text" id="name" placeholder={generalDict.fields.name_placeholder} /></div>
+      <div className="form-group"><label htmlFor="email">{generalDict.fields.email}</label><input type="email" id="email" placeholder={generalDict.fields.email_placeholder} /></div>
+      <div className="form-group"><label htmlFor="phone">{generalDict.fields.phone}</label><input type="tel" id="phone" placeholder={generalDict.fields.phone_placeholder} /></div>
+      <div className="form-group"><label htmlFor="message">{generalDict.fields.message}</label><textarea id="message" rows={4} placeholder={generalDict.fields.message_placeholder}></textarea></div>
+      <Button type="submit" variant="dark" label={generalDict.submit} className="form-submit-btn" showArrow={true} />
     </form>
   );
 
   const renderSellForm = () => (
     <form className="contact-form" onSubmit={(e) => e.preventDefault()}>
-      <button type="button" className="form-back-btn" onClick={() => setStep('intent')}>← Go Back</button>
-      <h3 className="form-title">Start selling your property</h3>
-      <p className="form-subtitle">Fill in the details below and an expert will reach out to you.</p>
-      <div className="form-group"><label htmlFor="sell-name">Full Name <span className="form-required">*</span></label><input type="text" id="sell-name" placeholder="Enter your full name" required /></div>
-      <div className="form-group"><label htmlFor="sell-phone">Phone Number <span className="form-required">*</span></label><input type="tel" id="sell-phone" placeholder="Enter your phone number" required /></div>
-      <div className="form-group"><label htmlFor="sell-email">Email Address <span className="form-optional">(Optional)</span></label><input type="email" id="sell-email" placeholder="Enter your email address" /></div>
-      <div className="form-group"><label htmlFor="sell-municipality">Municipality (Tenerife)</label><input type="text" id="sell-municipality" placeholder="e.g. Adeje, Arona, Santa Cruz..." /></div>
+      <button type="button" className="form-back-btn" onClick={() => setStep('intent')}>← {sellDict.back}</button>
+      <h3 className="form-title">{sellDict.title}</h3>
+      <p className="form-subtitle">{sellDict.subtitle}</p>
+      <div className="form-group"><label htmlFor="sell-name">{sellDict.fields.name} <span className="form-required">{sellDict.fields.required}</span></label><input type="text" id="sell-name" placeholder={sellDict.fields.name_placeholder} required /></div>
+      <div className="form-group"><label htmlFor="sell-phone">{sellDict.fields.phone} <span className="form-required">{sellDict.fields.required}</span></label><input type="tel" id="sell-phone" placeholder={sellDict.fields.phone_placeholder} required /></div>
+      <div className="form-group"><label htmlFor="sell-email">{sellDict.fields.email} <span className="form-optional">{sellDict.fields.optional}</span></label><input type="email" id="sell-email" placeholder={sellDict.fields.email_placeholder} /></div>
+      <div className="form-group"><label htmlFor="sell-municipality">{sellDict.fields.municipality}</label><input type="text" id="sell-municipality" placeholder={sellDict.fields.municipality_placeholder} /></div>
       <div className="form-group">
-        <label htmlFor="sell-property-type">Property Type</label>
+        <label htmlFor="sell-property-type">{sellDict.fields.property_type}</label>
         <select id="sell-property-type" className="form-select" defaultValue="">
-          <option value="" disabled>Select property type</option>
-          <option value="apartment">Apartment</option>
-          <option value="house">House</option>
-          <option value="townhouse">Townhouse</option>
-          <option value="villa">Villa</option>
-          <option value="land">Land</option>
+          <option value="" disabled>{sellDict.fields.select_type}</option>
+          {Object.entries(sellDict.fields.types).map(([key, value]) => (
+            <option key={key} value={key}>{value as string}</option>
+          ))}
         </select>
       </div>
       <div className="form-legal-checkboxes">
-        <label className="form-checkbox-label"><input type="checkbox" className="form-checkbox" required /><span className="form-checkbox-text">I authorize a REALVILLA associate to contact me for informational purposes</span></label>
-        <label className="form-checkbox-label"><input type="checkbox" className="form-checkbox" required /><span className="form-checkbox-text">I have read, understand, and accept the Terms and Conditions and the Privacy Policy</span></label>
+        <label className="form-checkbox-label"><input type="checkbox" className="form-checkbox" required /><span className="form-checkbox-text">{sellDict.legal.authorize}</span></label>
+        <label className="form-checkbox-label"><input type="checkbox" className="form-checkbox" required /><span className="form-checkbox-text">{sellDict.legal.terms}</span></label>
       </div>
-      <Button type="submit" variant="dark" label="START SELLING" className="form-submit-btn" showArrow={true} />
+      <Button type="submit" variant="dark" label={sellDict.submit} className="form-submit-btn" showArrow={true} />
     </form>
   );
 

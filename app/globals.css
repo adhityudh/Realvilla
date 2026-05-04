@@ -232,3 +232,7 @@ html.lenis body {
       rgba(255, 255, 255, 0.2),
       transparent);
 }
+/* Fix PhotoSwipe z-index to appear above header (header is 250000) */
+.pswp {
+  z-index: 9999999 !important;
+}

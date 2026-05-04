@@ -7,6 +7,7 @@ import { draftMode } from 'next/headers';
 import { client } from '@/sanity/lib/client';
 import { PAGE_QUERY, SETTINGS_QUERY } from '@/sanity/lib/queries';
 import { getGlobalSettings, constructMetadata } from '@/lib/metadata';
+import { getDictionary } from '@/lib/get-dictionary';
 import { Metadata } from 'next';
 
 export async function generateMetadata(
@@ -28,6 +29,8 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
   // Fetch homepage and settings data from Sanity
   let data = null;
   let settingsData = null;
+  let dict = null;
+
   try {
     const fetchOptions = { 
       perspective: isDraftMode ? 'previewDrafts' as const : 'published' as const,
@@ -38,9 +41,10 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
       } 
     };
 
-    [data, settingsData] = await Promise.all([
+    [data, settingsData, dict] = await Promise.all([
       client.fetch(PAGE_QUERY, { slug: 'home', language: locale }, fetchOptions),
-      client.fetch(SETTINGS_QUERY, { language: locale }, fetchOptions)
+      client.fetch(SETTINGS_QUERY, { language: locale }, fetchOptions),
+      getDictionary(locale as any)
     ]);
   } catch (error) {
     console.error('Sanity fetch error:', error);
@@ -80,7 +84,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
     <>
       <Header settings={settingsData} />
       <MobileNav settings={settingsData} />
-      <SectionRenderer sections={data.sections} />
+      <SectionRenderer sections={data.sections} dict={dict} />
       <FooterSection data={settingsData?.footer} />
     </>
   );

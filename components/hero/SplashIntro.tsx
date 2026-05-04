@@ -365,7 +365,7 @@ function useIntroOrchestrator() {
   }, [lenis, pathname]); // Re-run on pathname change to ensure fresh start
 }
 
-export default function SplashIntro({ data }: { data?: any }) {
+export default function SplashIntro({ data, dict }: { data?: any, dict?: any }) {
   useSplashIntroAnimations();
   useIntroOrchestrator();
 
@@ -508,7 +508,7 @@ export default function SplashIntro({ data }: { data?: any }) {
           ))}
         </div>
         <div className="hero-scroll">
-          <span>Scroll</span>
+          <span>{dict?.hero?.scroll || 'Scroll'}</span>
           <div className="scroll-line-track"><div className="scroll-line-thumb" /></div>
         </div>
       </div>

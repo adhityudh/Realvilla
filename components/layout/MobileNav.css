@@ -63,17 +63,14 @@
             pointer-events: auto;
         }
 
-        body.menu-open .header::before {
-            opacity: 0 !important;
-        }
-
         /* Hide "leaking" elements when menu is open */
+        body.menu-open .header-bg,
         body.menu-open .hero-description-area,
         body.menu-open .header-logo,
         body.menu-open #morph-breakout-logo {
             opacity: 0 !important;
-            visibility: hidden;
-            pointer-events: none;
+            visibility: hidden !important;
+            pointer-events: none !important;
         }
 
         .mobile-nav-overlay .nav-link-mobile {

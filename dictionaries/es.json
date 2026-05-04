@@ -1,0 +1,67 @@
+{
+  "hero": {
+    "scroll": "Deslizar"
+  },
+  "about": {
+    "view_certificate": "Ver Certificado"
+  },
+  "contact": {
+    "intent": {
+      "title": "¿CÓMO PODEMOS AYUDARLE?",
+      "subtitle": "Seleccione una opción a continuación para comenzar con su consulta.",
+      "options": {
+        "general": "Consulta General",
+        "sell": "Vender una Propiedad",
+        "buy": "Comprar una Propiedad",
+        "invest": "Invertir"
+      }
+    },
+    "general": {
+      "back": "Volver",
+      "title": "Envíanos un mensaje",
+      "subtitle": "Nos pondremos en contacto con usted lo antes posible.",
+      "fields": {
+        "name": "Nombre Completo",
+        "name_placeholder": "Ingrese su nombre completo",
+        "email": "Correo Electrónico",
+        "email_placeholder": "Ingrese su correo electrónico",
+        "phone": "Número de Teléfono",
+        "phone_placeholder": "Ingrese su número de teléfono",
+        "message": "Mensaje",
+        "message_placeholder": "¿Cómo podemos ayudarle?"
+      },
+      "submit": "ENVIAR MENSAJE"
+    },
+    "sell": {
+      "back": "Volver",
+      "title": "Comience a vender su propiedad",
+      "subtitle": "Complete los detalles a continuación y un experto se pondrá en contacto con usted.",
+      "fields": {
+        "name": "Nombre Completo",
+        "name_placeholder": "Ingrese su nombre completo",
+        "phone": "Número de Teléfono",
+        "phone_placeholder": "Ingrese su número de teléfono",
+        "email": "Correo Electrónico",
+        "email_placeholder": "Ingrese su correo electrónico",
+        "optional": "(Opcional)",
+        "required": "*",
+        "municipality": "Municipio (Tenerife)",
+        "municipality_placeholder": "ej. Adeje, Arona, Santa Cruz...",
+        "property_type": "Tipo de Propiedad",
+        "select_type": "Seleccione el tipo de propiedad",
+        "types": {
+          "apartment": "Apartamento",
+          "house": "Casa",
+          "townhouse": "Adosado",
+          "villa": "Villa",
+          "land": "Terreno"
+        }
+      },
+      "legal": {
+        "authorize": "Autorizo a un asociado de REALVILLA a contactarme con fines informativos",
+        "terms": "He leído, entiendo y acepto los Términos y Condiciones y la Política de Privacidad"
+      },
+      "submit": "EMPEZAR A VENDER"
+    }
+  }
+}

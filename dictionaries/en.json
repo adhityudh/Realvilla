@@ -1,0 +1,67 @@
+{
+  "hero": {
+    "scroll": "Scroll"
+  },
+  "about": {
+    "view_certificate": "View Certificate"
+  },
+  "contact": {
+    "intent": {
+      "title": "HOW CAN WE ASSIST YOU?",
+      "subtitle": "Select an option below to get started with your inquiry.",
+      "options": {
+        "general": "General Inquiry",
+        "sell": "Sell a Property",
+        "buy": "Buy a Property",
+        "invest": "Invest"
+      }
+    },
+    "general": {
+      "back": "Go Back",
+      "title": "Send us a message",
+      "subtitle": "We will contact you as soon as possible.",
+      "fields": {
+        "name": "Full Name",
+        "name_placeholder": "Enter your full name",
+        "email": "Email Address",
+        "email_placeholder": "Enter your email address",
+        "phone": "Phone Number",
+        "phone_placeholder": "Enter your phone number",
+        "message": "Message",
+        "message_placeholder": "How can we help you?"
+      },
+      "submit": "SEND MESSAGE"
+    },
+    "sell": {
+      "back": "Go Back",
+      "title": "Start selling your property",
+      "subtitle": "Fill in the details below and an expert will reach out to you.",
+      "fields": {
+        "name": "Full Name",
+        "name_placeholder": "Enter your full name",
+        "phone": "Phone Number",
+        "phone_placeholder": "Enter your phone number",
+        "email": "Email Address",
+        "email_placeholder": "Enter your email address",
+        "optional": "(Optional)",
+        "required": "*",
+        "municipality": "Municipality (Tenerife)",
+        "municipality_placeholder": "e.g. Adeje, Arona, Santa Cruz...",
+        "property_type": "Property Type",
+        "select_type": "Select property type",
+        "types": {
+          "apartment": "Apartment",
+          "house": "House",
+          "townhouse": "Townhouse",
+          "villa": "Villa",
+          "land": "Land"
+        }
+      },
+      "legal": {
+        "authorize": "I authorize a REALVILLA associate to contact me for informational purposes",
+        "terms": "I have read, understand, and accept the Terms and Conditions and the Privacy Policy"
+      },
+      "submit": "START SELLING"
+    }
+  }
+}

@@ -13,7 +13,7 @@ if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
 }
 
-const AboutSection = ({ data }: { data?: any }) => {
+const AboutSection = ({ data, dict }: { data?: any, dict?: any }) => {
   const sectionRef = useRef<HTMLElement>(null);
   const headlineRef = useRef<HTMLHeadingElement>(null);
   const bgLayerRef = useRef<HTMLDivElement>(null);
@@ -201,7 +201,7 @@ const AboutSection = ({ data }: { data?: any }) => {
                             }}
                           />
                           <div className="cert-hover-overlay">
-                            <span>View Certificate</span>
+                            <span>{dict?.about?.view_certificate || 'View Certificate'}</span>
                           </div>
                         </div>
                       </div>
