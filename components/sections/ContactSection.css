@@ -1,7 +1,7 @@
 /* ContactSection.css */
 .contact-section {
     position: relative;
-    padding-top: 120px;
+    padding-top: 10rem;
     padding-bottom: 64px;
     background-color: #bcaf8b;
     /* Gold background matching footer */
@@ -9,6 +9,7 @@
     display: flex;
     align-items: center;
     z-index: 10;
+    margin-top: 5rem;
 }
 
 .contact-big-logo-wrapper {
@@ -32,7 +33,7 @@
     min-width: 70vw;
     max-width: none;
     justify-content: flex-start;
-    opacity: 0.4;
+    opacity: 0.5;
     transform: scale(1) translateY(-40%);
     transform-origin: left center;
 }
@@ -51,6 +52,7 @@
     mask-repeat: no-repeat;
     -webkit-mask-position: center;
     mask-position: center;
+    filter: sepia(0.4) saturate(1.5) brightness(0.9) hue-rotate(2deg);
 }
 
 .contact-container {

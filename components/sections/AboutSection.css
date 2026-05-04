@@ -2,6 +2,7 @@
     display: flex;
     background-color: var(--bg-white);
     min-height: 850px;
+    margin: 5rem 0;
     /* Memberi ruang agar bisa bernafas tanpa dipaksa 100vh */
     position: relative;
     overflow: hidden;

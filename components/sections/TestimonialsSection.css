@@ -1,10 +1,11 @@
 .testimonials-section {
-    padding: 25vw 0 120px 0;
+    padding: 25vw 0 5rem 0;
     /* Slightly reduced top padding to move items higher */
     background-color: var(--bg-white);
     overflow: visible;
     position: relative;
     /* border-bottom: 1px solid rgba(0, 0, 0, 0.05); removed as per request */
+    margin-top: 5rem;
 }
 
 .testimonials-ticker-wrapper {
@@ -93,7 +94,7 @@
 
 .testimonials-overlap-img {
     position: absolute;
-    right: 0;
+    right: 3rem;
     top: 0;
     width: 45vw;
     z-index: 1;
