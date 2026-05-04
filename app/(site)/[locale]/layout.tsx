@@ -45,6 +45,9 @@ export default async function RootLayout({
 
   return (
     <html lang={locale} className={`${cormorant.variable} ${manrope.variable}`}>
+      <head>
+        <link rel="preconnect" href="https://cdn.sanity.io" crossOrigin="anonymous" />
+      </head>
       <body>
         <Script
           id="scroll-restoration"
