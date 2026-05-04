@@ -369,7 +369,7 @@
                 backdrop-filter: blur(10px) brightness(102%);
                 height: 80px;
                 transform-origin: top;
-                transform: translateZ(0);
+                transform: scaleY(var(--header-wipe, 0)) translateZ(0);
             }
 
             body.header-light-mode .header-bg {

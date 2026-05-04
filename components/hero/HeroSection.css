@@ -15,6 +15,7 @@
         @media (max-width: 1024px) {
             .main-hero {
                 min-height: 600px;
+                margin-bottom: 3rem;
             }
         }
 

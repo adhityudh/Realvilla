@@ -1,8 +1,8 @@
 /* ContactSection.css */
 .contact-section {
     position: relative;
-    padding-top: 10rem;
-    padding-bottom: 64px;
+    padding-top: 8rem;
+    padding-bottom: 4rem;
     background-color: #bcaf8b;
     /* Gold background matching footer */
     color: #ffffff;
@@ -34,7 +34,7 @@
     max-width: none;
     justify-content: flex-start;
     opacity: 0.5;
-    transform: scale(1) translateY(-40%);
+    transform: scale(1) translateY(-35%);
     transform-origin: left center;
 }
 
@@ -52,7 +52,7 @@
     mask-repeat: no-repeat;
     -webkit-mask-position: center;
     mask-position: center;
-    filter: sepia(0.4) saturate(1.5) brightness(0.9) hue-rotate(2deg);
+    filter: sepia(0.4) saturate(1.5);
 }
 
 .contact-container {
@@ -215,7 +215,7 @@
     border-radius: 0;
     margin-right: 1.5rem;
     padding: 4rem;
-    transform: translateY(150px);
+    transform: translateY(144px);
     /* Push card down into next section */
     z-index: 20;
 }
@@ -469,7 +469,7 @@
 @media (max-width: 1024px) {
     .contact-section {
         height: auto;
-        padding: 100px 0 48px 0;
+        padding: 3rem 0;
     }
 
     .contact-big-logo-wrapper {
@@ -516,7 +516,7 @@
         margin-right: 0;
         padding: 3rem 2rem;
         margin-top: 0;
-        transform: translateY(80px);
+        transform: translateY(120px);
         /* Push card down on mobile */
         z-index: 20;
     }
@@ -527,10 +527,9 @@
     }
 
     .contact-big-logo {
-        opacity: 1;
         width: 100%;
         justify-content: center;
-        transform: scale(1) translateY(0);
+        transform: scale(1.2) translateY(20%) translateX(-10%);
     }
 
     .form-title {
@@ -540,11 +539,6 @@
 }
 
 @media (max-width: 768px) {
-    .contact-section {
-        padding-top: 80px;
-        padding-bottom: 32px;
-    }
-
     .contact-bg {
         /* background-image removed, handled by Image component */
     }
@@ -608,6 +602,7 @@
 
     .contact-big-letter {
         height: 50vw;
+        filter: sepia(0.4) saturate(1.5);
         /* Even larger on small mobile matching footer */
     }
 

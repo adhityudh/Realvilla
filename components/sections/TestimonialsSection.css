@@ -122,8 +122,8 @@
 
 @media (max-width: 1024) {
     .testimonials-section {
-        padding: 100px 0 80px 0;
-        margin-top: 80px;
+        padding: 100px 0 3rem 0;
+        margin-top: 5rem;
     }
 
     .testimonials-overlap-img {
@@ -189,6 +189,7 @@
         top: 0;
         padding: 0 2rem;
         max-width: 100%;
+        margin-bottom: 0rem;
     }
 
     .testimonials-title {

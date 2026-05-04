@@ -173,8 +173,7 @@
         @media (max-width: 1024px) {
             .valuation-section {
                 height: auto;
-                padding: 100px 0 0 0;
-                /* Remove bottom padding */
+                padding: 3rem 0;
             }
 
             .valuation-container {
@@ -202,7 +201,7 @@
                 display: flex;
                 margin-left: auto;
                 margin-right: auto;
-                margin-bottom: 4rem;
+                margin-bottom: 2rem;
                 width: fit-content;
             }
 
@@ -231,8 +230,6 @@
 
         @media (max-width: 1024px) {
             .valuation-section {
-                padding-top: 80px;
-                padding-bottom: 0;
                 height: auto;
             }
 

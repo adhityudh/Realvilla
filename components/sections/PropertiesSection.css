@@ -70,7 +70,7 @@
 .properties-cta-container {
     display: flex;
     justify-content: center;
-    padding-bottom: 120px;
+    padding-bottom: 8rem;
 }
 
 .property-card {
@@ -166,6 +166,10 @@
 
 /* Mobile Adjustments */
 @media (max-width: 1024px) {
+    .properties-intro-section {
+        margin: 3rem 0;
+    }
+
     .properties-main-wrapper {
         padding: 0 1.5rem;
     }
@@ -182,7 +186,7 @@
     }
 
     .properties-cta-container {
-        padding-bottom: 100px;
+        padding-bottom: 5rem;
     }
 
     .property-image-wrapper {
@@ -204,10 +208,6 @@
         grid-template-columns: 1fr;
         gap: 1.5rem;
         padding-bottom: 3rem;
-    }
-
-    .properties-cta-container {
-        padding-bottom: 100px;
     }
 
     /* Show only 4 items on small mobile as requested (1x4) */

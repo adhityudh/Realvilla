@@ -15,7 +15,7 @@
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    margin-bottom: 80px;
+    margin-bottom: 5rem;
 }
 
 .mortgage-faq-tagline {
@@ -146,13 +146,17 @@
 }
 
 @media (max-width: 1024px) {
+    .mortgage-faq-section {
+        padding: 3rem 0;
+    }
+
     .mortgage-faq-wrapper {
         padding: 0 1.5rem;
     }
 
     .mortgage-faq-header {
         flex-direction: column;
-        margin-bottom: 60px;
+        margin-bottom: 3rem;
     }
 
     .mortgage-faq-title {

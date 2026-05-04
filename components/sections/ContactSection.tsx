@@ -88,7 +88,7 @@ export default function ContactSection({ data }: { data?: any }) {
       '-=0.8'
     ).fromTo(card,
       { y: isMobile ? 120 : 200, opacity: 0, filter: 'blur(10px)' },
-      { y: isMobile ? 80 : 150, opacity: 1, filter: 'blur(0px)', duration: 1.5, ease: 'expo.out' },
+      { y: isMobile ? 120 : 144, opacity: 1, filter: 'blur(0px)', duration: 1.5, ease: 'expo.out' },
       '-=1.2'
     );
 
@@ -172,21 +172,21 @@ export default function ContactSection({ data }: { data?: any }) {
             let currentPos = 0;
             const displayedLetters = HEADER_LETTERS.slice(0, 5);
             const totalWidth = displayedLetters.reduce((acc, l) => acc + l.width, 0);
-            
+
             return displayedLetters.map((letter, i) => {
               const widthPercent = (letter.width / totalWidth) * 100;
               // background-position percentage is (offset / (imageWidth - containerWidth)) * 100
-              const posPercent = totalWidth > letter.width 
-                ? (currentPos / (totalWidth - letter.width)) * 100 
+              const posPercent = totalWidth > letter.width
+                ? (currentPos / (totalWidth - letter.width)) * 100
                 : 0;
-              
+
               const bgSize = (totalWidth / letter.width) * 100;
-              
+
               const element = (
                 <div
                   key={i}
                   className="contact-big-letter"
-                  style={{ 
+                  style={{
                     width: `${widthPercent}%`,
                     '--letter-svg': `url(${letter.svg})`,
                     '--bg-size': `${bgSize}%`,
@@ -194,7 +194,7 @@ export default function ContactSection({ data }: { data?: any }) {
                   } as any}
                 />
               );
-              
+
               currentPos += letter.width;
               return element;
             });

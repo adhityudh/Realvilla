@@ -80,7 +80,7 @@
 
 @media (max-width: 1024px) {
     .partner-section {
-        padding: 80px 5%;
+        padding: 3rem 5%;
     }
 
     .partner-container {
@@ -103,7 +103,7 @@
 
 @media (max-width: 768px) {
     .partner-section {
-        padding: 60px 1.5rem;
+        padding: 3rem 1.5rem;
     }
 
     /* Removed redundant mobile overrides */
