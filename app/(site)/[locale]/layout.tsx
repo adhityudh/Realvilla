@@ -20,15 +20,17 @@ const manrope = Manrope({
   display: 'swap',
 });
 
-export const metadata: Metadata = {
-  title: 'RealVilla - Premium Real Estate in Tenerife',
-  description: 'Premium Tenerife real estate. Expert guidance for buyers, sellers, and investors looking for exclusive opportunities.',
-  openGraph: {
-    title: 'RealVilla - Premium Real Estate in Tenerife',
-    description: 'Elevate Your Tenerife Lifestyle. Premium real estate with expert guidance.',
-    type: 'website',
-  },
-};
+import { getGlobalSettings, constructMetadata, getSchemaData } from '@/lib/metadata';
+import JsonLd from '@/components/seo/JsonLd';
+
+export async function generateMetadata(
+  { params }: { params: Promise<{ locale: string }> }
+): Promise<Metadata> {
+  const { locale } = await params;
+  const settings = await getGlobalSettings(locale);
+  
+  return constructMetadata(undefined, settings?.seo, `/${locale}`);
+}
 
 export default async function RootLayout({ 
   children,
@@ -39,6 +41,7 @@ export default async function RootLayout({
 }) {
   const { locale } = await params;
   const isDraftMode = (await draftMode()).isEnabled;
+  const settings = await getGlobalSettings(locale);
 
   return (
     <html lang={locale} className={`${cormorant.variable} ${manrope.variable}`}>
@@ -56,6 +59,7 @@ export default async function RootLayout({
           }}
         />
         {children}
+        <JsonLd data={getSchemaData(settings, `/${locale}`)} />
         {isDraftMode && <VisualEditing />}
       </body>
     </html>

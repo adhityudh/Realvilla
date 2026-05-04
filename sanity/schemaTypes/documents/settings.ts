@@ -19,6 +19,25 @@ export const settings = defineType({
       readOnly: true,
     }),
     defineField({
+      name: 'logo',
+      title: 'Site Logo',
+      type: 'image',
+    }),
+    defineField({
+      name: 'socialLinks',
+      title: 'Social Media Links',
+      type: 'array',
+      of: [
+        {
+          type: 'object',
+          fields: [
+            { name: 'platform', type: 'string' },
+            { name: 'url', type: 'url' },
+          ]
+        }
+      ]
+    }),
+    defineField({
       name: 'mainNav',
       title: 'Main Navigation (Desktop & Nav Pill)',
       description: 'Links shown in the top header and the floating pill nav.',
@@ -143,6 +162,15 @@ export const settings = defineType({
         }),
       ],
     }),
+    defineField({
+      name: 'seo',
+      title: 'Global SEO Defaults',
+      type: 'seo',
+      group: 'seo',
+    }),
+  ],
+  groups: [
+    { name: 'seo', title: 'SEO' },
   ],
   preview: {
     select: {

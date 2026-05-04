@@ -94,6 +94,15 @@ export const property = defineType({
       type: 'boolean',
       initialValue: false,
     }),
+    defineField({
+      name: 'seo',
+      title: 'SEO & Social',
+      type: 'seo',
+      group: 'seo',
+    }),
+  ],
+  groups: [
+    { name: 'seo', title: 'SEO' },
   ],
   preview: {
     select: {

@@ -58,6 +58,15 @@ export const page = defineType({
         { type: 'mortgageFAQSection' },
       ],
     }),
+    defineField({
+      name: 'seo',
+      title: 'SEO & Social',
+      type: 'seo',
+      group: 'seo',
+    }),
+  ],
+  groups: [
+    { name: 'seo', title: 'SEO' },
   ],
   preview: {
     select: {

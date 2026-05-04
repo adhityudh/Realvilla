@@ -1,8 +1,19 @@
 import { groq } from 'next-sanity'
 
+export const SEO_FIELDS = groq`
+  seo {
+    metaTitle,
+    metaDescription,
+    ogImage { asset->{ url } },
+    noIndex,
+    canonicalUrl
+  }
+`
+
 export const PAGE_QUERY = groq`
   *[_type == "page" && slug.current == $slug && (language == $language || (!defined(language) && $language == "en"))][0] {
     title,
+    ${SEO_FIELDS},
     sections[] {
       _type,
       _key,
@@ -151,6 +162,12 @@ export const PAGE_QUERY = groq`
 
 export const SETTINGS_QUERY = groq`
   *[_type == "settings" && (language == $language || (!defined(language) && $language == "en"))][0] {
+    ${SEO_FIELDS},
+    "logo": logo.asset->url,
+    socialLinks[] {
+      platform,
+      url
+    },
     mainNav[] {
       label,
       "link": select(

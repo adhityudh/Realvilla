@@ -11,12 +11,14 @@ import { testimonialsSection } from './modules/testimonialsSection'
 import { contactSection } from './modules/contactSection'
 import { mortgageFAQSection } from './modules/mortgageFAQSection'
 import { settings } from './documents/settings'
+import { seo } from './objects/seo'
 
 export const schema: { types: SchemaTypeDefinition[] } = {
   types: [
     page,
     property,
     settings,
+    seo,
     heroSection,
     aboutSection,
     propertiesSection,

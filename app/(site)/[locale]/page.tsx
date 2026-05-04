@@ -6,6 +6,20 @@ import FooterSection from '@/components/sections/FooterSection';
 import { draftMode } from 'next/headers';
 import { client } from '@/sanity/lib/client';
 import { PAGE_QUERY, SETTINGS_QUERY } from '@/sanity/lib/queries';
+import { getGlobalSettings, constructMetadata } from '@/lib/metadata';
+import { Metadata } from 'next';
+
+export async function generateMetadata(
+  { params }: { params: Promise<{ locale: string }> }
+): Promise<Metadata> {
+  const { locale } = await params;
+  const [page, settings] = await Promise.all([
+    client.fetch(PAGE_QUERY, { slug: 'home', language: locale }),
+    getGlobalSettings(locale)
+  ]);
+  
+  return constructMetadata(page?.seo, settings?.seo, `/${locale}`);
+}
 
 export default async function Home({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
