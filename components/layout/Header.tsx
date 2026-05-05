@@ -1,7 +1,8 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import Image from 'next/image';
+import { usePathname } from 'next/navigation';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { HEADER_LETTERS, NAV_LINKS } from '@/lib/letters';
@@ -19,7 +20,7 @@ gsap.registerPlugin(ScrollTrigger);
  *   - Pill-mode class once the hero is fully scrolled past (desktop)
  *   - Nav links fade-in once the user is 30% into the hero (desktop)
  */
-function useHeaderScrollAnimations() {
+function useHeaderScrollAnimations(isHome: boolean) {
   const lenis = useLenis();
 
   useEffect(() => {
@@ -29,22 +30,29 @@ function useHeaderScrollAnimations() {
     if (!header) return;
 
     const isMobile = window.innerWidth <= 1024;
+    const heroTrigger = isHome ? '.main-hero' : '.buy-hero'; // Support buy-hero too if it exists
 
-    const wipeAnim = gsap.to(header, {
-      '--header-wipe': 1,
+    // If neither exists, we might still want basic scroll behavior or none
+    const hasHero = document.querySelector(heroTrigger);
+
+    const headerBg = header.querySelector('.header-bg');
+    const wipeAnim = gsap.to(headerBg, {
+      opacity: 1,
       ease: 'none',
       scrollTrigger: {
-        trigger: '.main-hero',
-        start: () => `bottom ${header.offsetHeight}px`,
-        end: 'bottom top',
+        trigger: hasHero ? heroTrigger : 'body',
+        start: isHome ? () => `bottom ${header.offsetHeight}px` : "50px top",
+        end: isHome ? 'bottom top' : "150px top",
         scrub: true,
         invalidateOnRefresh: true,
       },
     } as gsap.TweenVars);
 
     const colorST = ScrollTrigger.create({
-      trigger: '.main-hero',
-      start: () => isMobile ? 'bottom top' : `bottom ${header.offsetHeight}px`,
+      trigger: hasHero ? heroTrigger : 'body',
+      start: hasHero 
+        ? () => isMobile ? 'bottom top' : `bottom ${header.offsetHeight}px`
+        : "top top",
       end: 'max',
       onEnter: () => {
         document.body.classList.add('header-dark-mode');
@@ -53,31 +61,37 @@ function useHeaderScrollAnimations() {
         }
       },
       onLeaveBack: () => {
-        document.body.classList.remove('header-dark-mode');
-        if (isMobile) {
-          gsap.to('.header-logo', { opacity: 0, visibility: 'hidden', pointerEvents: 'none', duration: 0.3, ease: 'power2.in', overwrite: 'auto' });
+        if (isHome) {
+          document.body.classList.remove('header-dark-mode');
+          if (isMobile) {
+            gsap.to('.header-logo', { opacity: 0, visibility: 'hidden', pointerEvents: 'none', duration: 0.3, ease: 'power2.in', overwrite: 'auto' });
+          }
         }
       },
     });
 
+    // We don't add header-pill-mode immediately here anymore, 
+    // so it can animate width/radius when pillST triggers.
+
     let pillST: ScrollTrigger | null = null;
     let navST: ScrollTrigger | null = null;
-    let footerST: ScrollTrigger | null = null;
+
+    pillST = ScrollTrigger.create({
+      trigger: hasHero ? heroTrigger : 'body',
+      start: isHome ? 'bottom top' : "150px top",
+      end: 'max',
+      onEnter: () => document.body.classList.add('header-pill-mode'),
+      onLeaveBack: () => {
+        document.body.classList.remove('header-pill-mode');
+      },
+    });
 
     if (!isMobile) {
-      pillST = ScrollTrigger.create({
-        trigger: '.main-hero',
-        start: 'bottom top',
-        end: 'max',
-        onEnter: () => document.body.classList.add('header-pill-mode'),
-        onLeaveBack: () => document.body.classList.remove('header-pill-mode'),
-      });
-
       const headerNav = document.querySelector('.header-nav') as HTMLElement;
-      if (headerNav) {
+      if (headerNav && isHome) {
         const navLinks = headerNav.querySelectorAll('.nav-link');
         navST = ScrollTrigger.create({
-          trigger: '.main-hero',
+          trigger: heroTrigger,
           start: '30% top',
           onEnter: () => {
             gsap.to(headerNav, { opacity: 1, pointerEvents: 'auto', duration: 0.3 });
@@ -101,17 +115,25 @@ function useHeaderScrollAnimations() {
       pillST?.kill();
       navST?.kill();
     };
-  }, [lenis]);
+  }, [lenis, isHome]);
 }
 
 export default function Header({ settings }: { settings?: any }) {
-  useHeaderScrollAnimations();
+  const pathname = usePathname();
+  
+  // Detect if we are on the Home page (e.g., /en, /es, /)
+  const isHome = useMemo(() => {
+    const segments = pathname.split('/').filter(Boolean);
+    return segments.length <= 1; // It's home if it's just / or /[locale]
+  }, [pathname]);
+
+  useHeaderScrollAnimations(isHome);
 
   const navLinks = settings?.mainNav || NAV_LINKS.map(l => ({ label: l.label, link: l.href }));
   const cta = settings?.headerCta;
 
   return (
-    <header className="header">
+    <header className={`header ${!isHome ? 'header-subpage' : ''}`}>
       <div className="header-bg" />
       <div className="mobile-pill-nav">
         {navLinks.map((link: any, i: number) => (

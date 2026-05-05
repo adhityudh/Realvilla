@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { locales, Locale } from '@/lib/i18n';
+import { useTranslations } from '@/components/providers/TranslationProvider';
 import './LanguageSwitcher.css';
 
 export default function LanguageSwitcher() {
@@ -10,6 +11,7 @@ export default function LanguageSwitcher() {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
   const router = useRouter();
+  const { translations } = useTranslations();
 
   // Extract current locale from pathname
   const segments = pathname.split('/');
@@ -21,10 +23,29 @@ export default function LanguageSwitcher() {
       return;
     }
 
-    // Replace the first segment with the new locale
-    const newSegments = [...segments];
-    newSegments[1] = newLocale;
-    const newPathname = newSegments.join('/') || '/';
+    // Check if we have a translated slug for the target locale
+    const translatedPage = translations.find((t) => t.language === newLocale);
+
+    let newPathname: string;
+
+    if (translatedPage) {
+      // Use the translated slug from Sanity
+      const currentSlug = segments.slice(2).join('/'); // everything after /locale
+      const isHomepage = !currentSlug || currentSlug === '';
+
+      if (isHomepage) {
+        // Homepage — just swap the locale
+        newPathname = `/${newLocale}`;
+      } else {
+        // Use the translated slug
+        newPathname = `/${newLocale}/${translatedPage.slug}`;
+      }
+    } else {
+      // Fallback: swap locale segment only (for pages without translation metadata)
+      const newSegments = [...segments];
+      newSegments[1] = newLocale;
+      newPathname = newSegments.join('/') || '/';
+    }
 
     setIsOpen(false);
     router.push(newPathname);

@@ -1,0 +1,174 @@
+.buy-hero {
+    position: relative;
+    width: 100%;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    padding-top: 150px;
+    padding-bottom: 80px;
+}
+
+.buy-hero-bg {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+}
+
+.buy-hero-img {
+    object-fit: cover;
+}
+
+.buy-hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.2) 0%, rgba(45, 35, 15, 0.25) 50%, rgba(0, 0, 0, 0.3) 100%);
+}
+
+.buy-hero-content>.buy-hero-title,
+.buy-jump-links {
+    opacity: 0;
+    /* Hidden initially, shown by GSAP */
+}
+
+/* Removed old animation logic to support Ghost Blur */
+
+.buy-hero-content {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+    width: 100%;
+    max-width: 900px;
+    padding: 0 2rem;
+    color: #fff;
+}
+
+.buy-hero-title {
+    font-family: var(--font-cormorant), serif;
+    font-size: clamp(2rem, 5.5vw, 4rem);
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: -0.01em;
+    margin-bottom: 2rem;
+    line-height: 1.1;
+}
+
+.buy-hero-subtitle {
+    font-family: var(--font-manrope), sans-serif;
+    font-size: 1.1rem;
+    opacity: 0.8;
+    max-width: 600px;
+    margin: 0 auto 3rem;
+    line-height: 1.6;
+}
+
+.buy-search-trigger-container {
+    width: 100%;
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.buy-search-trigger-container {
+    opacity: 1;
+    isolation: isolate;
+    /* We don't animate the container's opacity anymore to keep backdrop-filter alive */
+}
+
+.buy-search-trigger {
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.01); /* Subtle start to keep backdrop-filter layer active */
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.01);
+    padding: 1.25rem 2rem;
+    border-radius: 100px;
+    cursor: pointer;
+    transition: background 0.4s ease, border-color 0.4s ease, transform 0.4s ease, box-shadow 0.4s ease;
+    
+    /* Hardware acceleration & Layer optimization */
+    will-change: backdrop-filter, transform;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+}
+
+.buy-search-trigger > * {
+    /* Opacity handled by GSAP */
+}
+
+.buy-search-trigger:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.4);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+.search-icon {
+    margin-right: 1.25rem;
+    opacity: 0.6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.buy-search-input-mock {
+    background: transparent;
+    border: none;
+    outline: none;
+    color: #fff;
+    width: 100%;
+    font-size: 1.1rem;
+    cursor: pointer;
+    font-family: var(--font-manrope), sans-serif;
+}
+
+.buy-search-input-mock::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.buy-jump-links {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-top: 4rem;
+}
+
+.jump-link {
+    /* Inherits everything from btn-link-styled (1.25rem, stretch animation, etc.) */
+}
+
+@media (max-width: 1024px) {
+    .buy-hero {
+        padding-bottom: 4rem;
+    }
+
+    .buy-hero-title {
+        font-size: clamp(2.5rem, 7vw, 6rem);
+    }
+
+    .buy-jump-links {
+        flex-direction: column;
+        gap: 1.5rem;
+        margin-top: 3rem;
+        align-items: center;
+    }
+
+    .jump-link {
+        font-size: 1rem !important;
+        letter-spacing: 0.1em !important;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.3) !important;
+        gap: 0.5rem !important;
+    }
+
+    .buy-search-trigger {
+        padding: 1rem 1.5rem;
+    }
+
+    .buy-search-input-mock {
+        font-size: 0.95rem;
+    }
+}

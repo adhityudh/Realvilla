@@ -10,6 +10,7 @@ import { partnerSection } from './modules/partnerSection'
 import { testimonialsSection } from './modules/testimonialsSection'
 import { contactSection } from './modules/contactSection'
 import { mortgageFAQSection } from './modules/mortgageFAQSection'
+import { buyHeroSection } from './modules/buyHeroSection'
 import { settings } from './documents/settings'
 import { seo } from './objects/seo'
 
@@ -20,6 +21,7 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     settings,
     seo,
     heroSection,
+    buyHeroSection,
     aboutSection,
     propertiesSection,
     valuationSection,

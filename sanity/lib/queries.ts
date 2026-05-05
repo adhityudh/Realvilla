@@ -14,6 +14,10 @@ export const PAGE_QUERY = groq`
   *[_type == "page" && slug.current == $slug && (language == $language || (!defined(language) && $language == "en"))][0] {
     title,
     ${SEO_FIELDS},
+    "_translations": *[_type == "translation.metadata" && references(^._id)][0].translations[].value->{
+      "language": language,
+      "slug": slug.current
+    },
     sections[] {
       _type,
       _key,
@@ -159,6 +163,15 @@ export const PAGE_QUERY = groq`
           ctaSecondaryLinkType == "internal" => "/" + ctaSecondaryInternalLink->slug.current,
           ctaSecondaryLinkType == "external" => ctaSecondaryExternalLink
         )
+      },
+      _type == "buyHeroSection" => {
+        title,
+        "backgroundImage": backgroundImage.asset->url,
+        searchPlaceholder,
+        jumpLinks[] {
+          label,
+          link
+        }
       }
     }
   }

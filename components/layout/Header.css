@@ -24,10 +24,9 @@
             backdrop-filter: blur(20px) brightness(102%);
             box-shadow: none;
             /* translateZ(0) helps Chrome stabilize the blur layer */
-            transform: scaleY(var(--header-wipe, 0)) translateZ(0);
-            transform-origin: top;
+            opacity: 0;
             pointer-events: none;
-            will-change: transform, backdrop-filter;
+            will-change: opacity, backdrop-filter;
         }
 
         /* The Pill Nav inside Header */
@@ -57,7 +56,8 @@
                 display: flex;
             }
 
-            body.header-dark-mode .header .mobile-pill-nav {
+            body.header-dark-mode .header .mobile-pill-nav,
+            .header-subpage .mobile-pill-nav {
                 opacity: 1;
                 pointer-events: auto;
                 transform: translateX(-50%) translateY(0) !important;
@@ -110,8 +110,6 @@
 
             body.header-pill-mode .header-bg {
                 border-radius: 999px;
-                transform: scaleY(1) !important;
-                /* Background is naturally handled by the existing wipe scrub */
             }
         }
 
@@ -140,6 +138,12 @@
             transition: none;
         }
 
+        .header-subpage .header-logo {
+            opacity: 1;
+            pointer-events: auto;
+            height: 20px;
+        }
+
         .header-letter-img {
             height: 100%;
             width: auto;
@@ -160,6 +164,11 @@
             pointer-events: none;
             transition: none;
             will-change: transform, opacity;
+        }
+
+        .header-subpage .header-nav {
+            opacity: 1;
+            pointer-events: auto;
         }
 
         .nav-link {
@@ -369,11 +378,10 @@
                 backdrop-filter: blur(10px) brightness(102%);
                 height: 80px;
                 transform-origin: top;
-                transform: scaleY(var(--header-wipe, 0)) translateZ(0);
             }
 
             body.header-light-mode .header-bg {
-                background: rgba(188, 175, 139, 0.85);
+                background: rgba(209, 195, 155, 0.85);
             }
 
             body.header-light-mode.header-black-bg .header-bg {
@@ -390,6 +398,13 @@
                 opacity: 0;
                 visibility: hidden;
                 pointer-events: none;
+            }
+
+            .header-subpage .header-logo {
+                opacity: 1 !important;
+                visibility: visible !important;
+                pointer-events: auto !important;
+                height: 14px;
             }
 
             .header-nav {

@@ -560,11 +560,10 @@
     .contact-big-logo {
         width: 100%;
         justify-content: center;
-        transform: scale(1.2) translateY(350px) translateX(-10%);
+        transform: scale(1.2) translateY(412px) translateX(-10%);
     }
 
     .form-title {
-        font-size: 2rem;
         margin-bottom: 1.5rem;
     }
 }

@@ -8,6 +8,7 @@ const PartnerSection = dynamic(() => import('./PartnerSection'), { ssr: true })
 const TestimonialsSection = dynamic(() => import('./TestimonialsSection'), { ssr: true })
 const ContactSection = dynamic(() => import('./ContactSection'), { ssr: true })
 const MortgageFAQSection = dynamic(() => import('./MortgageFAQSection'), { ssr: true })
+const BuyHeroSection = dynamic(() => import('./BuyHeroSection'), { ssr: true })
 
 const sectionMap: Record<string, any> = {
   heroSection: HeroCombined,
@@ -18,6 +19,7 @@ const sectionMap: Record<string, any> = {
   testimonialsSection: TestimonialsSection,
   contactSection: ContactSection,
   mortgageFAQSection: MortgageFAQSection,
+  buyHeroSection: BuyHeroSection,
 }
 
 export default function SectionRenderer({ sections, dict }: { sections: any[], dict?: any }) {

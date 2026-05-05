@@ -20,8 +20,14 @@ const manrope = Manrope({
   display: 'swap',
 });
 
+import Header from '@/components/layout/Header';
+import MobileNav from '@/components/layout/MobileNav';
+import FooterSection from '@/components/sections/FooterSection';
 import { getGlobalSettings, constructMetadata, getSchemaData } from '@/lib/metadata';
 import JsonLd from '@/components/seo/JsonLd';
+import { getDictionary } from '@/lib/get-dictionary';
+import ScrollReleaser from '@/components/ui/ScrollReleaser';
+import { TranslationProvider } from '@/components/providers/TranslationProvider';
 
 export async function generateMetadata(
   { params }: { params: Promise<{ locale: string }> }
@@ -41,7 +47,10 @@ export default async function RootLayout({
 }) {
   const { locale } = await params;
   const isDraftMode = (await draftMode()).isEnabled;
-  const settings = await getGlobalSettings(locale);
+  const [settings, dict] = await Promise.all([
+    getGlobalSettings(locale),
+    getDictionary(locale as any)
+  ]);
 
   return (
     <html lang={locale} className={`${cormorant.variable} ${manrope.variable}`}>
@@ -58,7 +67,13 @@ export default async function RootLayout({
             `,
           }}
         />
-        {children}
+        <TranslationProvider>
+          <ScrollReleaser />
+          <Header settings={settings} />
+          <MobileNav settings={settings} />
+          {children}
+          <FooterSection data={settings?.footer} />
+        </TranslationProvider>
         <JsonLd data={getSchemaData(settings, `/${locale}`)} />
         {isDraftMode && <VisualEditing />}
       </body>

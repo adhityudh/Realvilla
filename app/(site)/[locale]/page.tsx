@@ -9,6 +9,7 @@ import { PAGE_QUERY, SETTINGS_QUERY } from '@/sanity/lib/queries';
 import { getGlobalSettings, constructMetadata } from '@/lib/metadata';
 import { getDictionary } from '@/lib/get-dictionary';
 import { Metadata } from 'next';
+import TranslationSetter from '@/components/providers/TranslationSetter';
 
 export async function generateMetadata(
   { params }: { params: Promise<{ locale: string }> }
@@ -82,10 +83,9 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
 
   return (
     <>
-      <Header settings={settingsData} />
-      <MobileNav settings={settingsData} />
+      <TranslationSetter translations={data._translations ?? []} />
+      <SplashIntro data={data.sections.find((s: any) => s._type === 'splashIntro')} dict={dict} />
       <SectionRenderer sections={data.sections} dict={dict} />
-      <FooterSection data={settingsData?.footer} />
     </>
   );
 }
