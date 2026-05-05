@@ -22,6 +22,7 @@ const MortgageFAQSection = ({ data, dict }: { data?: any, dict?: any }) => {
 
   const tagline = data.tagline;
   const title = data.title;
+  const description = data.description;
   const faqData = data.faqs;
   const ctaPrimaryLabel = data.ctaPrimaryLabel;
   const ctaPrimaryLink = data.ctaPrimaryLink;
@@ -32,7 +33,7 @@ const MortgageFAQSection = ({ data, dict }: { data?: any, dict?: any }) => {
     if (!sectionRef.current || !headerRef.current || !listRef.current || !ctaRef.current) return;
 
     gsap.fromTo(
-      headerRef.current.querySelectorAll('.mortgage-faq-tagline, .mortgage-faq-title'),
+      headerRef.current.querySelectorAll('.mortgage-faq-tagline, .mortgage-faq-title, .mortgage-faq-description'),
       { y: 60, opacity: 0, filter: 'blur(15px)' },
       {
         y: 0,
@@ -117,7 +118,10 @@ const MortgageFAQSection = ({ data, dict }: { data?: any, dict?: any }) => {
     <section className="mortgage-faq-section" id="mortgage" ref={sectionRef}>
       <div className="mortgage-faq-wrapper">
         <div className="mortgage-faq-header" ref={headerRef}>
-          <div className="mortgage-faq-tagline">{tagline}</div>
+          <div className="mortgage-faq-info">
+            <div className="mortgage-faq-tagline">{tagline}</div>
+            {description && <p className="mortgage-faq-description">{description}</p>}
+          </div>
           <h2 className="mortgage-faq-title">{title}</h2>
         </div>
 

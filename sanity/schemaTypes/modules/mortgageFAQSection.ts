@@ -16,6 +16,11 @@ export const mortgageFAQSection = defineType({
       type: 'string',
     }),
     defineField({
+      name: 'description',
+      title: 'Description',
+      type: 'text',
+    }),
+    defineField({
       name: 'faqs',
       title: 'FAQs',
       type: 'array',

@@ -89,7 +89,7 @@
     font-weight: 700;
     letter-spacing: 0.3em;
     text-transform: uppercase;
-    color: #D1C39B;
+    color: #B8A87D;
     display: flex;
     align-items: center;
     gap: 1rem;
@@ -104,7 +104,7 @@
     content: '';
     width: 30px;
     height: 1px;
-    background: #D1C39B;
+    background: #B8A87D;
 }
 
 .about-paragraph-wrapper {

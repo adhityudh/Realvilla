@@ -121,7 +121,7 @@ export default function ContactSection({ data, dict }: { data?: any, dict?: any 
       { yPercent: 50, opacity: 0, filter: 'blur(5px)' },
       { yPercent: 0, opacity: 1, filter: 'blur(0px)', duration: 1.0, stagger: 0.02, ease: 'power3.out' },
       '-=1.0'
-    ).fromTo(section.querySelectorAll('.contact-market-item'),
+    ).fromTo(section.querySelectorAll('.contact-market-item, .contact-market-cta'),
       { y: 30, opacity: 0 },
       { y: 0, opacity: 1, duration: 1, stagger: 0.1, ease: 'expo.out' },
       '-=0.8'
@@ -255,6 +255,16 @@ export default function ContactSection({ data, dict }: { data?: any, dict?: any 
                 <p className="market-data-label">{item.label}</p>
               </div>
             ))}
+            <div className="contact-market-cta">
+              {(data.ctaLabel || data.ctaLink) && (
+                <Button 
+                  label={data.ctaLabel || "Explore Market Insights"} 
+                  href={data.ctaLink || "/market"} 
+                  variant="link" 
+                  className="market-cta-btn" 
+                />
+              )}
+            </div>
           </div>
         </div>
         <div className="contact-form-wrapper">

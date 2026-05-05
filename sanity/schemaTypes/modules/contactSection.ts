@@ -33,16 +33,35 @@ export const contactSection = defineType({
       ],
     }),
     defineField({
-      name: 'bgImage',
-      title: 'Background Image (Desktop)',
-      type: 'image',
-      options: { hotspot: true },
+      name: 'ctaLabel',
+      title: 'CTA Label',
+      type: 'string',
     }),
     defineField({
-      name: 'mobileBgImage',
-      title: 'Background Image (Mobile)',
-      type: 'image',
-      options: { hotspot: true },
+      name: 'linkType',
+      title: 'Link Type',
+      type: 'string',
+      options: {
+        list: [
+          { title: 'Internal Page', value: 'internal' },
+          { title: 'External URL', value: 'external' },
+        ],
+        layout: 'radio',
+      },
+      initialValue: 'internal',
+    }),
+    defineField({
+      name: 'internalLink',
+      title: 'Internal Link',
+      type: 'reference',
+      to: [{ type: 'page' }],
+      hidden: ({ parent }) => parent?.linkType !== 'internal',
+    }),
+    defineField({
+      name: 'externalLink',
+      title: 'External Link',
+      type: 'string',
+      hidden: ({ parent }) => parent?.linkType !== 'external',
     }),
   ],
   preview: {

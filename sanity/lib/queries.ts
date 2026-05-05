@@ -123,8 +123,11 @@ export const PAGE_QUERY = groq`
           unit,
           label
         },
-        bgImage { asset->{ _id, url, metadata { lqip, dimensions } } },
-        mobileBgImage { asset->{ _id, url, metadata { lqip, dimensions } } }
+        ctaLabel,
+        "ctaLink": select(
+          linkType == "internal" => "/" + internalLink->slug.current,
+          linkType == "external" => externalLink
+        )
       },
       _type == "partnerSection" => {
         title,
@@ -140,6 +143,7 @@ export const PAGE_QUERY = groq`
       _type == "mortgageFAQSection" => {
         tagline,
         title,
+        description,
         showSecondaryCta,
         ctaPrimaryLabel,
         ctaSecondaryLabel,
