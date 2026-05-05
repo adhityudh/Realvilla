@@ -329,7 +329,7 @@
     font-size: 0.8rem;
     font-weight: 500;
     letter-spacing: 0.05em;
-    color: #D1C39B;
+    color: #B8A87D;
     cursor: pointer;
     padding: 0;
     margin-bottom: 1.5rem;
@@ -390,7 +390,7 @@
 }
 
 .intent-option-btn:hover .intent-option-label {
-    color: #D1C39B;
+    color: #B8A87D;
 }
 
 .intent-option-arrow {
