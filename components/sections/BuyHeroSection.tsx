@@ -34,13 +34,13 @@ export default function BuyHeroSection({ data }: BuyHeroSectionProps) {
     const tl = gsap.timeline();
 
     // Set initial states for elements to avoid flash
-    gsap.set('.buy-search-trigger', { 
+    gsap.set(['.buy-search-trigger', '.buy-filter-btn'], { 
       backgroundColor: 'rgba(255, 255, 255, 0)',
       borderColor: 'rgba(255, 255, 255, 0)',
       y: 20,
       opacity: 0
     });
-    gsap.set('.buy-search-trigger > *', { opacity: 0 });
+    gsap.set(['.buy-search-trigger > *', '.buy-filter-btn > *'], { opacity: 0 });
 
     // 1. Animate title first
     tl.fromTo(
@@ -56,7 +56,7 @@ export default function BuyHeroSection({ data }: BuyHeroSectionProps) {
 
     // 2. Animate search trigger container (y and opacity) - Start at 0.4s
     tl.to(
-      '.buy-search-trigger',
+      ['.buy-search-trigger', '.buy-filter-btn'],
       {
         y: 0,
         opacity: 1,
@@ -68,7 +68,7 @@ export default function BuyHeroSection({ data }: BuyHeroSectionProps) {
 
     // 3. Animate the 'Glass' appearance (bg/border) - Start at 0.6s
     tl.to(
-      '.buy-search-trigger',
+      ['.buy-search-trigger', '.buy-filter-btn'],
       {
         backgroundColor: 'rgba(255, 255, 255, 0.12)',
         borderColor: 'rgba(255, 255, 255, 0.2)',
@@ -80,7 +80,7 @@ export default function BuyHeroSection({ data }: BuyHeroSectionProps) {
 
     // 4. Animate trigger content (icon and text) - Start at 0.8s
     tl.to(
-      '.buy-search-trigger > *',
+      ['.buy-search-trigger > *', '.buy-filter-btn > *'],
       {
         opacity: 1,
         duration: 0.8,
@@ -179,6 +179,19 @@ export default function BuyHeroSection({ data }: BuyHeroSectionProps) {
                 readOnly
                 placeholder={placeholderText}
                 className="buy-search-input-mock"
+              />
+            </div>
+            <div 
+              className="buy-filter-btn"
+              onClick={() => setIsModalOpen(true)}
+              aria-label="Filter"
+              role="button"
+            >
+              <Image
+                src="/icons/filter_list.svg"
+                alt="Filter"
+                width={24}
+                height={24}
               />
             </div>
           </div>

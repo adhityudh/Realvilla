@@ -28,18 +28,15 @@ export default function LanguageSwitcher() {
 
     let newPathname: string;
 
-    if (translatedPage) {
-      // Use the translated slug from Sanity
-      const currentSlug = segments.slice(2).join('/'); // everything after /locale
-      const isHomepage = !currentSlug || currentSlug === '';
+    const currentSlug = segments.slice(2).join('/'); // everything after /locale
+    const isHomepage = !currentSlug || currentSlug === '';
 
-      if (isHomepage) {
-        // Homepage — just swap the locale
-        newPathname = `/${newLocale}`;
-      } else {
-        // Use the translated slug
-        newPathname = `/${newLocale}/${translatedPage.slug}`;
-      }
+    if (isHomepage) {
+      // Homepage — just swap the locale
+      newPathname = `/${newLocale}`;
+    } else if (translatedPage) {
+      // Use the translated slug from Sanity
+      newPathname = `/${newLocale}/${translatedPage.slug}`;
     } else {
       // Fallback: swap locale segment only (for pages without translation metadata)
       const newSegments = [...segments];

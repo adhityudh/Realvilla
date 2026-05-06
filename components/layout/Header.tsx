@@ -127,6 +127,11 @@ export default function Header({ settings }: { settings?: any }) {
     return segments.length <= 1; // It's home if it's just / or /[locale]
   }, [pathname]);
 
+  const currentLocale = useMemo(() => {
+    const segments = pathname.split('/');
+    return segments[1] || 'en';
+  }, [pathname]);
+
   useHeaderScrollAnimations(isHome);
 
   const navLinks = settings?.mainNav || NAV_LINKS.map(l => ({ label: l.label, link: l.href }));
@@ -153,7 +158,7 @@ export default function Header({ settings }: { settings?: any }) {
         ))}
       </div>
       <div className="header-content">
-        <a href="/" className="header-logo" aria-label="Real Villa">
+        <a href={`/${currentLocale}`} className="header-logo" aria-label="Real Villa">
           {HEADER_LETTERS.map((letter, i) => (
             <img 
               key={i} 

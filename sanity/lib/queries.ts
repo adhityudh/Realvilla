@@ -10,6 +10,14 @@ export const SEO_FIELDS = groq`
   }
 `
 
+export const INTERNAL_LINK_PROJECTION = `select(
+  linkType == "internal" => select(
+    internalLink->slug.current == "home" => "/" + coalesce(internalLink->language, $language),
+    "/" + coalesce(internalLink->language, $language) + "/" + internalLink->slug.current
+  ),
+  linkType == "external" => externalLink
+)`
+
 // Reusable property card projection (for listings, cards, carousels)
 export const PROPERTY_CARD_FIELDS = groq`
   _id,
@@ -61,10 +69,7 @@ export const PAGE_QUERY = groq`
         "ctas": ctas[] {
           label,
           "icon": icon.asset->url,
-          "link": select(
-            linkType == "internal" => "/" + internalLink->slug.current,
-            linkType == "external" => externalLink
-          )
+          "link": ${INTERNAL_LINK_PROJECTION}
         }
       },
       _type == "valuationSection" => {
@@ -74,10 +79,7 @@ export const PAGE_QUERY = groq`
         trustText,
         ctaLabel,
         iframeUrl,
-        "ctaLink": select(
-          linkType == "internal" => "/" + internalLink->slug.current,
-          linkType == "external" => externalLink
-        )
+        "ctaLink": ${INTERNAL_LINK_PROJECTION}
       },
       _type == "aboutSection" => {
         tagline,
@@ -97,10 +99,7 @@ export const PAGE_QUERY = groq`
           platform,
           label,
           "icon": icon.asset->url,
-          "link": select(
-            linkType == "internal" => "/" + internalLink->slug.current,
-            linkType == "external" => externalLink
-          )
+          "link": ${INTERNAL_LINK_PROJECTION}
         }
       },
       _type == "propertiesSection" => {
@@ -109,10 +108,7 @@ export const PAGE_QUERY = groq`
         selectionType,
         limit,
         ctaLabel,
-        "ctaLink": select(
-          linkType == "internal" => "/" + internalLink->slug.current,
-          linkType == "external" => externalLink
-        ),
+        "ctaLink": ${INTERNAL_LINK_PROJECTION},
         "properties": select(
           selectionType == "manual" => manualProperties[]-> {
             ${PROPERTY_CARD_FIELDS}
@@ -142,20 +138,14 @@ export const PAGE_QUERY = groq`
           label
         },
         ctaLabel,
-        "ctaLink": select(
-          linkType == "internal" => "/" + internalLink->slug.current,
-          linkType == "external" => externalLink
-        )
+        "ctaLink": ${INTERNAL_LINK_PROJECTION}
       },
       _type == "partnerSection" => {
         title,
         partners[] {
           name,
           "logo": logo.asset->url,
-          "link": select(
-            linkType == "internal" => "/" + internalLink->slug.current,
-            linkType == "external" => externalLink
-          )
+          "link": ${INTERNAL_LINK_PROJECTION}
         }
       },
       _type == "mortgageFAQSection" => {
@@ -170,11 +160,17 @@ export const PAGE_QUERY = groq`
           answer
         },
         "ctaPrimaryLink": select(
-          ctaPrimaryLinkType == "internal" => "/" + ctaPrimaryInternalLink->slug.current,
+          ctaPrimaryLinkType == "internal" => select(
+            ctaPrimaryInternalLink->slug.current == "home" => "/" + coalesce(ctaPrimaryInternalLink->language, $language),
+            "/" + coalesce(ctaPrimaryInternalLink->language, $language) + "/" + ctaPrimaryInternalLink->slug.current
+          ),
           ctaPrimaryLinkType == "external" => ctaPrimaryExternalLink
         ),
         "ctaSecondaryLink": select(
-          ctaSecondaryLinkType == "internal" => "/" + ctaSecondaryInternalLink->slug.current,
+          ctaSecondaryLinkType == "internal" => select(
+            ctaSecondaryInternalLink->slug.current == "home" => "/" + coalesce(ctaSecondaryInternalLink->language, $language),
+            "/" + coalesce(ctaSecondaryInternalLink->language, $language) + "/" + ctaSecondaryInternalLink->slug.current
+          ),
           ctaSecondaryLinkType == "external" => ctaSecondaryExternalLink
         )
       },
@@ -198,31 +194,19 @@ export const SETTINGS_QUERY = groq`
     socialLinks[] {
       label,
       "icon": icon.asset->url,
-      "link": select(
-        linkType == "internal" => "/" + internalLink->slug.current,
-        linkType == "external" => externalLink
-      )
+      "link": ${INTERNAL_LINK_PROJECTION}
     },
     mainNav[] {
       label,
-      "link": select(
-        linkType == "internal" => "/" + internalLink->slug.current,
-        linkType == "external" => externalLink
-      )
+      "link": ${INTERNAL_LINK_PROJECTION}
     },
     mobileNav[] {
       label,
-      "link": select(
-        linkType == "internal" => "/" + internalLink->slug.current,
-        linkType == "external" => externalLink
-      )
+      "link": ${INTERNAL_LINK_PROJECTION}
     },
     headerCta {
       label,
-      "link": select(
-        linkType == "internal" => "/" + internalLink->slug.current,
-        linkType == "external" => externalLink
-      )
+      "link": ${INTERNAL_LINK_PROJECTION}
     },
     footer {
       columns[] {
@@ -231,29 +215,20 @@ export const SETTINGS_QUERY = groq`
           title,
           links[] {
             label,
-            "link": select(
-              linkType == "internal" => "/" + internalLink->slug.current,
-              linkType == "external" => externalLink
-            )
+            "link": ${INTERNAL_LINK_PROJECTION}
           }
         }
       },
       legalLinks[] {
         label,
-        "link": select(
-          linkType == "internal" => "/" + internalLink->slug.current,
-          linkType == "external" => externalLink
-        )
+          "link": ${INTERNAL_LINK_PROJECTION}
       },
       copyright,
       disclaimer,
       socialLinks[] {
         label,
         "icon": icon.asset->url,
-        "link": select(
-          linkType == "internal" => "/" + internalLink->slug.current,
-          linkType == "external" => externalLink
-        )
+          "link": ${INTERNAL_LINK_PROJECTION}
       }
     }
   }
