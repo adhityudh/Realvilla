@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useMemo } from 'react';
+import { usePathname } from 'next/navigation';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { client } from '@/sanity/lib/client';
@@ -29,7 +30,11 @@ export default function BuyPropertiesSection({ data, dict }: { data?: any, dict?
   const title = data?.title || (dict?.properties?.title || 'Exclusive Tenerife Homes');
   const description = data?.description || (dict?.properties?.description || 'Browse our curated selection of ultra-luxury estates, modern villas, and elegant apartments across Tenerife.');
 
-  const locale = dict?.locale || 'en';
+  const pathname = usePathname();
+  const locale = useMemo(() => {
+    const segments = pathname.split('/');
+    return segments[1] || 'en';
+  }, [pathname]);
 
 
 
