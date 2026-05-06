@@ -6,20 +6,76 @@ export const buyPropertiesSection = defineType({
   type: 'object',
   fields: [
     defineField({
-      name: 'tagline',
-      title: 'Tagline',
-      type: 'string',
-    }),
-    defineField({
       name: 'title',
       title: 'Title',
       type: 'string',
     }),
     defineField({
-      name: 'description',
-      title: 'Description',
-      type: 'text',
-      rows: 3,
+      name: 'selectionType',
+      title: 'Selection Type',
+      type: 'string',
+      options: {
+        list: [
+          { title: 'Latest / Dynamic Query', value: 'dynamic' },
+          { title: 'Manual Selection', value: 'manual' },
+        ],
+        layout: 'radio',
+      },
+      initialValue: 'dynamic',
+    }),
+    defineField({
+      name: 'manualProperties',
+      title: 'Select Properties',
+      type: 'array',
+      of: [
+        { 
+          type: 'reference', 
+          to: [{ type: 'property' }],
+          options: {
+            filter: ({ document }) => {
+              const language = document?.language;
+              if (!language) return {};
+              return {
+                filter: 'language == $language || !defined(language)',
+                params: { language }
+              };
+            }
+          }
+        }
+      ],
+      hidden: ({ parent }) => parent?.selectionType !== 'manual',
+    }),
+    defineField({
+      name: 'itemsPerPage',
+      title: 'Items per Page (Desktop)',
+      type: 'number',
+      description: 'How many properties to display per page on desktop. (Default: 6)',
+      initialValue: 6,
+    }),
+    defineField({
+      name: 'itemsPerPageMobile',
+      title: 'Items per Page (Mobile)',
+      type: 'number',
+      description: 'How many properties to display per page on mobile devices under 768px. (Optional, defaults to same as desktop limit)',
+    }),
+    defineField({
+      name: 'orderBy',
+      title: 'Order By',
+      type: 'string',
+      options: {
+        list: [
+          { title: "Newest First", value: "_createdAt desc" },
+          { title: "Price (High to Low)", value: "price desc" },
+          { title: "Price (Low to High)", value: "price asc" },
+        ],
+      },
+      initialValue: "_createdAt desc",
+    }),
+    defineField({
+      name: 'showSold',
+      title: 'Show Sold Properties',
+      type: 'boolean',
+      initialValue: false,
     }),
   ],
   preview: {

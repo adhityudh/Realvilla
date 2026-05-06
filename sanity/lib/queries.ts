@@ -107,6 +107,7 @@ export const PAGE_QUERY = groq`
         headline,
         selectionType,
         limit,
+        limitMobile,
         ctaLabel,
         "ctaLink": ${INTERNAL_LINK_PROJECTION},
         "properties": select(
@@ -184,9 +185,13 @@ export const PAGE_QUERY = groq`
         }
       },
       _type == "buyPropertiesSection" => {
-        tagline,
         title,
-        description
+        selectionType,
+        "manualIds": manualProperties[]->_id,
+        itemsPerPage,
+        itemsPerPageMobile,
+        orderBy,
+        showSold
       }
     }
   }

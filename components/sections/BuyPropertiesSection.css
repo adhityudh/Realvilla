@@ -56,7 +56,8 @@
 .buy-properties-filter-btn .filter-icon {
     width: 18px;
     height: 18px;
-    filter: invert(1); /* Inverts white SVG into black for white theme compatibility */
+    filter: invert(1);
+    /* Inverts white SVG into black for white theme compatibility */
     transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -69,7 +70,8 @@
 }
 
 .buy-properties-filter-btn:hover .filter-icon {
-    filter: none; /* Reverts back to beautiful white SVG on dark hover state */
+    filter: none;
+    /* Reverts back to beautiful white SVG on dark hover state */
     transform: rotate(90deg);
 }
 
@@ -197,6 +199,32 @@
     color: #ffffff;
 }
 
+.pagination-ellipsis {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    font-size: 1rem;
+    font-weight: 600;
+    color: rgba(0, 0, 0, 0.4);
+    font-family: var(--font-manrope), sans-serif;
+    user-select: none;
+}
+
+.pagination-mobile-indicator {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-manrope), sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #111111;
+    letter-spacing: 0.1em;
+    padding: 0 1rem;
+    user-select: none;
+}
+
 /* Responsive adjustments */
 @media (max-width: 1024px) {
     .buy-properties-section {
@@ -209,7 +237,7 @@
 
     .buy-properties-header {
         flex-direction: column;
-        align-items: flex-start;
+        align-items: center;
         gap: 1.5rem;
         margin-bottom: 3rem;
     }
@@ -220,7 +248,7 @@
     }
 
     .buy-properties-filter-btn {
-        align-self: flex-start;
+        align-self: unset;
     }
 
     .buy-properties-grid {
@@ -238,7 +266,8 @@
     }
 
     .pagination-arrow,
-    .pagination-number {
+    .pagination-number,
+    .pagination-ellipsis {
         width: 44px;
         height: 44px;
     }

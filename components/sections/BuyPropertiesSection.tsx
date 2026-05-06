@@ -13,8 +13,6 @@ if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
 }
 
-const ITEMS_PER_PAGE = 6;
-
 export default function BuyPropertiesSection({ data, dict }: { data?: any, dict?: any }) {
   const sectionRef = useRef<HTMLElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
@@ -26,9 +24,7 @@ export default function BuyPropertiesSection({ data, dict }: { data?: any, dict?
   const [loading, setLoading] = useState<boolean>(true);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
-  const tagline = data?.tagline || (dict?.properties?.tagline || 'Our Properties');
   const title = data?.title || (dict?.properties?.title || 'Exclusive Tenerife Homes');
-  const description = data?.description || (dict?.properties?.description || 'Browse our curated selection of ultra-luxury estates, modern villas, and elegant apartments across Tenerife.');
 
   const pathname = usePathname();
   const locale = useMemo(() => {
@@ -36,21 +32,45 @@ export default function BuyPropertiesSection({ data, dict }: { data?: any, dict?
     return segments[1] || 'en';
   }, [pathname]);
 
+  const [isMobile, setIsMobile] = useState(false);
 
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  const itemsPerPage = useMemo(() => {
+    if (isMobile && data?.itemsPerPageMobile) {
+      return data.itemsPerPageMobile;
+    }
+    return data?.itemsPerPage || 6;
+  }, [isMobile, data]);
 
   // Fetch properties based on page change
   useEffect(() => {
     let isMounted = true;
     setLoading(true);
 
-    const start = (currentPage - 1) * ITEMS_PER_PAGE;
-    const end = start + ITEMS_PER_PAGE;
+    const start = (currentPage - 1) * itemsPerPage;
+    const end = start + itemsPerPage;
 
     const fetchProperties = async () => {
       try {
+        const baseFilter = `_type == "property" && (language == $language || (!defined(language) && $language == "en"))${data?.showSold ? "" : " && status != 'sold'"}${data?.selectionType === "manual" ? " && _id in $manualIds" : ""}`;
+        let sortOrder = "_createdAt desc";
+        if (data?.orderBy === "price desc") {
+          sortOrder = "price desc";
+        } else if (data?.orderBy === "price asc") {
+          sortOrder = "price asc";
+        }
+
         const query = `
           {
-            "items": *[_type == "property" && (language == $language || (!defined(language) && $language == "en"))] | order(_createdAt desc) [$start...$end] {
+            "items": *[${baseFilter}] | order(${sortOrder}) [$start...$end] {
               _id,
               title,
               "address": coalesce(location.fullAddress, address),
@@ -77,14 +97,15 @@ export default function BuyPropertiesSection({ data, dict }: { data?: any, dict?
                 booleanValue
               }
             },
-            "total": count(*[_type == "property" && (language == $language || (!defined(language) && $language == "en"))])
+            "total": count(*[${baseFilter}])
           }
         `;
 
         const res = await client.fetch(query, {
           language: locale,
           start,
-          end
+          end,
+          manualIds: data?.manualIds || []
         });
 
         if (isMounted) {
@@ -120,9 +141,39 @@ export default function BuyPropertiesSection({ data, dict }: { data?: any, dict?
     return () => {
       isMounted = false;
     };
-  }, [currentPage, locale]);
+  }, [currentPage, locale, itemsPerPage, data?.orderBy, data?.showSold, data?.selectionType, data?.manualIds]);
 
-  const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);
+  const totalPages = Math.ceil(totalCount / itemsPerPage);
+
+  const getPaginationRange = () => {
+    const range: (number | string)[] = [];
+    const maxVisible = 4;
+
+    if (totalPages <= maxVisible + 1) {
+      for (let i = 1; i <= totalPages; i++) range.push(i);
+      return range;
+    }
+
+    range.push(1);
+
+    const start = Math.max(2, currentPage - 1);
+    const end = Math.min(totalPages - 1, currentPage + 1);
+
+    if (start > 2) {
+      range.push("...");
+    }
+
+    for (let i = start; i <= end; i++) {
+      range.push(i);
+    }
+
+    if (end < totalPages - 1) {
+      range.push("...");
+    }
+
+    range.push(totalPages);
+    return range;
+  };
 
   const handlePageChange = (pageNum: number) => {
     if (pageNum < 1 || pageNum > totalPages || pageNum === currentPage) return;
@@ -186,18 +237,30 @@ export default function BuyPropertiesSection({ data, dict }: { data?: any, dict?
             </button>
 
             <div className="pagination-numbers">
-              {Array.from({ length: totalPages }).map((_, idx) => {
-                const pageNum = idx + 1;
-                return (
-                  <button
-                    key={pageNum}
-                    className={`pagination-number ${currentPage === pageNum ? 'active' : ''}`}
-                    onClick={() => handlePageChange(pageNum)}
-                  >
-                    {pageNum}
-                  </button>
-                );
-              })}
+              {isMobile ? (
+                <span className="pagination-mobile-indicator">
+                  {currentPage} <span style={{ opacity: 0.4, margin: '0 4px' }}>/</span> {totalPages}
+                </span>
+              ) : (
+                getPaginationRange().map((item, idx) => {
+                  if (item === "...") {
+                    return (
+                      <span key={`ellipsis-${idx}`} className="pagination-ellipsis">
+                        ...
+                      </span>
+                    );
+                  }
+                  return (
+                    <button
+                      key={item}
+                      className={`pagination-number ${currentPage === item ? "active" : ""}`}
+                      onClick={() => handlePageChange(item as number)}
+                    >
+                      {item}
+                    </button>
+                  );
+                })
+              )}
             </div>
 
             <button 

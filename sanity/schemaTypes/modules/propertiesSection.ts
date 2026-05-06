@@ -38,6 +38,12 @@ export const propertiesSection = defineType({
       hidden: ({ parent }) => parent?.selectionType !== 'dynamic',
     }),
     defineField({
+      name: 'limitMobile',
+      title: 'Number of Properties for Mobile',
+      type: 'number',
+      description: 'How many properties to display on mobile devices under 768px. (Optional, defaults to same as desktop limit)',
+    }),
+    defineField({
       name: 'orderBy',
       title: 'Order By',
       type: 'string',

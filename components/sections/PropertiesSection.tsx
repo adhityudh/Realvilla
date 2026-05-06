@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -20,11 +20,24 @@ const PropertiesSection = ({ data, dict }: { data?: any, dict?: any }) => {
   const gridRef = useRef<HTMLDivElement>(null);
   const ctaRef = useRef<HTMLDivElement>(null);
 
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   if (!data) return null;
 
   const tagline = data.tagline;
   const headline = data.headline;
-  const propertiesList = (data.properties || []).slice(0, data.limit || 3);
+  
+  const limitCount = isMobile && data.limitMobile ? data.limitMobile : (data.limit || 3);
+  const propertiesList = (data.properties || []).slice(0, limitCount);
 
   useEffect(() => {
     if (!sectionRef.current || !containerRef.current || !gridRef.current || !ctaRef.current) return;

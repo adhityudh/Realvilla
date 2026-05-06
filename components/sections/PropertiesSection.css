@@ -197,11 +197,6 @@
     .property-info {
         padding: 2rem 1.5rem;
     }
-
-    /* Show only 4 items on mobile as requested (1x4) */
-    .property-card:nth-child(n+5) {
-        display: flex;
-    }
 }
 
 @media (max-width: 768px) {
@@ -209,10 +204,5 @@
         grid-template-columns: 1fr;
         gap: 1.5rem;
         padding-bottom: 3rem;
-    }
-
-    /* Show only 4 items on small mobile as requested (1x4) */
-    .property-card:nth-child(n+5) {
-        display: none;
     }
 }
