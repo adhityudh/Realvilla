@@ -41,7 +41,7 @@
     text-align: center;
     width: 100%;
     max-width: 900px;
-    padding: 0 2rem;
+    padding: 0 3rem;
     color: #fff;
 }
 
@@ -167,6 +167,7 @@
     justify-content: center;
     gap: 2rem;
     margin-top: 4rem;
+    padding: 0 3rem;
 }
 
 .jump-link {
@@ -187,6 +188,11 @@
         gap: 1.5rem;
         margin-top: 3rem;
         align-items: center;
+        padding: 0 1.5rem;
+    }
+
+    .buy-hero-content {
+        padding: 0 1.5rem;
     }
 
     .jump-link {
