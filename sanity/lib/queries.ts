@@ -182,6 +182,11 @@ export const PAGE_QUERY = groq`
           label,
           link
         }
+      },
+      _type == "buyPropertiesSection" => {
+        tagline,
+        title,
+        description
       }
     }
   }

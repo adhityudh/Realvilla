@@ -8,7 +8,8 @@
     justify-content: center;
     overflow: hidden;
     padding-top: 10rem;
-    padding-bottom: 5rem;
+    padding-bottom: 7.5rem;
+    margin-bottom: 5rem;
 }
 
 .buy-hero-bg {
@@ -170,13 +171,18 @@
     padding: 0 3rem;
 }
 
+.buy-jump-links .btn-link-styled {
+    font-size: 1rem;
+}
+
 .jump-link {
     /* Inherits everything from btn-link-styled (1.25rem, stretch animation, etc.) */
 }
 
 @media (max-width: 1024px) {
     .buy-hero {
-        padding-bottom: 4rem;
+        padding-bottom: 5rem;
+        margin-bottom: 3rem;
     }
 
     .buy-hero-title {
