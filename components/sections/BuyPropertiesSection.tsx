@@ -123,12 +123,13 @@ export default function BuyPropertiesSection({ data, dict }: { data?: any, dict?
     if (pageNum < 1 || pageNum > totalPages || pageNum === currentPage) return;
     setCurrentPage(pageNum);
 
-    // Smooth scroll back to section top
-    if (sectionRef.current) {
-      const topOffset = sectionRef.current.getBoundingClientRect().top + window.scrollY - 100;
-      window.scrollTo({
-        top: topOffset,
-        behavior: 'smooth'
+    // Smooth scroll back to section top using Lenis if available
+    if (typeof window !== 'undefined' && (window as any).lenis && sectionRef.current) {
+      (window as any).lenis.scrollTo(sectionRef.current, { offset: -50, duration: 1.2 });
+    } else if (sectionRef.current) {
+      sectionRef.current.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
       });
     }
   };
