@@ -188,7 +188,7 @@ export default function BuyHeroSection({ data }: BuyHeroSectionProps) {
               role="button"
             >
               <Image
-                src="/icons/filter_list.svg"
+                src="/icons/tune.svg"
                 alt="Filter"
                 width={24}
                 height={24}

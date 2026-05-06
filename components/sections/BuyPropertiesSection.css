@@ -53,10 +53,10 @@
     align-self: flex-end;
 }
 
-.buy-properties-filter-btn svg {
+.buy-properties-filter-btn .filter-icon {
     width: 18px;
     height: 18px;
-    color: #111111;
+    filter: invert(1); /* Inverts white SVG into black for white theme compatibility */
     transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -68,8 +68,8 @@
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
 }
 
-.buy-properties-filter-btn:hover svg {
-    color: #ffffff;
+.buy-properties-filter-btn:hover .filter-icon {
+    filter: none; /* Reverts back to beautiful white SVG on dark hover state */
     transform: rotate(90deg);
 }
 
