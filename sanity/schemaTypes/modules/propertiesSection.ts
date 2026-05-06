@@ -63,7 +63,22 @@ export const propertiesSection = defineType({
       name: 'manualProperties',
       title: 'Select Properties',
       type: 'array',
-      of: [{ type: 'reference', to: [{ type: 'property' }] }],
+      of: [
+        { 
+          type: 'reference', 
+          to: [{ type: 'property' }],
+          options: {
+            filter: ({ document }) => {
+              const language = document?.language;
+              if (!language) return {};
+              return {
+                filter: 'language == $language || !defined(language)',
+                params: { language }
+              };
+            }
+          }
+        }
+      ],
       hidden: ({ parent }) => parent?.selectionType !== 'manual',
     }),
     defineField({
@@ -91,6 +106,16 @@ export const propertiesSection = defineType({
       type: 'reference',
       to: [{ type: 'page' }],
       hidden: ({ parent }) => parent?.linkType !== 'internal',
+      options: {
+        filter: ({ document }) => {
+          const language = document?.language;
+          if (!language) return {};
+          return {
+            filter: 'language == $language || !defined(language)',
+            params: { language }
+          };
+        }
+      }
     }),
     defineField({
       name: 'externalLink',

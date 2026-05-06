@@ -35,47 +35,7 @@ export const settings = defineType({
       type: 'image',
       group: 'seo',
     }),
-    defineField({
-      name: 'socialLinks',
-      title: 'Social Media Links (Header)',
-      type: 'array',
-      group: 'header',
-      of: [
-        {
-          type: 'object',
-          fields: [
-            defineField({ name: 'label', title: 'Label', type: 'string' }),
-            defineField({ name: 'icon', title: 'Icon', type: 'image' }),
-            defineField({
-              name: 'linkType',
-              title: 'Link Type',
-              type: 'string',
-              options: {
-                list: [
-                  { title: 'Internal Page', value: 'internal' },
-                  { title: 'External URL', value: 'external' },
-                ],
-                layout: 'radio',
-              },
-              initialValue: 'external',
-            }),
-            defineField({
-              name: 'internalLink',
-              title: 'Internal Link',
-              type: 'reference',
-              to: [{ type: 'page' }],
-              hidden: ({ parent }) => parent?.linkType !== 'internal',
-            }),
-            defineField({
-              name: 'externalLink',
-              title: 'External Link',
-              type: 'string',
-              hidden: ({ parent }) => parent?.linkType !== 'external',
-            }),
-          ],
-        },
-      ],
-    }),
+
     defineField({
       name: 'mainNav',
       title: 'Main Navigation (Desktop & Nav Pill)',
@@ -106,6 +66,16 @@ export const settings = defineType({
               type: 'reference',
               to: [{ type: 'page' }],
               hidden: ({ parent }) => parent?.linkType !== 'internal',
+              options: {
+                filter: ({ document }) => {
+                  const language = document?.language;
+                  if (!language) return {};
+                  return {
+                    filter: 'language == $language || !defined(language)',
+                    params: { language }
+                  };
+                }
+              }
             }),
             defineField({
               name: 'externalLink',
@@ -152,6 +122,16 @@ export const settings = defineType({
               type: 'reference',
               to: [{ type: 'page' }],
               hidden: ({ parent }) => parent?.linkType !== 'internal',
+              options: {
+                filter: ({ document }) => {
+                  const language = document?.language;
+                  if (!language) return {};
+                  return {
+                    filter: 'language == $language || !defined(language)',
+                    params: { language }
+                  };
+                }
+              }
             }),
             defineField({
               name: 'externalLink',
@@ -195,6 +175,16 @@ export const settings = defineType({
           type: 'reference',
           to: [{ type: 'page' }],
           hidden: ({ parent }) => parent?.linkType !== 'internal',
+          options: {
+            filter: ({ document }) => {
+              const language = document?.language;
+              if (!language) return {};
+              return {
+                filter: 'language == $language || !defined(language)',
+                params: { language }
+              };
+            }
+          }
         }),
         defineField({
           name: 'externalLink',
@@ -259,6 +249,16 @@ export const settings = defineType({
                                   type: 'reference',
                                   to: [{ type: 'page' }],
                                   hidden: ({ parent }) => parent?.linkType !== 'internal',
+                                  options: {
+                                    filter: ({ document }) => {
+                                      const language = document?.language;
+                                      if (!language) return {};
+                                      return {
+                                        filter: 'language == $language || !defined(language)',
+                                        params: { language }
+                                      };
+                                    }
+                                  }
                                 }),
                                 defineField({
                                   name: 'externalLink',
