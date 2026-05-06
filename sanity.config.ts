@@ -9,6 +9,7 @@ import { defineConfig } from 'sanity'
 import { structureTool } from 'sanity/structure'
 import { presentationTool } from 'sanity/presentation'
 import { documentInternationalization } from '@sanity/document-internationalization'
+import { googleMapsInput } from '@sanity/google-maps-input'
 
 // Go to https://www.sanity.io/docs/api-versioning for how versioning works
 import { apiVersion, dataset, projectId } from './sanity/env'
@@ -36,6 +37,11 @@ export default defineConfig({
         { id: 'es', title: 'Spanish' },
       ],
       schemaTypes: ['page', 'property', 'settings'],
+    }),
+    googleMapsInput({
+      apiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || '',
+      defaultZoom: 14,
+      defaultLocation: { lat: 28.0468, lng: -16.5722 }, // Tenerife
     }),
     // Vision is a tool that lets you query your content with GROQ in the studio
     // https://www.sanity.io/docs/the-vision-plugin

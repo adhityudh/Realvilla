@@ -1,9 +1,15 @@
 import { defineField, defineType } from 'sanity'
+import { MetaValueInput } from '../../components/MetaValueInput'
 
 export const property = defineType({
   name: 'property',
   title: 'Property',
   type: 'document',
+  groups: [
+    { name: 'general', title: 'General', default: true },
+    { name: 'media', title: 'Media' },
+    { name: 'meta', title: 'Meta & Features' },
+  ],
   fields: [
     defineField({
       name: 'language',
@@ -11,18 +17,30 @@ export const property = defineType({
       readOnly: true,
       hidden: true,
     }),
+
+    // ═══════════════════════════════════════
+    //  GENERAL
+    // ═══════════════════════════════════════
     defineField({
-      name: 'address',
-      title: 'Address',
+      name: 'title',
+      title: 'Property Title',
       type: 'string',
-      validation: Rule => Rule.required(),
+      description: 'Property name or headline. E.g. "Infinity by the Sea".',
+      group: 'general',
+    }),
+    defineField({
+      name: 'subtitle',
+      title: 'Subtitle',
+      type: 'string',
+      description: 'Optional tagline. E.g. "A Legacy Where Luxury Meets the Horizon".',
+      group: 'general',
     }),
     defineField({
       name: 'slug',
       title: 'Slug',
       type: 'slug',
       options: {
-        source: 'address',
+        source: (doc) => (doc.title as string) || (doc.address as string) || '',
         maxLength: 96,
         isUnique: async (slug, context) => {
           const { document, getClient } = context
@@ -42,39 +60,27 @@ export const property = defineType({
         }
       },
       validation: (Rule) => Rule.required(),
+      group: 'general',
     }),
+    defineField({
+      name: 'description',
+      title: 'Description',
+      type: 'blockContent',
+      description: 'Rich text property description.',
+      group: 'general',
+    }),
+
+    // ── Pricing ──
     defineField({
       name: 'price',
       title: 'Price',
-      type: 'string',
-    }),
-    defineField({
-      name: 'beds',
-      title: 'Beds',
       type: 'number',
+      description: 'Numeric price for display, sorting and filtering. E.g. 42995000. (Currency is fixed to Euro €)',
+      group: 'general',
+      validation: (Rule) => Rule.min(0),
     }),
-    defineField({
-      name: 'baths',
-      title: 'Baths',
-      type: 'number',
-    }),
-    defineField({
-      name: 'sqft',
-      title: 'Sq. Ft.',
-      type: 'string',
-    }),
-    defineField({
-      name: 'image',
-      title: 'Primary Image',
-      type: 'image',
-      options: { hotspot: true },
-    }),
-    defineField({
-      name: 'secondaryImage',
-      title: 'Secondary Image (Hover)',
-      type: 'image',
-      options: { hotspot: true },
-    }),
+
+    // ── Status ──
     defineField({
       name: 'status',
       title: 'Status',
@@ -87,34 +93,180 @@ export const property = defineType({
         ],
       },
       initialValue: 'for-sale',
+      group: 'general',
     }),
     defineField({
       name: 'featured',
       title: 'Featured',
       type: 'boolean',
       initialValue: false,
+      group: 'general',
+    }),
+
+    // ── Location ──
+    defineField({
+      name: 'location',
+      title: 'Location',
+      type: 'propertyLocation',
+      group: 'general',
+    }),
+
+    // ── Legacy address field (for backwards compatibility) ──
+    defineField({
+      name: 'address',
+      title: 'Address (Legacy)',
+      type: 'string',
+      description: 'Legacy field — use Location → Full Address instead. Kept for backward compatibility.',
+      group: 'general',
+      hidden: true,
+    }),
+
+    // ═══════════════════════════════════════
+    //  MEDIA
+    // ═══════════════════════════════════════
+    defineField({
+      name: 'image',
+      title: 'Primary Image',
+      type: 'image',
+      description: 'Main image shown on property cards.',
+      options: { hotspot: true },
+      group: 'media',
     }),
     defineField({
-      name: 'seo',
-      title: 'SEO & Social',
-      type: 'seo',
-      group: 'seo',
+      name: 'secondaryImage',
+      title: 'Secondary Image (Hover)',
+      type: 'image',
+      description: 'Image shown on card hover.',
+      options: { hotspot: true },
+      group: 'media',
     }),
-  ],
-  groups: [
-    { name: 'seo', title: 'SEO' },
+    defineField({
+      name: 'gallery',
+      title: 'Photo Gallery',
+      type: 'array',
+      description: 'Property photo gallery for the detail page.',
+      group: 'media',
+      of: [
+        {
+          type: 'image',
+          options: { hotspot: true },
+          fields: [
+            {
+              name: 'alt',
+              type: 'string',
+              title: 'Alt Text',
+            },
+            {
+              name: 'caption',
+              type: 'string',
+              title: 'Caption',
+            },
+          ],
+        },
+      ],
+      options: {
+        layout: 'grid',
+      },
+    }),
+
+    // ═══════════════════════════════════════
+    //  META & FEATURES (Dynamic)
+    // ═══════════════════════════════════════
+    defineField({
+      name: 'meta',
+      title: 'Property Meta',
+      type: 'array',
+      description: 'Dynamic property attributes (beds, baths, sq.ft., amenities, etc.). Select a meta definition and fill in the value.',
+      group: 'meta',
+      of: [
+        {
+          type: 'object',
+          components: {
+            input: MetaValueInput,
+          },
+          fields: [
+            defineField({
+              name: 'metaKey',
+              title: 'Meta Field',
+              type: 'reference',
+              to: [{ type: 'propertyMeta' }],
+              description: 'Select which meta field this value is for.',
+              validation: (Rule) => Rule.required(),
+            }),
+            defineField({
+              name: 'numberValue',
+              title: 'Number Value',
+              type: 'number',
+              description: 'Value for number-type meta fields.',
+            }),
+            defineField({
+              name: 'stringValue',
+              title: 'Text Value',
+              type: 'string',
+              description: 'Value for text-type meta fields.',
+            }),
+            defineField({
+              name: 'booleanValue',
+              title: 'Yes/No Value',
+              type: 'boolean',
+              description: 'Value for boolean-type meta fields.',
+            }),
+          ],
+          preview: {
+            select: {
+              metaKey: 'metaKey.shortLabel.en',
+              numberValue: 'numberValue',
+              stringValue: 'stringValue',
+              booleanValue: 'booleanValue',
+            },
+            prepare({ metaKey, numberValue, stringValue, booleanValue }) {
+              const value = numberValue ?? stringValue ?? (booleanValue !== undefined ? (booleanValue ? 'Yes' : 'No') : '—')
+              return {
+                title: metaKey || 'No meta selected',
+                subtitle: `${value}`,
+              }
+            },
+          },
+        },
+      ],
+    }),
+
+    // ── Legacy fields (kept hidden for backward compatibility) ──
+    defineField({
+      name: 'beds',
+      title: 'Beds (Legacy)',
+      type: 'number',
+      hidden: true,
+    }),
+    defineField({
+      name: 'baths',
+      title: 'Baths (Legacy)',
+      type: 'number',
+      hidden: true,
+    }),
+    defineField({
+      name: 'sqft',
+      title: 'Sq.Ft. (Legacy)',
+      type: 'string',
+      hidden: true,
+    }),
   ],
   preview: {
     select: {
-      title: 'address',
-      subtitle: 'price',
+      title: 'title',
+      address: 'location.fullAddress',
+      legacyAddress: 'address',
+      price: 'price',
+      legacyPrice: 'price',
       media: 'image',
       language: 'language',
     },
-    prepare({ title, subtitle, media, language }) {
+    prepare({ title, address, legacyAddress, price, legacyPrice, media, language }) {
+      const displayTitle = title || address || legacyAddress || 'Untitled Property'
+      const displayPrice = price ? `${price}` : (legacyPrice ? `${legacyPrice}` : '')
       return {
-        title: `${language ? `[${language.toUpperCase()}] ` : ''}${title}`,
-        subtitle,
+        title: `${language ? `[${language.toUpperCase()}] ` : ''}${displayTitle}`,
+        subtitle: displayPrice,
         media,
       }
     },

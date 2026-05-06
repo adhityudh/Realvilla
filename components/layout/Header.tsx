@@ -130,6 +130,15 @@ export default function Header({ settings }: { settings?: any }) {
   useHeaderScrollAnimations(isHome);
 
   const navLinks = settings?.mainNav || NAV_LINKS.map(l => ({ label: l.label, link: l.href }));
+
+  // Check if a nav link is active by comparing against current pathname
+  const isLinkActive = (href: string) => {
+    if (!href || href === '#') return false;
+    // Strip locale prefix and trailing slash from pathname (e.g., /en/buy/ -> /buy)
+    const stripped = pathname.replace(/^\/[a-z]{2}(?=\/|$)/, '').replace(/\/$/, '') || '/';
+    const normalizedHref = href.replace(/\/$/, '') || '/';
+    return stripped === normalizedHref || pathname.replace(/\/$/, '') === normalizedHref;
+  };
   const cta = settings?.headerCta;
 
   return (
@@ -138,7 +147,7 @@ export default function Header({ settings }: { settings?: any }) {
       <div className="mobile-pill-nav">
         {navLinks.map((link: any, i: number) => (
           <span key={link.label} style={{ display: 'contents' }}>
-            <a href={link.link} className="pill-link"><span>{link.label}</span></a>
+            <a href={link.link} className={`pill-link ${isLinkActive(link.link) ? 'active' : ''}`}><span>{link.label}</span></a>
             {i < navLinks.length - 1 && <div className="pill-sep" />}
           </span>
         ))}
@@ -156,7 +165,7 @@ export default function Header({ settings }: { settings?: any }) {
         </a>
         <nav className="header-nav">
           {navLinks.map((link: any) => (
-            <a key={link.label} href={link.link} className="nav-link">{link.label}</a>
+            <a key={link.label} href={link.link} className={`nav-link ${isLinkActive(link.link) ? 'active' : ''}`}>{link.label}</a>
           ))}
         </nav>
         <div className="header-actions">

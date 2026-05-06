@@ -10,6 +10,36 @@ export const SEO_FIELDS = groq`
   }
 `
 
+// Reusable property card projection (for listings, cards, carousels)
+export const PROPERTY_CARD_FIELDS = groq`
+  _id,
+  title,
+  "address": coalesce(location.fullAddress, address),
+  price,
+  status,
+  featured,
+  "slug": slug.current,
+  image { asset->{ _id, url, metadata { lqip, dimensions } } },
+  secondaryImage { asset->{ _id, url, metadata { lqip, dimensions } } },
+  // Legacy fields for backward compat
+  beds,
+  baths,
+  sqft,
+  // New dynamic meta (resolved inline)
+  meta[] {
+    "metaId": metaKey->_id,
+    "shortLabel": coalesce(metaKey->shortLabel[$language], metaKey->shortLabel.en),
+    "valueType": metaKey->valueType,
+    "unit": coalesce(metaKey->unit[$language], metaKey->unit.en),
+    "isHighlighted": metaKey->isHighlighted,
+    "highlightOrder": metaKey->highlightOrder,
+    "icon": metaKey->icon.asset->url,
+    numberValue,
+    stringValue,
+    booleanValue
+  }
+`
+
 export const PAGE_QUERY = groq`
   *[_type == "page" && slug.current == $slug && (language == $language || (!defined(language) && $language == "en"))][0] {
     title,
@@ -85,26 +115,10 @@ export const PAGE_QUERY = groq`
         ),
         "properties": select(
           selectionType == "manual" => manualProperties[]-> {
-            _id,
-            address,
-            price,
-            beds,
-            baths,
-            sqft,
-            status,
-            image { asset->{ _id, url, metadata { lqip, dimensions } } },
-            secondaryImage { asset->{ _id, url, metadata { lqip, dimensions } } }
+            ${PROPERTY_CARD_FIELDS}
           },
           selectionType == "dynamic" || !selectionType => *[_type == "property" && (language == $language || (!defined(language) && $language == "en")) && (showSold == true || status != "sold")] | order(_createdAt desc) [0...10] {
-            _id,
-            address,
-            price,
-            beds,
-            baths,
-            sqft,
-            status,
-            image { asset->{ _id, url, metadata { lqip, dimensions } } },
-            secondaryImage { asset->{ _id, url, metadata { lqip, dimensions } } }
+            ${PROPERTY_CARD_FIELDS}
           }
         )
       },
@@ -242,5 +256,106 @@ export const SETTINGS_QUERY = groq`
         )
       }
     }
+  }
+`
+
+// ─── Property Detail Query ───
+export const PROPERTY_DETAIL_QUERY = groq`
+  *[_type == "property" && slug.current == $slug && (language == $language || (!defined(language) && $language == "en"))][0] {
+    _id,
+    title,
+    subtitle,
+    "address": coalesce(location.fullAddress, address),
+    price,
+    status,
+    featured,
+    "slug": slug.current,
+    description,
+    location {
+      fullAddress,
+      city,
+      state,
+      zip,
+      country,
+      googleMapsUrl,
+      coordinates
+    },
+    image { asset->{ _id, url, metadata { lqip, dimensions } } },
+    secondaryImage { asset->{ _id, url, metadata { lqip, dimensions } } },
+    gallery[] {
+      asset->{ _id, url, metadata { lqip, dimensions } },
+      alt,
+      caption
+    },
+    // Legacy fields
+    beds,
+    baths,
+    sqft,
+    // Dynamic meta
+    meta[] {
+      "metaId": metaKey->_id,
+      "shortLabel": coalesce(metaKey->shortLabel[$language], metaKey->shortLabel.en),
+      "longLabel": coalesce(metaKey->longLabel[$language], metaKey->longLabel.en),
+      "valueType": metaKey->valueType,
+      "unit": coalesce(metaKey->unit[$language], metaKey->unit.en),
+      "category": coalesce(metaKey->category->title[$language], metaKey->category->title.en),
+      "isHighlighted": metaKey->isHighlighted,
+      "highlightOrder": metaKey->highlightOrder,
+      "icon": metaKey->icon.asset->url,
+      numberValue,
+      stringValue,
+      booleanValue
+    },
+    "seo": {
+      "metaTitle": title + " | Realvilla",
+      "metaDescription": pt::text(description),
+      "ogImage": image { asset->{ url } }
+    },
+    "_translations": *[_type == "translation.metadata" && references(^._id)][0].translations[].value->{
+      "language": language,
+      "slug": slug.current
+    }
+  }
+`
+
+// ─── Property Meta Query ───
+// Fetches all meta categories and definitions for building filter UIs
+export const PROPERTY_META_QUERY = groq`
+  {
+    "categories": *[_type == "propertyMetaCategory"] | order(order asc) {
+      _id,
+      "title": coalesce(title[$language], title.en),
+      order
+    },
+    "definitions": *[_type == "propertyMeta"] {
+      _id,
+      "shortLabel": coalesce(shortLabel[$language], shortLabel.en),
+      "longLabel": coalesce(longLabel[$language], longLabel.en),
+      valueType,
+      "unit": coalesce(unit[$language], unit.en),
+      "icon": icon.asset->url,
+      "category": coalesce(category->title[$language], category->title.en),
+      isHighlighted,
+      highlightOrder,
+      filter {
+        isFilterable,
+        filterType,
+        filterOrder,
+        rangeMin,
+        rangeMax,
+        rangeStep,
+        "rangePrefix": coalesce(rangePrefix[$language], rangePrefix.en),
+        "rangeSuffix": coalesce(rangeSuffix[$language], rangeSuffix.en),
+        prefixOptions,
+        selectOptions
+      }
+    }
+  }
+`
+
+// ─── Properties List Query (for /buy page with filtering) ───
+export const PROPERTIES_LIST_QUERY = groq`
+  *[_type == "property" && (language == $language || (!defined(language) && $language == "en")) && status != "sold"] | order(_createdAt desc) {
+    ${PROPERTY_CARD_FIELDS}
   }
 `

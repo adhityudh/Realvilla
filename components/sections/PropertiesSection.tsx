@@ -122,14 +122,26 @@ const PropertyCard = ({ prop }: { prop: any }) => {
         )}
       </div>
       <div className="property-info">
-        <div className="property-price">{prop.price}</div>
+        <div className="property-price">
+          {prop.price ? new Intl.NumberFormat('en-IE', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(prop.price) : 'Price upon request'}
+        </div>
         <h3 className="property-address">{prop.address}</h3>
         <div className="property-details">
-          <span className="detail-item">{prop.beds} BEDS</span>
-          <div className="detail-dot"></div>
-          <span className="detail-item">{prop.baths} BATHS</span>
-          <div className="detail-dot"></div>
-          <span className="detail-item">{prop.sqft} SQ.FT.</span>
+          {prop.meta
+            ?.filter((m: any) => m.isHighlighted)
+            .sort((a: any, b: any) => (a.highlightOrder || 0) - (b.highlightOrder || 0))
+            .slice(0, 3)
+            .map((m: any, i: number, arr: any[]) => {
+              const value = m.numberValue ?? m.stringValue ?? (m.booleanValue ? 'Yes' : 'No');
+              return (
+                <div key={m.metaId || i} style={{ display: 'contents' }}>
+                  <span className="detail-item">
+                    {value} {m.unit || m.shortLabel}
+                  </span>
+                  {i < arr.length - 1 && <div className="detail-dot"></div>}
+                </div>
+              );
+            })}
         </div>
       </div>
     </div>
