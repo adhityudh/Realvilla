@@ -109,38 +109,81 @@ export const propertyMeta = defineType({
           hidden: ({ parent }) => parent?.filterType !== 'rangeSlider',
         }),
         defineField({
+          name: 'useAutomaticMax',
+          title: 'Use Automatic Maximum',
+          type: 'boolean',
+          description: 'If enabled, the slider will automatically use the highest property value from your database as the upper limit.',
+          initialValue: true,
+          hidden: ({ parent }) => parent?.filterType !== 'rangeSlider',
+        }),
+        defineField({
           name: 'rangeMax',
-          title: 'Range Maximum',
+          title: 'Manual Range Maximum',
           type: 'number',
-          hidden: ({ parent }) => parent?.filterType !== 'rangeSlider',
-        }),
-        defineField({
-          name: 'rangeStep',
-          title: 'Range Step',
-          type: 'number',
-          hidden: ({ parent }) => parent?.filterType !== 'rangeSlider',
-        }),
-        defineField({
-          name: 'rangePrefix',
-          title: 'Range Value Prefix',
-          type: 'localizedString',
-          description: 'E.g. "$", "€"',
-          hidden: ({ parent }) => parent?.filterType !== 'rangeSlider',
-        }),
-        defineField({
-          name: 'rangeSuffix',
-          title: 'Range Value Suffix',
-          type: 'localizedString',
-          description: 'E.g. "Sq.Ft.", "m²"',
-          hidden: ({ parent }) => parent?.filterType !== 'rangeSlider',
+          description: 'Specify the maximum value for the slider manually if automatic maximum is disabled.',
+          hidden: ({ parent }) => parent?.filterType !== 'rangeSlider' || parent?.useAutomaticMax === true,
         }),
         defineField({
           name: 'prefixOptions',
-          title: 'Prefix Options',
+          title: 'Prefix / Comparison Options',
           type: 'array',
-          description: 'E.g. "Any", "1+", "2+", "3+", "4+", "5+"',
-          of: [{ type: 'string' }],
+          description: 'Configure choices for this filter with precise matching rules (e.g. "2" means equal to 2, "3+" means greater than or equal to 3).',
           hidden: ({ parent }) => parent?.filterType !== 'prefixRange',
+          of: [
+            {
+              type: 'object',
+              name: 'prefixOptionItem',
+              fields: [
+                defineField({
+                  name: 'label',
+                  title: 'Option Label',
+                  type: 'string',
+                  description: 'The text shown to the user. E.g. "Any", "2", "3+"',
+                  validation: (Rule) => Rule.required(),
+                }),
+                defineField({
+                  name: 'operator',
+                  title: 'Comparison Rule',
+                  type: 'string',
+                  options: {
+                    list: [
+                      { title: 'Equal (==)', value: 'equals' },
+                      { title: 'Greater Than or Equal (>=)', value: 'gte' },
+                      { title: 'Less Than or Equal (<=)', value: 'lte' },
+                    ],
+                    layout: 'radio',
+                  },
+                  initialValue: 'gte',
+                  validation: (Rule) => Rule.required(),
+                }),
+                defineField({
+                  name: 'value',
+                  title: 'Numeric Value',
+                  type: 'number',
+                  description: 'The number to compare against. E.g. 2, 3.',
+                  validation: (Rule) => Rule.required(),
+                }),
+              ],
+              preview: {
+                select: {
+                  label: 'label',
+                  operator: 'operator',
+                  value: 'value',
+                },
+                prepare({ label, operator, value }) {
+                  const opMap: Record<string, string> = {
+                    equals: '==',
+                    gte: '>=',
+                    lte: '<=',
+                  };
+                  return {
+                    title: label || 'Untitled Option',
+                    subtitle: value !== undefined ? `Rule: value ${opMap[operator] || '>='} ${value}` : 'No rule set',
+                  };
+                }
+              }
+            }
+          ]
         }),
         defineField({
           name: 'selectOptions',
