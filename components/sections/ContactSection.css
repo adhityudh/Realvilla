@@ -590,8 +590,7 @@
         width: 110vw;
         height: 110vw;
         transform: translateX(-50%);
-        filter: none;
-        /* Remove heavy 3D shadows for fluid background integration */
+        filter: drop-shadow(-2px -2px 16px rgba(255, 254, 242, 0.42)) drop-shadow(2px 3px 22px rgba(70, 55, 20, 0.35)) drop-shadow(15px 25px 55px rgba(65, 50, 15, 0.26)) drop-shadow(35px 55px 105px rgba(55, 40, 10, 0.15));
         z-index: 1;
     }
 
@@ -607,7 +606,7 @@
         background-position: center center;
         -webkit-mask-position: center center;
         mask-position: center center;
-        opacity: 0.65;
+        opacity: 0.5;
         /* Significantly increased for strong clarity and definition */
         transform: none;
     }
@@ -735,6 +734,5 @@
         height: 120vw;
         top: 25vw;
         transform: translateX(-50%);
-        filter: none;
     }
 }
