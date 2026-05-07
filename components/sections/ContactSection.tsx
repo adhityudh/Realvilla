@@ -121,7 +121,7 @@ export default function ContactSection({ data, dict }: { data?: any, dict?: any 
       '-=0.8'
     ).fromTo(card,
       { y: isMobile ? 120 : 200, opacity: 0, filter: 'blur(10px)' },
-      { y: isMobile ? 144 : 80, opacity: 1, filter: 'blur(0px)', duration: 1.5, ease: 'expo.out' },
+      { y: isMobile ? 180 : 80, opacity: 1, filter: 'blur(0px)', duration: 1.5, ease: 'expo.out' },
       '-=1.2'
     );
 
@@ -198,7 +198,9 @@ export default function ContactSection({ data, dict }: { data?: any, dict?: any 
   return (
     <section className="contact-section" id="contact" ref={sectionRef}>
       <div className="contact-big-logo-wrapper">
-        <div className="contact-single-logo" />
+        <div className="contact-single-logo-container">
+          <div className="contact-single-logo" />
+        </div>
       </div>
       <div className="contact-container">
         <div className="contact-content">
