@@ -19,7 +19,7 @@
     display: flex;
     white-space: nowrap;
     will-change: transform;
-    padding: 40px 0 0 0;
+    padding: 3rem 0 0 0;
 }
 
 .testimonial-item {
@@ -96,7 +96,7 @@
     position: absolute;
     right: 3rem;
     top: 0;
-    width: 45vw;
+    width: calc(50vw - 3rem);
     z-index: 1;
 }
 
@@ -120,7 +120,7 @@
     display: block;
 }
 
-@media (max-width: 1024) {
+@media (max-width: 1024px) {
     .testimonials-section {
         padding: 100px 0 3rem 0;
         margin-top: 5rem;
@@ -130,18 +130,10 @@
         display: block;
         width: 40vw;
         right: 0;
-        top: -60px;
+        top: -64px;
         transform: translateY(-20px);
         opacity: 0.8;
         z-index: 1;
-    }
-
-    .testimonials-title-wrapper {
-        position: relative;
-        z-index: 10;
-        /* Ensure title is above photo if desired, or below if they want true overlap */
-        padding: 0 2rem;
-        margin-bottom: 2rem;
     }
 }
 
@@ -187,14 +179,19 @@
         position: relative;
         left: 0;
         top: 0;
-        padding: 0 2rem;
+        padding: 0 1.5rem;
         max-width: 100%;
+        z-index: 10;
         margin-bottom: 0rem;
     }
 
     .testimonials-title {
         font-size: clamp(2rem, 5.5vw, 4rem);
         max-width: 4ch;
+    }
+
+    .testimonials-ticker {
+        padding: 5rem 0 0 0;
     }
 }
 

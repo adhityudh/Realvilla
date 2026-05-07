@@ -131,7 +131,8 @@ export const PAGE_QUERY = groq`
       },
       _type == "contactSection" => {
         headline,
-        subtitle,
+        formTitle,
+        formSubtitle,
         marketData[] {
           value,
           prefix,

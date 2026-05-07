@@ -42,7 +42,7 @@ export default function ContactSection({ data, dict }: { data?: any, dict?: any 
     back: "Go Back",
     title: "Send us a message",
     subtitle: "We will contact you as soon as possible.",
-    fields: { 
+    fields: {
       name: "Full Name", name_placeholder: "Enter your full name",
       email: "Email Address", email_placeholder: "Enter your email address",
       phone: "Phone Number", phone_placeholder: "Enter your phone number",
@@ -71,7 +71,6 @@ export default function ContactSection({ data, dict }: { data?: any, dict?: any 
   };
 
   const headline = data.headline;
-  const subtitle = data.subtitle;
   const marketData = data.marketData;
   const totalWidth = HEADER_LETTERS.reduce((acc, l) => acc + l.width, 0);
 
@@ -103,8 +102,7 @@ export default function ContactSection({ data, dict }: { data?: any, dict?: any 
       });
     };
     splitText('.contact-headline');
-    splitText('.contact-subtitle');
-    gsap.set('.contact-headline, .contact-subtitle', { opacity: 1 });
+    gsap.set('.contact-headline', { opacity: 1 });
 
     const card = section.querySelector('.contact-card');
     gsap.set(card, { opacity: 0, y: isMobile ? 120 : 200, filter: 'blur(10px)' });
@@ -117,17 +115,13 @@ export default function ContactSection({ data, dict }: { data?: any, dict?: any 
       { yPercent: 100, rotate: 5, filter: 'blur(10px)', opacity: 0 },
       { yPercent: 0, rotate: 0, filter: 'blur(0px)', opacity: 1, duration: 1.2, stagger: 0.08, ease: 'expo.out' },
       '-=0.6'
-    ).fromTo(section.querySelectorAll('.contact-subtitle .word-inner'),
-      { yPercent: 50, opacity: 0, filter: 'blur(5px)' },
-      { yPercent: 0, opacity: 1, filter: 'blur(0px)', duration: 1.0, stagger: 0.02, ease: 'power3.out' },
-      '-=1.0'
     ).fromTo(section.querySelectorAll('.contact-market-item, .contact-market-cta'),
       { y: 30, opacity: 0 },
       { y: 0, opacity: 1, duration: 1, stagger: 0.1, ease: 'expo.out' },
       '-=0.8'
     ).fromTo(card,
       { y: isMobile ? 120 : 200, opacity: 0, filter: 'blur(10px)' },
-      { y: isMobile ? 120 : 144, opacity: 1, filter: 'blur(0px)', duration: 1.5, ease: 'expo.out' },
+      { y: isMobile ? 144 : 80, opacity: 1, filter: 'blur(0px)', duration: 1.5, ease: 'expo.out' },
       '-=1.2'
     );
 
@@ -145,12 +139,12 @@ export default function ContactSection({ data, dict }: { data?: any, dict?: any 
       tl.kill();
       ScrollTrigger.getAll().filter(st => st.trigger === section).forEach(st => st.kill());
     };
-  }, [headline, subtitle]);
+  }, [headline]);
 
   const renderIntentStep = () => (
     <div className="contact-form contact-intent">
-      <h3 className="form-title">{intentDict.title}</h3>
-      <p className="form-subtitle">{intentDict.subtitle}</p>
+      <h3 className="form-title">{data.formTitle || intentDict.title}</h3>
+      <p className="form-subtitle">{data.formSubtitle || intentDict.subtitle}</p>
       <div className="intent-options">
         {intentOptions.map((option) => (
           <button key={option.key} type="button" className="intent-option-btn" onClick={() => handleIntentClick(option.key)}>
@@ -204,45 +198,12 @@ export default function ContactSection({ data, dict }: { data?: any, dict?: any 
   return (
     <section className="contact-section" id="contact" ref={sectionRef}>
       <div className="contact-big-logo-wrapper">
-        <div className="contact-big-logo">
-          {(() => {
-            let currentPos = 0;
-            const displayedLetters = HEADER_LETTERS.slice(0, 5);
-            const totalWidth = displayedLetters.reduce((acc, l) => acc + l.width, 0);
-
-            return displayedLetters.map((letter, i) => {
-              const widthPercent = (letter.width / totalWidth) * 100;
-              // background-position percentage is (offset / (imageWidth - containerWidth)) * 100
-              const posPercent = totalWidth > letter.width
-                ? (currentPos / (totalWidth - letter.width)) * 100
-                : 0;
-
-              const bgSize = (totalWidth / letter.width) * 100;
-
-              const element = (
-                <div
-                  key={i}
-                  className="contact-big-letter"
-                  style={{
-                    width: `${widthPercent}%`,
-                    '--letter-svg': `url(${letter.svg})`,
-                    '--bg-size': `${bgSize}%`,
-                    '--bg-pos': `${posPercent}%`
-                  } as any}
-                />
-              );
-
-              currentPos += letter.width;
-              return element;
-            });
-          })()}
-        </div>
+        <div className="contact-single-logo" />
       </div>
       <div className="contact-container">
         <div className="contact-content">
           <div className="contact-description-area">
             <h2 className="contact-headline">{headline}</h2>
-            <p className="contact-subtitle">{subtitle}</p>
           </div>
           <div className="contact-market-data">
             {marketData?.map((item: any, idx: number) => (
@@ -255,16 +216,7 @@ export default function ContactSection({ data, dict }: { data?: any, dict?: any 
                 <p className="market-data-label">{item.label}</p>
               </div>
             ))}
-            <div className="contact-market-cta">
-              {(data.ctaLabel || data.ctaLink) && (
-                <Button 
-                  label={data.ctaLabel || "Explore Market Insights"} 
-                  href={data.ctaLink || "/market"} 
-                  variant="link" 
-                  className="market-cta-btn" 
-                />
-              )}
-            </div>
+
           </div>
         </div>
         <div className="contact-form-wrapper">

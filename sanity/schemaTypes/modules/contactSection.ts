@@ -11,8 +11,13 @@ export const contactSection = defineType({
       type: 'string',
     }),
     defineField({
-      name: 'subtitle',
-      title: 'Subtitle',
+      name: 'formTitle',
+      title: 'Form Title',
+      type: 'string',
+    }),
+    defineField({
+      name: 'formSubtitle',
+      title: 'Form Subtitle',
       type: 'text',
     }),
     defineField({

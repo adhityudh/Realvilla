@@ -176,7 +176,8 @@
     }
 
     .mortgage-faq-info {
-        display: contents; /* Allows tagline and description to be ordered with title */
+        display: contents;
+        /* Allows tagline and description to be ordered with title */
     }
 
     .mortgage-faq-tagline {
@@ -189,7 +190,6 @@
         order: 2;
         text-align: left;
         width: 100%;
-        font-size: clamp(2.2rem, 8vw, 3.5rem);
         margin-bottom: 1.5rem;
     }
 
