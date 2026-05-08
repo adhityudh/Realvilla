@@ -244,6 +244,14 @@ html.lenis body {
   position: absolute !important;
   inset: 0 !important;
   background: rgba(0, 0, 0, 0.45) !important;
+  overflow: hidden !important;
+}
+
+.global-overlay::before {
+  content: "" !important;
+  position: absolute !important;
+  inset: 0 !important;
   backdrop-filter: blur(15px) !important;
   -webkit-backdrop-filter: blur(15px) !important;
+  pointer-events: none !important;
 }

@@ -188,7 +188,7 @@ export default function FilterSidebar({
 
   return (
     <div className="filter-sidebar-container" ref={sidebarRef} style={{ display: 'none' }}>
-      <div className="filter-sidebar-overlay global-overlay" ref={overlayRef} onClick={handleOverlayClick} />
+      <div className="filter-sidebar-overlay global-overlay" ref={overlayRef} onClick={handleOverlayClick} style={{ backdropFilter: 'blur(15px)', WebkitBackdropFilter: 'blur(15px)' }} />
       
       <div className="filter-sidebar-content" ref={contentRef} data-lenis-prevent="true">
         {/* Header */}

@@ -241,7 +241,7 @@ export default function SearchModal({ isOpen, onClose, dict }: SearchModalProps)
 
   return (
     <div className="search-modal-container" ref={modalRef} style={{ display: 'none' }}>
-      <div className="search-modal-overlay global-overlay" ref={overlayRef} onClick={handleOverlayClick} />
+      <div className="search-modal-overlay global-overlay" ref={overlayRef} onClick={handleOverlayClick} style={{ backdropFilter: 'blur(15px)', WebkitBackdropFilter: 'blur(15px)' }} />
       
       <div className="search-modal-content" ref={contentRef} data-lenis-prevent="true">
         {/* Header Row: Input + Close Button */}
