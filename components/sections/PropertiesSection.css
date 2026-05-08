@@ -140,6 +140,7 @@
     color: var(--text-black);
     text-transform: uppercase;
     opacity: 0.8;
+    letter-spacing: -0.01em;
 }
 
 .property-details {

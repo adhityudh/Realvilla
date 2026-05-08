@@ -63,5 +63,29 @@
       },
       "submit": "EMPEZAR A VENDER"
     }
+  },
+  "filter": {
+    "title": "Filtros de Búsqueda",
+    "subtitle": "Refina tu selección perfecta",
+    "price_range": "Rango de Precios",
+    "up_to": "Hasta",
+    "municipalities": "Municipios (Tenerife)",
+    "select_municipalities": "Seleccionar municipios...",
+    "search_placeholder": "Buscar municipio...",
+    "selected": "Seleccionados",
+    "zones": "Zonas (Tenerife)",
+    "select_zones": "Seleccionar zonas...",
+    "search_zones_placeholder": "Buscar zona...",
+    "no_results": "No se encontraron resultados",
+    "reset_all": "Restablecer Todo",
+    "apply_filters": "Aplicar Filtros"
+  },
+  "search": {
+    "placeholder": "Escribe para buscar propiedades, direcciones...",
+    "trending": "Búsquedas populares",
+    "no_results": "No se encontraron resultados.",
+    "areas_locations": "Zonas y Ubicaciones",
+    "view_all": "Ver todas las propiedades",
+    "matching_properties": "Propiedades coincidentes"
   }
 }

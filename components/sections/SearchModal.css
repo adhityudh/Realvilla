@@ -11,27 +11,42 @@
 .search-modal-overlay {
     position: absolute;
     inset: 0;
-    background: rgba(0, 0, 0, 0.4);
-    backdrop-filter: blur(15px);
+    z-index: 5 !important;
 }
 
 .search-modal-content {
     position: relative;
     width: 100%;
     max-width: 900px;
+    max-height: calc(100vh - 4rem);
     background: #fff;
     border-radius: 32px;
-    padding: 3rem;
     box-shadow: 0 40px 100px rgba(0, 0, 0, 0.2);
     display: flex;
     flex-direction: column;
+    z-index: 100 !important;
+    overflow: hidden;
 }
 
 .search-modal-header-row {
     display: flex;
     align-items: stretch;
     gap: 1rem;
-    margin-bottom: 2.5rem;
+    padding: 2rem 2rem 0 2rem;
+    position: relative;
+    z-index: 15;
+    background: #ffffff;
+}
+
+.search-scroll-gradient {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    height: 40px;
+    background: linear-gradient(to bottom, #ffffff 0%, rgba(255, 255, 255, 0) 100%);
+    pointer-events: none; /* allows clicking elements through the gradient */
+    z-index: 20;
 }
 
 .search-modal-close-new {
@@ -49,15 +64,45 @@
     flex-shrink: 0;
 }
 
+.search-modal-close-new img {
+    filter: brightness(0);
+    transition: filter 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
 .search-modal-close-new:hover {
     background: #111;
     color: #fff;
     transform: rotate(90deg);
 }
 
+.search-modal-close-new:hover img {
+    filter: brightness(1);
+}
+
 .search-modal-body {
     display: flex;
     flex-direction: column;
+    overflow-y: auto;
+    flex: 1;
+    padding: 40px 0 3rem 0;
+}
+
+/* Custom premium scrollbar for modal body */
+.search-modal-body::-webkit-scrollbar {
+    width: 6px;
+}
+
+.search-modal-body::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.search-modal-body::-webkit-scrollbar-thumb {
+    background: #e0e0e0;
+    border-radius: 100px;
+}
+
+.search-modal-body::-webkit-scrollbar-thumb:hover {
+    background: #d4af37;
 }
 
 .search-input-wrapper {
@@ -104,39 +149,118 @@
     color: #ccc;
 }
 
-/* Tab Grouping - Appears below input when searching */
-.search-tabs {
-    display: flex;
-    gap: 2.5rem;
-    margin-bottom: 2.5rem;
-    border-bottom: 1px solid #f0f0f0;
-}
-
-.search-tab {
+.search-input-clear-btn {
     background: none;
     border: none;
-    font-family: var(--font-manrope), sans-serif;
-    font-size: 0.95rem;
-    font-weight: 600;
-    color: #999;
-    padding: 0.75rem 0;
+    padding: 0.5rem;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #888;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+    margin-left: 1rem;
+}
+
+.search-input-clear-btn:hover {
+    background: rgba(0, 0, 0, 0.05);
+    color: #111;
+    transform: scale(1.08);
+}
+
+/* Grouped Result Elements styling */
+.result-item.clickable {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 1.25rem 3rem;
+    /* full flush - 3rem horizontal padding */
+    background: transparent;
+    border: none !important;
+    border-radius: 0;
+    transition: background-color 0.3s ease;
     position: relative;
+    overflow: hidden;
+}
+
+.result-item.clickable:hover {
+    background-color: rgba(0, 0, 0, 0.03) !important;
+}
+
+.result-item-icon {
+    color: #999;
+    flex-shrink: 0;
     transition: color 0.3s ease;
 }
 
-.search-tab.active {
-    color: #111;
+.result-item.clickable:hover .result-item-icon {
+    color: #d4af37;
 }
 
-.search-tab.active::after {
-    content: '';
-    position: absolute;
-    bottom: -1px;
-    left: 0;
-    width: 100%;
-    height: 2px;
+.result-text-block {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    gap: 0.25rem;
+}
+
+.result-title {
+    font-family: var(--font-cormorant), 'Cormorant Garamond', serif;
+    font-size: 1rem;
+    font-weight: 800;
+    color: var(--text-black);
+    text-transform: uppercase;
+    opacity: 0.8;
+    letter-spacing: -0.01em;
+    line-height: 1.24;
+}
+
+.result-subtitle {
+    font-family: var(--font-manrope), sans-serif;
+    font-size: 0.75rem;
+    color: #888;
+    font-weight: 500;
+}
+
+.result-meta-tag {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: #d4af37;
+    background: rgba(212, 175, 55, 0.08);
+    padding: 0.4rem 0.8rem;
+    border-radius: 100px;
+    transition: all 0.3s ease;
+    margin-left: auto; /* automatically align/push to far right */
+}
+
+.result-item.clickable:hover .result-meta-tag {
     background: #d4af37;
+    color: #fff;
+}
+
+.result-price {
+    font-family: var(--font-manrope), sans-serif;
+    font-size: 1rem;
+    color: var(--text-black);
+    letter-spacing: -0.01em;
+    font-weight: 400;
+    /* matching the card's elegant weight */
+}
+
+.search-empty-state {
+    padding: 3rem;
+    text-align: center;
+}
+
+.empty-message {
+    font-family: var(--font-manrope), sans-serif;
+    font-size: 1.05rem;
+    color: #888;
+    font-weight: 500;
 }
 
 /* Suggestion & Result Styles */
@@ -148,6 +272,10 @@
     font-weight: 800;
     color: #bbb;
     margin-bottom: 1.5rem;
+}
+
+.search-suggestions-container {
+    padding: 0 3rem;
 }
 
 .suggestions-list {
@@ -171,6 +299,11 @@
     transition: all 0.3s ease;
 }
 
+.suggestion-item img {
+    filter: brightness(0);
+    transition: filter 0.3s ease;
+}
+
 .suggestion-item:hover {
     background: #fff;
     border-color: #d4af37;
@@ -184,6 +317,7 @@
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
+    padding: 0 3rem;
 }
 
 .loading-shimmer {
@@ -199,6 +333,7 @@
     0% {
         background-position: 200% 0;
     }
+
     100% {
         background-position: -200% 0;
     }
@@ -215,34 +350,33 @@
     letter-spacing: 0.2em;
     font-weight: 800;
     color: #bbb;
-    margin-bottom: 1.25rem;
+    padding: 0 3rem;
+    margin-bottom: 0.5rem;
 }
 
 .result-items {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
 }
 
 .result-item {
-    padding: 1.25rem 1.5rem;
-    background: #fff;
-    border: 1px solid #f0f0f0;
-    border-radius: 16px;
+    padding: 1.25rem 3rem;
+    background: transparent;
+    border: none !important;
+    border-radius: 0;
     font-size: 1rem;
     font-weight: 600;
     color: #111;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: background-color 0.3s ease;
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     align-items: center;
+    gap: 1rem;
 }
 
 .result-item:hover {
-    background: #fdfcfb;
-    border-color: #d4af37;
-    transform: translateX(8px);
+    background-color: rgba(0, 0, 0, 0.03) !important;
 }
 
 .result-meta {
@@ -253,8 +387,9 @@
 
 @media (max-width: 768px) {
     .search-modal-content {
-        padding: 4rem 1.5rem;
+        padding: 0;
         height: 100%;
+        max-height: 100vh;
         border-radius: 0;
     }
 
@@ -263,8 +398,9 @@
     }
 
     .search-modal-header-row {
+        padding: 2rem 1.25rem 0 1.25rem;
         gap: 0.75rem;
-        margin-bottom: 1.5rem;
+        margin-bottom: 0;
     }
 
     .search-modal-close-new {
@@ -297,13 +433,108 @@
         font-size: 0.95rem;
     }
 
-    .search-tabs {
-        gap: 1.5rem;
-        overflow-x: auto;
-        padding-bottom: 1px;
+    /* Recalibrate horizontal margins and paddings for mobile screens */
+    .result-item,
+    .result-item.clickable {
+        padding: 1.25rem 1.5rem;
     }
 
-    .search-tab {
-        flex-shrink: 0;
+    .group-label,
+    .search-suggestions-container,
+    .search-loading-state,
+    .search-empty-state {
+        padding: 0 1.5rem;
     }
+
+    .section-title {
+        padding: 0;
+    }
+
+    .result-item-image-wrapper {
+        width: 80px;
+        height: 60px;
+    }
+
+    .result-item::after,
+    .result-item.clickable::after {
+        left: 1.5rem !important;
+        right: 1.5rem !important;
+    }
+
+    /* Mobile Property Grid - Places Price Above Title */
+    .property-item {
+        display: grid !important;
+        grid-template-columns: 80px 1fr;
+        grid-template-rows: auto auto;
+        align-items: center;
+        gap: 0.15rem 1.25rem !important;
+    }
+
+    .property-item .result-item-image-wrapper {
+        grid-column: 1;
+        grid-row: 1 / span 2;
+        width: 80px;
+        height: 60px;
+    }
+
+    .property-item .result-text-block {
+        grid-column: 2;
+        grid-row: 2;
+    }
+
+    .property-item .result-price {
+        grid-column: 2;
+        grid-row: 1;
+        margin-bottom: 0.15rem;
+        font-size: 0.9rem;
+    }
+}
+
+/* ---- Premium Horizontal Property Card for Search Results ---- */
+.result-item-image-wrapper {
+    position: relative;
+    width: 100px;
+    height: 75px;
+    border-radius: 0 !important;
+    /* sharp corners matching property card */
+    overflow: hidden;
+    background: #f5f5f3;
+    flex-shrink: 0;
+}
+
+.result-item-img {
+    object-fit: cover;
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.result-item.clickable:hover .result-item-img {
+    transform: scale(1.03);
+}
+
+.result-item-image-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ccc;
+    background: #fcfcfc;
+}
+
+/* Restrained bottom divider aligned with the 3rem text margins */
+.result-item::after,
+.result-item.clickable::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 3rem;
+    right: 3rem;
+    height: 1px;
+    background-color: rgba(0, 0, 0, 0.08);
+    transition: background-color 0.3s ease;
+}
+
+.result-item:hover::after,
+.result-item.clickable:hover::after {
+    background-color: rgba(0, 0, 0, 0.16);
 }

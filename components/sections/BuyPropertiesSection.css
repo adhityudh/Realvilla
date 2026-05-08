@@ -149,9 +149,15 @@
     transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.pagination-arrow svg {
+.pagination-arrow svg,
+.pagination-arrow img {
     width: 20px;
     height: 20px;
+}
+
+.pagination-arrow img {
+    filter: brightness(0);
+    transition: filter 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .pagination-arrow:hover:not(:disabled) {
@@ -159,6 +165,10 @@
     background-color: #B8A87D;
     color: #ffffff;
     transform: translateY(-2px);
+}
+
+.pagination-arrow:hover:not(:disabled) img {
+    filter: brightness(1);
 }
 
 .pagination-arrow:disabled {
@@ -244,7 +254,6 @@
 
     .buy-properties-title {
         max-width: 100%;
-        font-size: clamp(1.8rem, 7vw, 4rem);
     }
 
     .buy-properties-filter-btn {

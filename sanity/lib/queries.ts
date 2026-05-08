@@ -21,8 +21,16 @@ export const INTERNAL_LINK_PROJECTION = `select(
 // Reusable property card projection (for listings, cards, carousels)
 export const PROPERTY_CARD_FIELDS = groq`
   _id,
-  title,
-  "address": coalesce(location.fullAddress, address),
+  "title": coalesce(title[$language], title.en, title),
+  "address": coalesce(
+    select(
+      defined(location.complexName) && location.complexName != "" => location.streetAddress + ", " + location.complexName + ", " + location.municipality + ", " + location.postalCode,
+      location.streetAddress + ", " + location.municipality + ", " + location.postalCode
+    ),
+    location.streetAddress,
+    location.municipality,
+    address
+  ),
   price,
   status,
   featured,
@@ -202,6 +210,7 @@ export const SETTINGS_QUERY = groq`
   *[_type == "settings" && (language == $language || (!defined(language) && $language == "en"))][0] {
     ${SEO_FIELDS},
     "favicon": favicon.asset->url,
+    trendingSearches,
     socialLinks[] {
       label,
       "icon": icon.asset->url,
@@ -251,18 +260,25 @@ export const PROPERTY_DETAIL_QUERY = groq`
     _id,
     title,
     subtitle,
-    "address": coalesce(location.fullAddress, address),
+    "address": coalesce(
+      select(
+        defined(location.complexName) && location.complexName != "" => location.streetAddress + ", " + location.complexName + ", " + location.municipality + ", " + location.postalCode,
+        location.streetAddress + ", " + location.municipality + ", " + location.postalCode
+      ),
+      location.streetAddress,
+      location.municipality,
+      address
+    ),
     price,
     status,
     featured,
     "slug": slug.current,
     description,
     location {
-      fullAddress,
-      city,
-      state,
-      zip,
-      country,
+      streetAddress,
+      complexName,
+      municipality,
+      postalCode,
       googleMapsUrl,
       coordinates
     },
@@ -308,6 +324,7 @@ export const PROPERTY_DETAIL_QUERY = groq`
 // Fetches all meta categories and definitions for building filter UIs
 export const PROPERTY_META_QUERY = groq`
   {
+    "maxPrice": math::max(*[_type == "property" && status != "sold"].price),
     "categories": *[_type == "propertyMetaCategory"] | order(order asc) {
       _id,
       "title": coalesce(title[$language], title.en),
@@ -323,11 +340,13 @@ export const PROPERTY_META_QUERY = groq`
       "category": coalesce(category->title[$language], category->title.en),
       isHighlighted,
       highlightOrder,
+      "autoMax": math::max(*[_type == "property" && status != "sold"].meta[metaKey._ref == ^._id || metaKey._ref == "drafts." + ^._id || ^._id == "drafts." + metaKey._ref].numberValue),
       filter {
         isFilterable,
         filterType,
         filterOrder,
         rangeMin,
+        useAutomaticMax,
         rangeMax,
         rangeStep,
         "rangePrefix": coalesce(rangePrefix[$language], rangePrefix.en),

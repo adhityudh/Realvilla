@@ -123,7 +123,9 @@ export default function PropertyCard({ prop, variant = 'default' }: PropertyCard
         <div className="property-price">
           {prop.price ? new Intl.NumberFormat('en-IE', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(prop.price) : 'Price upon request'}
         </div>
-        <h3 className="property-address">{prop.address}</h3>
+        <h3 className="property-address">
+          {prop.title || prop.address}
+        </h3>
         <div className="property-details">
           {prop.meta
             ?.filter((m: any) => m.isHighlighted)

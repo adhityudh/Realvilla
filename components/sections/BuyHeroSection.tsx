@@ -19,9 +19,10 @@ interface BuyHeroSectionProps {
     searchPlaceholder?: string;
     jumpLinks?: Array<{ label: string; link: string }>;
   };
+  dict?: any;
 }
 
-export default function BuyHeroSection({ data }: BuyHeroSectionProps) {
+export default function BuyHeroSection({ data, dict }: BuyHeroSectionProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
@@ -216,6 +217,7 @@ export default function BuyHeroSection({ data }: BuyHeroSectionProps) {
       <SearchModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
+        dict={dict}
       />
     </>
   );

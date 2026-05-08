@@ -238,3 +238,12 @@ html.lenis body {
 .pswp {
   z-index: 9999999 !important;
 }
+
+/* ---- Premium Global Overlay ---- */
+.global-overlay {
+  position: absolute !important;
+  inset: 0 !important;
+  background: rgba(0, 0, 0, 0.45) !important;
+  backdrop-filter: blur(15px) !important;
+  -webkit-backdrop-filter: blur(15px) !important;
+}

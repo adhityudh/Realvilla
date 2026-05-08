@@ -1,4 +1,5 @@
 import { defineField, defineType } from 'sanity'
+import { TENERIFE_MUNICIPALITIES } from '../../../lib/municipalities'
 
 /**
  * Property Location object type.
@@ -16,17 +17,34 @@ export const propertyLocation = defineType({
   fields: [
     // ── Structured Address ──
     defineField({
-      name: 'fullAddress',
-      title: 'Full Address',
+      name: 'complexName',
+      title: 'Complex / Building Name',
       type: 'string',
-      description: 'Complete address as displayed. E.g. "545 Indian Field Road, Greenwich, CT 06830".',
-      validation: (Rule) => Rule.required(),
+      description: 'E.g. Abama Resort, Caleta Palms, Sunset Harbour (Leave blank if individual villa)',
+    }),
+    defineField({
+      name: 'streetAddress',
+      title: 'Street Address',
+      type: 'string',
+      description: 'E.g. Calle Alcojora, No. 12',
     }),
     defineField({
       name: 'municipality',
       title: 'Municipality / City',
       type: 'string',
-      description: 'E.g. Adeje, Arona, Santa Cruz de Tenerife',
+      description: 'Select the municipality in Tenerife.',
+      options: {
+        list: TENERIFE_MUNICIPALITIES.map((mun) => ({ title: mun, value: mun })),
+        layout: 'dropdown'
+      },
+      validation: (Rule) => Rule.required(),
+    }),
+
+    defineField({
+      name: 'postalCode',
+      title: 'Postal Code / ZIP',
+      type: 'string',
+      description: 'E.g. 38679',
     }),
 
     // ── Map Coordinates ──

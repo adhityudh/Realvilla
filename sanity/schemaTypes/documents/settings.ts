@@ -8,6 +8,7 @@ export const settings = defineType({
     { name: 'seo', title: 'SEO' },
     { name: 'header', title: 'Header' },
     { name: 'footer', title: 'Footer' },
+    { name: 'search', title: 'Search' },
   ],
   fields: [
     defineField({
@@ -193,6 +194,15 @@ export const settings = defineType({
           hidden: ({ parent }) => parent?.linkType !== 'external',
         }),
       ],
+    }),
+    defineField({
+      name: 'trendingSearches',
+      title: 'Trending Searches',
+      description: 'The search recommendation/trending terms displayed inside the Search Modal.',
+      type: 'array',
+      group: 'search',
+      of: [{ type: 'string' }],
+      initialValue: ['Villa', 'Adeje', 'Costa Adeje', 'Arona', 'Santa Cruz'],
     }),
     defineField({
       name: 'footer',

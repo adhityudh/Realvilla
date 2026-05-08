@@ -1,0 +1,699 @@
+.filter-sidebar-container {
+    position: fixed;
+    inset: 0;
+    z-index: 999999;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.filter-sidebar-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 5 !important;
+}
+
+.filter-sidebar-content {
+    position: relative;
+    width: 100%;
+    max-width: 480px;
+    height: 100%;
+    background: #ffffff;
+    box-shadow: -15px 0 50px rgba(0, 0, 0, 0.12);
+    display: flex;
+    flex-direction: column;
+    z-index: 100 !important;
+    border-radius: 32px 0 0 32px;
+}
+
+/* Header */
+.filter-sidebar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 2.5rem 2.5rem 2rem 2.5rem;
+    border-bottom: 1px solid #f2f2f2;
+}
+
+.filter-sidebar-title {
+    font-family: var(--font-cormorant), 'Cormorant Garamond', serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #111;
+    margin: 0;
+    letter-spacing: -.01em;
+    text-transform: uppercase;
+    line-height: 1.1;
+}
+
+.filter-sidebar-subtitle {
+    font-family: var(--font-manrope), sans-serif;
+    font-size: 0.85rem;
+    color: #888;
+    margin: 0.5rem 0 0 0;
+    font-weight: 500;
+}
+
+.filter-sidebar-close {
+    background: #f5f5f5;
+    border: none;
+    width: 44px;
+    height: 44px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    color: #111;
+}
+
+.filter-sidebar-close img {
+    filter: brightness(0);
+    transition: filter 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.filter-sidebar-close:hover {
+    background: #111;
+    color: #fff;
+    transform: rotate(90deg);
+}
+
+.filter-sidebar-close:hover img {
+    filter: brightness(1);
+}
+
+/* Scrollable Body */
+.filter-sidebar-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 2.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+}
+
+/* Scrollbar Styles */
+.filter-sidebar-body::-webkit-scrollbar {
+    width: 6px;
+}
+
+.filter-sidebar-body::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.filter-sidebar-body::-webkit-scrollbar-thumb {
+    background: #e0e0e0;
+    border-radius: 100px;
+}
+
+.filter-sidebar-body::-webkit-scrollbar-thumb:hover {
+    background: #d4af37;
+}
+
+/* Filter Groups */
+.filter-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.filter-group-label {
+    font-family: var(--font-manrope), sans-serif;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    font-weight: 800;
+    color: #aaa;
+    margin: 0 0 1.25rem 0;
+}
+
+/* Price Inputs Row */
+.price-inputs-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+}
+
+.price-input-box {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 0;
+    padding: 0;
+    height: 48px;
+    transition: all 0.3s ease;
+}
+
+.price-input-box:focus-within {
+    background: transparent;
+    border-bottom-color: #d4af37;
+    box-shadow: none;
+}
+
+.price-currency {
+    font-family: var(--font-manrope), sans-serif;
+    font-weight: 600;
+    color: #d4af37;
+    margin-right: 0.5rem;
+    font-size: 0.95rem;
+}
+
+.price-input-box input {
+    border: none;
+    background: transparent;
+    outline: none;
+    width: 100%;
+    font-family: var(--font-manrope), sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #111;
+}
+
+.price-divider {
+    color: #ccc;
+    font-weight: 500;
+}
+
+/* Range Sliders */
+.range-slider-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    position: relative;
+    padding-top: 0.5rem;
+}
+
+.range-slider-input {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 20px;
+    background: transparent;
+    outline: none;
+    position: relative;
+    z-index: 5;
+    cursor: pointer;
+    margin: 0;
+}
+
+.range-slider-input::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #ffffff;
+    border: 2px solid #d4af37;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.range-slider-input::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #ffffff;
+    border: 2px solid #d4af37;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.range-slider-input::-webkit-slider-thumb:hover {
+    transform: scale(1.15);
+}
+
+.range-slider-input::-moz-range-thumb:hover {
+    transform: scale(1.15);
+}
+
+.range-track-bar {
+    position: absolute;
+    top: 16px;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: #f0f0f0;
+    border-radius: 10px;
+    z-index: 1;
+}
+
+.range-active-fill {
+    height: 100%;
+    background: #d4af37;
+    border-radius: 10px;
+}
+
+.slider-value-display {
+    font-family: var(--font-manrope), sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #111111;
+    margin-top: 0.25rem;
+}
+
+/* Chips Container */
+.chips-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+}
+
+.filter-chip {
+    background: #f5f5f5;
+    border: 1px solid transparent;
+    border-radius: 100px;
+    padding: 0.55rem 1.15rem;
+    font-family: var(--font-manrope), sans-serif;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #666;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.filter-chip:hover {
+    background: #fff;
+    border-color: #d4af37;
+    color: #111;
+    transform: translateY(-1px);
+}
+
+.filter-chip.active {
+    background: #111;
+    color: #fff;
+    border-color: #111;
+}
+
+/* Split Groups */
+.filter-group-split {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+}
+
+/* Segment Control */
+.segment-control {
+    display: flex;
+    background: #f5f5f5;
+    border-radius: 12px;
+    padding: 0.25rem;
+}
+
+.segment-btn {
+    flex: 1;
+    background: none;
+    border: none;
+    padding: 0.5rem 0;
+    font-family: var(--font-manrope), sans-serif;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #777;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.segment-btn:hover {
+    color: #111;
+}
+
+.segment-btn.active {
+    background: #ffffff;
+    color: #111;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+/* Toggle Switches */
+.toggles-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.toggle-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.25rem 0;
+    cursor: pointer;
+}
+
+.toggle-label {
+    font-family: var(--font-manrope), sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #333;
+}
+
+.toggle-switch-wrapper {
+    position: relative;
+    width: 46px;
+    height: 24px;
+}
+
+.toggle-checkbox {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.toggle-switch-slider {
+    position: absolute;
+    cursor: pointer;
+    inset: 0;
+    background-color: #e2e2e2;
+    transition: .3s;
+    border-radius: 34px;
+}
+
+.toggle-switch-slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: .3s cubic-bezier(0.16, 1, 0.3, 1);
+    border-radius: 50%;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.toggle-checkbox:checked+.toggle-switch-slider {
+    background-color: #d4af37;
+}
+
+.toggle-checkbox:checked+.toggle-switch-slider:before {
+    transform: translateX(22px);
+}
+
+/* Footer Actions */
+.filter-sidebar-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    padding: 1.5rem 2.5rem;
+    border-top: 1px solid #f2f2f2;
+    background: #ffffff;
+}
+
+.filter-reset-btn {
+    background: none;
+    border: none;
+    font-family: var(--font-manrope), sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #888;
+    cursor: pointer;
+    transition: color 0.3s ease;
+    padding: 0.5rem 0;
+}
+
+.filter-reset-btn:hover {
+    color: #111;
+}
+
+.filter-apply-btn {
+    margin: 0;
+    width: auto;
+    flex: 1;
+    justify-content: center;
+}
+
+/* ---- Accordion Municipalities Filter ---- */
+.municipality-accordion-group {
+    background: #ffffff;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    /* slightly more visible border by default */
+    border-radius: 20px;
+    padding: 0;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.015);
+    transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    cursor: pointer;
+}
+
+.municipality-accordion-group:hover {
+    border-color: rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.03);
+}
+
+.municipality-accordion-group:focus-within {
+    border-color: #d4af37;
+    background: #ffffff;
+    transform: none;
+    box-shadow: 0 10px 30px rgba(212, 175, 55, 0.04);
+}
+
+.municipality-accordion-group .filter-group-label {
+    color: #111111;
+    /* fully black/dark text to stand out as clickable */
+    font-size: 0.78rem;
+    margin: 0;
+}
+
+.accordion-trigger {
+    background: none;
+    border: none;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    padding: 1.25rem 1.5rem;
+    border-radius: 20px;
+    outline: none;
+}
+
+.accordion-trigger-left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.accordion-selected-count {
+    font-family: var(--font-manrope), sans-serif;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #d4af37;
+    background: rgba(212, 175, 55, 0.08);
+    padding: 0.25rem 0.6rem;
+    border-radius: 100px;
+}
+
+.accordion-arrow-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #888;
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), color 0.3s ease;
+}
+
+.municipality-accordion-group:hover .accordion-arrow-icon {
+    color: #111111;
+}
+
+.accordion-trigger.active .accordion-arrow-icon {
+    transform: rotate(180deg);
+}
+
+.accordion-content-panel {
+    padding: 0 1rem 1.5rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.accordion-search-box {
+    display: flex;
+    align-items: center;
+    background: #f5f5f3;
+    border-radius: 12px;
+    padding: 0 0.75rem;
+    height: 42px;
+    border: 1px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.accordion-search-box:focus-within {
+    background: #ffffff;
+    border-color: rgba(0, 0, 0, 0.1);
+}
+
+.search-box-icon {
+    color: #999;
+    display: flex;
+    align-items: center;
+    margin-right: 0.5rem;
+}
+
+.accordion-search-box input {
+    background: transparent;
+    border: none;
+    outline: none;
+    flex: 1;
+    font-family: var(--font-manrope), sans-serif;
+    font-size: 0.85rem;
+    color: #111;
+    height: 100%;
+    padding: 0;
+}
+
+.search-box-clear {
+    background: none;
+    border: none;
+    font-size: 1.1rem;
+    color: #888;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
+.search-box-clear:hover {
+    color: #111;
+}
+
+.accordion-options-list {
+    max-height: 240px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding-right: 0.25rem;
+}
+
+/* Custom scrollbar for accordion options */
+.accordion-options-list::-webkit-scrollbar {
+    width: 4px;
+}
+
+.accordion-options-list::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.accordion-options-list::-webkit-scrollbar-thumb {
+    background: #e0e0e0;
+    border-radius: 10px;
+}
+
+.accordion-options-list::-webkit-scrollbar-thumb:hover {
+    background: #d4af37;
+}
+
+.accordion-option-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.65rem 0.5rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.accordion-option-row:hover {
+    background: rgba(0, 0, 0, 0.02);
+}
+
+.accordion-option-row.selected {
+    background: rgba(212, 175, 55, 0.03);
+}
+
+/* Custom premium checkboxes */
+.custom-checkbox-wrapper {
+    position: relative;
+    width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.accordion-checkbox-hidden {
+    opacity: 0;
+    position: absolute;
+    cursor: pointer;
+    inset: 0;
+    z-index: 2;
+    margin: 0;
+}
+
+.custom-checkbox-box {
+    width: 18px;
+    height: 18px;
+    border: 1.5px solid #dcdcdc;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #ffffff;
+    transition: all 0.25s ease;
+}
+
+.accordion-checkbox-hidden:checked+.custom-checkbox-box {
+    background: #111111;
+    border-color: #111111;
+}
+
+.custom-checkbox-box svg {
+    color: #ffffff;
+    transform: scale(0);
+    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.accordion-checkbox-hidden:checked+.custom-checkbox-box svg {
+    transform: scale(1);
+}
+
+.accordion-option-label {
+    font-family: var(--font-manrope), sans-serif;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #444;
+    transition: color 0.2s ease;
+}
+
+.accordion-option-row.selected .accordion-option-label {
+    font-weight: 700;
+    color: #111;
+}
+
+.accordion-empty {
+    text-align: center;
+    padding: 1.5rem 0;
+    font-family: var(--font-manrope), sans-serif;
+    font-size: 0.85rem;
+    color: #888;
+}
+
+/* Responsive */
+@media (max-width: 576px) {
+    .filter-sidebar-content {
+        max-width: 100%;
+        border-radius: 0;
+    }
+
+    .filter-sidebar-header {
+        padding: 2rem 1.5rem;
+    }
+
+    .filter-sidebar-body {
+        padding: 2rem 1.5rem;
+        gap: 2rem;
+    }
+
+    .filter-sidebar-footer {
+        padding: 1.5rem;
+    }
+
+    .filter-group-split {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+}

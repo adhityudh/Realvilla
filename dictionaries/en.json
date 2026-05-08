@@ -63,5 +63,29 @@
       },
       "submit": "START SELLING"
     }
+  },
+  "filter": {
+    "title": "Search Filters",
+    "subtitle": "Refine your perfect selection",
+    "price_range": "Price Range",
+    "up_to": "Up to",
+    "municipalities": "Municipalities (Tenerife)",
+    "select_municipalities": "Select municipalities...",
+    "search_placeholder": "Search municipality...",
+    "selected": "Selected",
+    "zones": "Zones (Tenerife)",
+    "select_zones": "Select zones...",
+    "search_zones_placeholder": "Search zone...",
+    "no_results": "No results found",
+    "reset_all": "Reset All",
+    "apply_filters": "Apply Filters"
+  },
+  "search": {
+    "placeholder": "Type to search properties, addresses...",
+    "trending": "Trending Searches",
+    "no_results": "No results found.",
+    "areas_locations": "Areas & Locations",
+    "view_all": "View All Properties",
+    "matching_properties": "Matching Properties"
   }
 }

@@ -5,8 +5,10 @@ import { usePathname } from 'next/navigation';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { client } from '@/sanity/lib/client';
+import { PROPERTY_META_QUERY, PROPERTY_CARD_FIELDS } from '@/sanity/lib/queries';
 import PropertyCard from '../ui/PropertyCard';
 import SearchModal from './SearchModal';
+import FilterSidebar from './FilterSidebar';
 import './BuyPropertiesSection.css';
 
 if (typeof window !== 'undefined') {
@@ -23,6 +25,21 @@ export default function BuyPropertiesSection({ data, dict }: { data?: any, dict?
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [loading, setLoading] = useState<boolean>(true);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
+  const [filterMeta, setFilterMeta] = useState<any>(null);
+
+  // Filter States
+  const [activeFilters, setActiveFilters] = useState<{
+    priceMin: number;
+    priceMax: number;
+    municipalities: string[];
+    metaFilters: Record<string, any>;
+  }>({
+    priceMin: 0,
+    priceMax: 5000000,
+    municipalities: [],
+    metaFilters: {}
+  });
 
   const title = data?.title || (dict?.properties?.title || 'Exclusive Tenerife Homes');
 
@@ -31,6 +48,28 @@ export default function BuyPropertiesSection({ data, dict }: { data?: any, dict?
     const segments = pathname.split('/');
     return segments[1] || 'en';
   }, [pathname]);
+
+  useEffect(() => {
+    const fetchFilterMeta = async () => {
+      try {
+        const res = await client.fetch(PROPERTY_META_QUERY, { language: locale });
+        setFilterMeta(res);
+      } catch (err) {
+        console.error('Error fetching filter meta:', err);
+      }
+    };
+    fetchFilterMeta();
+  }, [locale]);
+
+  // Sync priceMax once filterMeta loads
+  useEffect(() => {
+    if (filterMeta?.maxPrice !== undefined) {
+      setActiveFilters((prev) => ({
+        ...prev,
+        priceMax: prev.priceMax === 5000000 ? filterMeta.maxPrice : prev.priceMax
+      }));
+    }
+  }, [filterMeta?.maxPrice]);
 
   const [isMobile, setIsMobile] = useState(false);
 
@@ -50,7 +89,7 @@ export default function BuyPropertiesSection({ data, dict }: { data?: any, dict?
     return data?.itemsPerPage || 6;
   }, [isMobile, data]);
 
-  // Fetch properties based on page change
+  // Fetch properties based on page change and filters change
   useEffect(() => {
     let isMounted = true;
     setLoading(true);
@@ -60,7 +99,43 @@ export default function BuyPropertiesSection({ data, dict }: { data?: any, dict?
 
     const fetchProperties = async () => {
       try {
-        const baseFilter = `_type == "property" && (language == $language || (!defined(language) && $language == "en"))${data?.showSold ? "" : " && status != 'sold'"}${data?.selectionType === "manual" ? " && _id in $manualIds" : ""}`;
+        let baseFilter = `_type == "property" && (language == $language || (!defined(language) && $language == "en"))${data?.showSold ? "" : " && status != 'sold'"}${data?.selectionType === "manual" ? " && _id in $manualIds" : ""}`;
+        
+        // Price Range Filter
+        baseFilter += ` && price >= $priceMin && price <= $priceMax`;
+
+        // Municipalities Filter
+        if (activeFilters.municipalities.length > 0) {
+          baseFilter += ` && location.municipality in $municipalities`;
+        }
+
+
+
+        // Dynamic Sanity Metadata Filters
+        Object.entries(activeFilters.metaFilters).forEach(([metaId, val]) => {
+          if (val === undefined || val === '' || (Array.isArray(val) && val.length === 0)) return;
+
+          const def = filterMeta?.definitions?.find((d: any) => d._id === metaId);
+          if (!def) return;
+
+          const type = def.filter?.filterType;
+          if (type === 'boolean' && val === true) {
+            baseFilter += ` && count(meta[metaKey->_id == "${metaId}" && booleanValue == true]) > 0`;
+          } else if (type === 'rangeSlider') {
+            baseFilter += ` && count(meta[metaKey->_id == "${metaId}" && numberValue <= ${val}]) > 0`;
+          } else if (type === 'prefixRange') {
+            const num = parseInt(val);
+            if (!isNaN(num)) {
+              baseFilter += ` && count(meta[metaKey->_id == "${metaId}" && numberValue >= ${num}]) > 0`;
+            }
+          } else if (type === 'select') {
+            baseFilter += ` && count(meta[metaKey->_id == "${metaId}" && stringValue == "${val}"]) > 0`;
+          } else if (type === 'multiSelect' && Array.isArray(val) && val.length > 0) {
+            const joinedOptions = val.map(v => `"${v}"`).join(', ');
+            baseFilter += ` && count(meta[metaKey->_id == "${metaId}" && stringValue in [${joinedOptions}]]) > 0`;
+          }
+        });
+
         let sortOrder = "_createdAt desc";
         if (data?.orderBy === "price desc") {
           sortOrder = "price desc";
@@ -71,31 +146,7 @@ export default function BuyPropertiesSection({ data, dict }: { data?: any, dict?
         const query = `
           {
             "items": *[${baseFilter}] | order(${sortOrder}) [$start...$end] {
-              _id,
-              title,
-              "address": coalesce(location.fullAddress, address),
-              price,
-              status,
-              featured,
-              "slug": slug.current,
-              image { 
-                asset->{ _id, url, metadata { lqip, dimensions } } 
-              },
-              secondaryImage { 
-                asset->{ _id, url, metadata { lqip, dimensions } } 
-              },
-              meta[] {
-                "metaId": metaKey->_id,
-                "shortLabel": coalesce(metaKey->shortLabel[$language], metaKey->shortLabel.en),
-                "valueType": metaKey->valueType,
-                "unit": coalesce(metaKey->unit[$language], metaKey->unit.en),
-                "isHighlighted": metaKey->isHighlighted,
-                "highlightOrder": metaKey->highlightOrder,
-                "icon": metaKey->icon.asset->url,
-                numberValue,
-                stringValue,
-                booleanValue
-              }
+              ${PROPERTY_CARD_FIELDS}
             },
             "total": count(*[${baseFilter}])
           }
@@ -105,7 +156,10 @@ export default function BuyPropertiesSection({ data, dict }: { data?: any, dict?
           language: locale,
           start,
           end,
-          manualIds: data?.manualIds || []
+          manualIds: data?.manualIds || [],
+          priceMin: activeFilters.priceMin,
+          priceMax: activeFilters.priceMax,
+          municipalities: activeFilters.municipalities
         });
 
         if (isMounted) {
@@ -141,7 +195,7 @@ export default function BuyPropertiesSection({ data, dict }: { data?: any, dict?
     return () => {
       isMounted = false;
     };
-  }, [currentPage, locale, itemsPerPage, data?.orderBy, data?.showSold, data?.selectionType, data?.manualIds]);
+  }, [currentPage, locale, itemsPerPage, data?.orderBy, data?.showSold, data?.selectionType, data?.manualIds, activeFilters, filterMeta]);
 
   const totalPages = Math.ceil(totalCount / itemsPerPage);
 
@@ -197,7 +251,7 @@ export default function BuyPropertiesSection({ data, dict }: { data?: any, dict?
         {/* Section Header */}
         <div className="buy-properties-header">
           <h2 className="buy-properties-title">{title}</h2>
-          <button className="buy-properties-filter-btn" onClick={() => setIsModalOpen(true)}>
+          <button className="buy-properties-filter-btn" onClick={() => setIsSidebarOpen(true)}>
             <span>{locale === 'es' ? 'Filtrar' : 'Filter'}</span>
             <img src="/icons/tune.svg" alt="Filter" className="filter-icon" />
           </button>
@@ -231,9 +285,7 @@ export default function BuyPropertiesSection({ data, dict }: { data?: any, dict?
               disabled={currentPage === 1}
               aria-label="Previous Page"
             >
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
-              </svg>
+              <img src="/icons/chevron_backward.svg" alt="Previous" />
             </button>
 
             <div className="pagination-numbers">
@@ -269,15 +321,25 @@ export default function BuyPropertiesSection({ data, dict }: { data?: any, dict?
               disabled={currentPage === totalPages}
               aria-label="Next Page"
             >
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-              </svg>
+              <img src="/icons/chevron_forward.svg" alt="Next" />
             </button>
           </div>
         )}
 
       </div>
-      <SearchModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+      <SearchModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} dict={dict} />
+      <FilterSidebar 
+        isOpen={isSidebarOpen} 
+        onClose={() => setIsSidebarOpen(false)} 
+        locale={locale} 
+        dict={dict} 
+        meta={filterMeta} 
+        activeFilters={activeFilters}
+        onApplyFilters={(filters) => {
+          setActiveFilters(filters);
+          setCurrentPage(1);
+        }}
+      />
     </section>
   );
 }
