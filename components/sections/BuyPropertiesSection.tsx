@@ -82,6 +82,14 @@ export default function BuyPropertiesSection({ data, dict }: { data?: any, dict?
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  useEffect(() => {
+    const handleOpenSidebar = () => {
+      setIsSidebarOpen(true);
+    };
+    window.addEventListener('open-filter-sidebar', handleOpenSidebar);
+    return () => window.removeEventListener('open-filter-sidebar', handleOpenSidebar);
+  }, []);
+
   const itemsPerPage = useMemo(() => {
     if (isMobile && data?.itemsPerPageMobile) {
       return data.itemsPerPageMobile;

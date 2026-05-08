@@ -184,7 +184,11 @@ export default function BuyHeroSection({ data, dict }: BuyHeroSectionProps) {
             </div>
             <div 
               className="buy-filter-btn"
-              onClick={() => setIsModalOpen(true)}
+              onClick={() => {
+                if (typeof window !== 'undefined') {
+                  window.dispatchEvent(new Event('open-filter-sidebar'));
+                }
+              }}
               aria-label="Filter"
               role="button"
             >

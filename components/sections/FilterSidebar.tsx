@@ -136,9 +136,9 @@ export default function FilterSidebar({
       tl.fromTo(overlayRef.current, { opacity: 0 }, { opacity: 1, duration: 0.5, ease: 'power2.out' }, 0);
       tl.fromTo(
         contentRef.current,
-        { x: '100%', filter: 'blur(10px)' },
-        { x: '0%', filter: 'blur(0px)', duration: 0.6, ease: 'expo.out' },
-        0.05
+        { y: 50, opacity: 0, scale: 0.95, filter: 'blur(10px)' },
+        { y: 0, opacity: 1, scale: 1, filter: 'blur(0px)', duration: 0.6, ease: 'expo.out' },
+        0.1
       );
     } else {
       document.body.style.overflow = '';
@@ -148,7 +148,7 @@ export default function FilterSidebar({
           if (sidebarRef.current) sidebarRef.current.style.display = 'none';
         }
       });
-      tl.to(contentRef.current, { x: '100%', filter: 'blur(5px)', duration: 0.4, ease: 'power2.in' });
+      tl.to(contentRef.current, { y: 30, opacity: 0, scale: 0.98, filter: 'blur(5px)', duration: 0.4, ease: 'power2.in' });
       tl.to(overlayRef.current, { opacity: 0, duration: 0.4, ease: 'power2.in' }, 0.1);
     }
   }, [isOpen]);
