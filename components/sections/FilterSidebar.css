@@ -460,11 +460,12 @@
     background: none;
     border: none;
     width: 100%;
+    height: 56px; /* Lock height to 56px to guarantee zero layout jumps when badge is rendered */
     display: flex;
     align-items: center;
     justify-content: space-between;
     cursor: pointer;
-    padding: 1.25rem 1.5rem;
+    padding: 0 1.5rem; /* Horizontal padding only, vertical centering is handled by height + flex */
     border-radius: 20px;
     outline: none;
 }
