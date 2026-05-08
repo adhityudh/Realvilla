@@ -45,7 +45,8 @@
     right: 0;
     height: 40px;
     background: linear-gradient(to bottom, #ffffff 0%, rgba(255, 255, 255, 0) 100%);
-    pointer-events: none; /* allows clicking elements through the gradient */
+    pointer-events: none;
+    /* allows clicking elements through the gradient */
     z-index: 20;
 }
 
@@ -84,7 +85,7 @@
     flex-direction: column;
     overflow-y: auto;
     flex: 1;
-    padding: 40px 0 3rem 0;
+    padding: 2.5rem 0 3rem 0;
 }
 
 /* Custom premium scrollbar for modal body */
@@ -234,7 +235,8 @@
     padding: 0.4rem 0.8rem;
     border-radius: 100px;
     transition: all 0.3s ease;
-    margin-left: auto; /* automatically align/push to far right */
+    margin-left: auto;
+    /* automatically align/push to far right */
 }
 
 .result-item.clickable:hover .result-meta-tag {

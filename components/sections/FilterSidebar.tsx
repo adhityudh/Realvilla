@@ -102,9 +102,13 @@ export default function FilterSidebar({
 
   useEffect(() => {
     if (isAccordionOpen) {
-      setTimeout(() => {
-        searchInputRef.current?.focus();
-      }, 50);
+      // Avoid auto-focusing on mobile devices to prevent the virtual keyboard from jumping up
+      const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+      if (!isMobile) {
+        setTimeout(() => {
+          searchInputRef.current?.focus();
+        }, 50);
+      }
     }
   }, [isAccordionOpen]);
 

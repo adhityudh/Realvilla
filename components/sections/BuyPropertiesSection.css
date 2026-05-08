@@ -254,6 +254,7 @@
 
     .buy-properties-title {
         max-width: 100%;
+        text-align: center;
     }
 
     .buy-properties-filter-btn {
