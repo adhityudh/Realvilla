@@ -279,7 +279,7 @@
     }
 
     .footer-column-title {
-        font-size: var(--text-sm);
+        font-size: var(--text-base-sm);
         padding: 1.5rem 0;
         margin-bottom: 0;
         cursor: pointer;

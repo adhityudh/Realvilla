@@ -302,14 +302,14 @@ export default function BuyPropertiesSection({ data, dict }: { data?: any, dict?
           <h2 className="buy-properties-title">{title}</h2>
           <div className="buy-properties-actions">
             <Button
-              label={dict?.archive?.all_properties}
+              label={isMobile ? (dict?.archive?.view_all_short || "View All") : dict?.archive?.all_properties}
               href={`/${locale}/${locale === 'es' ? 'propiedades' : 'properties'}`}
               variant="dark"
               showArrow={true}
               className="buy-properties-cta"
             />
             <button className="buy-properties-filter-btn btn-pill" onClick={() => setIsSidebarOpen(true)}>
-              <span>{dict?.archive?.filter_button}</span>
+              {!isMobile && <span>{dict?.archive?.filter_button}</span>}
               {activeFiltersCount > 0 && <span className="filter-count-badge">{activeFiltersCount}</span>}
               <img src="/icons/tune.svg" alt="Filter" className="filter-icon btn-icon" />
             </button>

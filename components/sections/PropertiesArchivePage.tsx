@@ -426,8 +426,8 @@ export default function PropertiesArchivePage({ dict }: { dict?: any }) {
     setCurrentPage(pageNum);
 
     // Smooth scroll back to section top
-    if (typeof window !== 'undefined' && (window as any).lenis && scrollContainerRef.current) {
-      (window as any).lenis.scrollTo(scrollContainerRef.current, { offset: -100, duration: 1.2 });
+    if (typeof window !== 'undefined' && (window as any).lenis && sectionRef.current) {
+      (window as any).lenis.scrollTo(sectionRef.current, { offset: -100, duration: 1.2 });
     }
   };
 
