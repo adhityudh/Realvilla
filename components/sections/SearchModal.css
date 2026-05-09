@@ -406,6 +406,10 @@
         width: 64px;
         height: 64px;
     }
+
+    .suggestion-item {
+        padding: .5rem 1rem;
+    }
 }
 
 @media (max-width: 768px) {

@@ -22,7 +22,8 @@
 }
 
 .archive-properties-section .search-input-wrapper {
-    position: relative; /* For suggestions dropdown */
+    position: relative;
+    /* For suggestions dropdown */
     height: 72px !important;
     background: #00000008 !important;
     border: 1px solid transparent !important;
@@ -149,6 +150,7 @@
         opacity: 0;
         transform: translateY(-10px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -185,6 +187,7 @@
     font-weight: var(--fw-medium);
     color: var(--text-black);
 }
+
 .archive-results-header {
     display: flex;
     align-items: center;
@@ -490,6 +493,10 @@
 
     .archive-mobile-filter-btn-container {
         padding: 0.5rem 1.5rem 0 1.5rem;
+    }
+
+    .suggestion-item {
+        padding: .5rem 1rem;
     }
 }
 

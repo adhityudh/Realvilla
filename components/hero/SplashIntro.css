@@ -420,8 +420,15 @@
                 display: none !important;
             }
 
-            .cta-stretch-arrow {
+            .btn-stretch-arrow {
                 display: none !important;
+            }
+
+            .cta-link:hover .btn-stretch-arrow {
+                width: 0 !important;
+                opacity: 0 !important;
+                margin-left: 0 !important;
+                transform: none !important;
             }
 
             .splash-intro {

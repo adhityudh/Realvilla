@@ -269,10 +269,17 @@ function useIntroOrchestrator() {
   const ctx = useRef<gsap.Context | null>(null);
 
   useEffect(() => {
+    // If we've already finished the preloader in this session, don't trigger it again
+    // This prevents the 'stuck' state during SPA navigation back to home
+    if (globalPreloaderFinished) {
+      document.body.classList.remove('preloading');
+      document.body.classList.remove('intro-active');
+      return;
+    }
+
     // Immediate cleanup for SPA navigations
     const existingLogo = document.getElementById('morph-breakout-logo');
     if (existingLogo) existingLogo.remove();
-    document.body.classList.remove('intro-active');
     document.body.classList.add('preloading');
 
     if (!lenis) return;
@@ -314,11 +321,11 @@ function useIntroOrchestrator() {
         const heroEl = document.querySelector('.main-hero') as HTMLElement;
         const logoArea = document.querySelector('.logo-content-area') as HTMLElement;
         const splashIntro = document.querySelector('.splash-intro') as HTMLElement;
-        if (!heroEl || !logoArea || !splashIntro) return;
-        
-        // BATCH READS across components to prevent reflows
-        // We know breakoutLogoSynchronously and getHeroRevealAnimation both read.
-        // Let's call them in order but keep them efficient.
+        if (!heroEl || !logoArea || !splashIntro) {
+          // Safety fallback: if elements are missing, release scroll anyway
+          releaseScroll();
+          return;
+        }
         
         if (!isMobile) breakoutLogoSynchronously(logoArea, splashIntro);
         else gsap.set(logoArea, { opacity: 1, visibility: 'visible' });
@@ -327,10 +334,11 @@ function useIntroOrchestrator() {
         getSplashIntroAnimations(tl, releaseScroll);
         tl.add(() => { initMorph(); }, 1.6);
 
+        // This would only happen if preloader somehow finished before this timer
         if (globalPreloaderFinished) {
           tl.play();
         }
-      }, 50);
+      }, 100); // Slightly longer delay for safer DOM check
 
       const handlePreloaderComplete = () => { tl.play(); };
       window.addEventListener('preloader-complete', handlePreloaderComplete);
@@ -358,11 +366,13 @@ function useIntroOrchestrator() {
         morphSTInstance?.kill();
         const clone = document.getElementById('morph-breakout-logo');
         if (clone) clone.remove();
+        // Crucial: release scroll if we unmount during animation
+        releaseScroll();
       };
     });
 
     return () => ctx.current?.revert();
-  }, [lenis, pathname]); // Re-run on pathname change to ensure fresh start
+  }, [lenis, pathname]); // Re-run on pathname change
 }
 
 export default function SplashIntro({ data, dict }: { data?: any, dict?: any }) {
