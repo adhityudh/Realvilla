@@ -282,8 +282,6 @@
     font-size: var(--text-sm);
     text-transform: uppercase;
     letter-spacing: var(--ls-label);
-    font-weight: var(--fw-extrabold);
-    color: var(--text-faint);
     margin-bottom: 1.5rem;
 }
 

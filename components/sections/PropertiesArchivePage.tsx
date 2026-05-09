@@ -326,7 +326,11 @@ export default function PropertiesArchivePage({ dict }: { dict?: any }) {
         });
 
         if (isMounted) {
-          setProperties(res.items || []);
+          if (currentPage === 1) {
+            setProperties(res.items || []);
+          } else {
+            setProperties(prev => [...prev, ...(res.items || [])]);
+          }
           setTotalCount(res.total || 0);
           setLoading(false);
 
@@ -335,20 +339,31 @@ export default function PropertiesArchivePage({ dict }: { dict?: any }) {
             ScrollTrigger.refresh();
           }, 100);
 
-          // Grid Entrance Animation
+          // Premium Grid Entrance Animation (Only for new items)
           if (gridRef.current && res.items?.length > 0) {
-            const cards = gridRef.current.querySelectorAll('.property-card');
-            gsap.fromTo(
-              cards,
-              { y: 30, opacity: 0 },
-              {
-                y: 0,
-                opacity: 1,
-                duration: 0.8,
-                stagger: 0.08,
-                ease: 'power3.out'
-              }
-            );
+            // Short delay to ensure React has finished rendering the new nodes
+            setTimeout(() => {
+              const allCards = gridRef.current?.querySelectorAll('.property-card');
+              if (!allCards) return;
+
+              const startIndex = (currentPage - 1) * itemsPerPage;
+              const newCards = Array.from(allCards).slice(startIndex);
+
+              gsap.fromTo(
+                newCards,
+                { y: 50, opacity: 0, scale: 0.95, filter: 'blur(15px)' },
+                {
+                  y: 0,
+                  opacity: 1,
+                  scale: 1,
+                  filter: 'blur(0px)',
+                  duration: 1.2,
+                  stagger: 0.1,
+                  ease: 'expo.out',
+                  clearProps: 'filter,transform,opacity'
+                }
+              );
+            }, 100);
           }
         }
       } catch (err) {
@@ -411,13 +426,7 @@ export default function PropertiesArchivePage({ dict }: { dict?: any }) {
   };
 
   const handlePageChange = (pageNum: number) => {
-    if (pageNum < 1 || pageNum > totalPages || pageNum === currentPage) return;
     setCurrentPage(pageNum);
-
-    // Smooth scroll back to section top
-    if (typeof window !== 'undefined' && (window as any).lenis && sectionRef.current) {
-      (window as any).lenis.scrollTo(sectionRef.current, { offset: -100, duration: 1.2 });
-    }
   };
 
   const handleClearFilters = () => {
@@ -571,7 +580,7 @@ export default function PropertiesArchivePage({ dict }: { dict?: any }) {
 
             {/* Properties Grid */}
             <div className="archive-grid-container">
-              {loading ? (
+              {loading && currentPage === 1 ? (
                 <div className="archive-loader">
                   <div className="spinner"></div>
                 </div>
@@ -611,53 +620,16 @@ export default function PropertiesArchivePage({ dict }: { dict?: any }) {
               )}
             </div>
 
-            {/* Pagination Row */}
-            {!loading && totalPages > 1 && (
-              <div className="archive-pagination" ref={paginationRef}>
-                <button
-                  className="pagination-arrow prev"
-                  onClick={() => handlePageChange(currentPage - 1)}
-                  disabled={currentPage === 1}
-                  aria-label="Previous Page"
-                >
-                  <img src="/icons/chevron_backward.svg" alt="Previous" />
-                </button>
-
-                <div className="pagination-numbers">
-                  {isMobile ? (
-                    <span className="pagination-mobile-indicator">
-                      {currentPage} <span style={{ opacity: 0.4, margin: '0 4px' }}>/</span> {totalPages}
-                    </span>
-                  ) : (
-                    getPaginationRange().map((item, idx) => {
-                      if (item === "...") {
-                        return (
-                          <span key={`ellipsis-${idx}`} className="pagination-ellipsis">
-                            ...
-                          </span>
-                        );
-                      }
-                      return (
-                        <button
-                          key={item}
-                          className={`pagination-number ${currentPage === item ? "active" : ""}`}
-                          onClick={() => handlePageChange(item as number)}
-                        >
-                          {item}
-                        </button>
-                      );
-                    })
-                  )}
-                </div>
-
-                <button
-                  className="pagination-arrow next"
+            {/* Load More Row */}
+            {properties.length < totalCount && (
+              <div className="archive-load-more-container">
+                <Button 
+                  label={loading ? (dict?.archive?.loading || "Loading...") : (dict?.archive?.load_more || "Load More")}
                   onClick={() => handlePageChange(currentPage + 1)}
-                  disabled={currentPage === totalPages}
-                  aria-label="Next Page"
-                >
-                  <img src="/icons/chevron_forward.svg" alt="Next" />
-                </button>
+                  variant="dark"
+                  showArrow={false}
+                  className="load-more-btn"
+                />
               </div>
             )}
 

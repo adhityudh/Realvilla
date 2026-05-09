@@ -211,7 +211,6 @@
     font-family: var(--font-manrope), sans-serif;
     font-size: var(--text-sm-plus);
     font-weight: var(--fw-semibold);
-    color: var(--text-muted);
     margin-right: 0.5rem;
 }
 
@@ -264,7 +263,7 @@
 .archive-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 2.5rem 2rem;
+    gap: 4rem 1.5rem;
 }
 
 .archive-empty {
@@ -368,84 +367,17 @@
     }
 }
 
-/* Pagination styles */
-.archive-pagination {
+/* --- Load More --- */
+.archive-load-more-container {
     display: flex;
-    align-items: center;
     justify-content: center;
-    gap: 1.5rem;
-    padding-top: 2rem;
+    padding: 6rem 0 2rem 0;
+    width: 100%;
 }
 
-.pagination-arrow {
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    border: 1px solid rgba(0, 0, 0, 0.08);
-    background: #ffffff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.pagination-arrow:hover:not(:disabled) {
-    border-color: var(--text-black);
-    background: var(--text-black);
-}
-
-.pagination-arrow:hover:not(:disabled) img {
-    filter: brightness(0) invert(1);
-}
-
-.pagination-arrow:disabled {
-    opacity: 0.3;
-    cursor: not-allowed;
-}
-
-.pagination-numbers {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.pagination-number {
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    border: none;
-    background: transparent;
-    font-family: var(--font-manrope), sans-serif;
-    font-size: var(--text-sm-plus);
-    font-weight: var(--fw-bold);
-    color: var(--text-body);
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.pagination-number:hover {
-    background: rgba(0, 0, 0, 0.04);
-    color: var(--text-black);
-}
-
-.pagination-number.active {
-    background: var(--text-black);
-    color: var(--text-white);
-}
-
-.pagination-ellipsis {
-    font-family: var(--font-manrope), sans-serif;
-    font-size: var(--text-sm-plus);
-    color: var(--text-subtle);
-    padding: 0 0.5rem;
-}
-
-.pagination-mobile-indicator {
-    font-family: var(--font-manrope), sans-serif;
-    font-size: var(--text-base-sm);
-    font-weight: var(--fw-bold);
-    color: var(--text-black);
+.load-more-btn {
+    padding: 1.15rem 5rem !important;
+    min-width: 200px;
 }
 
 /* Responsive Overrides */
@@ -497,6 +429,11 @@
 
     .suggestion-item {
         padding: .5rem 1rem;
+    }
+
+    .archive-grid {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 3rem 1.5rem;
     }
 }
 

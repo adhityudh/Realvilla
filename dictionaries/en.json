@@ -106,6 +106,8 @@
     "max": "Max",
     "all_properties": "All Properties",
     "view_all_short": "All Properties",
+    "load_more": "Load More",
+    "loading": "Loading...",
     "other": "Other"
   },
   "valuation": {

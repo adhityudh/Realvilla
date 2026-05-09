@@ -106,6 +106,8 @@
     "max": "Max",
     "all_properties": "Ver todas",
     "view_all_short": "Ver todas",
+    "load_more": "Cargar más",
+    "loading": "Cargando...",
     "other": "Otros"
   },
   "valuation": {

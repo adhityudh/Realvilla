@@ -77,7 +77,7 @@ export default function BuyPropertiesSection({ data, dict }: { data?: any, dict?
 
   useEffect(() => {
     const handleResize = () => {
-      setIsMobile(window.innerWidth <= 768);
+      setIsMobile(window.innerWidth <= 1024);
     };
     handleResize();
     window.addEventListener('resize', handleResize);
