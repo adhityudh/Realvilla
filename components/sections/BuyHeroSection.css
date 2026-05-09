@@ -43,26 +43,26 @@
     width: 100%;
     max-width: 900px;
     padding: 0 3rem;
-    color: #fff;
+    color: var(--text-white);
 }
 
 .buy-hero-title {
     font-family: var(--font-cormorant), serif;
-    font-size: clamp(2rem, 5.5vw, 4rem);
-    font-weight: 800;
+    font-size: var(--text-display-lg);
+    font-weight: var(--fw-extrabold);
     text-transform: uppercase;
-    letter-spacing: -0.01em;
+    letter-spacing: var(--ls-tight);
     margin-bottom: 2rem;
-    line-height: 1.1;
+    line-height: var(--lh-tight);
 }
 
 .buy-hero-subtitle {
     font-family: var(--font-manrope), sans-serif;
-    font-size: 1.1rem;
+    font-size: var(--text-md);
     opacity: 0.8;
     max-width: 600px;
     margin: 0 auto 3rem;
-    line-height: 1.6;
+    line-height: var(--lh-base);
 }
 
 .buy-search-trigger-container {
@@ -107,7 +107,7 @@
     background: rgba(255, 255, 255, 0.15);
     border-color: rgba(255, 255, 255, 0.4);
     transform: translateY(-2px);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    box-shadow: var(--shadow-lg);
 }
 
 .buy-filter-btn {
@@ -137,7 +137,7 @@
     background: rgba(255, 255, 255, 0.15);
     border-color: rgba(255, 255, 255, 0.4);
     transform: translateY(-2px);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    box-shadow: var(--shadow-lg);
 }
 
 .search-icon {
@@ -152,9 +152,9 @@
     background: transparent;
     border: none;
     outline: none;
-    color: #fff;
+    color: var(--text-white);
     width: 100%;
-    font-size: 1.1rem;
+    font-size: var(--text-md);
     cursor: pointer;
     font-family: var(--font-manrope), sans-serif;
 }
@@ -172,7 +172,7 @@
 }
 
 .buy-jump-links .btn-link-styled {
-    font-size: 1rem;
+    font-size: var(--text-base);
 }
 
 .jump-link {
@@ -186,7 +186,7 @@
     }
 
     .buy-hero-title {
-        font-size: clamp(2.5rem, 7vw, 6rem);
+        font-size: var(--text-display-xl);
     }
 
     .buy-jump-links {
@@ -202,8 +202,8 @@
     }
 
     .jump-link {
-        font-size: 1rem !important;
-        letter-spacing: 0.1em !important;
+        font-size: var(--text-base) !important;
+        letter-spacing: var(--ls-wider) !important;
         border-bottom: 1px solid rgba(255, 255, 255, 0.3) !important;
         gap: 0.5rem !important;
     }
@@ -218,6 +218,6 @@
     }
 
     .buy-search-input-mock {
-        font-size: 0.95rem;
+        font-size: var(--text-base);
     }
 }

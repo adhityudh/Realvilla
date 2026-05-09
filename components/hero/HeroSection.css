@@ -9,7 +9,7 @@
             overflow: hidden;
             margin-bottom: 5rem;
             /* Premium gold gradient fallback matching the reference image */
-            background: radial-gradient(circle at 50% 45%, #d6cbb1 0%, #D1C39B 100%);
+            background: radial-gradient(circle at 50% 45%, #d6cbb1 0%, var(--color-gold-light) 100%);
         }
 
         @media (max-width: 1024px) {

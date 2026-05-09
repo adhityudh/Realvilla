@@ -12,18 +12,26 @@ export const propertyMetaCategory = defineType({
       description: 'Category name (e.g., Interior, Exterior, Details).',
     }),
     defineField({
-      name: 'order',
-      title: 'Display Order',
+      name: 'filterGroupDisplayOrder',
+      title: 'Filter Group Display Order',
       type: 'number',
+      description: 'The order in which this category group appears in the filter sidebar (lower numbers appear first).',
       initialValue: 0,
+    }),
+    defineField({
+      name: 'ungroupFilters',
+      title: 'Ungroup Filters',
+      type: 'boolean',
+      description: 'If checked, all Property Metas related to this category will be displayed individually as standalone filters, instead of being grouped inside an accordion.',
+      initialValue: false,
     }),
   ],
   preview: {
-    select: { title: 'title.en', order: 'order' },
+    select: { title: 'title.en', order: 'filterGroupDisplayOrder' },
     prepare({ title, order }) {
       return {
         title: title || 'Untitled Category',
-        subtitle: `Order: ${order ?? 0}`
+        subtitle: `Filter Order: ${order ?? 0}`
       }
     },
   },

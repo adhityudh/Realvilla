@@ -120,7 +120,7 @@ export default function ValuationSection({ data, dict }: { data?: any, dict?: an
                 }}
               >
                 <div className="loader-shimmer"></div>
-                <p style={{ marginTop: '1rem', fontSize: '0.75rem', letterSpacing: '0.1em' }}>Loading Valuation Tool...</p>
+                <p style={{ marginTop: '1rem', fontSize: '0.75rem', letterSpacing: '0.1em' }}>{dict?.valuation?.loading}</p>
               </div>
 
               {iframeSrc && (

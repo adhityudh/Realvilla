@@ -234,8 +234,9 @@ export default function SearchModal({ isOpen, onClose, dict }: SearchModalProps)
   };
 
   const handleMunicipalityClick = (mun: string) => {
-    // Navigate to buy list with municipality search filter
-    router.push(`/${locale}/buy?municipality=${encodeURIComponent(mun)}`);
+    // Navigate to properties list with municipality search filter
+    const targetPath = locale === 'es' ? 'propiedades' : 'properties';
+    router.push(`/${locale}/${targetPath}?search=${encodeURIComponent(mun)}`);
     onClose();
   };
 

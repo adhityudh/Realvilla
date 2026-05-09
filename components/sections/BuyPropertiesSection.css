@@ -1,6 +1,6 @@
 .buy-properties-section {
     background-color: var(--bg-white);
-    color: #111111;
+    color: var(--text-black);
     padding: 2.5rem 0 5rem 0;
     position: relative;
     overflow: hidden;
@@ -9,7 +9,6 @@
 .buy-properties-wrapper {
     width: 100%;
     padding: 0 3rem;
-    max-width: 1500px;
     margin: 0 auto;
 }
 
@@ -24,54 +23,56 @@
 
 .buy-properties-title {
     font-family: var(--font-cormorant), serif;
-    font-size: clamp(2rem, 5.5vw, 3rem);
-    font-weight: 300;
-    line-height: 1.1;
+    font-size: var(--text-display-md);
+    font-weight: var(--fw-light);
+    line-height: var(--lh-tight);
+    letter-spacing: var(--ls-tight);
     text-transform: uppercase;
-    letter-spacing: -0.01em;
     max-width: 55%;
     text-align: left;
     margin: 0;
 }
 
-.buy-properties-filter-btn {
-    background: transparent;
-    border: 1px solid rgba(0, 0, 0, 0.15);
-    padding: 0.85rem 2rem;
-    border-radius: 50px;
-    font-family: var(--font-manrope), sans-serif;
-    font-size: 0.8rem;
-    font-weight: 700;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: #111111;
+.buy-properties-actions {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
-    cursor: pointer;
-    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    gap: 1.5rem;
     align-self: flex-end;
+}
+
+.buy-properties-actions .buy-properties-cta,
+.buy-properties-filter-btn {
+    height: 48px;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-sizing: border-box;
+}
+
+.buy-properties-filter-btn {
+    background: transparent;
+    border: 1px solid var(--border-strong);
+    color: var(--text-black);
+}
+
+.buy-properties-filter-btn:hover {
+    background: var(--text-black) !important;
+    color: var(--text-white) !important;
+    border-color: var(--text-black) !important;
 }
 
 .buy-properties-filter-btn .filter-icon {
     width: 18px;
     height: 18px;
     filter: invert(1);
-    /* Inverts white SVG into black for white theme compatibility */
     transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.buy-properties-filter-btn:hover {
-    background: #111111;
-    color: #ffffff;
-    border-color: #111111;
-    transform: translateY(-2px);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
 }
 
 .buy-properties-filter-btn:hover .filter-icon {
     filter: none;
-    /* Reverts back to beautiful white SVG on dark hover state */
     transform: rotate(90deg);
 }
 
@@ -84,7 +85,7 @@
 
 .buy-properties-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
     gap: 4rem 1.5rem;
     padding-bottom: 5rem;
 }
@@ -103,8 +104,8 @@
 .spinner {
     width: 40px;
     height: 40px;
-    border: 2px solid rgba(184, 168, 125, 0.2);
-    border-top: 2px solid #B8A87D;
+    border: 2px solid var(--color-gold-bg);
+    border-top: 2px solid var(--color-gold-dark);
     border-radius: 50%;
     animation: spin 1s linear infinite;
 }
@@ -120,11 +121,11 @@
 }
 
 .buy-properties-empty {
-    text-align: center;
-    padding: 6rem 0;
     font-family: var(--font-cormorant), serif;
-    font-size: 1.5rem;
-    color: #888888;
+    font-size: var(--text-display-sm);
+    text-align: center;
+    color: var(--text-subtle);
+    padding: 6rem 1.5rem;
 }
 
 /* Premium Pagination */
@@ -136,17 +137,17 @@
 }
 
 .pagination-arrow {
-    background: transparent;
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    width: 50px;
-    height: 50px;
+    width: 48px;
+    height: 48px;
     border-radius: 50%;
+    border: 1px solid var(--border-light);
+    background: var(--bg-surface);
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    color: #111111;
-    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: all 0.3s ease;
+    color: var(--text-black);
 }
 
 .pagination-arrow svg,
@@ -161,9 +162,9 @@
 }
 
 .pagination-arrow:hover:not(:disabled) {
-    border-color: #B8A87D;
-    background-color: #B8A87D;
-    color: #ffffff;
+    border-color: var(--color-gold-dark);
+    background-color: var(--color-gold-dark);
+    color: var(--text-white);
     transform: translateY(-2px);
 }
 
@@ -182,55 +183,44 @@
 }
 
 .pagination-number {
-    background: transparent;
-    border: 1px solid transparent;
-    width: 50px;
-    height: 50px;
+    width: 44px;
+    height: 44px;
     border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    border: 1px solid var(--border-light);
+    background: transparent;
     font-family: var(--font-manrope), sans-serif;
-    font-size: 0.9rem;
-    font-weight: 600;
+    font-size: var(--text-base-sm);
+    font-weight: var(--fw-semibold);
+    color: var(--text-black);
     cursor: pointer;
-    color: #111111;
-    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: all 0.3s ease;
 }
 
 .pagination-number:hover {
-    border-color: rgba(184, 168, 125, 0.3);
-    color: #B8A87D;
+    border-color: rgba(200, 180, 138, 0.3);
+    color: var(--color-gold-dark);
 }
 
 .pagination-number.active {
-    background-color: #B8A87D;
-    border-color: #B8A87D;
-    color: #ffffff;
+    background-color: var(--color-gold-dark);
+    border-color: var(--color-gold-dark);
+    color: var(--text-white);
 }
 
 .pagination-ellipsis {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 50px;
-    height: 50px;
-    font-size: 1rem;
-    font-weight: 600;
-    color: rgba(0, 0, 0, 0.4);
     font-family: var(--font-manrope), sans-serif;
-    user-select: none;
+    font-size: var(--text-base);
+    font-weight: var(--fw-semibold);
+    color: rgba(0, 0, 0, 0.4);
+    letter-spacing: var(--ls-normal);
 }
 
 .pagination-mobile-indicator {
-    display: flex;
-    align-items: center;
-    justify-content: center;
     font-family: var(--font-manrope), sans-serif;
-    font-size: 1rem;
-    font-weight: 700;
-    color: #111111;
-    letter-spacing: 0.1em;
+    font-size: var(--text-base);
+    font-weight: var(--fw-bold);
+    color: var(--text-black);
+    letter-spacing: var(--ls-wider);
     padding: 0 1rem;
     user-select: none;
 }
@@ -257,12 +247,20 @@
         text-align: center;
     }
 
-    .buy-properties-filter-btn {
+    .buy-properties-actions {
         align-self: unset;
+        flex-direction: column;
+        width: 100%;
+        gap: 1rem;
+    }
+
+    .buy-properties-filter-btn {
+        width: 100%;
+        justify-content: center;
     }
 
     .buy-properties-grid {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
         gap: 3rem 1.5rem;
         padding-bottom: 4rem;
     }
@@ -270,8 +268,7 @@
 
 @media (max-width: 768px) {
     .buy-properties-grid {
-        grid-template-columns: 1fr;
-        gap: 3rem;
+        gap: 3rem 1.5rem;
         padding-bottom: 3rem;
     }
 
@@ -284,6 +281,12 @@
 
     .buy-pagination {
         gap: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .buy-properties-grid {
+        grid-template-columns: 1fr;
     }
 }
 

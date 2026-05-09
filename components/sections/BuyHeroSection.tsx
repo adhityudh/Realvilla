@@ -27,7 +27,7 @@ export default function BuyHeroSection({ data, dict }: BuyHeroSectionProps) {
   const sectionRef = useRef<HTMLElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const [placeholderText, setPlaceholderText] = useState('');
-  const fullPlaceholder = data.searchPlaceholder || "Search by Property Name, location, or Municipalities...";
+  const fullPlaceholder = data.searchPlaceholder || dict?.hero?.search_placeholder;
 
   useEffect(() => {
     if (!contentRef.current || !sectionRef.current) return;
@@ -119,29 +119,37 @@ export default function BuyHeroSection({ data, dict }: BuyHeroSectionProps) {
 
     const st = ScrollTrigger.create({
       trigger: sectionRef.current,
-      start: 'top 50px',
-      end: 'bottom 50px',
-      onEnter: () => {
-        document.body.classList.add('header-light-mode');
-        document.body.classList.add('header-black-bg');
+      start: 'top top',
+      end: 'bottom top',
+      onToggle: (self) => {
+        if (self.isActive) {
+          document.body.classList.remove('header-dark-mode');
+          document.body.classList.add('header-light-mode');
+          document.body.classList.add('header-black-bg');
+        } else {
+          document.body.classList.remove('header-light-mode');
+          document.body.classList.remove('header-black-bg');
+          // Only add dark mode if we've scrolled past the hero (self.progress === 1)
+          if (self.progress === 1) {
+            document.body.classList.add('header-dark-mode');
+          }
+        }
       },
-      onLeave: () => {
-        document.body.classList.remove('header-light-mode');
-        document.body.classList.remove('header-black-bg');
-      },
-      onEnterBack: () => {
-        document.body.classList.add('header-light-mode');
-        document.body.classList.add('header-black-bg');
-      },
-      onLeaveBack: () => {
-        document.body.classList.remove('header-light-mode');
-        document.body.classList.remove('header-black-bg');
-      },
+      // Ensure it checks state immediately on creation
+      onRefresh: (self) => {
+        if (self.isActive) {
+          document.body.classList.remove('header-dark-mode');
+          document.body.classList.add('header-light-mode');
+          document.body.classList.add('header-black-bg');
+        }
+      }
     });
 
     return () => {
       st.kill();
       clearTimeout(typingTimeout);
+      document.body.classList.remove('header-light-mode');
+      document.body.classList.remove('header-black-bg');
     };
   }, [fullPlaceholder]);
 
@@ -160,7 +168,7 @@ export default function BuyHeroSection({ data, dict }: BuyHeroSectionProps) {
         </div>
 
         <div className="buy-hero-content" ref={contentRef}>
-          <h1 className="buy-hero-title">{data.title || 'Find Your Perfect Home'}</h1>
+          <h1 className="buy-hero-title">{data.title || dict?.hero?.title}</h1>
 
           <div className="buy-search-trigger-container">
             <div

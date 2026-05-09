@@ -325,10 +325,11 @@ export const PROPERTY_DETAIL_QUERY = groq`
 export const PROPERTY_META_QUERY = groq`
   {
     "maxPrice": math::max(*[_type == "property" && status != "sold"].price),
-    "categories": *[_type == "propertyMetaCategory"] | order(order asc) {
+    "categories": *[_type == "propertyMetaCategory"] | order(filterGroupDisplayOrder asc) {
       _id,
       "title": coalesce(title[$language], title.en),
-      order
+      filterGroupDisplayOrder,
+      ungroupFilters
     },
     "definitions": *[_type == "propertyMeta"] {
       _id,
@@ -345,13 +346,19 @@ export const PROPERTY_META_QUERY = groq`
         isFilterable,
         filterType,
         filterOrder,
+        isDoubleSlider,
         rangeMin,
         useAutomaticMax,
         rangeMax,
         rangeStep,
         "rangePrefix": coalesce(rangePrefix[$language], rangePrefix.en),
         "rangeSuffix": coalesce(rangeSuffix[$language], rangeSuffix.en),
-        prefixOptions,
+        prefixOptions[] {
+          label,
+          isAny,
+          operator,
+          value
+        },
         selectOptions
       }
     }

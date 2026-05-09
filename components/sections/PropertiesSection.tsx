@@ -126,7 +126,7 @@ const PropertiesSection = ({ data, dict }: { data?: any, dict?: any }) => {
 
         <div className="properties-grid" ref={gridRef}>
           {propertiesList?.map((prop: any, idx: number) => (
-            <PropertyCard key={prop._key || idx} prop={prop} />
+            <PropertyCard key={prop._key || idx} prop={prop} dict={dict} />
           ))}
         </div>
 

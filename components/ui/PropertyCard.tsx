@@ -2,6 +2,7 @@
 
 import { useRef } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import gsap from 'gsap';
 import { urlForImage } from '@/sanity/lib/image';
 
@@ -10,7 +11,7 @@ export interface PropertyCardProps {
   variant?: 'default' | 'seamless';
 }
 
-export default function PropertyCard({ prop, variant = 'default' }: PropertyCardProps) {
+export default function PropertyCard({ prop, variant = 'default', dict }: { prop: any, variant?: 'default' | 'seamless', dict?: any }) {
   const secondaryImgRef = useRef<HTMLImageElement>(null);
   const hoverTl = useRef<gsap.core.Timeline | null>(null);
 
@@ -88,7 +89,7 @@ export default function PropertyCard({ prop, variant = 'default' }: PropertyCard
   };
 
   return (
-    <div className={`property-card ${variant === 'seamless' ? 'property-card-seamless' : ''}`} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+    <Link href={`/${prop.language || 'en'}/properties/${prop.slug}`} className={`property-card ${variant === 'seamless' ? 'property-card-seamless' : ''}`} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} style={{ display: 'block', textDecoration: 'none' }}>
       <div className="property-image-wrapper">
         <Image 
           src={primarySrc} 
@@ -115,13 +116,13 @@ export default function PropertyCard({ prop, variant = 'default' }: PropertyCard
               objectFit: 'cover',
               WebkitMaskImage: 'linear-gradient(transparent, transparent)', 
               maskImage: 'linear-gradient(transparent, transparent)' 
-            }}
+              }}
           />
         )}
       </div>
       <div className="property-info">
         <div className="property-price">
-          {prop.price ? new Intl.NumberFormat('en-IE', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(prop.price) : 'Price upon request'}
+          {prop.price ? new Intl.NumberFormat('en-IE', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(prop.price) : dict?.properties?.price_upon_request}
         </div>
         <h3 className="property-address">
           {prop.title || prop.address}
@@ -144,6 +145,6 @@ export default function PropertyCard({ prop, variant = 'default' }: PropertyCard
             })}
         </div>
       </div>
-    </div>
+    </Link>
   );
 }

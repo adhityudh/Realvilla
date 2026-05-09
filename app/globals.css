@@ -1,7 +1,114 @@
 :root {
+  /* ================================================
+     CORE PALETTE
+  ================================================ */
   --bg-white: #fdfcfb;
+  --bg-surface: #ffffff;
+  --bg-muted: #f5f5f5;
+  --bg-subtle: #f0f0f0;
+
   --text-black: #111111;
-  --text-gold: #D1C39B;
+  --text-dark: #333333;
+  --text-body: #444444;
+  --text-muted: #666666;
+  --text-subtle: #888888;
+  --text-faint: #aaaaaa;
+  --text-placeholder: #cccccc;
+  --text-white: #ffffff;
+
+  /* Gold — single source of truth */
+  --color-gold: #C8B48A;
+  --color-gold-light: #D1C39B;   /* backgrounds, section fills */
+  --color-gold-dark: #B8A87D;    /* borders, accents on white */
+  --color-gold-hover: #d4af37;   /* interactive gold on hover */
+  --color-gold-bg: rgba(200, 180, 138, 0.08);
+
+  /* Dividers & borders */
+  --border-subtle: rgba(0, 0, 0, 0.06);
+  --border-light: rgba(0, 0, 0, 0.08);
+  --border-base: rgba(0, 0, 0, 0.12);
+  --border-strong: rgba(0, 0, 0, 0.15);
+
+  /* ================================================
+     TYPOGRAPHY
+  ================================================ */
+
+  /* Font sizes — body scale */
+  --text-3xs: 0.45rem;    /*  7px — smallest caption */
+  --text-2xs: 0.55rem;    /*  9px — micro profile text */
+  --text-xs: 0.625rem;    /* 10px — reviewer-title, profile-creds */
+  --text-sm: 0.75rem;     /* 12px — labels, taglines, tags */
+  --text-sm-plus: 0.85rem; /* 14px — small UI text, footer nav, misc */
+  --text-base-sm: 0.9rem;  /* 14.4px — compact body, faq index */
+  --text-base: 1rem;      /* 16px — body text, card info */
+  --text-md: 1.1rem;      /* 17.6px — sub-copy, subtitles */
+  --text-lg: 1.25rem;     /* 20px — nav links, profile name */
+
+  /* Font sizes — display scale */
+  --text-display-xs: clamp(1.4rem, 2.5vw, 1.8rem);
+  --text-display-sm: clamp(1.8rem, 3.5vw, 2.5rem);
+  --text-display-md: clamp(2rem, 5.5vw, 3rem);
+  --text-display-lg: clamp(2rem, 5.5vw, 4rem);
+  --text-display-xl: clamp(2.5rem, 7vw, 6rem);
+
+  /* Font weights */
+  --fw-light: 300;
+  --fw-regular: 400;
+  --fw-medium: 500;
+  --fw-semibold: 600;
+  --fw-bold: 700;
+  --fw-extrabold: 800;
+
+  /* Line heights */
+  --lh-ultra: 0.9;
+  --lh-none: 1;
+  --lh-tight: 1.1;
+  --lh-snug: 1.2;
+  --lh-base: 1.6;
+  --lh-relaxed: 1.7;
+
+  /* Letter spacing */
+  --ls-tighter: -0.03em;
+  --ls-tight: -0.01em;
+  --ls-normal: 0;
+  --ls-wide: 0.05em;
+  --ls-wider: 0.1em;
+  --ls-widest: 0.15em;
+  --ls-label: 0.2em;      /* buttons, pill text */
+  --ls-tagline: 0.3em;    /* section taglines */
+
+  /* ================================================
+     SHADOWS
+  ================================================ */
+  --shadow-xs: 0 2px 5px rgba(0, 0, 0, 0.08);
+  --shadow-sm: 0 4px 15px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 8px 25px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 15px 40px rgba(0, 0, 0, 0.10);
+  --shadow-xl: 0 30px 70px rgba(0, 0, 0, 0.10);
+  --shadow-modal: 0 40px 100px rgba(0, 0, 0, 0.18);
+
+  /* hover elevations */
+  --shadow-sm-hover: 0 8px 25px rgba(0, 0, 0, 0.10);
+  --shadow-md-hover: 0 12px 30px rgba(0, 0, 0, 0.12);
+
+  /* ================================================
+     BORDER RADIUS
+  ================================================ */
+  --radius-xs: 5px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-2xl: 24px;
+  --radius-3xl: 32px;
+  --radius-full: 9999px;
+
+  /* ================================================
+     EASING
+  ================================================ */
+  --ease-smooth: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-gentle: cubic-bezier(0.19, 1, 0.22, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 * {
@@ -106,28 +213,48 @@ html.lenis body {
   align-items: center;
   gap: 0.75rem;
   padding: 0.75rem 1.75rem;
-  background-color: var(--btn-bg, #ffffff);
-  color: var(--btn-text, #000000);
+  background-color: var(--btn-bg, var(--bg-surface));
+  color: var(--btn-text, var(--text-black));
   border: none;
   outline: none;
-  border-radius: 50px;
-  font-size: 0.75rem;
-  font-weight: 800;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  font-size: var(--text-sm);
+  font-weight: var(--fw-extrabold);
   text-transform: uppercase;
-  letter-spacing: 0.2em;
+  letter-spacing: var(--ls-label);
   text-decoration: none;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1),
-    background-color 0.6s cubic-bezier(0.16, 1, 0.3, 1),
-    color 0.6s cubic-bezier(0.16, 1, 0.3, 1),
-    box-shadow 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.6s var(--ease-smooth),
+    background-color 0.6s var(--ease-smooth),
+    color 0.6s var(--ease-smooth),
+    box-shadow 0.6s var(--ease-smooth);
   font-family: var(--font-cormorant), 'Cormorant Garamond', serif;
 }
 
+.filter-count-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-gold);
+  color: var(--text-white);
+  font-family: var(--font-manrope), sans-serif;
+  font-size: 10px;
+  font-weight: 800;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  margin-left: -0.25rem;
+  margin-right: -0.15rem;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 1;
+}
+
 .btn-pill:hover {
-  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-md-hover);
 }
 
 .btn-pill::before {
@@ -140,11 +267,11 @@ html.lenis body {
   background: linear-gradient(90deg,
       transparent,
       rgba(255, 255, 255, 0.2),
-      rgba(188, 175, 139, 0.5),
+      rgba(200, 180, 138, 0.5),
       rgba(255, 255, 255, 0.2),
       transparent);
   transform: skewX(-25deg);
-  transition: left 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: left 0.8s var(--ease-smooth);
 }
 
 .btn-pill:hover::before {
@@ -156,10 +283,10 @@ html.lenis body {
   align-items: center;
   gap: 0.75rem;
   text-decoration: none;
-  color: var(--btn-link-color, #ffffff);
-  font-size: 1.25rem;
-  font-weight: 700;
-  letter-spacing: 0.2em;
+  color: var(--btn-link-color, var(--text-white));
+  font-size: var(--text-lg);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--ls-label);
   text-transform: uppercase;
   padding-bottom: 6px;
   text-align: center;
@@ -209,12 +336,12 @@ html.lenis body {
 /* Service CTA override (outline variant) */
 .service-cta {
   background-color: transparent;
-  border: 1px solid rgba(17, 17, 17, 0.15);
+  border: 1px solid var(--border-strong);
 }
 
 .service-cta:hover {
-  border-color: var(--text-gold);
-  color: var(--text-gold);
+  border-color: var(--color-gold);
+  color: var(--color-gold);
 }
 
 .btn-dark {

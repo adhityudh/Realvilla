@@ -69,8 +69,8 @@ export default async function RootLayout({
         />
         <TranslationProvider>
           <ScrollReleaser />
-          <Header settings={settings} />
-          <MobileNav settings={settings} />
+          <Header settings={settings} dict={dict} />
+          <MobileNav settings={settings} dict={dict} />
           {children}
           <FooterSection data={settings?.footer} />
         </TranslationProvider>

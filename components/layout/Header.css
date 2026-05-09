@@ -38,7 +38,7 @@
             left: 50% !important;
             transform: translateX(-50%) !important;
             width: calc(100% - 1.5rem) !important;
-            background-color: #f0f0f0;
+            background-color: var(--bg-subtle);
             border-radius: 50px;
             padding: 0.85rem 0;
             justify-content: space-evenly;
@@ -72,12 +72,13 @@
         }
 
         .pill-link {
-            color: #111;
+            color: var(--text-black);
             text-decoration: none;
-            font-family: 'Vidaloka', serif;
-            font-size: 0.75rem;
+            font-family: var(--font-cormorant), serif;
+            font-size: var(--text-sm);
+            font-weight: var(--fw-semibold);
             text-transform: uppercase;
-            letter-spacing: 0.15em;
+            letter-spacing: var(--ls-widest);
             display: flex;
             align-items: center;
             gap: 0.4rem;
@@ -85,8 +86,8 @@
 
         .pill-sep {
             width: 1px;
-            height: 12px;
-            background-color: rgba(0, 0, 0, 0.1);
+            height: 0.75rem;
+            background-color: var(--border-light);
         }
 
         /* Desktop Pill Header State */
@@ -173,16 +174,16 @@
 
         .nav-link {
             font-family: var(--font-cormorant), 'Cormorant Garamond', serif;
-            font-size: 0.9rem;
-            font-weight: 600;
-            letter-spacing: 0.25em;
+            font-size: var(--text-base-sm);
+            font-weight: var(--fw-semibold);
+            letter-spacing: var(--ls-widest);
             text-transform: uppercase;
-            color: #ffffff;
+            color: var(--text-white);
             text-decoration: none;
             opacity: 1;
             position: relative;
             padding-bottom: 4px;
-            transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), color 0.4s ease;
+            transition: opacity 0.4s var(--ease-smooth), color 0.4s ease;
         }
 
         .nav-link::after {
@@ -192,7 +193,7 @@
             left: 50%;
             width: 0;
             height: 1.5px;
-            background-color: #ffffff;
+            background-color: var(--bg-surface);
             transform: translateX(-50%);
             transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.4s ease;
         }
@@ -207,7 +208,7 @@
         }
 
         .pill-link.active {
-            font-weight: 700;
+            font-weight: var(--fw-bold);
         }
 
         .header-actions {
@@ -216,30 +217,30 @@
         }
 
         .btn-book {
-            background-color: #ffffff;
-            color: #000000;
+            background-color: var(--bg-surface);
+            color: var(--text-black);
             padding: 0.75rem 1.75rem;
-            border-radius: 50px;
-            font-size: 0.75rem;
-            font-weight: 800;
+            border-radius: var(--radius-full);
+            font-size: var(--text-sm);
+            font-weight: var(--fw-extrabold);
             text-transform: uppercase;
-            letter-spacing: 0.2em;
+            letter-spacing: var(--ls-label);
             text-decoration: none;
             position: relative;
             overflow: hidden;
             display: inline-flex;
             align-items: center;
             gap: 0.75rem;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1),
-                background-color 0.6s cubic-bezier(0.16, 1, 0.3, 1),
-                color 0.6s cubic-bezier(0.16, 1, 0.3, 1),
-                box-shadow 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: var(--shadow-sm);
+            transition: transform 0.6s var(--ease-smooth),
+                background-color 0.6s var(--ease-smooth),
+                color 0.6s var(--ease-smooth),
+                box-shadow 0.6s var(--ease-smooth);
         }
 
         .btn-book:hover {
-            background-color: #ffffff;
-            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.1);
+            background-color: var(--bg-surface);
+            box-shadow: var(--shadow-md-hover);
         }
 
         .btn-book .stretch-arrow {
@@ -262,11 +263,11 @@
             background: linear-gradient(90deg,
                     transparent,
                     rgba(255, 255, 255, 0.2),
-                    rgba(188, 175, 139, 0.5),
+                    rgba(200, 180, 138, 0.5),
                     rgba(255, 255, 255, 0.2),
                     transparent);
             transform: skewX(-25deg);
-            transition: left 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: left 0.8s var(--ease-smooth);
         }
 
         .btn-book:hover::before {
@@ -279,16 +280,16 @@
         }
 
         body.header-dark-mode .nav-link {
-            color: #111111;
+            color: var(--text-black);
         }
 
         body.header-dark-mode .nav-link::after {
-            background-color: #111111;
+            background-color: var(--text-black);
         }
 
         body.header-dark-mode .btn-book {
-            background-color: #000000;
-            color: #ffffff;
+            background-color: var(--text-black);
+            color: var(--text-white);
         }
 
         /* Hide header elements only while the preloader box is visible */
@@ -300,20 +301,20 @@
         }
 
         body.preloading:not(.intro-active) .hamburger span {
-            background-color: #111111;
+            background-color: var(--text-black);
         }
 
         body.header-dark-mode .hamburger span {
-            background-color: #111111;
+            background-color: var(--text-black);
         }
 
         body.header-dark-mode .text-white-reveal {
-            background-color: #111111;
+            background-color: var(--text-black);
         }
 
         body.header-dark-mode .text-black,
         body.header-dark-mode .text-gold {
-            background-color: #111111;
+            background-color: var(--text-black);
         }
 
         /* Header light mode for dark sections (valuation, etc.) */
@@ -323,29 +324,29 @@
         }
 
         body.header-light-mode .nav-link {
-            color: #ffffff;
+            color: var(--text-white);
         }
 
         body.header-light-mode .nav-link::after {
-            background-color: #ffffff;
+            background-color: var(--bg-surface);
         }
 
         body.header-light-mode .btn-book {
-            background-color: #ffffff;
-            color: #000000;
+            background-color: var(--bg-surface);
+            color: var(--text-black);
         }
 
         body.header-light-mode .hamburger span {
-            background-color: #ffffff;
+            background-color: var(--bg-surface);
         }
 
         body.header-light-mode .text-white-reveal {
-            background-color: #ffffff;
+            background-color: var(--bg-surface);
         }
 
         body.header-light-mode .text-black,
         body.header-light-mode .text-gold {
-            background-color: #ffffff;
+            background-color: var(--bg-surface);
         }
 
         body.header-light-mode .header-bg {

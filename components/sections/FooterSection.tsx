@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import './FooterSection.css';
 import { HEADER_LETTERS } from '@/lib/letters';
 
@@ -29,8 +30,9 @@ interface FooterData {
   socialLinks?: FooterLink[];
 }
 
-const FooterSection = ({ data }: { data?: FooterData }) => {
+const FooterSection = ({ data, variant }: { data?: FooterData, variant?: 'default' | 'compact' }) => {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
+  const pathname = usePathname();
 
   // If no data, render nothing or a minimal skeleton to avoid layout shifts
   if (!data || !data.columns) return null;
@@ -39,8 +41,11 @@ const FooterSection = ({ data }: { data?: FooterData }) => {
     setOpenIndex(openIndex === index ? null : index);
   };
 
+  const isHomepage = !pathname || pathname === '/' || /^\/[a-zA-Z]{2}(\/)?$/.test(pathname);
+  const resolvedVariant = variant || (isHomepage ? 'default' : 'compact');
+
   return (
-    <footer className="footer-section">
+    <footer className={`footer-section ${resolvedVariant === 'compact' ? 'compact' : ''}`}>
       <div className="footer-container">
         <div className="footer-grid">
           {data.columns.map((column, colIdx) => (
@@ -100,14 +105,16 @@ const FooterSection = ({ data }: { data?: FooterData }) => {
 
           <div className="footer-divider"></div>
 
-          <div className="footer-legal-links">
-            {data.legalLinks?.map((link, idx) => (
-              <Link key={idx} href={link.link || '#'}>{link.label}</Link>
-            ))}
-          </div>
+          <div className="footer-legal-row">
+            <div className="footer-legal-links">
+              {data.legalLinks?.map((link, idx) => (
+                <Link key={idx} href={link.link || '#'}>{link.label}</Link>
+              ))}
+            </div>
 
-          <div className="footer-copyright">
-            {data.copyright}
+            <div className="footer-copyright">
+              {data.copyright}
+            </div>
           </div>
 
           <div className="footer-disclaimer">

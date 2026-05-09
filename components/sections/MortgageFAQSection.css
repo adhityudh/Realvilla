@@ -1,6 +1,6 @@
 .mortgage-faq-section {
     background-color: var(--bg-white);
-    color: #111111;
+    color: var(--text-black);
     padding: 5rem 0;
     position: relative;
     overflow: hidden;
@@ -20,11 +20,11 @@
 
 .mortgage-faq-tagline {
     font-family: var(--font-manrope), 'Manrope', sans-serif;
-    font-size: 0.7rem;
-    font-weight: 700;
-    letter-spacing: 0.3em;
+    font-size: var(--text-sm);
+    font-weight: var(--fw-bold);
+    letter-spacing: var(--ls-tagline);
     text-transform: uppercase;
-    color: #B8A87D;
+    color: var(--color-gold-dark);
     margin-bottom: 1.5rem;
     display: flex;
     align-items: center;
@@ -35,7 +35,7 @@
     content: '';
     width: 30px;
     height: 1px;
-    background: #B8A87D;
+    background: var(--color-gold-dark);
 }
 
 .mortgage-faq-info {
@@ -47,20 +47,20 @@
 
 .mortgage-faq-title {
     font-family: var(--font-cormorant), serif;
-    font-size: clamp(2rem, 5.5vw, 4rem);
-    font-weight: 300;
-    line-height: 1.1;
+    font-size: var(--text-display-lg);
+    font-weight: var(--fw-light);
+    line-height: var(--lh-tight);
     text-transform: uppercase;
-    letter-spacing: -0.01em;
+    letter-spacing: var(--ls-tight);
     text-align: right;
     max-width: 800px;
 }
 
 .mortgage-faq-description {
     font-family: var(--font-manrope), sans-serif;
-    font-size: 1.1rem;
-    line-height: 1.6;
-    color: #111;
+    font-size: var(--text-md);
+    line-height: var(--lh-base);
+    color: var(--text-black);
     text-align: left;
     margin-top: 1rem;
 }
@@ -102,7 +102,7 @@
 
 .faq-index {
     font-family: var(--font-manrope), sans-serif;
-    font-size: 0.9rem;
+    font-size: var(--text-base-sm);
     opacity: 0.4;
     width: 60px;
     flex-shrink: 0;
@@ -123,10 +123,10 @@
 
 .faq-answer {
     font-family: var(--font-manrope), sans-serif;
-    font-size: 1rem;
-    line-height: 1.6;
+    font-size: var(--text-base);
+    line-height: var(--lh-base);
     max-width: 500px;
-    color: #111;
+    color: var(--text-black);
 }
 
 .faq-question-container {
@@ -140,13 +140,13 @@
 
 .faq-question {
     font-family: var(--font-manrope), sans-serif;
-    font-size: 1rem;
-    font-weight: 800;
+    font-size: var(--text-base);
+    font-weight: var(--fw-extrabold);
     text-transform: uppercase;
     font-style: italic;
     text-align: right;
-    letter-spacing: 0.05em;
-    line-height: 1.2;
+    letter-spacing: var(--ls-wide);
+    line-height: var(--lh-snug);
 }
 
 .faq-icon {
@@ -163,7 +163,8 @@
 
 @media (max-width: 1024px) {
     .mortgage-faq-section {
-        padding: 3rem 0;
+        color: var(--text-black);
+        padding: 6rem 0;
     }
 
     .mortgage-faq-wrapper {
@@ -197,10 +198,10 @@
         order: 3;
         text-align: left;
         max-width: 100%;
-        font-size: 1rem;
+        font-size: var(--text-base);
         margin-top: 0;
-        color: #666;
-        line-height: 1.7;
+        color: var(--text-muted);
+        line-height: var(--lh-relaxed);
     }
 
     .faq-item {
@@ -241,8 +242,8 @@
         position: absolute;
         width: 10px;
         height: 1.5px;
-        background-color: #111111;
-        transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.4s ease;
+        background-color: var(--text-black);
+        transition: transform 0.4s var(--ease-smooth), background-color 0.4s ease;
     }
 
     .faq-icon span:first-child {
@@ -273,7 +274,7 @@
 
     .faq-answer {
         padding-top: 1rem;
-        font-size: 1rem;
+        font-size: var(--text-base);
     }
 
     .mortgage-faq-cta {

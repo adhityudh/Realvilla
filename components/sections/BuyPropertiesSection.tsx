@@ -1,12 +1,13 @@
 'use client';
 
 import { useEffect, useRef, useState, useMemo } from 'react';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { client } from '@/sanity/lib/client';
 import { PROPERTY_META_QUERY, PROPERTY_CARD_FIELDS } from '@/sanity/lib/queries';
 import PropertyCard from '../ui/PropertyCard';
+import Button from '../ui/Button';
 import SearchModal from './SearchModal';
 import FilterSidebar from './FilterSidebar';
 import './BuyPropertiesSection.css';
@@ -16,6 +17,7 @@ if (typeof window !== 'undefined') {
 }
 
 export default function BuyPropertiesSection({ data, dict }: { data?: any, dict?: any }) {
+  const router = useRouter();
   const sectionRef = useRef<HTMLElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
   const paginationRef = useRef<HTMLDivElement>(null);
@@ -41,7 +43,7 @@ export default function BuyPropertiesSection({ data, dict }: { data?: any, dict?
     metaFilters: {}
   });
 
-  const title = data?.title || (dict?.properties?.title || 'Exclusive Tenerife Homes');
+  const title = data?.title || dict?.properties?.title;
 
   const pathname = usePathname();
   const locale = useMemo(() => {
@@ -108,7 +110,7 @@ export default function BuyPropertiesSection({ data, dict }: { data?: any, dict?
     const fetchProperties = async () => {
       try {
         let baseFilter = `_type == "property" && (language == $language || (!defined(language) && $language == "en"))${data?.showSold ? "" : " && status != 'sold'"}${data?.selectionType === "manual" ? " && _id in $manualIds" : ""}`;
-        
+
         // Price Range Filter
         baseFilter += ` && price >= $priceMin && price <= $priceMax`;
 
@@ -123,18 +125,43 @@ export default function BuyPropertiesSection({ data, dict }: { data?: any, dict?
         Object.entries(activeFilters.metaFilters).forEach(([metaId, val]) => {
           if (val === undefined || val === '' || (Array.isArray(val) && val.length === 0)) return;
 
-          const def = filterMeta?.definitions?.find((d: any) => d._id === metaId);
+          const cleanMetaId = metaId.replace('drafts.', '');
+          const def = filterMeta?.definitions?.find((d: any) => d._id.replace('drafts.', '') === cleanMetaId);
           if (!def) return;
 
           const type = def.filter?.filterType;
           if (type === 'boolean' && val === true) {
-            baseFilter += ` && count(meta[metaKey->_id == "${metaId}" && booleanValue == true]) > 0`;
+            baseFilter += ` && count(meta[(metaKey._ref == "${cleanMetaId}" || metaKey._ref == "drafts.${cleanMetaId}") && booleanValue == true]) > 0`;
           } else if (type === 'rangeSlider') {
-            baseFilter += ` && count(meta[metaKey->_id == "${metaId}" && numberValue <= ${val}]) > 0`;
+            const isDouble = def.filter?.isDoubleSlider === true;
+            if (isDouble && typeof val === 'object' && val !== null) {
+              baseFilter += ` && count(meta[(metaKey._ref == "${cleanMetaId}" || metaKey._ref == "drafts.${cleanMetaId}") && numberValue >= ${val.min} && numberValue <= ${val.max}]) > 0`;
+            } else {
+              const maxVal = (typeof val === 'object' && val !== null) ? val.max : val;
+              baseFilter += ` && count(meta[(metaKey._ref == "${cleanMetaId}" || metaKey._ref == "drafts.${cleanMetaId}") && numberValue <= ${maxVal}]) > 0`;
+            }
           } else if (type === 'prefixRange') {
+            const prefixOptions = def.filter?.prefixOptions || [];
+            const opt = prefixOptions.find((o: any) => String(o.value) === String(val));
+
+            // Handle "Any" option via the new Sanity toggle
+            if (opt?.isAny === true) {
+              return;
+            }
+
+            if (val === undefined || val === null || val === '') return;
+
+            // Default to '==' for prefixRange unless explicitly set to gte/lte
+            let groqOperator = '==';
+            if (opt) {
+              if (opt.operator === 'gte' || opt.operator === '>=') groqOperator = '>=';
+              else if (opt.operator === 'lte' || opt.operator === '<=') groqOperator = '<=';
+              else if (opt.operator === 'equals' || opt.operator === '==') groqOperator = '==';
+            }
+
             const num = parseInt(val);
             if (!isNaN(num)) {
-              baseFilter += ` && count(meta[metaKey->_id == "${metaId}" && numberValue >= ${num}]) > 0`;
+              baseFilter += ` && count(meta[(metaKey._ref == "${cleanMetaId}" || metaKey._ref == "drafts.${cleanMetaId}") && numberValue ${groqOperator} ${num}]) > 0`;
             }
           } else if (type === 'select') {
             baseFilter += ` && count(meta[metaKey->_id == "${metaId}" && stringValue == "${val}"]) > 0`;
@@ -205,6 +232,20 @@ export default function BuyPropertiesSection({ data, dict }: { data?: any, dict?
     };
   }, [currentPage, locale, itemsPerPage, data?.orderBy, data?.showSold, data?.selectionType, data?.manualIds, activeFilters, filterMeta]);
 
+  const activeFiltersCount = useMemo(() => {
+    let count = 0;
+    if (activeFilters.priceMin > 0) count++;
+    if (activeFilters.priceMax < (filterMeta?.maxPrice || 5000000)) count++;
+    if (activeFilters.municipalities.length > 0) count++;
+
+    Object.values(activeFilters.metaFilters).forEach((val: any) => {
+      if (val !== undefined && val !== '' && (Array.isArray(val) ? val.length > 0 : true)) {
+        count++;
+      }
+    });
+    return count;
+  }, [activeFilters, filterMeta]);
+
   const totalPages = Math.ceil(totalCount / itemsPerPage);
 
   const getPaginationRange = () => {
@@ -255,14 +296,24 @@ export default function BuyPropertiesSection({ data, dict }: { data?: any, dict?
   return (
     <section className="buy-properties-section" id="properties-list" ref={sectionRef}>
       <div className="buy-properties-wrapper">
-        
+
         {/* Section Header */}
         <div className="buy-properties-header">
           <h2 className="buy-properties-title">{title}</h2>
-          <button className="buy-properties-filter-btn" onClick={() => setIsSidebarOpen(true)}>
-            <span>{locale === 'es' ? 'Filtrar' : 'Filter'}</span>
-            <img src="/icons/tune.svg" alt="Filter" className="filter-icon" />
-          </button>
+          <div className="buy-properties-actions">
+            <Button
+              label={dict?.archive?.all_properties}
+              href={`/${locale}/${locale === 'es' ? 'propiedades' : 'properties'}`}
+              variant="dark"
+              showArrow={true}
+              className="buy-properties-cta"
+            />
+            <button className="buy-properties-filter-btn btn-pill" onClick={() => setIsSidebarOpen(true)}>
+              <span>{dict?.archive?.filter_button}</span>
+              {activeFiltersCount > 0 && <span className="filter-count-badge">{activeFiltersCount}</span>}
+              <img src="/icons/tune.svg" alt="Filter" className="filter-icon btn-icon" />
+            </button>
+          </div>
         </div>
 
         {/* Properties Grid */}
@@ -273,12 +324,12 @@ export default function BuyPropertiesSection({ data, dict }: { data?: any, dict?
             </div>
           ) : properties.length === 0 ? (
             <div className="buy-properties-empty">
-              {locale === 'es' ? 'Tidak ada properti ditemukan.' : 'No properties found.'}
+              {dict?.properties?.no_results}
             </div>
           ) : (
             <div className="buy-properties-grid" ref={gridRef}>
               {properties.map((prop) => (
-                <PropertyCard key={prop._id} prop={prop} variant="seamless" />
+                <PropertyCard key={prop._id} prop={prop} variant="seamless" dict={dict} />
               ))}
             </div>
           )}
@@ -287,8 +338,8 @@ export default function BuyPropertiesSection({ data, dict }: { data?: any, dict?
         {/* Pagination */}
         {totalPages > 1 && (
           <div className="buy-pagination" ref={paginationRef}>
-            <button 
-              className="pagination-arrow prev" 
+            <button
+              className="pagination-arrow prev"
               onClick={() => handlePageChange(currentPage - 1)}
               disabled={currentPage === 1}
               aria-label="Previous Page"
@@ -323,8 +374,8 @@ export default function BuyPropertiesSection({ data, dict }: { data?: any, dict?
               )}
             </div>
 
-            <button 
-              className="pagination-arrow next" 
+            <button
+              className="pagination-arrow next"
               onClick={() => handlePageChange(currentPage + 1)}
               disabled={currentPage === totalPages}
               aria-label="Next Page"
@@ -336,16 +387,23 @@ export default function BuyPropertiesSection({ data, dict }: { data?: any, dict?
 
       </div>
       <SearchModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} dict={dict} />
-      <FilterSidebar 
-        isOpen={isSidebarOpen} 
-        onClose={() => setIsSidebarOpen(false)} 
-        locale={locale} 
-        dict={dict} 
-        meta={filterMeta} 
+      <FilterSidebar
+        isOpen={isSidebarOpen}
+        onClose={() => setIsSidebarOpen(false)}
+        locale={locale}
+        dict={dict}
+        meta={filterMeta}
         activeFilters={activeFilters}
         onApplyFilters={(filters) => {
-          setActiveFilters(filters);
-          setCurrentPage(1);
+          const targetPath = locale === 'es' ? 'propiedades' : 'properties';
+          const params = new URLSearchParams();
+          const maxLimit = filterMeta?.maxPrice || 5000000;
+          if (filters.priceMin > 0) params.set('priceMin', filters.priceMin.toString());
+          if (filters.priceMax < maxLimit) params.set('priceMax', filters.priceMax.toString());
+          if (filters.municipalities.length > 0) params.set('municipalities', filters.municipalities.join(','));
+          if (Object.keys(filters.metaFilters).length > 0) params.set('meta', JSON.stringify(filters.metaFilters));
+
+          router.push(`/${locale}/${targetPath}?${params.toString()}`);
         }}
       />
     </section>

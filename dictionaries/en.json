@@ -1,6 +1,8 @@
 {
   "hero": {
-    "scroll": "Scroll"
+    "scroll": "Scroll",
+    "title": "Find Your Perfect Home",
+    "search_placeholder": "Search by Property Name, location, or Municipalities..."
   },
   "about": {
     "view_certificate": "View Certificate"
@@ -87,5 +89,30 @@
     "areas_locations": "Areas & Locations",
     "view_all": "View All Properties",
     "matching_properties": "Matching Properties"
+  },
+  "archive": {
+    "search_placeholder": "Search by Property Name, location, or municipalities...",
+    "sort_label": "Sort by:",
+    "sort_newest": "Newest",
+    "sort_price_desc": "Price: High to Low",
+    "sort_price_asc": "Price: Low to High",
+    "filter_button": "Filter",
+    "no_results": "We couldn't find any properties matching your current criteria.",
+    "no_results_subtitle": "Try adjusting your filters or explore all listings below.",
+    "no_properties_in_area": "We currently don't have any properties listed in this specific area.",
+    "explore_others": "Explore all our available properties in Tenerife instead.",
+    "explore_other_areas": "Explore Other Areas",
+    "min": "Min",
+    "max": "Max",
+    "all_properties": "All Properties",
+    "other": "Other"
+  },
+  "valuation": {
+    "loading": "Loading Valuation Tool..."
+  },
+  "properties": {
+    "title": "Exclusive Tenerife Homes",
+    "no_results": "No properties found.",
+    "price_upon_request": "Price upon request"
   }
 }

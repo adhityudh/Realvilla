@@ -24,7 +24,37 @@ interface FilterSidebarProps {
     municipalities: string[];
     metaFilters: Record<string, any>;
   }) => void;
+  isInline?: boolean;
 }
+
+const AccordionWrapper = ({ title, isOpen, onToggle, children, countLabel }: any) => (
+  <div className={`filter-group filter-accordion-group ${isOpen ? 'active' : ''}`}>
+    <button
+      type="button"
+      className={`accordion-trigger ${isOpen ? 'active' : ''}`}
+      onClick={onToggle}
+    >
+      <div className="accordion-trigger-left">
+        <span className="accordion-title">
+          {title}
+        </span>
+        {countLabel && (
+          <span className="accordion-active-count">{countLabel}</span>
+        )}
+      </div>
+      <div className="accordion-arrow-icon">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+          <path d="M6 9l6 6 6-6" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      </div>
+    </button>
+    {isOpen && (
+      <div className="accordion-content-panel" data-lenis-prevent="true">
+        {children}
+      </div>
+    )}
+  </div>
+);
 
 export default function FilterSidebar({
   isOpen,
@@ -33,7 +63,8 @@ export default function FilterSidebar({
   dict,
   meta,
   activeFilters,
-  onApplyFilters
+  onApplyFilters,
+  isInline = false
 }: FilterSidebarProps) {
   const sidebarRef = useRef<HTMLDivElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
@@ -73,7 +104,18 @@ export default function FilterSidebar({
   const [municipalitiesList, setMunicipalitiesList] = useState<string[]>([]);
   const [loadingMunicipalities, setLoadingMunicipalities] = useState<boolean>(true);
   const [municipalitySearch, setMunicipalitySearch] = useState<string>('');
-  const [isAccordionOpen, setIsAccordionOpen] = useState<boolean>(false);
+  const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({});
+
+  const isGroupOpen = (key: string, defaultOpen = true) => {
+    return openGroups[key] !== undefined ? openGroups[key] : defaultOpen;
+  };
+
+  const toggleGroup = (key: string, defaultOpen = true) => {
+    setOpenGroups(prev => ({
+      ...prev,
+      [key]: prev[key] !== undefined ? !prev[key] : !defaultOpen
+    }));
+  };
 
   // Load municipalities from GeoNames on component mount
   useEffect(() => {
@@ -90,18 +132,18 @@ export default function FilterSidebar({
     load();
   }, []);
 
-  // Sync with activeFilters from parent when sidebar is opened
+  // Sync with activeFilters from parent when sidebar is opened or rendering inline on desktop
   useEffect(() => {
-    if (isOpen && activeFilters) {
+    if ((isOpen || isInline) && activeFilters) {
       setPriceMin(activeFilters.priceMin);
       setPriceMax(activeFilters.priceMax);
       setSelectedMunicipalities(activeFilters.municipalities);
       setFilterValues(activeFilters.metaFilters);
     }
-  }, [isOpen, activeFilters]);
+  }, [isOpen, isInline, activeFilters]);
 
   useEffect(() => {
-    if (isAccordionOpen) {
+    if (isGroupOpen('municipalities', false)) {
       // Avoid auto-focusing on mobile devices to prevent the virtual keyboard from jumping up
       const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
       if (!isMobile) {
@@ -110,7 +152,7 @@ export default function FilterSidebar({
         }, 50);
       }
     }
-  }, [isAccordionOpen]);
+  }, [openGroups]);
 
   const filteredMunicipalities = municipalitiesList.filter((mun) =>
     mun.toLowerCase().includes(municipalitySearch.toLowerCase())
@@ -127,7 +169,57 @@ export default function FilterSidebar({
     .filter((def: any) => def?.filter?.isFilterable === true)
     .sort((a: any, b: any) => (a?.filter?.filterOrder || 0) - (b?.filter?.filterOrder || 0));
 
+  const categorizedFilters = useMemo(() => {
+    const blocks: any[] = [];
+    const uncategorized: any[] = [];
+
+    // Create a map of category by title
+    const categoryMap = new Map();
+    meta?.categories?.forEach((c: any) => categoryMap.set(c.title, c));
+
+    // Sort categories by filterGroupDisplayOrder
+    const sortedCategories = [...(meta?.categories || [])].sort((a: any, b: any) =>
+      (a.filterGroupDisplayOrder || 0) - (b.filterGroupDisplayOrder || 0)
+    );
+
+    const groups: Record<string, any[]> = {};
+
+    filterableDefs.forEach((def: any) => {
+      const catTitle = def.category;
+      if (catTitle) {
+        if (!groups[catTitle]) groups[catTitle] = [];
+        groups[catTitle].push(def);
+      } else {
+        uncategorized.push(def);
+      }
+    });
+
+    sortedCategories.forEach((cat: any) => {
+      if (groups[cat.title]) {
+        if (cat.ungroupFilters) {
+          blocks.push({ type: 'ungrouped', defs: groups[cat.title], title: cat.title });
+        } else {
+          blocks.push({ type: 'group', title: cat.title, defs: groups[cat.title] });
+        }
+        delete groups[cat.title]; // Mark as processed
+      }
+    });
+
+    Object.keys(groups).forEach(catTitle => {
+      blocks.push({ type: 'group', title: catTitle, defs: groups[catTitle] });
+    });
+
+    return { blocks, uncategorized };
+  }, [filterableDefs, meta?.categories]);
+
   useEffect(() => {
+    if (isInline) {
+      if (sidebarRef.current) {
+        sidebarRef.current.style.display = 'block';
+      }
+      return;
+    }
+
     if (isOpen) {
       document.body.style.overflow = 'hidden';
 
@@ -151,7 +243,35 @@ export default function FilterSidebar({
       tl.to(contentRef.current, { y: 30, opacity: 0, scale: 0.98, filter: 'blur(5px)', duration: 0.4, ease: 'power2.in' });
       tl.to(overlayRef.current, { opacity: 0, duration: 0.4, ease: 'power2.in' }, 0.1);
     }
-  }, [isOpen]);
+  }, [isOpen, isInline]);
+
+  // 6. Auto-apply filters when in inline/desktop mode (loop-free & debounced to prevent slider jump and endless loading)
+  useEffect(() => {
+    if (isInline && onApplyFilters && activeFilters) {
+      const isPriceMinDiff = priceMin !== activeFilters.priceMin;
+      const isPriceMaxDiff = priceMax !== activeFilters.priceMax;
+
+      const isMunDiff =
+        selectedMunicipalities.length !== activeFilters.municipalities.length ||
+        !selectedMunicipalities.every(m => activeFilters.municipalities.includes(m));
+
+      const isMetaDiff = JSON.stringify(filterValues) !== JSON.stringify(activeFilters.metaFilters);
+
+      if (isPriceMinDiff || isPriceMaxDiff || isMunDiff || isMetaDiff) {
+        // Debounce by 500ms to allow smooth dragging and prevent rapid API fetching
+        const timer = setTimeout(() => {
+          onApplyFilters({
+            priceMin,
+            priceMax,
+            municipalities: selectedMunicipalities,
+            metaFilters: filterValues
+          });
+        }, 500);
+
+        return () => clearTimeout(timer);
+      }
+    }
+  }, [priceMin, priceMax, selectedMunicipalities, filterValues, isInline, onApplyFilters, activeFilters]);
 
   const handleOverlayClick = (e: React.MouseEvent) => {
     if (e.target === overlayRef.current) {
@@ -186,10 +306,240 @@ export default function FilterSidebar({
     }
   };
 
+  const renderFilterDef = (def: any, hideLabel = false) => {
+    const filterId = def._id;
+    const type = def.filter?.filterType;
+    const label = def.shortLabel || def.longLabel || dict?.archive?.filter;
+    const unit = def.unit ? ` ${def.unit}` : '';
+
+    if (type === 'rangeSlider') {
+      const isDouble = def.filter?.isDoubleSlider === true;
+      const min = def.filter?.rangeMin ?? 0;
+      const max = def.filter?.useAutomaticMax === true
+        ? (def.autoMax ?? def.filter?.rangeMax ?? 1000)
+        : (def.filter?.rangeMax ?? 1000);
+      const step = def.filter?.rangeStep ?? 1;
+
+      const currentValue = filterValues[filterId];
+      let currentMin = min;
+      let currentMax = max;
+
+      if (isDouble) {
+        currentMin = currentValue?.min ?? min;
+        currentMax = currentValue?.max ?? max;
+      } else {
+        currentMax = currentValue ?? max;
+      }
+
+      return (
+        <div className="filter-group" key={filterId} style={hideLabel ? { paddingTop: '0.5rem' } : undefined}>
+          {!hideLabel && <p className="filter-group-label" style={{ marginBottom: '1rem', marginTop: '0.5rem' }}>{label}</p>}
+          <div className="range-slider-wrapper">
+            {isDouble && (
+              <input
+                type="range"
+                min={min}
+                max={max}
+                step="any"
+                value={currentMin}
+                onChange={(e) => {
+                  const rawVal = Number(e.target.value);
+                  let val = Math.round(rawVal / step) * step;
+                  if (rawVal < min + step / 2) val = min;
+                  if (val > currentMax) val = currentMax;
+                  setFilterValues(prev => ({ ...prev, [filterId]: { min: val, max: currentMax } }));
+                }}
+                className="range-slider-input"
+              />
+            )}
+            <input
+              type="range"
+              min={min}
+              max={max}
+              step="any"
+              value={currentMax}
+              onChange={(e) => {
+                const rawVal = Number(e.target.value);
+                let val = Math.round(rawVal / step) * step;
+                if (rawVal > max - step / 2) val = max;
+
+                if (!isDouble) {
+                  if (val < min) val = min;
+                  setFilterValues(prev => ({ ...prev, [filterId]: val }));
+                } else {
+                  if (val < currentMin) val = currentMin;
+                  setFilterValues(prev => ({ ...prev, [filterId]: { min: currentMin, max: val } }));
+                }
+              }}
+              className="range-slider-input"
+            />
+            <div className="range-track-bar">
+              {isDouble ? (
+                <div
+                  className="range-active-fill"
+                  style={{
+                    left: `${((currentMin - min) / (max - min)) * 100}%`,
+                    width: `${((currentMax - currentMin) / (max - min)) * 100}%`
+                  }}
+                />
+              ) : (
+                <div
+                  className="range-active-fill"
+                  style={{ width: `${Math.min(100, ((currentMax - min) / (max - min)) * 100)}%` }}
+                />
+              )}
+            </div>
+          </div>
+          <div className="slider-value-display">
+            {isDouble
+              ? (currentMin > min
+                ? `${def.filter?.rangePrefix || ''}${currentMin.toLocaleString()}${unit || def.filter?.rangeSuffix || ''} - ${def.filter?.rangePrefix || ''}${currentMax.toLocaleString()}${unit || def.filter?.rangeSuffix || ''}`
+                : `${dict?.filter?.up_to} ${def.filter?.rangePrefix || ''}${currentMax.toLocaleString()}${unit || def.filter?.rangeSuffix || ''}`)
+              : `${dict?.filter?.up_to} ${def.filter?.rangePrefix || ''}${currentMax.toLocaleString()}${unit || def.filter?.rangeSuffix || ''}`
+            }
+          </div>
+        </div>
+      );
+    }
+
+    if (type === 'prefixRange') {
+      const options = def.filter?.prefixOptions || [];
+      const val = filterValues[filterId];
+
+      // Find which option is currently active
+      const activeOpt = options.find((o: any) =>
+        o.isAny ? (val === undefined || val === null || val === '') : (String(o.value) === String(val))
+      ) || options[0];
+
+      return (
+        <div className="filter-group" key={filterId} style={hideLabel ? { paddingTop: '0.5rem' } : undefined}>
+          {!hideLabel && <p className="filter-group-label" style={{ marginBottom: '1rem', marginTop: '0.5rem' }}>{label}</p>}
+          <div className="segment-control">
+            {options.map((opt: any, index: number) => {
+              const active = activeOpt === opt;
+              return (
+                <button
+                  key={`${filterId}-${index}`}
+                  className={`segment-btn ${active ? 'active' : ''}`}
+                  onClick={() => setFilterValues(prev => ({ ...prev, [filterId]: opt.isAny ? '' : opt.value }))}
+                >
+                  {opt.label}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      );
+    }
+
+    if (type === 'boolean') {
+      const currentValue = !!filterValues[filterId];
+
+      return (
+        <div className="filter-group" key={filterId} style={{ marginTop: '0.5rem' }}>
+          <div className="toggles-container">
+            <label className="toggle-row" style={hideLabel ? { justifyContent: 'flex-start' } : undefined}>
+              {!hideLabel && <span className="toggle-label">{label}</span>}
+              <div className="toggle-switch-wrapper">
+                <input
+                  type="checkbox"
+                  checked={currentValue}
+                  onChange={(e) => setFilterValues(prev => ({ ...prev, [filterId]: e.target.checked }))}
+                  className="toggle-checkbox"
+                />
+                <span className="toggle-switch-slider" />
+              </div>
+            </label>
+          </div>
+        </div>
+      );
+    }
+
+    if (type === 'select' || type === 'multiSelect') {
+      const options = def.filter?.selectOptions || [];
+      const selected = filterValues[filterId] || (type === 'multiSelect' ? [] : '');
+
+      const toggleOption = (opt: string) => {
+        if (type === 'multiSelect') {
+          const arr = Array.isArray(selected) ? selected : [];
+          const next = arr.includes(opt) ? arr.filter((x: string) => x !== opt) : [...arr, opt];
+          setFilterValues(prev => ({ ...prev, [filterId]: next }));
+        } else {
+          setFilterValues(prev => ({ ...prev, [filterId]: selected === opt ? '' : opt }));
+        }
+      };
+
+      return (
+        <div className="filter-group" key={filterId} style={hideLabel ? { paddingTop: '0.5rem' } : undefined}>
+          {!hideLabel && <p className="filter-group-label" style={{ marginBottom: '1rem', marginTop: '0.5rem' }}>{label}</p>}
+          <div className="chips-container">
+            {options.map((opt: string) => {
+              const active = type === 'multiSelect'
+                ? (Array.isArray(selected) && selected.includes(opt))
+                : selected === opt;
+              return (
+                <button
+                  key={`${filterId}-${opt}`}
+                  className={`filter-chip ${active ? 'active' : ''}`}
+                  onClick={() => toggleOption(opt)}
+                >
+                  {opt}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      );
+    }
+
+    return null;
+  };
+
+  const isDefActive = (def: any) => {
+    const filterId = def._id;
+    const type = def.filter?.filterType;
+    const val = filterValues[filterId];
+
+    if (val === undefined) return false;
+
+    if (type === 'rangeSlider') {
+      const isDouble = def.filter?.isDoubleSlider === true;
+      const max = def.filter?.useAutomaticMax === true
+        ? (def.autoMax ?? def.filter?.rangeMax ?? 1000)
+        : (def.filter?.rangeMax ?? 1000);
+      const min = def.filter?.rangeMin ?? 0;
+
+      if (isDouble) {
+        if (!val || typeof val !== 'object') return false;
+        return val.min > min || val.max < max;
+      }
+      return val !== max;
+    }
+    if (type === 'prefixRange') {
+      const options = def.filter?.prefixOptions || [];
+      const defaultVal = options[0]?.value ?? '';
+      return val !== defaultVal;
+    }
+    if (type === 'boolean') {
+      return !!val;
+    }
+    if (type === 'select') {
+      return !!val;
+    }
+    if (type === 'multiSelect') {
+      return Array.isArray(val) && val.length > 0;
+    }
+    return false;
+  };
+
+  const getGroupActiveCount = (defs: any[]) => {
+    return defs.filter(isDefActive).length;
+  };
+
   return (
-    <div className="filter-sidebar-container" ref={sidebarRef} style={{ display: 'none' }}>
+    <div className={`filter-sidebar-container ${isInline ? 'is-inline' : ''}`} ref={sidebarRef} style={{ display: 'none' }}>
       <div className="filter-sidebar-overlay global-overlay" ref={overlayRef} onClick={handleOverlayClick} style={{ backdropFilter: 'blur(15px)', WebkitBackdropFilter: 'blur(15px)' }} />
-      
+
       <div className="filter-sidebar-content" ref={contentRef} data-lenis-prevent="true">
         {/* Header */}
         <div className="filter-sidebar-header">
@@ -210,291 +560,215 @@ export default function FilterSidebar({
         <div className="filter-sidebar-body" data-lenis-prevent="true">
 
           {/* ─── A. MANDATORY PRICE RANGE (NON-SANITY) ─── */}
-          <div className="filter-group">
-            <p className="filter-group-label">
-              {dict?.filter?.price_range}
-            </p>
+          <AccordionWrapper
+            title={dict?.filter?.price_range}
+            isOpen={isGroupOpen('price')}
+            onToggle={() => toggleGroup('price')}
+            countLabel={(priceMin > 0 || priceMax < dbMaxPrice) ? 1 : undefined}
+          >
             <div className="price-inputs-row">
               <div className="price-input-box">
                 <span className="price-currency">€</span>
-                <input 
-                  type="text" 
-                  value={formatNumberWithCommas(priceMin)} 
+                <input
+                  type="text"
+                  value={formatNumberWithCommas(priceMin)}
                   onChange={(e) => setPriceMin(parseCommasToNumber(e.target.value))}
-                  placeholder="Min"
+                  placeholder={dict?.archive?.min}
                 />
               </div>
               <div className="price-divider">—</div>
               <div className="price-input-box">
                 <span className="price-currency">€</span>
-                <input 
-                  type="text" 
-                  value={formatNumberWithCommas(priceMax)} 
+                <input
+                  type="text"
+                  value={formatNumberWithCommas(priceMax)}
                   onChange={(e) => setPriceMax(parseCommasToNumber(e.target.value))}
-                  placeholder="Max"
+                  placeholder={dict?.archive?.max}
                 />
               </div>
             </div>
-            
-            <div className="range-slider-wrapper">
-              <input 
-                type="range" 
-                min="0" 
-                max={dbMaxPrice} 
-                step="50000"
-                value={priceMax}
-                onChange={(e) => setPriceMax(Number(e.target.value))}
-                className="range-slider-input"
-              />
-              <div className="range-track-bar">
-                <div 
-                  className="range-active-fill" 
-                  style={{ width: `${Math.min(100, (priceMax / dbMaxPrice) * 100)}%` }}
+
+
+
+            <div className='filter-group'>
+              <div className="range-slider-wrapper">
+                <input
+                  type="range"
+                  min="0"
+                  max={dbMaxPrice}
+                  step="any"
+                  value={priceMin}
+                  onChange={(e) => {
+                    const rawVal = Number(e.target.value);
+                    let val = Math.round(rawVal / 50000) * 50000;
+                    if (rawVal < 25000) val = 0;
+                    if (val > priceMax) val = priceMax;
+                    setPriceMin(val);
+                  }}
+                  className="range-slider-input"
                 />
+                <input
+                  type="range"
+                  min="0"
+                  max={dbMaxPrice}
+                  step="any"
+                  value={priceMax}
+                  onChange={(e) => {
+                    const rawVal = Number(e.target.value);
+                    let val = Math.round(rawVal / 50000) * 50000;
+                    if (rawVal > dbMaxPrice - 25000) val = dbMaxPrice;
+                    if (val < priceMin) val = priceMin;
+                    setPriceMax(val);
+                  }}
+                  className="range-slider-input"
+                />
+                <div className="range-track-bar">
+                  <div
+                    className="range-active-fill"
+                    style={{
+                      left: `${(priceMin / dbMaxPrice) * 100}%`,
+                      width: `${((priceMax - priceMin) / dbMaxPrice) * 100}%`
+                    }}
+                  />
+                </div>
               </div>
               <div className="slider-value-display">
-                {dict?.filter?.up_to} €{priceMax.toLocaleString()}
+                {priceMin > 0
+                  ? `€${priceMin.toLocaleString()} - €${priceMax.toLocaleString()}`
+                  : `${dict?.filter?.up_to} €${priceMax.toLocaleString()}`
+                }
               </div>
             </div>
-          </div>
+          </AccordionWrapper>
 
           {/* ─── ACCORDION MUNICIPALITIES FILTER ─── */}
-          <div className="filter-group municipality-accordion-group">
-            <button 
-              type="button"
-              className={`accordion-trigger ${isAccordionOpen ? 'active' : ''}`}
-              onClick={() => setIsAccordionOpen(!isAccordionOpen)}
-            >
-              <div className="accordion-trigger-left">
-                <span className="filter-group-label" style={{ margin: 0 }}>
-                  {dict?.filter?.municipalities}
-                </span>
-                {selectedMunicipalities.length > 0 && (
-                  <span className="accordion-selected-count">
-                    {selectedMunicipalities.length === 1 
-                      ? selectedMunicipalities[0] 
-                      : `${selectedMunicipalities.length} ${dict?.filter?.selected}`
-                    }
-                  </span>
-                )}
-              </div>
-              <div className="accordion-arrow-icon">
+          <AccordionWrapper
+            title={dict?.filter?.municipalities}
+            isOpen={isGroupOpen('municipalities', false)}
+            onToggle={() => toggleGroup('municipalities', false)}
+            countLabel={selectedMunicipalities.length > 0 ? selectedMunicipalities.length : undefined}
+          >
+            <div className="accordion-search-box">
+              <span className="search-box-icon">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                  <path d="M6 9l6 6 6-6" strokeLinecap="round" strokeLinejoin="round" />
+                  <circle cx="11" cy="11" r="8"></circle>
+                  <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                 </svg>
-              </div>
-            </button>
+              </span>
+              <input
+                ref={searchInputRef}
+                type="text"
+                value={municipalitySearch}
+                onChange={(e) => setMunicipalitySearch(e.target.value)}
+                placeholder={dict?.filter?.search_placeholder}
+              />
+              {municipalitySearch && (
+                <button
+                  type="button"
+                  className="search-box-clear"
+                  onClick={() => setMunicipalitySearch('')}
+                >
+                  ×
+                </button>
+              )}
+            </div>
 
-            {isAccordionOpen && (
-              <div className="accordion-content-panel" data-lenis-prevent="true">
-                <div className="accordion-search-box">
-                  <span className="search-box-icon">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                      <circle cx="11" cy="11" r="8"></circle>
-                      <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                    </svg>
-                  </span>
-                  <input 
-                    ref={searchInputRef}
-                    type="text"
-                    value={municipalitySearch}
-                    onChange={(e) => setMunicipalitySearch(e.target.value)}
-                    placeholder={dict?.filter?.search_placeholder}
-                  />
-                  {municipalitySearch && (
-                    <button 
-                      type="button" 
-                      className="search-box-clear" 
-                      onClick={() => setMunicipalitySearch('')}
+            <div className="accordion-options-list" data-lenis-prevent="true">
+              {filteredMunicipalities.length === 0 ? (
+                <div className="accordion-empty">
+                  {dict?.filter?.no_results}
+                </div>
+              ) : (
+                filteredMunicipalities.map((mun) => {
+                  const isChecked = selectedMunicipalities.includes(mun);
+                  return (
+                    <div
+                      key={mun}
+                      className={`accordion-option-row ${isChecked ? 'selected' : ''}`}
+                      onClick={() => toggleMunicipality(mun)}
                     >
-                      ×
-                    </button>
-                  )}
-                </div>
-
-                <div className="accordion-options-list" data-lenis-prevent="true">
-                  {filteredMunicipalities.length === 0 ? (
-                    <div className="accordion-empty">
-                      {dict?.filter?.no_results}
+                      <div className="custom-checkbox-wrapper">
+                        <input
+                          type="checkbox"
+                          checked={isChecked}
+                          onChange={() => { }}
+                          className="accordion-checkbox-hidden"
+                        />
+                        <span className="custom-checkbox-box">
+                          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                          </svg>
+                        </span>
+                      </div>
+                      <span className="accordion-option-label">{mun}</span>
                     </div>
-                  ) : (
-                    filteredMunicipalities.map((mun) => {
-                      const isChecked = selectedMunicipalities.includes(mun);
-                      return (
-                        <div 
-                          key={mun} 
-                          className={`accordion-option-row ${isChecked ? 'selected' : ''}`}
-                          onClick={() => toggleMunicipality(mun)}
-                        >
-                          <div className="custom-checkbox-wrapper">
-                            <input 
-                              type="checkbox" 
-                              checked={isChecked}
-                              onChange={() => {}}
-                              className="accordion-checkbox-hidden"
-                            />
-                            <span className="custom-checkbox-box">
-                              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4">
-                                <polyline points="20 6 9 17 4 12"></polyline>
-                              </svg>
-                            </span>
-                          </div>
-                          <span className="accordion-option-label">{mun}</span>
-                        </div>
-                      );
-                    })
-                  )}
-                </div>
-              </div>
-            )}
-          </div>
+                  );
+                })
+              )}
+            </div>
+          </AccordionWrapper>
 
           {/* ─── B. DYNAMIC SANITY METADATA FILTERS ─── */}
-          {filterableDefs.map((def: any) => {
-            const filterId = def._id;
-            const type = def.filter?.filterType;
-            const label = def.shortLabel || def.longLabel || 'Filter';
-            const unit = def.unit ? ` ${def.unit}` : '';
-
-            // 1. RANGE SLIDER WITH MANUAL AND AUTOMATIC MAX MODES
-            if (type === 'rangeSlider') {
-              const min = def.filter?.rangeMin ?? 0;
-              // Determine dynamic max based on useAutomaticMax setting
-              const max = def.filter?.useAutomaticMax === true
-                ? (def.autoMax ?? def.filter?.rangeMax ?? 1000)
-                : (def.filter?.rangeMax ?? 1000);
-              const step = def.filter?.rangeStep ?? 1;
-              const currentValue = filterValues[filterId] ?? max;
-
+          {categorizedFilters.blocks.map((block: any) => {
+            if (block.type === 'ungrouped') {
               return (
-                <div className="filter-group" key={filterId}>
-                  <p className="filter-group-label">{label}</p>
-                  <div className="range-slider-wrapper">
-                    <input 
-                      type="range" 
-                      min={min} 
-                      max={max} 
-                      step={step}
-                      value={currentValue}
-                      onChange={(e) => setFilterValues(prev => ({ ...prev, [filterId]: Number(e.target.value) }))}
-                      className="range-slider-input"
-                    />
-                    <div className="range-track-bar">
-                      <div 
-                        className="range-active-fill" 
-                        style={{ width: `${Math.min(100, ((currentValue - min) / (max - min)) * 100)}%` }}
-                      />
-                    </div>
-                    <div className="slider-value-display">
-                      {locale === 'es' ? 'Hasta' : 'Up to'} {def.filter?.rangePrefix || ''}{currentValue.toLocaleString()}{unit || def.filter?.rangeSuffix || ''}
-                    </div>
-                  </div>
+                <div key={block.title} className="ungrouped-filters-wrapper" style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                  {block.defs.map((def: any) => (
+                    <AccordionWrapper
+                      key={def._id}
+                      title={def.shortLabel || def.longLabel}
+                      isOpen={isGroupOpen(def._id)}
+                      onToggle={() => toggleGroup(def._id)}
+                      countLabel={isDefActive(def) ? 1 : undefined}
+                    >
+                      {renderFilterDef(def, true)}
+                    </AccordionWrapper>
+                  ))}
                 </div>
               );
             }
 
-            // 2. PREFIX RANGE (No hardcoded Any, reads entirely from prefixOptions)
-            if (type === 'prefixRange') {
-              const options = def.filter?.prefixOptions || [];
-              const currentValue = filterValues[filterId] ?? options[0]?.value ?? '';
-
-              return (
-                <div className="filter-group" key={filterId}>
-                  <p className="filter-group-label">{label}</p>
-                  <div className="segment-control">
-                    {options.map((opt: any, index: number) => {
-                      const active = currentValue === opt.value;
-                      return (
-                        <button 
-                          key={`${filterId}-${index}`}
-                          className={`segment-btn ${active ? 'active' : ''}`}
-                          onClick={() => setFilterValues(prev => ({ ...prev, [filterId]: opt.value }))}
-                        >
-                          {opt.label}
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-              );
-            }
-
-            // 3. BOOLEAN SWITCH TOGGLE
-            if (type === 'boolean') {
-              const currentValue = !!filterValues[filterId];
-
-              return (
-                <div className="filter-group" key={filterId}>
-                  <div className="toggles-container">
-                    <label className="toggle-row">
-                      <span className="toggle-label">{label}</span>
-                      <div className="toggle-switch-wrapper">
-                        <input 
-                          type="checkbox" 
-                          checked={currentValue}
-                          onChange={(e) => setFilterValues(prev => ({ ...prev, [filterId]: e.target.checked }))}
-                          className="toggle-checkbox"
-                        />
-                        <span className="toggle-switch-slider" />
-                      </div>
-                    </label>
-                  </div>
-                </div>
-              );
-            }
-
-            // 4. SINGLE OR MULTI-SELECT CHIPS
-            if (type === 'select' || type === 'multiSelect') {
-              const options = def.filter?.selectOptions || [];
-              const selected = filterValues[filterId] || (type === 'multiSelect' ? [] : '');
-
-              const toggleOption = (opt: string) => {
-                if (type === 'multiSelect') {
-                  const arr = Array.isArray(selected) ? selected : [];
-                  const next = arr.includes(opt) ? arr.filter((x: string) => x !== opt) : [...arr, opt];
-                  setFilterValues(prev => ({ ...prev, [filterId]: next }));
-                } else {
-                  setFilterValues(prev => ({ ...prev, [filterId]: selected === opt ? '' : opt }));
-                }
-              };
-
-              return (
-                <div className="filter-group" key={filterId}>
-                  <p className="filter-group-label">{label}</p>
-                  <div className="chips-container">
-                    {options.map((opt: string) => {
-                      const active = type === 'multiSelect' 
-                        ? (Array.isArray(selected) && selected.includes(opt))
-                        : selected === opt;
-                      return (
-                        <button 
-                          key={`${filterId}-${opt}`} 
-                          className={`filter-chip ${active ? 'active' : ''}`}
-                          onClick={() => toggleOption(opt)}
-                        >
-                          {opt}
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-              );
-            }
-
-            return null;
+            const count = getGroupActiveCount(block.defs);
+            return (
+              <AccordionWrapper
+                key={block.title}
+                title={block.title}
+                isOpen={isGroupOpen(block.title)}
+                onToggle={() => toggleGroup(block.title)}
+                countLabel={count > 0 ? count : undefined}
+              >
+                {block.defs.map((def: any) => renderFilterDef(def))}
+              </AccordionWrapper>
+            );
           })}
+
+          {categorizedFilters.uncategorized.length > 0 && (
+            (() => {
+              const count = getGroupActiveCount(categorizedFilters.uncategorized);
+              return (
+                <AccordionWrapper
+                  title={dict?.filter?.other}
+                  isOpen={isGroupOpen('uncategorized')}
+                  onToggle={() => toggleGroup('uncategorized')}
+                  countLabel={count > 0 ? count : undefined}
+                >
+                  {categorizedFilters.uncategorized.map((def: any) => renderFilterDef(def))}
+                </AccordionWrapper>
+              );
+            })()
+          )}
 
         </div>
 
         {/* Footer Actions */}
         <div className="filter-sidebar-footer">
-          <button 
+          <button
             className="filter-reset-btn"
             onClick={handleResetAll}
           >
             {dict?.filter?.reset_all}
           </button>
-          <Button 
+          <Button
             label={dict?.filter?.apply_filters}
             variant="dark"
             showArrow={true}

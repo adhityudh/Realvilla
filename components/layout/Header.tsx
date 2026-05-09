@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { HEADER_LETTERS, NAV_LINKS } from '@/lib/letters';
+import { HEADER_LETTERS } from '@/lib/letters';
 import { useLenis } from '@/lib/LenisContext';
 import Button from '@/components/ui/Button';
 import LanguageSwitcher from './LanguageSwitcher';
@@ -50,7 +50,7 @@ function useHeaderScrollAnimations(isHome: boolean) {
 
     const colorST = ScrollTrigger.create({
       trigger: hasHero ? heroTrigger : 'body',
-      start: hasHero 
+      start: hasHero
         ? () => isMobile ? 'bottom top' : `bottom ${header.offsetHeight}px`
         : "top top",
       end: 'max',
@@ -118,9 +118,9 @@ function useHeaderScrollAnimations(isHome: boolean) {
   }, [lenis, isHome]);
 }
 
-export default function Header({ settings }: { settings?: any }) {
+export default function Header({ settings, dict }: { settings?: any; dict?: any }) {
   const pathname = usePathname();
-  
+
   // Detect if we are on the Home page (e.g., /en, /es, /)
   const isHome = useMemo(() => {
     const segments = pathname.split('/').filter(Boolean);
@@ -134,7 +134,7 @@ export default function Header({ settings }: { settings?: any }) {
 
   useHeaderScrollAnimations(isHome);
 
-  const navLinks = settings?.mainNav || NAV_LINKS.map(l => ({ label: l.label, link: l.href }));
+  const navLinks = settings?.mainNav;
 
   // Check if a nav link is active by comparing against current pathname
   const isLinkActive = (href: string) => {
@@ -160,11 +160,11 @@ export default function Header({ settings }: { settings?: any }) {
       <div className="header-content">
         <a href={`/${currentLocale}`} className="header-logo" aria-label="Real Villa">
           {HEADER_LETTERS.map((letter, i) => (
-            <img 
-              key={i} 
-              src={letter.svg} 
-              className="header-letter-img" 
-              alt="" 
+            <img
+              key={i}
+              src={letter.svg}
+              className="header-letter-img"
+              alt=""
             />
           ))}
         </a>
@@ -176,17 +176,17 @@ export default function Header({ settings }: { settings?: any }) {
         <div className="header-actions">
           <LanguageSwitcher />
           {cta?.label && (
-            <Button 
-              label={cta.label} 
-              href={cta.link || "#"} 
-              variant="dark" 
-              className="btn-book" 
+            <Button
+              label={cta.label}
+              href={cta.link || "#"}
+              variant="dark"
+              className="btn-book"
             />
           )}
         </div>
-        <button 
-          className="hamburger" 
-          id="hamburgerBtn" 
+        <button
+          className="hamburger"
+          id="hamburgerBtn"
           aria-label="Menu"
           type="button"
           onClick={() => window.dispatchEvent(new CustomEvent('toggle-mobile-menu'))}

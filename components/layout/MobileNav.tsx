@@ -6,7 +6,7 @@ import StretchArrow from '@/components/ui/StretchArrow';
 import { useLenis } from '@/lib/LenisContext';
 import './MobileNav.css';
 
-export default function MobileNav({ settings }: { settings?: any }) {
+export default function MobileNav({ settings, dict }: { settings?: any; dict?: any }) {
   const lenis = useLenis();
 
   useEffect(() => {
@@ -45,7 +45,14 @@ export default function MobileNav({ settings }: { settings?: any }) {
     };
   }, [lenis]);
 
-  const navLinks = settings?.mobileNav || NAV_LINKS.map(l => ({ label: l.label, link: l.href }));
+  const defaultNavLinks = [
+    { label: dict?.nav?.buy, link: '/buy' },
+    { label: dict?.nav?.sell, link: '/#contact' },
+    { label: dict?.nav?.invest, link: '/invest' },
+    { label: dict?.nav?.mortgages, link: '/#contact' },
+  ];
+
+  const navLinks = settings?.mobileNav || defaultNavLinks;
   const cta = settings?.headerCta;
 
   return (

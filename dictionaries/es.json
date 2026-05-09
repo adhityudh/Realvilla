@@ -1,6 +1,8 @@
 {
   "hero": {
-    "scroll": "Deslizar"
+    "scroll": "Deslizar",
+    "title": "Encuentre su hogar perfecto",
+    "search_placeholder": "Buscar por nombre de propiedad, ubicación o municipios..."
   },
   "about": {
     "view_certificate": "Ver Certificado"
@@ -87,5 +89,29 @@
     "areas_locations": "Zonas y Ubicaciones",
     "view_all": "Ver todas las propiedades",
     "matching_properties": "Propiedades coincidentes"
+  },
+  "archive": {
+    "search_placeholder": "Busque por nombre de propiedad, ubicación...",
+    "sort_label": "Ordenar por:",
+    "sort_newest": "Más recientes",
+    "sort_price_desc": "Precio: Mayor a menor",
+    "sort_price_asc": "Precio: Menor a mayor",
+    "filter_button": "Filtrar",
+    "no_results": "No pudimos encontrar ninguna propiedad que coincida con sus criterios.",
+    "no_results_subtitle": "Intente ajustar sus filtros o explore todos los listados a continuación.",
+    "no_properties_in_area": "Actualmente no tenemos propiedades listadas en esta zona específica.",
+    "explore_others": "Explore todas nuestras propiedades disponibles en Tenerife en su lugar.",
+    "explore_other_areas": "Explorar otras zonas",
+    "min": "Min",
+    "max": "Max",
+    "all_properties": "Ver todas",
+    "other": "Otros"
+  },
+  "valuation": {
+    "loading": "Cargando herramienta de valoración..."
+  },
+  "properties": {
+    "title": "Villas exclusivas en Tenerife",
+    "no_results": "No se han encontrado propiedades."
   }
 }

@@ -109,6 +109,14 @@ export const propertyMeta = defineType({
           hidden: ({ parent }) => parent?.filterType !== 'rangeSlider',
         }),
         defineField({
+          name: 'isDoubleSlider',
+          title: 'Use Double Slider (Min & Max)',
+          type: 'boolean',
+          description: 'If enabled, the slider will have two thumbs to select a range (min and max) instead of just a max value.',
+          initialValue: false,
+          hidden: ({ parent }) => parent?.filterType !== 'rangeSlider',
+        }),
+        defineField({
           name: 'useAutomaticMax',
           title: 'Use Automatic Maximum',
           type: 'boolean',
@@ -142,6 +150,13 @@ export const propertyMeta = defineType({
                   validation: (Rule) => Rule.required(),
                 }),
                 defineField({
+                  name: 'isAny',
+                  title: 'Is "Any" Option?',
+                  type: 'boolean',
+                  description: 'If enabled, this option will remove the filter for this field (showing all properties).',
+                  initialValue: false,
+                }),
+                defineField({
                   name: 'operator',
                   title: 'Comparison Rule',
                   type: 'string',
@@ -154,14 +169,22 @@ export const propertyMeta = defineType({
                     layout: 'radio',
                   },
                   initialValue: 'gte',
-                  validation: (Rule) => Rule.required(),
+                  hidden: ({ parent }) => parent?.isAny === true,
+                  validation: (Rule) => Rule.custom((value, context: any) => {
+                    if (context.parent?.isAny !== true && !value) return 'Comparison rule is required for non-Any options';
+                    return true;
+                  }),
                 }),
                 defineField({
                   name: 'value',
                   title: 'Numeric Value',
                   type: 'number',
                   description: 'The number to compare against. E.g. 2, 3.',
-                  validation: (Rule) => Rule.required(),
+                  hidden: ({ parent }) => parent?.isAny === true,
+                  validation: (Rule) => Rule.custom((value, context: any) => {
+                    if (context.parent?.isAny !== true && value === undefined) return 'Numeric value is required for non-Any options';
+                    return true;
+                  }),
                 }),
               ],
               preview: {
@@ -169,6 +192,7 @@ export const propertyMeta = defineType({
                   label: 'label',
                   operator: 'operator',
                   value: 'value',
+                  isAny: 'isAny'
                 },
                 prepare({ label, operator, value }) {
                   const opMap: Record<string, string> = {
