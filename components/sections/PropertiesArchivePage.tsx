@@ -15,17 +15,6 @@ import './SearchModal.css';
 import './BuyPropertiesSection.css';
 import './PropertiesSection.css';
 
-const TENERIFE_MUNICIPALITIES = [
-  'Adeje', 'Arafo', 'Arico', 'Arona', 'Buenavista del Norte',
-  'Candelaria', 'El Rosario', 'El Sauzal', 'El Tanque', 'Fasnia',
-  'Garachico', 'Granadilla de Abona', 'Guía de Isora', 'Güímar',
-  'Icod de los Vinos', 'La Guancha', 'La Matanza de Acentejo',
-  'La Orotava', 'La Victoria de Acentejo', 'Los Realejos',
-  'Los Silos', 'Puerto de la Cruz', 'San Cristóbal de La Laguna',
-  'San Juan de la Rambla', 'San Miguel de Abona',
-  'Santa Cruz de Tenerife', 'Santa Úrsula', 'Santiago del Teide',
-  'Tacoronte', 'Tegueste', 'Vilaflor'
-];
 import './PropertiesArchivePage.css';
 
 if (typeof window !== 'undefined') {
@@ -113,12 +102,12 @@ export default function PropertiesArchivePage({ dict }: { dict?: any }) {
   }, []);
 
   const suggestions = useMemo(() => {
-    if (searchQuery.length < 2) return [];
+    if (searchQuery.length < 2 || !municipalitiesList.length) return [];
     const query = searchQuery.toLowerCase().trim();
-    return TENERIFE_MUNICIPALITIES.filter(mun => 
+    return municipalitiesList.filter(mun => 
       mun.toLowerCase().includes(query) && mun.toLowerCase() !== query
     ).slice(0, 5);
-  }, [searchQuery]);
+  }, [searchQuery, municipalitiesList]);
   const locale = useMemo(() => {
     const segments = pathname.split('/');
     return segments[1] || 'en';
@@ -455,12 +444,11 @@ export default function PropertiesArchivePage({ dict }: { dict?: any }) {
 
   const isMunicipalityFocused = useMemo(() => {
     if (activeFilters.municipalities.length > 0) return true;
-    if (searchQuery.length > 2) {
+    if (searchQuery.length > 2 && municipalitiesList.length > 0) {
       const query = searchQuery.toLowerCase().trim();
-      const combinedList = [...new Set([...TENERIFE_MUNICIPALITIES, ...municipalitiesList])];
       
-      // Check if search query matches any known municipality
-      return combinedList.some((name: string) => {
+      // Check if search query matches any known municipality from API
+      return municipalitiesList.some((name: string) => {
         const lowerName = name.toLowerCase();
         return lowerName === query || lowerName.includes(query) || query.includes(lowerName);
       });
