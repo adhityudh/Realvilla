@@ -25,6 +25,7 @@ interface FilterSidebarProps {
     metaFilters: Record<string, any>;
   }) => void;
   isInline?: boolean;
+  municipalities?: string[];
 }
 
 const AccordionWrapper = ({ title, isOpen, onToggle, children, countLabel }: any) => (
@@ -64,7 +65,8 @@ export default function FilterSidebar({
   meta,
   activeFilters,
   onApplyFilters,
-  isInline = false
+  isInline = false,
+  municipalities: externalMunicipalities
 }: FilterSidebarProps) {
   const sidebarRef = useRef<HTMLDivElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
@@ -117,8 +119,14 @@ export default function FilterSidebar({
     }));
   };
 
-  // Load municipalities from GeoNames on component mount
+  // Sync municipalities list from prop or Geo-proxy
   useEffect(() => {
+    if (externalMunicipalities && externalMunicipalities.length > 0) {
+      setMunicipalitiesList(externalMunicipalities);
+      setLoadingMunicipalities(false);
+      return;
+    }
+
     async function load() {
       try {
         const list = await getMunicipalities();
@@ -130,7 +138,7 @@ export default function FilterSidebar({
       }
     }
     load();
-  }, []);
+  }, [externalMunicipalities]);
 
   // Sync with activeFilters from parent when sidebar is opened or rendering inline on desktop
   useEffect(() => {

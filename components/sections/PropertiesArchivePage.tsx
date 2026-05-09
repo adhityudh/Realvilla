@@ -21,7 +21,7 @@ if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
 }
 
-export default function PropertiesArchivePage({ dict }: { dict?: any }) {
+export default function PropertiesArchivePage({ dict, initialMeta }: { dict?: any, initialMeta?: any }) {
   const sectionRef = useRef<HTMLElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
   const paginationRef = useRef<HTMLDivElement>(null);
@@ -31,7 +31,7 @@ export default function PropertiesArchivePage({ dict }: { dict?: any }) {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [loading, setLoading] = useState<boolean>(true);
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
-  const [filterMeta, setFilterMeta] = useState<any>(null);
+  const [filterMeta, setFilterMeta] = useState<any>(initialMeta || null);
 
   const pathname = usePathname();
   const router = useRouter();
@@ -43,8 +43,6 @@ export default function PropertiesArchivePage({ dict }: { dict?: any }) {
 
   // Sort state
   const [orderBy, setOrderBy] = useState<string>(searchParams.get('orderBy') || '_createdAt desc');
-
-  // Filter States
   const [activeFilters, setActiveFilters] = useState<{
     priceMin: number;
     priceMax: number;
@@ -53,7 +51,7 @@ export default function PropertiesArchivePage({ dict }: { dict?: any }) {
   }>(() => {
     const municipalities = searchParams.get('municipalities')?.split(',').filter(Boolean) || [];
     const priceMin = Number(searchParams.get('priceMin')) || 0;
-    const priceMax = Number(searchParams.get('priceMax')) || 5000000;
+    const priceMax = Number(searchParams.get('priceMax')) || (initialMeta?.maxPrice || 5000000);
     
     // Parse meta filters from JSON string if present
     let metaFilters = {};
@@ -194,6 +192,10 @@ export default function PropertiesArchivePage({ dict }: { dict?: any }) {
 
   // Fetch filter metadata
   useEffect(() => {
+    if (initialMeta) {
+      setFilterMeta(initialMeta);
+      return;
+    }
     const fetchFilterMeta = async () => {
       try {
         const res = await client.fetch(PROPERTY_META_QUERY, { language: locale });
@@ -203,7 +205,7 @@ export default function PropertiesArchivePage({ dict }: { dict?: any }) {
       }
     };
     fetchFilterMeta();
-  }, [locale]);
+  }, [locale, initialMeta]);
 
   // Sync priceMax once filterMeta loads
   useEffect(() => {
@@ -650,6 +652,7 @@ export default function PropertiesArchivePage({ dict }: { dict?: any }) {
           locale={locale}
           dict={dict}
           meta={filterMeta}
+          municipalities={municipalitiesList}
           activeFilters={activeFilters}
           onApplyFilters={(filters) => {
             setActiveFilters(filters);

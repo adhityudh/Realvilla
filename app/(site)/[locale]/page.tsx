@@ -5,7 +5,7 @@ import SectionRenderer from '@/components/sections/SectionRenderer';
 import FooterSection from '@/components/sections/FooterSection';
 import { draftMode } from 'next/headers';
 import { client } from '@/sanity/lib/client';
-import { PAGE_QUERY, SETTINGS_QUERY } from '@/sanity/lib/queries';
+import { PAGE_QUERY, SETTINGS_QUERY, PROPERTY_META_QUERY } from '@/sanity/lib/queries';
 import { getGlobalSettings, constructMetadata } from '@/lib/metadata';
 import { getDictionary } from '@/lib/get-dictionary';
 import { Metadata } from 'next';
@@ -31,6 +31,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
   let data = null;
   let settingsData = null;
   let dict = null;
+  let filterMeta = null;
 
   try {
     const fetchOptions = { 
@@ -42,10 +43,11 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
       } 
     };
 
-    [data, settingsData, dict] = await Promise.all([
+    [data, settingsData, dict, filterMeta] = await Promise.all([
       client.fetch(PAGE_QUERY, { slug: 'home', language: locale }, fetchOptions),
       client.fetch(SETTINGS_QUERY, { language: locale }, fetchOptions),
-      getDictionary(locale as any)
+      getDictionary(locale as any),
+      client.fetch(PROPERTY_META_QUERY, { language: locale }, { next: { revalidate: 3600, tags: ['meta'] } })
     ]);
   } catch (error) {
     console.error('Sanity fetch error:', error);
@@ -85,7 +87,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
     <>
       <TranslationSetter translations={data._translations ?? []} />
       <SplashIntro data={data.sections.find((s: any) => s._type === 'splashIntro')} dict={dict} />
-      <SectionRenderer sections={data.sections} dict={dict} />
+      <SectionRenderer sections={data.sections} dict={dict} filterMeta={filterMeta} />
     </>
   );
 }

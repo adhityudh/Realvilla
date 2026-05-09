@@ -16,9 +16,19 @@ export async function generateMetadata(
   };
 }
 
+import { client } from '@/sanity/lib/client';
+import { PROPERTY_META_QUERY } from '@/sanity/lib/queries';
+
 export default async function PropertiesPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
-  const dict = await getDictionary(locale as any);
+  
+  // Fetch dictionary and filter metadata in parallel on the server
+  const [dict, initialMeta] = await Promise.all([
+    getDictionary(locale as any),
+    client.fetch(PROPERTY_META_QUERY, { language: locale }, { 
+      next: { revalidate: 3600, tags: ['meta', 'properties'] } 
+    })
+  ]);
 
   const translations = [
     { language: 'en', slug: 'properties' },
@@ -28,7 +38,7 @@ export default async function PropertiesPage({ params }: { params: Promise<{ loc
   return (
     <>
       <TranslationSetter translations={translations} />
-      <PropertiesArchivePage dict={dict} />
+      <PropertiesArchivePage dict={dict} initialMeta={initialMeta} />
     </>
   );
 }

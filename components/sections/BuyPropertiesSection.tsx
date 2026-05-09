@@ -16,7 +16,7 @@ if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
 }
 
-export default function BuyPropertiesSection({ data, dict }: { data?: any, dict?: any }) {
+export default function BuyPropertiesSection({ data, dict, filterMeta: initialMeta }: { data?: any, dict?: any, filterMeta?: any }) {
   const router = useRouter();
   const sectionRef = useRef<HTMLElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
@@ -28,7 +28,7 @@ export default function BuyPropertiesSection({ data, dict }: { data?: any, dict?
   const [loading, setLoading] = useState<boolean>(true);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
-  const [filterMeta, setFilterMeta] = useState<any>(null);
+  const [filterMeta, setFilterMeta] = useState<any>(initialMeta || null);
 
   // Filter States
   const [activeFilters, setActiveFilters] = useState<{
@@ -38,10 +38,12 @@ export default function BuyPropertiesSection({ data, dict }: { data?: any, dict?
     metaFilters: Record<string, any>;
   }>({
     priceMin: 0,
-    priceMax: 5000000,
+    priceMax: initialMeta?.maxPrice || 5000000,
     municipalities: [],
     metaFilters: {}
   });
+
+  const [municipalitiesList, setMunicipalitiesList] = useState<string[]>([]);
 
   const title = data?.title || dict?.properties?.title;
 
@@ -52,6 +54,10 @@ export default function BuyPropertiesSection({ data, dict }: { data?: any, dict?
   }, [pathname]);
 
   useEffect(() => {
+    if (initialMeta) {
+      setFilterMeta(initialMeta);
+      return;
+    }
     const fetchFilterMeta = async () => {
       try {
         const res = await client.fetch(PROPERTY_META_QUERY, { language: locale });
@@ -61,7 +67,23 @@ export default function BuyPropertiesSection({ data, dict }: { data?: any, dict?
       }
     };
     fetchFilterMeta();
-  }, [locale]);
+  }, [locale, initialMeta]);
+
+  // Fetch municipalities from internal API
+  useEffect(() => {
+    async function loadMun() {
+      try {
+        const res = await fetch('/api/geo/tenerife');
+        const data = await res.json();
+        if (data.municipalities) {
+          setMunicipalitiesList(data.municipalities);
+        }
+      } catch (err) {
+        console.error('Error loading municipalities:', err);
+      }
+    }
+    loadMun();
+  }, []);
 
   // Sync priceMax once filterMeta loads
   useEffect(() => {
@@ -393,6 +415,7 @@ export default function BuyPropertiesSection({ data, dict }: { data?: any, dict?
         locale={locale}
         dict={dict}
         meta={filterMeta}
+        municipalities={municipalitiesList}
         activeFilters={activeFilters}
         onApplyFilters={(filters) => {
           const targetPath = locale === 'es' ? 'propiedades' : 'properties';
