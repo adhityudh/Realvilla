@@ -344,32 +344,6 @@ export default function PropertiesArchivePage({ dict, initialMeta }: { dict?: an
             ScrollTrigger.refresh();
           }, 100);
 
-          // Premium Grid Entrance Animation (Only for new items)
-          if (gridRef.current && res.items?.length > 0) {
-            // Short delay to ensure React has finished rendering the new nodes
-            setTimeout(() => {
-              const allCards = gridRef.current?.querySelectorAll('.property-card');
-              if (!allCards) return;
-
-              const startIndex = (currentPage - 1) * itemsPerPage;
-              const newCards = Array.from(allCards).slice(startIndex);
-
-              gsap.fromTo(
-                newCards,
-                { y: 50, opacity: 0, scale: 0.95, filter: 'blur(15px)' },
-                {
-                  y: 0,
-                  opacity: 1,
-                  scale: 1,
-                  filter: 'blur(0px)',
-                  duration: 1.2,
-                  stagger: 0.1,
-                  ease: 'expo.out',
-                  clearProps: 'filter,transform,opacity'
-                }
-              );
-            }, 100);
-          }
         }
       } catch (err) {
         console.error('Error fetching properties archive:', err);
