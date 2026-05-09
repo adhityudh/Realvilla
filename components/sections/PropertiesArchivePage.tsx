@@ -79,8 +79,11 @@ export default function PropertiesArchivePage({ dict }: { dict?: any }) {
   useEffect(() => {
     async function load() {
       try {
-        const list = await fetchMunicipalities();
-        setMunicipalitiesList(list);
+        const res = await fetch('/api/geo/tenerife');
+        const data = await res.json();
+        if (data.municipalities) {
+          setMunicipalitiesList(data.municipalities);
+        }
       } catch (err) {
         console.error('Error loading municipalities:', err);
       }
