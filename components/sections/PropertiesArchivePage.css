@@ -1,5 +1,5 @@
 .archive-properties-section {
-    padding: 6rem 2.5rem 0rem 2.5rem;
+    padding: 5.5rem 3rem 0rem 3rem;
     background-color: var(--bg-white, #fdfcfb);
     min-height: 100vh;
     border-bottom: 1px solid var(--border-light);
@@ -16,6 +16,9 @@
     right: 0;
     height: 132px;
     background-color: var(--color-gold-light);
+    background-image: url('/images/img-decor-gold.webp');
+    background-size: cover;
+    background-position: center;
     z-index: -1;
 }
 

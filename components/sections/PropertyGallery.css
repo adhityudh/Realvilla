@@ -15,8 +15,11 @@
   top: 0;
   left: 0;
   right: 0;
-  height: 560px;
+  height: 132px;
   background-color: var(--color-gold-light);
+  background-image: url('/images/img-decor-gold.webp');
+  background-size: cover;
+  background-position: center;
   z-index: -1;
 }
 
