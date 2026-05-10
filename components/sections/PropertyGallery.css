@@ -62,6 +62,12 @@
   z-index: 2;
 }
 
+.btn-content-desktop {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+}
+
 .btn-content-mobile {
   display: none;
 }
