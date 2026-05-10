@@ -24,10 +24,11 @@
 
 .contact-single-logo-container {
     position: absolute;
-    bottom: -22.5vw;
-    left: -7.5vw;
+    bottom: max(-22.5vw, -420px);
+    left: max(-7.5vw, -140px);
     width: 60vw;
     height: 60vw;
+    max-width: 1100px;
     filter: drop-shadow(-2px -2px 16px rgba(255, 254, 242, 0.42)) drop-shadow(2px 3px 22px rgba(70, 55, 20, 0.35)) drop-shadow(15px 25px 55px rgba(65, 50, 15, 0.26)) drop-shadow(35px 55px 105px rgba(55, 40, 10, 0.15));
     z-index: 1;
 }
@@ -185,7 +186,7 @@
     text-transform: uppercase;
     letter-spacing: var(--ls-wider);
     margin-top: 1rem;
-    max-width: 120px;
+    max-width: 320px;
     line-height: var(--lh-base);
     font-weight: var(--fw-semibold);
     color: rgba(0, 0, 0, 0.7);
@@ -572,12 +573,13 @@
 
     .contact-single-logo-container {
         position: absolute;
-        top: 2vw;
+        top: calc(52% - 48vw);
+        max-width: 480px;
         bottom: auto;
         left: 50%;
         right: auto;
-        width: 110vw;
-        height: 110vw;
+        width: 72vw;
+        height: 72vw;
         transform: translateX(-50%);
         filter: drop-shadow(-2px -2px 16px rgba(255, 254, 242, 0.42)) drop-shadow(2px 3px 22px rgba(70, 55, 20, 0.35)) drop-shadow(15px 25px 55px rgba(65, 50, 15, 0.26)) drop-shadow(35px 55px 105px rgba(55, 40, 10, 0.15));
         z-index: 1;

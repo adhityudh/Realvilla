@@ -186,7 +186,7 @@
 
     .testimonials-title {
         font-size: var(--text-display-lg);
-        max-width: 4ch;
+        max-width: 360px;
     }
 
     .testimonials-ticker {

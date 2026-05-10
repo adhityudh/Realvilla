@@ -456,6 +456,8 @@
     .about-certificates {
         margin-top: 2rem;
         width: 100%;
+        max-width: 560px;
+        align-self: center;
     }
 
     .about-certificates>div {
