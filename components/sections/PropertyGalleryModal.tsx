@@ -6,16 +6,109 @@ import Image from 'next/image';
 import gsap from 'gsap';
 import { urlForImage } from '@/sanity/lib/image';
 import { useLenis } from '@/lib/LenisContext';
+import dynamic from 'next/dynamic';
 import './PropertyGalleryModal.css';
+import "plyr/dist/plyr.css"; // Use standard Plyr base styles now
 
 interface PropertyGalleryModalProps {
   isOpen: boolean;
   onClose: () => void;
   property: any;
   dict?: any;
+  initialItem?: any;
 }
 
-export default function PropertyGalleryModal({ isOpen, onClose, property, dict }: PropertyGalleryModalProps) {
+// --- STABLE NATIVE PLAYER ENGINE ---
+// This custom implementation bypasses buggy 3rd party wrappers to directly handle lifecycle,
+// preventing React 18/19 StrictMode crashes (null getAttribute errors).
+function ReliableVideoPlayer({ videoId, poster }: { videoId: string; poster?: string }) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const isInitRef = useRef(false);
+  const [isPlayerReady, setIsPlayerReady] = useState(false);
+
+  useEffect(() => {
+    // Reset ready state when videoId flips
+    setIsPlayerReady(false);
+  }, [videoId]);
+
+  useEffect(() => {
+    if (!containerRef.current || isInitRef.current) return;
+    
+    let instance: any = null;
+    isInitRef.current = true; // Mutex lock against double invocation
+    
+    // Dynamically import core lib to completely avoid SSR issues
+    import('plyr').then(({ default: Plyr }) => {
+      if (!containerRef.current) {
+        isInitRef.current = false;
+        return;
+      }
+      
+      // Initialize instance directly on the node
+      instance = new Plyr(containerRef.current, {
+        autoplay: true,
+        muted: true,
+        controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'fullscreen'],
+        youtube: { 
+          noCookie: true, 
+          rel: 0, 
+          showinfo: 0, 
+          iv_load_policy: 3, 
+          modestbranding: 1, 
+          enablejsapi: 1 
+        }
+      });
+
+      // BIND DIRECT EVENTS: Sets state absolutely reliably directly from the library signals
+      instance.on('ready', () => setIsPlayerReady(true));
+      instance.on('playing', () => setIsPlayerReady(true));
+
+      // Bind the definitive source configuration
+      instance.source = {
+        type: 'video',
+        poster: poster,
+        sources: [{ src: videoId, provider: 'youtube' }]
+      };
+    });
+
+    // Clean cleanup callback
+    return () => {
+      if (instance) {
+        instance.destroy();
+      }
+      isInitRef.current = false;
+    };
+  }, [videoId, poster]);
+
+  return (
+    <div key={videoId} className="plyr-isolated-viewport" style={{ width: '100%', height: '100%', position: 'relative' }}>
+      <div 
+        ref={containerRef} 
+        className="plyr__video-embed" 
+        style={{ width: '100%', height: '100%' }}
+      >
+        <iframe
+          src={`https://www.youtube.com/embed/${videoId}?origin=${typeof window !== 'undefined' ? encodeURIComponent(window.location.origin) : ''}&enablejsapi=1`}
+          allowFullScreen
+          allow="autoplay"
+        />
+      </div>
+      {/* Encapsulated inside component ensuring absolute positional stability */}
+      <div 
+        className="video-loading-overlay"
+        style={{
+          opacity: isPlayerReady ? 0 : 1,
+          visibility: isPlayerReady ? 'hidden' : 'visible',
+          transition: 'opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.6s'
+        }}
+      >
+        <div className="modal-loader-spinner"></div>
+      </div>
+    </div>
+  );
+}
+
+export default function PropertyGalleryModal({ isOpen, onClose, property, dict, initialItem }: PropertyGalleryModalProps) {
   const [mounted, setMounted] = useState(false);
   const lenis = useLenis();
 
@@ -24,10 +117,49 @@ export default function PropertyGalleryModal({ isOpen, onClose, property, dict }
   }, []);
   const [activeTab, setActiveTab] = useState('all');
   const [selectedItem, setSelectedItem] = useState<any>(null);
-  
+
   const modalRef = useRef<HTMLDivElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
+
+  // Scroll Gradients state for Detail View
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(false);
+  const thumbScrollRef = useRef<HTMLDivElement>(null);
+
+  // Layout stabilizer state to defer player render until container achieves non-zero dimensions
+  const [isLayoutStable, setIsLayoutStable] = useState(false);
+
+  useEffect(() => {
+    if (isOpen) {
+      // Slight delay gives GSAP time to flip display:none to display:flex, 
+      // avoiding 0px dimension calculations inside Plyr
+      const timer = setTimeout(() => setIsLayoutStable(true), 150);
+      return () => clearTimeout(timer);
+    } else {
+      setIsLayoutStable(false);
+    }
+  }, [isOpen]);
+
+  const checkThumbnailScroll = () => {
+    if (thumbScrollRef.current) {
+      const { scrollLeft, scrollWidth, clientWidth } = thumbScrollRef.current;
+      // Using buffer values to allow a tiny bit of float inaccuracy/leeway
+      setCanScrollLeft(scrollLeft > 5);
+      setCanScrollRight(scrollLeft + clientWidth < scrollWidth - 5);
+    }
+  };
+
+  useEffect(() => {
+    if (selectedItem) {
+      const timer = setTimeout(checkThumbnailScroll, 150);
+      window.addEventListener('resize', checkThumbnailScroll);
+      return () => {
+        clearTimeout(timer);
+        window.removeEventListener('resize', checkThumbnailScroll);
+      };
+    }
+  }, [selectedItem, activeTab]);
 
   const gallery = property?.gallery || [];
   const mainImage = property?.image;
@@ -59,7 +191,7 @@ export default function PropertyGalleryModal({ isOpen, onClose, property, dict }
     });
 
     const hasVideos = allMedia.some(m => m._type === 'videoItem');
-    
+
     return [
       { id: 'all', label: dict?.property?.gallery_all || 'All' },
       ...(hasVideos ? [{ id: 'video', label: dict?.property?.gallery_video || 'Video' }] : []),
@@ -77,12 +209,37 @@ export default function PropertyGalleryModal({ isOpen, onClose, property, dict }
     return allMedia;
   }, [activeTab, allMedia]);
 
+  // Dedicated Effect to handle Jump-to-Detail Link on Open
+  useEffect(() => {
+    if (isOpen && initialItem) {
+      // Helper to extract ANY form of asset ID for uniform comparison
+      const getAssetKey = (item: any) => item?.asset?._ref || item?.asset?._id || item?._id || '';
+      const targetAssetKey = getAssetKey(initialItem);
+
+      const matchedItem = allMedia.find(m => 
+        (m._key && m._key === initialItem._key) ||
+        (m._id && m._id === initialItem._id) ||
+        (m.url && m.url === initialItem.url) ||
+        // Compare extracted asset strings if keys/ids didn't match
+        (targetAssetKey && getAssetKey(m) === targetAssetKey)
+      );
+      
+      if (matchedItem) {
+        setSelectedItem(matchedItem);
+      }
+    }
+  }, [isOpen, initialItem, allMedia]);
+
   // GSAP Animations
   useEffect(() => {
     if (isOpen) {
+      // Pre-warm/preload the Plyr package chunk eagerly as soon as the modal opens
+      // This ensures the JS is already cached when the user clicks the video
+      import("plyr-react").catch(() => { });
+
       document.body.style.overflow = 'hidden';
       lenis?.stop();
-      
+
       const tl = gsap.timeline();
       tl.set(modalRef.current, { display: 'flex' });
       tl.fromTo(overlayRef.current, { opacity: 0 }, { opacity: 1, duration: 0.5, ease: 'power2.out' }, 0);
@@ -95,7 +252,7 @@ export default function PropertyGalleryModal({ isOpen, onClose, property, dict }
     } else {
       document.body.style.overflow = '';
       lenis?.start();
-      
+
       const tl = gsap.timeline({
         onComplete: () => {
           if (modalRef.current) modalRef.current.style.display = 'none';
@@ -123,7 +280,7 @@ export default function PropertyGalleryModal({ isOpen, onClose, property, dict }
     if (item._type === 'image') return urlForImage(item).url();
     if (item._type === 'videoItem') {
       if (item.thumbnail?.asset) return urlForImage(item.thumbnail).url();
-      const videoId = item.url?.includes('v=') 
+      const videoId = item.url?.includes('v=')
         ? item.url.split('v=')[1]?.split('&')[0]
         : item.url?.split('/').pop();
       return videoId ? `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg` : '/placeholder-media.jpg';
@@ -131,39 +288,83 @@ export default function PropertyGalleryModal({ isOpen, onClose, property, dict }
     return '';
   };
 
-  const renderFullscreen = () => {
+  const renderDetailView = () => {
     if (!selectedItem) return null;
+
     const isVideo = selectedItem._type === 'videoItem';
-    
+    const currentGroupItems = filteredMedia;
+    const currentIndex = currentGroupItems.findIndex(m => m === selectedItem);
+
+    const handleNext = (e?: React.MouseEvent) => {
+      e?.stopPropagation();
+      const nextIndex = (currentIndex + 1) % currentGroupItems.length;
+      setSelectedItem(currentGroupItems[nextIndex]);
+    };
+
+    const handlePrev = (e?: React.MouseEvent) => {
+      e?.stopPropagation();
+      const prevIndex = (currentIndex - 1 + currentGroupItems.length) % currentGroupItems.length;
+      setSelectedItem(currentGroupItems[prevIndex]);
+    };
+
     return (
-      <div className="gallery-fullscreen-overlay">
-        <button className="fullscreen-close" onClick={() => setSelectedItem(null)}>
-          <img src="/icons/close.svg" alt="Close" />
+      <div className="gallery-detail-view">
+        {/* Back Button */}
+        <button className="back-to-grid" onClick={() => setSelectedItem(null)}>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M19 12H5M12 19l-7-7 7-7" />
+          </svg>
+          Grid View
         </button>
-        
-        <div className="fullscreen-content">
-          {isVideo ? (
-            <div className="video-wrapper">
-              <iframe
-                src={`https://www.youtube.com/embed/${selectedItem.url?.split('v=')[1]?.split('&')[0] || selectedItem.url?.split('/').pop()}?autoplay=1`}
-                frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              ></iframe>
-            </div>
-          ) : (
-            <div className="image-wrapper">
+
+        <div className="detail-main-content">
+          <button className="nav-btn prev" onClick={handlePrev}>
+            <img src="/icons/chevron_backward.svg" alt="Previous" width="24" height="24" />
+          </button>
+
+          <div className="detail-media-wrapper">
+            {/* Only mount the Player Engine once layout is stable with real dimensions */}
+            {isLayoutStable && isVideo ? (
+              <div className="plyr-container">
+                <ReliableVideoPlayer 
+                   videoId={selectedItem.url?.split('v=')[1]?.split('&')[0] || selectedItem.url?.split('/').pop() || ''} 
+                   poster={getImageUrl(selectedItem)}
+                />
+              </div>
+            ) : (
               <Image
                 src={getImageUrl(selectedItem)}
-                alt="Fullscreen view"
+                alt={selectedItem.alt || "Property"}
                 fill
                 style={{ objectFit: 'contain' }}
               />
-            </div>
-          )}
+            )}
+          </div>
+
+          <button className="nav-btn next" onClick={handleNext}>
+            <img src="/icons/chevron_forward.svg" alt="Next" width="24" height="24" />
+          </button>
         </div>
 
-        {/* Simple navigation within fullscreen could be added here */}
+        {/* Horizontal Thumbnails */}
+        <div className={`detail-thumbnails-container ${canScrollLeft ? 'can-scroll-left' : ''} ${canScrollRight ? 'can-scroll-right' : ''}`}>
+          <div className="detail-thumbnails-scroll" ref={thumbScrollRef} onScroll={checkThumbnailScroll}>
+            {currentGroupItems.map((item, idx) => (
+              <div
+                key={idx}
+                className={`detail-thumb-item ${selectedItem === item ? 'active' : ''}`}
+                onClick={() => setSelectedItem(item)}
+              >
+                <img src={getImageUrl(item)} alt={`Thumbnail ${idx}`} />
+                {item._type === 'videoItem' && (
+                  <div className="thumb-video-icon">
+                    <img src="/icons/play_arrow_filled.svg" alt="Play" width="16" height="16" />
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     );
   };
@@ -173,7 +374,7 @@ export default function PropertyGalleryModal({ isOpen, onClose, property, dict }
   return createPortal(
     <div className="gallery-modal-container" ref={modalRef} style={{ display: 'none' }}>
       <div className="gallery-modal-overlay global-overlay" ref={overlayRef} onClick={handleOverlayClick} style={{ backdropFilter: 'blur(15px)', WebkitBackdropFilter: 'blur(15px)' }} />
-      
+
       <div className="gallery-modal-content" ref={contentRef} data-lenis-prevent="true">
         <div className="gallery-modal-header">
           <div className="gallery-tabs-wrapper">
@@ -182,7 +383,9 @@ export default function PropertyGalleryModal({ isOpen, onClose, property, dict }
                 <button
                   key={tab.id}
                   className={`gallery-tab-item ${activeTab === tab.id ? 'active' : ''}`}
-                  onClick={() => setActiveTab(tab.id)}
+                  onClick={() => {
+                    setActiveTab(tab.id);
+                  }}
                 >
                   {tab.label}
                 </button>
@@ -195,40 +398,42 @@ export default function PropertyGalleryModal({ isOpen, onClose, property, dict }
         </div>
 
         <div className="gallery-modal-body" data-lenis-prevent="true">
-          <div className="gallery-grid-scrollable">
-            {filteredMedia.map((item, index) => {
-              const isVideo = item._type === 'videoItem';
-              return (
-                <div 
-                  key={index} 
-                  className={`gallery-grid-item ${isVideo ? 'video' : ''}`}
-                  onClick={() => setSelectedItem(item)}
-                >
-                  <Image
-                    src={getImageUrl(item)}
-                    alt={item.alt || 'Gallery item'}
-                    fill
-                    sizes="(max-width: 768px) 50vw, 33vw"
-                    style={{ objectFit: 'cover' }}
-                  />
-                  <div className="gallery-item-overlay">
-                    {isVideo ? (
-                      <div className="overlay-icon video-icon">
-                        <img src="/icons/play_arrow_filled.svg" alt="Play" width="64" height="64" />
-                      </div>
-                    ) : (
-                      <div className="overlay-icon fullscreen-icon">
-                        <img src="/icons/fullscreen.svg" alt="Fullscreen" width="48" height="48" />
-                      </div>
-                    )}
+          {selectedItem ? (
+            renderDetailView()
+          ) : (
+            <div className="gallery-grid-scrollable">
+              {filteredMedia.map((item, index) => {
+                const isVideo = item._type === 'videoItem';
+                return (
+                  <div
+                    key={index}
+                    className={`gallery-grid-item ${isVideo ? 'video' : ''}`}
+                    onClick={() => setSelectedItem(item)}
+                  >
+                    <Image
+                      src={getImageUrl(item)}
+                      alt={item.alt || 'Gallery item'}
+                      fill
+                      sizes="(max-width: 768px) 50vw, 33vw"
+                      style={{ objectFit: 'cover' }}
+                    />
+                    <div className="gallery-item-overlay">
+                      {isVideo ? (
+                        <div className="overlay-icon video-icon">
+                          <img src="/icons/play_arrow_filled.svg" alt="Play" width="64" height="64" />
+                        </div>
+                      ) : (
+                        <div className="overlay-icon fullscreen-icon">
+                          <img src="/icons/fullscreen.svg" alt="Fullscreen" width="48" height="48" />
+                        </div>
+                      )}
+                    </div>
                   </div>
-                </div>
-              );
-            })}
-          </div>
+                );
+              })}
+            </div>
+          )}
         </div>
-
-        {renderFullscreen()}
       </div>
     </div>,
     document.body

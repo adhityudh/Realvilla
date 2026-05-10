@@ -14,6 +14,7 @@ interface PropertyGalleryProps {
 export default function PropertyGallery({ property, dict }: PropertyGalleryProps) {
   const [imageSizes, setImageSizes] = useState<Record<string, { w: number; h: number }>>({});
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedGalleryItem, setSelectedGalleryItem] = useState<any>(null);
 
   useEffect(() => {
     document.body.classList.remove('header-light-mode');
@@ -32,7 +33,7 @@ export default function PropertyGallery({ property, dict }: PropertyGalleryProps
   // 1. Initial items array - displayItems[0] is always the Primary Image
   const displayItems: any[] = [];
   if (mainImage) {
-    displayItems.push({ _type: 'image', asset: mainImage.asset, alt: property.title || 'Property' });
+    displayItems.push({ _type: 'image', asset: mainImage.asset, alt: property.title || 'Property', isMain: true });
   }
 
   // 2. Logic to pick 4 small items from groups with distributed selection and video priority
@@ -132,7 +133,10 @@ export default function PropertyGallery({ property, dict }: PropertyGalleryProps
             <div 
               key={item._id || item._key || index} 
               className={`gallery-item item-${index} ${isMain ? 'main-item' : 'small-item'} ${isVideo ? 'video-item' : ''}`}
-              onClick={() => setIsModalOpen(true)}
+              onClick={() => {
+                setSelectedGalleryItem(item);
+                setIsModalOpen(true);
+              }}
             >
               <Image
                 src={imageUrl}
@@ -180,9 +184,13 @@ export default function PropertyGallery({ property, dict }: PropertyGalleryProps
       </div>
       <PropertyGalleryModal 
         isOpen={isModalOpen} 
-        onClose={() => setIsModalOpen(false)} 
+        onClose={() => {
+          setIsModalOpen(false);
+          setSelectedGalleryItem(null);
+        }} 
         property={property}
         dict={dict}
+        initialItem={selectedGalleryItem}
       />
     </section>
   );
