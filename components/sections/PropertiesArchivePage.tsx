@@ -177,18 +177,24 @@ export default function PropertiesArchivePage({ dict, initialMeta }: { dict?: an
       if (orderBy !== '_createdAt desc') params.set('orderBy', orderBy);
 
       const newQuery = params.toString();
-      const currentQuery = searchParams.toString();
+      const currentQuery = window.location.search.replace('?', '');
 
       if (newQuery !== currentQuery) {
         router.replace(`${pathname}?${newQuery}`, { scroll: false });
       }
       
-      setDebouncedSearchQuery(searchQuery);
-      setCurrentPage(1);
+      // Only update if actually different to prevent redundant fetch triggers
+      setDebouncedSearchQuery(prev => prev !== searchQuery ? searchQuery : prev);
+      
+      // If we are searching or filtering, we usually want to go back to page 1
+      // unless we are specifically on a page change (handled by other logic)
+      if (searchQuery !== debouncedSearchQuery) {
+        setCurrentPage(1);
+      }
     }, 400);
 
     return () => clearTimeout(timer);
-  }, [searchQuery, activeFilters, orderBy, filterMeta?.maxPrice, pathname, router, searchParams]);
+  }, [searchQuery, activeFilters, orderBy, filterMeta?.maxPrice, pathname, router]);
 
   // Fetch filter metadata
   useEffect(() => {
@@ -356,7 +362,7 @@ export default function PropertiesArchivePage({ dict, initialMeta }: { dict?: an
     return () => {
       isMounted = false;
     };
-  }, [currentPage, locale, itemsPerPage, activeFilters, debouncedSearchQuery, filterMeta, orderBy]);
+  }, [currentPage, locale, itemsPerPage, JSON.stringify(activeFilters), debouncedSearchQuery, filterMeta?._id, orderBy]);
 
   const activeFiltersCount = useMemo(() => {
     let count = 0;
