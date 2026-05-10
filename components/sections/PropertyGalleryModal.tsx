@@ -199,15 +199,17 @@ export default function PropertyGalleryModal({ isOpen, onClose, property, dict, 
     ];
   }, [gallery, allMedia, dict]);
 
-  const filteredMedia = useMemo(() => {
-    if (activeTab === 'all') return allMedia;
-    if (activeTab === 'video') return allMedia.filter(m => m._type === 'videoItem');
-    if (activeTab.startsWith('group-')) {
-      const groupName = activeTab.replace('group-', '');
+  const getFilteredMediaForTab = (tabId: string) => {
+    if (tabId === 'all') return allMedia;
+    if (tabId === 'video') return allMedia.filter(m => m._type === 'videoItem');
+    if (tabId.startsWith('group-')) {
+      const groupName = tabId.replace('group-', '');
       return allMedia.filter(m => m.groupTitle === groupName);
     }
     return allMedia;
-  }, [activeTab, allMedia]);
+  };
+
+  const filteredMedia = useMemo(() => getFilteredMediaForTab(activeTab), [activeTab, allMedia]);
 
   // Dedicated Effect to handle Jump-to-Detail Link on Open
   useEffect(() => {
@@ -385,6 +387,13 @@ export default function PropertyGalleryModal({ isOpen, onClose, property, dict, 
                   className={`gallery-tab-item ${activeTab === tab.id ? 'active' : ''}`}
                   onClick={() => {
                     setActiveTab(tab.id);
+                    // User UX Fix: If currently in Full/Detail mode, snap focus to the first item of the newly chosen group
+                    if (selectedItem) {
+                      const nextFiltered = getFilteredMediaForTab(tab.id);
+                      if (nextFiltered.length > 0) {
+                        setSelectedItem(nextFiltered[0]);
+                      }
+                    }
                   }}
                 >
                   {tab.label}

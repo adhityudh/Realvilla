@@ -134,7 +134,8 @@ export default function PropertyGallery({ property, dict }: PropertyGalleryProps
               key={item._id || item._key || index} 
               className={`gallery-item item-${index} ${isMain ? 'main-item' : 'small-item'} ${isVideo ? 'video-item' : ''}`}
               onClick={() => {
-                setSelectedGalleryItem(item);
+                // Only set initial item if it's NOT the main photo (per user request)
+                setSelectedGalleryItem(isMain ? null : item);
                 setIsModalOpen(true);
               }}
             >
