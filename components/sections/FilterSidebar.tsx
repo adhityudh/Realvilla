@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState, useMemo } from 'react';
+import { createPortal } from 'react-dom';
 import gsap from 'gsap';
 import Button from '../ui/Button';
 import { getMunicipalities } from '../../lib/municipalities';
@@ -71,6 +72,11 @@ export default function FilterSidebar({
   const sidebarRef = useRef<HTMLDivElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // 1. Mandatory Price Range State (reads highest price dynamically from meta)
   const [priceMin, setPriceMin] = useState<number>(0);
@@ -544,9 +550,16 @@ export default function FilterSidebar({
     return defs.filter(isDefActive).length;
   };
 
-  return (
-    <div className={`filter-sidebar-container ${isInline ? 'is-inline' : ''}`} ref={sidebarRef} style={{ display: 'none' }}>
-      <div className="filter-sidebar-overlay global-overlay" ref={overlayRef} onClick={handleOverlayClick} style={{ backdropFilter: 'blur(15px)', WebkitBackdropFilter: 'blur(15px)' }} />
+  const renderContent = () => (
+    <div className={`filter-sidebar-container ${isInline ? 'is-inline' : ''}`} ref={sidebarRef} style={{ display: isInline ? 'block' : 'none' }}>
+      {!isInline && (
+        <div 
+          className="filter-sidebar-overlay global-overlay" 
+          ref={overlayRef} 
+          onClick={handleOverlayClick} 
+          style={{ backdropFilter: 'blur(15px)', WebkitBackdropFilter: 'blur(15px)' }} 
+        />
+      )}
 
       <div className="filter-sidebar-content" ref={contentRef} data-lenis-prevent="true">
         {/* Header */}
@@ -769,22 +782,32 @@ export default function FilterSidebar({
         </div>
 
         {/* Footer Actions */}
-        <div className="filter-sidebar-footer">
-          <button
-            className="filter-reset-btn"
-            onClick={handleResetAll}
-          >
-            {dict?.filter?.reset_all}
-          </button>
-          <Button
-            label={dict?.filter?.apply_filters}
-            variant="dark"
-            showArrow={true}
-            onClick={handleApply}
-            className="filter-apply-btn"
-          />
-        </div>
+        {!isInline && (
+          <div className="filter-sidebar-footer">
+            <button
+              className="filter-reset-btn"
+              onClick={handleResetAll}
+            >
+              {dict?.filter?.reset_all}
+            </button>
+            <Button
+              label={dict?.filter?.apply_filters}
+              variant="dark"
+              showArrow={true}
+              onClick={handleApply}
+              className="filter-apply-btn"
+            />
+          </div>
+        )}
       </div>
     </div>
   );
+
+  if (!mounted) return null;
+
+  if (isInline) {
+    return renderContent();
+  }
+
+  return createPortal(renderContent(), document.body);
 }

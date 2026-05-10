@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { urlForImage } from '@/sanity/lib/image';
+import PropertyGalleryModal from './PropertyGalleryModal';
 import './PropertyGallery.css';
 
 interface PropertyGalleryProps {
@@ -12,6 +13,7 @@ interface PropertyGalleryProps {
 
 export default function PropertyGallery({ property, dict }: PropertyGalleryProps) {
   const [imageSizes, setImageSizes] = useState<Record<string, { w: number; h: number }>>({});
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     document.body.classList.remove('header-light-mode');
@@ -130,6 +132,7 @@ export default function PropertyGallery({ property, dict }: PropertyGalleryProps
             <div 
               key={item._id || item._key || index} 
               className={`gallery-item item-${index} ${isMain ? 'main-item' : 'small-item'} ${isVideo ? 'video-item' : ''}`}
+              onClick={() => setIsModalOpen(true)}
             >
               <Image
                 src={imageUrl}
@@ -143,19 +146,23 @@ export default function PropertyGallery({ property, dict }: PropertyGalleryProps
                 onLoad={(e) => e.currentTarget.classList.add('loaded')}
               />
 
-              {isVideo && (
-                <div className="video-play-overlay">
-                  <svg width="64" height="64" viewBox="0 -960 960 960" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M340-236.16v-487.68L723.07-480 340-236.16Z" fill="white"/>
-                  </svg>
-                </div>
-              )}
+              <div className="gallery-item-overlay">
+                {isVideo ? (
+                  <div className="overlay-icon video-icon">
+                    <img src="/icons/play_arrow_filled.svg" alt="Play" width="64" height="64" />
+                  </div>
+                ) : (
+                  <div className="overlay-icon fullscreen-icon">
+                    <img src="/icons/fullscreen.svg" alt="Fullscreen" width="48" height="48" />
+                  </div>
+                )}
+              </div>
               
               {/* Show "See all photos" button on the first image (main) like in some designs, 
                   or on the last image if there are more photos */}
 
               {index === 4 && remainingCount > 0 && (
-                <button className="see-all-btn-overlay btn-pill">
+                <button className="see-all-btn-overlay btn-pill" onClick={(e) => { e.stopPropagation(); setIsModalOpen(true); }}>
                   <div className="btn-content-desktop">
                     <svg width="18" height="18" viewBox="0 -960 960 960" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                       <path d="M127.69-220q-30.3 0-51.3-21-21-21-21-51.31v-375.38q0-30.31 21-51.31 21-21 51.3-21h375.39q30.3 0 51.3 21 21 21 21 51.31v375.38q0 30.31-21 51.31-21 21-51.3 21H127.69Zm0-60h375.39q4.61 0 8.46-3.85 3.84-3.84 3.84-8.46v-375.38q0-4.62-3.84-8.46-3.85-3.85-8.46-3.85H127.69q-4.61 0-8.46 3.85-3.85 3.84-3.85 8.46v375.38q0 4.62 3.85 8.46 3.85 3.85 8.46 3.85Zm36.93-84.62h301.53l-94.77-127.69-76 100-56-74-74.76 101.69ZM680-220v-520h60v520h-60Zm164.62 0v-520h59.99v520h-59.99Zm-729.24-60v-400 400Z"/>
@@ -171,6 +178,12 @@ export default function PropertyGallery({ property, dict }: PropertyGalleryProps
           );
         })}
       </div>
+      <PropertyGalleryModal 
+        isOpen={isModalOpen} 
+        onClose={() => setIsModalOpen(false)} 
+        property={property}
+        dict={dict}
+      />
     </section>
   );
 }

@@ -1,0 +1,327 @@
+.gallery-modal-container {
+    position: fixed;
+    inset: 0;
+    z-index: 999999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+}
+
+.gallery-modal-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    cursor: pointer;
+}
+
+.gallery-modal-content {
+    position: relative;
+    width: 100%;
+    max-width: 1200px;
+    height: 90vh;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-3xl);
+    box-shadow: var(--shadow-xl);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Header & Tabs */
+.gallery-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+.gallery-tabs-wrapper {
+    position: relative;
+    flex: 1;
+    overflow: hidden;
+}
+
+.gallery-tabs-wrapper::before,
+.gallery-tabs-wrapper::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 40px;
+    z-index: 2;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.gallery-tabs-wrapper::before {
+    left: 0;
+    background: linear-gradient(to right, var(--bg-surface), transparent);
+}
+
+.gallery-tabs-wrapper::after {
+    right: 0;
+    background: linear-gradient(to left, var(--bg-surface), transparent);
+}
+
+.gallery-tabs {
+    display: flex;
+    gap: 0.5rem;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    /* Space for gradients */
+    margin: 0;
+    padding: 0 2.5rem;
+}
+
+.gallery-tabs::-webkit-scrollbar {
+    display: none;
+}
+
+.gallery-tab-item {
+    padding: 0.75rem 0.5rem;
+    font-size: var(--text-base);
+    font-weight: var(--fw-bold);
+    color: var(--text-black);
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    transition: all 0.3s var(--ease-smooth);
+    white-space: nowrap;
+    position: relative;
+    cursor: pointer;
+    font-family: var(--font-cormorant), "Cormorant Garamond", serif;
+    text-transform: uppercase;
+
+}
+
+.gallery-tab-item:hover {
+    color: var(--text-black);
+}
+
+.gallery-tab-item.active {
+    color: var(--text-black);
+    border-bottom-color: var(--color-gold);
+}
+
+.gallery-modal-close {
+    background: var(--bg-muted);
+    border: none;
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s var(--ease-smooth);
+    color: var(--text-black);
+    flex-shrink: 0;
+    margin-right: 2.5rem;
+}
+
+.gallery-modal-close img {
+    filter: brightness(0);
+    transition: filter 0.3s var(--ease-smooth);
+}
+
+.gallery-modal-close:hover {
+    background: var(--text-black);
+    color: var(--text-white);
+    transform: rotate(90deg);
+}
+
+.gallery-modal-close:hover img {
+    filter: brightness(1);
+}
+
+/* Body & Grid */
+.gallery-modal-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 2.5rem;
+}
+
+.gallery-grid-scrollable {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+.gallery-grid-item {
+    position: relative;
+    aspect-ratio: 16/10;
+    background: var(--bg-muted);
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.gallery-grid-item img {
+    transition: transform 0.6s var(--ease-smooth);
+}
+
+.gallery-grid-item:hover img {
+    transform: scale(1.05);
+}
+
+.gallery-item-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0);
+    z-index: 2;
+    transition: background-color 0.4s var(--ease-smooth);
+    pointer-events: none;
+}
+
+.gallery-grid-item:hover .gallery-item-overlay {
+    background-color: rgba(0, 0, 0, 0.45);
+}
+
+.overlay-icon {
+    opacity: 0;
+    transform: scale(0.8);
+    transition: all 0.4s var(--ease-smooth);
+}
+
+/* Video icon remains visible but darkens/scales on hover */
+.gallery-grid-item.video .overlay-icon {
+    opacity: 0.9;
+    transform: scale(1);
+}
+
+.gallery-grid-item:hover .overlay-icon {
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+.overlay-icon img {
+    filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.3));
+}
+
+/* Fullscreen Mode (Lightbox inside modal) */
+.gallery-fullscreen-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.98);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    animation: fadeIn 0.4s var(--ease-smooth);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.fullscreen-close {
+    position: absolute;
+    top: 2rem;
+    right: 2.5rem;
+    background: rgba(255, 255, 255, 0.1);
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 110;
+    transition: all 0.3s ease;
+}
+
+.fullscreen-close:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(1.1);
+}
+
+.fullscreen-close img {
+    filter: invert(1);
+    width: 24px;
+    height: 24px;
+}
+
+.fullscreen-content {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem;
+}
+
+.image-wrapper,
+.video-wrapper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.video-wrapper iframe {
+    width: 100%;
+    aspect-ratio: 16/9;
+    max-width: 1000px;
+}
+
+@media (max-width: 1024px) {
+    .gallery-tab-item {
+        font-size: var(--text-sm);
+    }
+}
+
+/* Mobile Adjustments */
+@media (max-width: 768px) {
+    .gallery-modal-container {
+        padding: 0;
+    }
+
+    .gallery-modal-content {
+        height: 100vh;
+        border-radius: 0;
+    }
+
+    .gallery-modal-header {
+        padding: 0.75rem 0;
+        gap: 0;
+    }
+
+    .gallery-tabs {
+        width: 100%;
+        padding: 0 1.5rem;
+
+    }
+
+    .gallery-modal-body {
+        padding: 1.5rem;
+    }
+
+    .gallery-grid-scrollable {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+    }
+
+    .fullscreen-content {
+        padding: 2rem 1rem;
+    }
+
+    .gallery-modal-close {
+        width: 44px;
+        height: 44px;
+        border-radius: var(--radius-md);
+        margin-right: 1.5rem;
+    }
+}
