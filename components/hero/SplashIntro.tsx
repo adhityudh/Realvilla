@@ -299,14 +299,16 @@ function useIntroOrchestrator() {
     };
 
     // Reload page on resize/zoom after intro is done to fix logo position.
-    // Only react to WIDTH changes — mobile browser chrome collapse only changes
-    // innerHeight, so we ignore those to avoid spurious reloads while scrolling.
+    // Only react to WIDTH changes above a threshold — mobile browser chrome
+    // collapse only changes innerHeight, and scrollbar appearance changes
+    // innerWidth by ~15px, so we ignore those to avoid spurious reloads.
+    const WIDTH_THRESHOLD = 16;
     let resizeTimer: ReturnType<typeof setTimeout>;
     let lastWidth = window.innerWidth;
     const handleResize = () => {
       if (!globalPreloaderFinished) return; // Only after intro is complete
       const currentWidth = window.innerWidth;
-      if (currentWidth === lastWidth) return; // Height-only change (mobile chrome)
+      if (Math.abs(currentWidth - lastWidth) < WIDTH_THRESHOLD) return;
       lastWidth = currentWidth;
       clearTimeout(resizeTimer);
       resizeTimer = setTimeout(() => {
