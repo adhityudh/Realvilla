@@ -142,31 +142,135 @@ export const property = defineType({
     }),
     defineField({
       name: 'gallery',
-      title: 'Photo Gallery',
+      title: 'Gallery',
       type: 'array',
-      description: 'Property photo gallery for the detail page.',
+      description: 'Property media. You can add individual images/videos or group them (e.g., "Interior", "Exterior").',
       group: 'media',
       of: [
+        // Option 1: Gallery Group
         {
-          type: 'image',
-          options: { hotspot: true },
+          type: 'object',
+          name: 'galleryGroup',
+          title: 'Media Group',
           fields: [
+            { name: 'title', type: 'string', title: 'Group Title (e.g. Interior, Exterior)' },
             {
-              name: 'alt',
-              type: 'string',
-              title: 'Alt Text',
-            },
-            {
-              name: 'caption',
-              type: 'string',
-              title: 'Caption',
+              name: 'items',
+              type: 'array',
+              title: 'Media Items',
+              of: [
+                {
+                  type: 'image',
+                  options: { hotspot: true },
+                  fields: [
+                    { name: 'alt', type: 'string', title: 'Alt Text' },
+                    { name: 'caption', type: 'string', title: 'Caption' },
+                  ],
+                  preview: {
+                    select: {
+                      title: 'caption',
+                      alt: 'alt',
+                      media: 'asset',
+                    },
+                    prepare({ title, alt, media }) {
+                      return {
+                        title: title || alt || 'Untitled Image',
+                        subtitle: 'Image',
+                        media,
+                      }
+                    },
+                  },
+                },
+                {
+                  type: 'object',
+                  name: 'videoItem',
+                  title: 'YouTube Video',
+                  fields: [
+                    { name: 'url', type: 'url', title: 'YouTube URL', validation: Rule => Rule.required().uri({ scheme: ['http', 'https'] }) },
+                    { name: 'thumbnail', type: 'image', title: 'Custom Thumbnail (Optional)', options: { hotspot: true } },
+                    { name: 'alt', type: 'string', title: 'Alt Text' },
+                  ],
+                  preview: {
+                    select: {
+                      url: 'url',
+                      alt: 'alt',
+                      media: 'thumbnail',
+                    },
+                    prepare({ url, alt, media }) {
+                      return {
+                        title: alt || 'YouTube Video',
+                        subtitle: url,
+                        media,
+                      }
+                    },
+                  },
+                },
+              ],
             },
           ],
+          preview: {
+            select: {
+              title: 'title',
+              items: 'items',
+            },
+            prepare({ title, items }) {
+              return {
+                title: title || 'Untitled Group',
+                subtitle: `${items?.length || 0} items`,
+              }
+            },
+          },
+        },
+        // Option 2: Individual Image
+        {
+          type: 'image',
+          title: 'Individual Image',
+          options: { hotspot: true },
+          fields: [
+            { name: 'alt', type: 'string', title: 'Alt Text' },
+            { name: 'caption', type: 'string', title: 'Caption' },
+          ],
+          preview: {
+            select: {
+              title: 'caption',
+              alt: 'alt',
+              media: 'asset',
+            },
+            prepare({ title, alt, media }) {
+              return {
+                title: title || alt || 'Untitled Image',
+                subtitle: 'Individual Image',
+                media,
+              }
+            },
+          },
+        },
+        // Option 3: Individual Video
+        {
+          type: 'object',
+          name: 'videoItem',
+          title: 'Individual YouTube Video',
+          fields: [
+            { name: 'url', type: 'url', title: 'YouTube URL', validation: Rule => Rule.required().uri({ scheme: ['http', 'https'] }) },
+            { name: 'thumbnail', type: 'image', title: 'Custom Thumbnail (Optional)', options: { hotspot: true } },
+            { name: 'alt', type: 'string', title: 'Alt Text' },
+          ],
+          preview: {
+            select: {
+              url: 'url',
+              alt: 'alt',
+              media: 'thumbnail',
+            },
+            prepare({ url, alt, media }) {
+              return {
+                title: alt || 'YouTube Video',
+                subtitle: url,
+                media,
+              }
+            },
+          },
         },
       ],
-      options: {
-        layout: 'grid',
-      },
     }),
 
     // ═══════════════════════════════════════

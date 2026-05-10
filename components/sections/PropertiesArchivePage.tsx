@@ -119,8 +119,10 @@ export default function PropertiesArchivePage({ dict, initialMeta }: { dict?: an
     document.body.classList.remove('header-light-mode');
     document.body.classList.remove('header-black-bg');
     document.body.classList.add('header-dark-mode');
+    document.body.classList.add('properties-archive-gold');
     return () => {
       document.body.classList.remove('header-dark-mode');
+      document.body.classList.remove('properties-archive-gold');
     };
   }, []);
 

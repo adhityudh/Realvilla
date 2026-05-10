@@ -3,11 +3,27 @@
     background-color: var(--bg-white, #fdfcfb);
     min-height: 100vh;
     border-bottom: 1px solid var(--border-light);
+    position: relative;
+    z-index: 1;
+}
+
+/* Gold Header Decoration Area */
+.archive-properties-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 132px;
+    background-color: var(--color-gold-light);
+    z-index: -1;
 }
 
 .archive-properties-wrapper {
     margin: 0 auto;
     width: 100%;
+    position: relative;
+    z-index: 2;
 }
 
 /* Premium Top Search Bar */
@@ -25,9 +41,9 @@
     position: relative;
     /* For suggestions dropdown */
     height: 72px !important;
-    background: #00000008 !important;
-    border: 1px solid transparent !important;
-    box-shadow: none !important;
+    background: #ffffff !important;
+    border: 1px solid rgba(0, 0, 0, 0.05) !important;
+    box-shadow: var(--shadow-sm) !important;
     transition: background 0.5s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.5s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.5s cubic-bezier(0.16, 1, 0.3, 1) !important;
     display: flex;
     align-items: center;
@@ -399,12 +415,18 @@
 
     .archive-search-container {
         margin-bottom: 1.5rem;
-        padding: 1rem 0.75rem 0 0.75rem;
-        border-top: 1px solid rgba(0, 0, 0, 0.06);
+        padding: 0 0.75rem 0 0.75rem;
+        border-top: none;
+    }
+
+    .archive-properties-section::before {
+        height: 140px;
     }
 
     .archive-properties-section .search-input-wrapper {
         height: 64px !important;
+        background: #ffffff !important;
+        box-shadow: var(--shadow-sm) !important;
     }
 
     .archive-grid-container {

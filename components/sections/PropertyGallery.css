@@ -1,0 +1,198 @@
+.property-gallery-section {
+  width: 100%;
+  padding: 0;
+  margin-top: 0;
+  /* Align with top of page */
+  overflow: hidden;
+  position: relative;
+  z-index: 1;
+}
+
+/* Gold Header Decoration Area */
+.property-gallery-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 560px;
+  background-color: var(--color-gold-light);
+  z-index: -1;
+}
+
+.property-gallery-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  grid-template-rows: repeat(2, 200px);
+  gap: 12px;
+  width: 100%;
+  max-width: 100%;
+  padding: 6rem 3rem 3rem 3rem;
+}
+
+.gallery-item {
+  position: relative;
+  overflow: hidden;
+  background-color: var(--bg-muted);
+  cursor: pointer;
+  /* Border radius 0 as requested */
+  border-radius: 0;
+}
+
+.gallery-item.main-item {
+  grid-column: 1 / 2;
+  grid-row: 1 / 3;
+}
+
+/* Specific heights or aspect ratios can be adjusted here */
+
+.gallery-item img {
+  transition: transform 0.8s var(--ease-smooth);
+}
+
+.gallery-item:hover img {
+  transform: scale(1.05);
+}
+
+
+.see-all-btn-overlay {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  z-index: 2;
+}
+
+.btn-content-mobile {
+  display: none;
+}
+
+.see-all-btn-overlay:hover {
+  background-color: var(--bg-muted);
+  transform: translateY(-2px);
+}
+
+.video-play-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.1);
+  z-index: 2;
+  transition: background-color 0.3s ease;
+}
+
+.gallery-item:hover .video-play-overlay {
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
+.video-play-overlay svg {
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.3));
+  transition: transform 0.3s var(--ease-smooth);
+}
+
+.gallery-item:hover .video-play-overlay svg {
+  transform: scale(1.1);
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 1024px) {
+  .property-gallery-grid {
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: 320px 156px;
+    /* Larger heights for tablet */
+    gap: 12px;
+    padding: 7rem 1.5rem 1.5rem;
+  }
+
+  .property-gallery-section::before {
+    height: 624px;
+    /* Adjusted gold area for tablet */
+  }
+
+  .gallery-item.main-item {
+    grid-column: 1 / 5;
+    grid-row: 1 / 2;
+  }
+
+  .gallery-item:not(.main-item) {
+    display: block;
+    grid-row: 2 / 3;
+  }
+
+  /* Redesigned See All button for tablet/mobile */
+  .btn-content-desktop {
+    display: none;
+  }
+
+  .btn-content-mobile {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-manrope), sans-serif;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #000000;
+  }
+
+  .see-all-btn-overlay {
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    bottom: auto !important;
+    right: auto !important;
+    width: 80px;
+    height: 44px;
+    padding: 0 !important;
+    background: #ffffff !important;
+    border: none !important;
+    border-radius: 40px !important;
+    box-shadow: var(--shadow-sm) !important;
+    min-width: 0 !important;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .see-all-btn-overlay:hover {
+    background: var(--bg-muted) !important;
+    transform: translate(-50%, -54%) !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .property-gallery-grid {
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: 240px 96px;
+    /* Main image height then small images height */
+    gap: 8px;
+    padding: 7rem 1rem 1rem;
+  }
+
+  .property-gallery-section::before {
+    height: 520px;
+  }
+
+  .gallery-item.main-item {
+    grid-column: 1 / 5;
+    grid-row: 1 / 2;
+  }
+
+  .gallery-item:not(.main-item) {
+    display: block;
+    /* Show them on mobile now */
+    grid-row: 2 / 3;
+  }
+
+  /* Inherit the redesigned centered button from tablet */
+  .see-all-btn-overlay {
+    width: 64px;
+    height: 36px;
+  }
+
+  .btn-content-mobile {
+    font-size: 1rem;
+  }
+}

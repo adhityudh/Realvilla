@@ -285,9 +285,33 @@ export const PROPERTY_DETAIL_QUERY = groq`
     image { asset->{ _id, url, metadata { lqip, dimensions } } },
     secondaryImage { asset->{ _id, url, metadata { lqip, dimensions } } },
     gallery[] {
-      asset->{ _id, url, metadata { lqip, dimensions } },
-      alt,
-      caption
+      _type,
+      _type == "galleryGroup" => {
+        title,
+        items[] {
+          _type,
+          _type == "image" => {
+            asset->{ _id, url, metadata { lqip, dimensions } },
+            alt,
+            caption
+          },
+          _type == "videoItem" => {
+            url,
+            thumbnail { asset->{ _id, url, metadata { lqip, dimensions } } },
+            alt
+          }
+        }
+      },
+      _type == "image" => {
+        asset->{ _id, url, metadata { lqip, dimensions } },
+        alt,
+        caption
+      },
+      _type == "videoItem" => {
+        url,
+        thumbnail { asset->{ _id, url, metadata { lqip, dimensions } } },
+        alt
+      }
     },
     // Legacy fields
     beds,

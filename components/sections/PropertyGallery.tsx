@@ -1,0 +1,176 @@
+'use client';
+
+import { useState, useEffect } from 'react';
+import Image from 'next/image';
+import { urlForImage } from '@/sanity/lib/image';
+import './PropertyGallery.css';
+
+interface PropertyGalleryProps {
+  property: any;
+  dict?: any;
+}
+
+export default function PropertyGallery({ property, dict }: PropertyGalleryProps) {
+  const [imageSizes, setImageSizes] = useState<Record<string, { w: number; h: number }>>({});
+
+  useEffect(() => {
+    document.body.classList.remove('header-light-mode');
+    document.body.classList.remove('header-black-bg');
+    document.body.classList.add('header-dark-mode');
+    return () => {
+      document.body.classList.remove('header-dark-mode');
+    };
+  }, []);
+
+  if (!property) return null;
+
+  const mainImage = property.image;
+  const groups = property.gallery || [];
+  
+  // 1. Initial items array - displayItems[0] is always the Primary Image
+  const displayItems: any[] = [];
+  if (mainImage) {
+    displayItems.push({ _type: 'image', asset: mainImage.asset, alt: property.title || 'Property' });
+  }
+
+  // 2. Logic to pick 4 small items from groups with distributed selection and video priority
+  const smallItems: any[] = [];
+  const pickedIds = new Set<string>();
+  const getItemId = (item: any) => item._id || item._key || item.asset?._id;
+
+  // Map each gallery entry into an array of items. 
+  // If it's a group, we use its items. If it's an individual item, we treat it as a group of one.
+  const groupsMedia = groups.map((g: any) => {
+    if (g._type === 'galleryGroup') {
+      return (g.items || []).filter((item: any) => item.asset || item.url);
+    }
+    // Individual image or videoItem
+    return [g].filter((item: any) => item.asset || item.url);
+  });
+  
+  if (groupsMedia.length > 0) {
+    // A. Rule: At least one video if any video exists in all groups
+    for (const groupItems of groupsMedia) {
+      const video = groupItems.find((item: any) => item._type === 'videoItem');
+      if (video) {
+        smallItems.push(video);
+        pickedIds.add(getItemId(video));
+        break; 
+      }
+    }
+
+    // B. Rule: Distributed selection (Round-Robin) to fill up to 4 small items
+    let groupIdx = 0;
+    let itemsFoundInLastCycle = true;
+    while (smallItems.length < 4 && itemsFoundInLastCycle) {
+      itemsFoundInLastCycle = false;
+      const startIdx = groupIdx;
+      
+      for (let i = 0; i < groupsMedia.length; i++) {
+        const currentIdx = (startIdx + i) % groupsMedia.length;
+        const currentGroup = groupsMedia[currentIdx];
+        const nextItem = currentGroup.find((item: any) => !pickedIds.has(getItemId(item)));
+        
+        if (nextItem) {
+          smallItems.push(nextItem);
+          pickedIds.add(getItemId(nextItem));
+          itemsFoundInLastCycle = true;
+          groupIdx = (currentIdx + 1) % groupsMedia.length;
+          if (smallItems.length === 4) break;
+        }
+      }
+    }
+  }
+
+  displayItems.push(...smallItems);
+
+  if (displayItems.length === 0) return null;
+
+  // Calculate remaining count for "See all" functionality
+  const totalMediaCount = (mainImage ? 1 : 0) + groups.reduce((acc: number, g: any) => {
+    if (g._type === 'galleryGroup') return acc + (g.items?.length || 0);
+    return acc + 1;
+  }, 0);
+  const remainingCount = totalMediaCount - displayItems.length;
+
+  return (
+    <section className="property-gallery-section">
+      <div className="property-gallery-grid">
+        {displayItems.map((item, index) => {
+          const isVideo = item._type === 'videoItem';
+          const isMain = index === 0;
+          
+          let imageUrl = '';
+          let lqip = '';
+
+          if (item._type === 'image') {
+            imageUrl = urlForImage(item).url();
+            lqip = item.asset?.metadata?.lqip;
+          } else if (isVideo) {
+            // Use custom thumbnail if available, otherwise a placeholder or extract from YT
+            if (item.thumbnail?.asset) {
+              imageUrl = urlForImage(item.thumbnail).url();
+              lqip = item.thumbnail.asset?.metadata?.lqip;
+            } else {
+              // Extract YouTube thumbnail
+              const videoId = item.url?.includes('v=') 
+                ? item.url.split('v=')[1]?.split('&')[0]
+                : item.url?.split('/').pop();
+              
+              if (videoId) {
+                imageUrl = `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
+              } else {
+                // Fallback to a placeholder if extraction fails
+                imageUrl = '/placeholder-media.jpg';
+              }
+            }
+          }
+
+          return (
+            <div 
+              key={item._id || item._key || index} 
+              className={`gallery-item item-${index} ${isMain ? 'main-item' : 'small-item'} ${isVideo ? 'video-item' : ''}`}
+            >
+              <Image
+                src={imageUrl}
+                alt={item.alt || property.title || 'Property media'}
+                fill
+                sizes={isMain ? "(max-width: 1024px) 100vw, 50vw" : "(max-width: 1024px) 50vw, 25vw"}
+                className="img-reveal"
+                placeholder={lqip ? "blur" : "empty"}
+                blurDataURL={lqip}
+                style={{ objectFit: 'cover' }}
+                onLoad={(e) => e.currentTarget.classList.add('loaded')}
+              />
+
+              {isVideo && (
+                <div className="video-play-overlay">
+                  <svg width="64" height="64" viewBox="0 -960 960 960" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M340-236.16v-487.68L723.07-480 340-236.16Z" fill="white"/>
+                  </svg>
+                </div>
+              )}
+              
+              {/* Show "See all photos" button on the first image (main) like in some designs, 
+                  or on the last image if there are more photos */}
+
+              {index === 4 && remainingCount > 0 && (
+                <button className="see-all-btn-overlay btn-pill">
+                  <div className="btn-content-desktop">
+                    <svg width="18" height="18" viewBox="0 -960 960 960" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M127.69-220q-30.3 0-51.3-21-21-21-21-51.31v-375.38q0-30.31 21-51.31 21-21 51.3-21h375.39q30.3 0 51.3 21 21 21 21 51.31v375.38q0 30.31-21 51.31-21 21-51.3 21H127.69Zm0-60h375.39q4.61 0 8.46-3.85 3.84-3.84 3.84-8.46v-375.38q0-4.62-3.84-8.46-3.85-3.85-8.46-3.85H127.69q-4.61 0-8.46 3.85-3.85 3.84-3.85 8.46v375.38q0 4.62 3.85 8.46 3.85 3.85 8.46 3.85Zm36.93-84.62h301.53l-94.77-127.69-76 100-56-74-74.76 101.69ZM680-220v-520h60v520h-60Zm164.62 0v-520h59.99v520h-59.99Zm-729.24-60v-400 400Z"/>
+                    </svg>
+                    <span>{dict?.property?.see_all_photos || 'See all photos'}</span>
+                  </div>
+                  <div className="btn-content-mobile">
+                    +{remainingCount}
+                  </div>
+                </button>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    </section>
+  );
+}
