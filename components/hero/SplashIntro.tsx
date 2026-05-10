@@ -298,6 +298,17 @@ function useIntroOrchestrator() {
       document.body.classList.remove('intro-active');
     };
 
+    // Reload page on resize/zoom after intro is done to fix logo position
+    let resizeTimer: ReturnType<typeof setTimeout>;
+    const handleResize = () => {
+      if (!globalPreloaderFinished) return; // Only after intro is complete
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+        window.location.reload();
+      }, 300);
+    };
+    window.addEventListener('resize', handleResize);
+
     let morphInitialized = false;
     const initMorph = () => {
       if (isMobile || morphInitialized) return;
@@ -371,7 +382,11 @@ function useIntroOrchestrator() {
       };
     });
 
-    return () => ctx.current?.revert();
+    return () => {
+      ctx.current?.revert();
+      window.removeEventListener('resize', handleResize);
+      clearTimeout(resizeTimer);
+    };
   }, [lenis, pathname]); // Re-run on pathname change
 }
 

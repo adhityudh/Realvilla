@@ -95,7 +95,7 @@
     position: absolute;
     right: 3rem;
     top: 0;
-    width: calc(50vw - 3rem);
+    width: calc((50vw - 3rem) - ((50vw - 3rem - 600px) / 2));
     z-index: 1;
 }
 
