@@ -360,31 +360,30 @@
 }
 
 .summary-title {
-  font-size: clamp(2rem, 4vw, 2.8rem);
+  font-size: var(--text-display-xs);
   line-height: var(--lh-tight);
   color: var(--text-black);
-  margin-bottom: 0.5rem;
+  margin-bottom: 1rem;
   font-family: var(--font-cormorant), serif;
-  font-weight: 700;
-  letter-spacing: 0.02em;
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--ls-tight);
   text-transform: uppercase;
 }
 
 .summary-address {
   font-family: var(--font-manrope), sans-serif;
   font-size: var(--text-base);
-  color: var(--text-muted);
-  font-weight: 500;
+  color: var(--text-black);
   margin-bottom: 1.5rem;
   letter-spacing: var(--ls-wide);
 }
 
 .summary-price {
-  font-family: var(--font-cormorant), serif;
-  font-size: var(--text-display-xs);
-  font-weight: 600;
-  color: var(--color-gold-dark);
-  margin-bottom: 2rem;
+  font-family: var(--font-manrope), sans-serif;
+  font-size: var(--text-lg);
+  font-weight: var(--fw-bold);
+  color: var(--color-black);
+  margin-bottom: 1.5rem;
   letter-spacing: var(--ls-normal);
 }
 
@@ -392,29 +391,25 @@
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 0.75rem;
-}
-
-.summary-meta-pill {
-  background: var(--bg-surface);
-  border: 1px solid var(--border-base);
-  padding: 0.5rem 1rem;
-  border-radius: var(--radius-full);
-  transition: all 0.3s var(--ease-smooth);
-}
-
-.summary-meta-pill:hover {
-  background: var(--bg-muted);
-  border-color: var(--text-muted);
-}
-
-.meta-label {
-  font-family: var(--font-manrope), sans-serif;
-  font-size: var(--text-sm-plus);
-  font-weight: 600;
-  color: var(--text-dark);
+  gap: 0.85rem;
   text-transform: uppercase;
+}
+
+.summary-meta-item {
+  font-family: var(--font-manrope), sans-serif;
+  font-size: var(--text-base-sm);
+  font-weight: var(--fw-extrabold);
   letter-spacing: var(--ls-wider);
+  color: var(--text-black);
+  opacity: 0.85;
+}
+
+.summary-meta-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.15);
+  flex-shrink: 0;
 }
 
 .summary-cta-col {

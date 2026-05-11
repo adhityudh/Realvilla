@@ -35,7 +35,7 @@ export default function PropertyGallery({ property, dict }: PropertyGalleryProps
 
   const mainImage = property.image;
   const groups = property.gallery || [];
-  
+
   // 1. Initial items array - displayItems[0] is always the Primary Image
   const displayItems: any[] = [];
   if (mainImage) {
@@ -56,7 +56,7 @@ export default function PropertyGallery({ property, dict }: PropertyGalleryProps
     // Individual image or videoItem
     return [g].filter((item: any) => item.asset || item.url);
   });
-  
+
   if (groupsMedia.length > 0) {
     // A. Rule: At least one video if any video exists in all groups
     for (const groupItems of groupsMedia) {
@@ -64,7 +64,7 @@ export default function PropertyGallery({ property, dict }: PropertyGalleryProps
       if (video) {
         smallItems.push(video);
         pickedIds.add(getItemId(video));
-        break; 
+        break;
       }
     }
 
@@ -74,12 +74,12 @@ export default function PropertyGallery({ property, dict }: PropertyGalleryProps
     while (smallItems.length < 4 && itemsFoundInLastCycle) {
       itemsFoundInLastCycle = false;
       const startIdx = groupIdx;
-      
+
       for (let i = 0; i < groupsMedia.length; i++) {
         const currentIdx = (startIdx + i) % groupsMedia.length;
         const currentGroup = groupsMedia[currentIdx];
         const nextItem = currentGroup.find((item: any) => !pickedIds.has(getItemId(item)));
-        
+
         if (nextItem) {
           smallItems.push(nextItem);
           pickedIds.add(getItemId(nextItem));
@@ -109,15 +109,15 @@ export default function PropertyGallery({ property, dict }: PropertyGalleryProps
           <Link href={`/${locale}`} className="breadcrumb-item breadcrumb-home-link">
             <img src="/images/logo-mark-raster.png" alt="Home" width="20" height="20" className="breadcrumb-logo" />
           </Link>
-          
+
           <img src="/icons/chevron_forward.svg" className="breadcrumb-separator" alt="separator" width="16" height="16" />
-          
+
           <Link href={`/${locale}/${locale === 'es' ? 'propiedades' : 'properties'}`} className="breadcrumb-item">
             <span>{dict?.property?.properties_breadcrumb}</span>
           </Link>
-          
+
           <img src="/icons/chevron_forward.svg" className="breadcrumb-separator" alt="separator" width="16" height="16" />
-          
+
           <div className="breadcrumb-item current">
             {property.title}
           </div>
@@ -128,7 +128,7 @@ export default function PropertyGallery({ property, dict }: PropertyGalleryProps
         {displayItems.map((item, index) => {
           const isVideo = item._type === 'videoItem';
           const isMain = index === 0;
-          
+
           let imageUrl = '/placeholder-media.jpg'; // Set safe fallback to avoid console warning on empty src
           let lqip = '';
 
@@ -142,10 +142,10 @@ export default function PropertyGallery({ property, dict }: PropertyGalleryProps
               lqip = item.thumbnail.asset?.metadata?.lqip;
             } else {
               // Extract YouTube thumbnail
-              const videoId = item.url?.includes('v=') 
+              const videoId = item.url?.includes('v=')
                 ? item.url.split('v=')[1]?.split('&')[0]
                 : item.url?.split('/').pop();
-              
+
               if (videoId) {
                 imageUrl = `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
               } else {
@@ -158,8 +158,8 @@ export default function PropertyGallery({ property, dict }: PropertyGalleryProps
           const isSeeAllItem = index === 4 && remainingCount > 0;
 
           return (
-            <div 
-              key={item._id || item._key || index} 
+            <div
+              key={item._id || item._key || index}
               className={`gallery-item item-${index} ${isMain ? 'main-item' : 'small-item'} ${isVideo ? 'video-item' : ''} ${isSeeAllItem ? 'has-see-all' : ''}`}
               onClick={() => {
                 // Only set initial item if it's NOT the main photo AND not the "See All" item
@@ -190,7 +190,7 @@ export default function PropertyGallery({ property, dict }: PropertyGalleryProps
                   </div>
                 )}
               </div>
-              
+
               {/* Show "See all photos" button on the first image (main) like in some designs, 
                   or on the last image if there are more photos */}
 
@@ -198,7 +198,7 @@ export default function PropertyGallery({ property, dict }: PropertyGalleryProps
                 <button className="see-all-btn-overlay btn-pill" onClick={(e) => { e.stopPropagation(); setIsModalOpen(true); }}>
                   <div className="btn-content-desktop">
                     <svg width="18" height="18" viewBox="0 -960 960 960" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M127.69-220q-30.3 0-51.3-21-21-21-21-51.31v-375.38q0-30.31 21-51.31 21-21 51.3-21h375.39q30.3 0 51.3 21 21 21 21 51.31v375.38q0 30.31-21 51.31-21 21-51.3 21H127.69Zm0-60h375.39q4.61 0 8.46-3.85 3.84-3.84 3.84-8.46v-375.38q0-4.62-3.84-8.46-3.85-3.85-8.46-3.85H127.69q-4.61 0-8.46 3.85-3.85 3.84-3.85 8.46v375.38q0 4.62 3.85 8.46 3.85 3.85 8.46 3.85Zm36.93-84.62h301.53l-94.77-127.69-76 100-56-74-74.76 101.69ZM680-220v-520h60v520h-60Zm164.62 0v-520h59.99v520h-59.99Zm-729.24-60v-400 400Z"/>
+                      <path d="M127.69-220q-30.3 0-51.3-21-21-21-21-51.31v-375.38q0-30.31 21-51.31 21-21 51.3-21h375.39q30.3 0 51.3 21 21 21 21 51.31v375.38q0 30.31-21 51.31-21 21-51.3 21H127.69Zm0-60h375.39q4.61 0 8.46-3.85 3.84-3.84 3.84-8.46v-375.38q0-4.62-3.84-8.46-3.85-3.85-8.46-3.85H127.69q-4.61 0-8.46 3.85-3.85 3.84-3.85 8.46v375.38q0 4.62 3.85 8.46 3.85 3.85 8.46 3.85Zm36.93-84.62h301.53l-94.77-127.69-76 100-56-74-74.76 101.69ZM680-220v-520h60v520h-60Zm164.62 0v-520h59.99v520h-59.99Zm-729.24-60v-400 400Z" />
                     </svg>
                     <span>{dict?.property?.see_all_photos}</span>
                   </div>
@@ -214,12 +214,14 @@ export default function PropertyGallery({ property, dict }: PropertyGalleryProps
 
       <div className="property-gallery-summary">
         <div className="summary-details-col">
-          <h1 className="summary-title">{property.title}</h1>
-          <p className="summary-address">{property.address}</p>
-          
           <div className="summary-price">
             {property.price ? new Intl.NumberFormat('en-IE', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(property.price) : dict?.properties?.price_upon_request}
           </div>
+
+          <h1 className="summary-title">{property.title}</h1>
+          <p className="summary-address">{property.address}</p>
+
+
 
           <div className="summary-meta-row">
             {property.meta
@@ -228,7 +230,7 @@ export default function PropertyGallery({ property, dict }: PropertyGalleryProps
               .map((m: any, i: number, arr: any[]) => {
                 // Helper to strip invisible Stega characters that break simple equality matching
                 const clean = (str: any) => typeof str === 'string' ? str.replace(/[\u2000-\u206F\u200B-\u200D\uFEFF]/g, '').trim() : str;
-                
+
                 const getDisplay = (val: string) => {
                   const cleanedVal = clean(val);
                   const match = m.selectOptions?.find((o: any) => clean(o.value) === cleanedVal);
@@ -237,11 +239,14 @@ export default function PropertyGallery({ property, dict }: PropertyGalleryProps
 
                 const sVal = m.selectValue ? getDisplay(m.selectValue) : null;
                 const aVal = Array.isArray(m.selectArrayValue) ? m.selectArrayValue.map(getDisplay).join(', ') : null;
-                
+
                 const value = m.numberValue ?? m.stringValue ?? sVal ?? aVal ?? (m.booleanValue !== undefined ? (m.booleanValue ? dict?.common?.yes || 'Yes' : dict?.common?.no || 'No') : '—');
                 return (
-                  <div key={m.metaId || i} className="summary-meta-pill">
-                    <span className="meta-label">{value} {!m.hideLabelOnHighlight && (m.unit || m.shortLabel)}</span>
+                  <div key={m.metaId || i} style={{ display: 'contents' }}>
+                    <span className="summary-meta-item">
+                      {value} {!m.hideLabelOnHighlight && (m.unit || m.shortLabel)}
+                    </span>
+                    {i < arr.length - 1 && <div className="summary-meta-dot"></div>}
                   </div>
                 );
               })}
@@ -249,24 +254,24 @@ export default function PropertyGallery({ property, dict }: PropertyGalleryProps
         </div>
 
         <div className="summary-cta-col">
-          <Button 
-            label={dict?.property?.cta_schedule || "Schedule a tour"} 
-            variant="pill" 
+          <Button
+            label={dict?.property?.cta_schedule || "Schedule a tour"}
+            variant="pill"
             className="summary-cta-primary"
           />
-          <Button 
-            label={dict?.property?.cta_touch || "Get in touch"} 
-            variant="link" 
+          <Button
+            label={dict?.property?.cta_touch || "Get in touch"}
+            variant="link"
             className="summary-cta-secondary"
           />
         </div>
       </div>
-      <PropertyGalleryModal 
-        isOpen={isModalOpen} 
+      <PropertyGalleryModal
+        isOpen={isModalOpen}
         onClose={() => {
           setIsModalOpen(false);
           setSelectedGalleryItem(null);
-        }} 
+        }}
         property={property}
         dict={dict}
         initialItem={selectedGalleryItem}
