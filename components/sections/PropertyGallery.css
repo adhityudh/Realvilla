@@ -454,6 +454,7 @@
 
   .summary-address {
     font-size: var(--text-base-sm);
+    margin-bottom: 2rem;
   }
 
 
@@ -464,7 +465,8 @@
 
 @media (max-width: 480px) {
   .summary-meta-row {
-    gap: 0.65rem;
+    gap: 1.15rem 0.65rem;
+    justify-content: space-between;
   }
 
   .summary-meta-dot {
