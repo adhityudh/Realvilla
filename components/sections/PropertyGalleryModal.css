@@ -220,7 +220,7 @@
 .back-to-grid {
     position: absolute;
     top: 0rem;
-    left: 0rem;
+    left: 1rem;
     z-index: 15;
     display: flex;
     align-items: center;
@@ -246,12 +246,14 @@
 
 .back-to-grid img {
     transition: transform 0.4s var(--ease-smooth), filter 0.3s ease;
-    filter: brightness(0); /* Convert white SVG to black */
+    filter: brightness(0);
+    /* Convert white SVG to black */
 }
 
 .back-to-grid:hover img {
     transform: translateX(-4px);
-    filter: none; /* Return to original white SVG */
+    filter: none;
+    /* Return to original white SVG */
 }
 
 .detail-main-content {
@@ -463,6 +465,7 @@
     overflow-x: auto;
     scrollbar-width: none;
     -ms-overflow-style: none;
+    padding: 0 0.5rem;
 }
 
 .detail-thumbnails-scroll::before,
@@ -518,7 +521,8 @@
 
 /* BACK TO GRID THUMBNAIL SYSTEM */
 .back-to-grid-thumb {
-    display: none !important; /* Force hidden on Mobile/Tablet by default */
+    display: none !important;
+    /* Force hidden on Mobile/Tablet by default */
     background: var(--bg-muted);
     flex-direction: column;
     align-items: center;
@@ -541,7 +545,8 @@
     width: 24px;
     height: 24px;
     object-fit: contain;
-    filter: brightness(0); /* Convert white SVG to black */
+    filter: brightness(0);
+    /* Convert white SVG to black */
 }
 
 .back-to-grid-thumb .thumb-grid-label {
@@ -567,7 +572,8 @@
 /* Desktop Swap Override */
 @media (min-width: 1025px) {
     .back-to-grid-thumb {
-        display: flex !important; /* Prepend back-to-grid button into scroll bar on desktop */
+        display: flex !important;
+        /* Prepend back-to-grid button into scroll bar on desktop */
     }
 
     /* Hide floating button on Desktop only */
@@ -665,13 +671,13 @@
     }
 
     .gallery-modal-body {
-        padding: 1.5rem;
+        padding: 1.5rem 0;
     }
 
     .gallery-grid-scrollable {
         grid-template-columns: 1fr 1fr;
         gap: 0.5rem;
-        padding: 0;
+        padding: 0 1.5rem;
     }
 
     .fullscreen-content {
@@ -741,6 +747,6 @@
         width: 44px;
         height: 44px;
         border-radius: var(--radius-md);
-        margin-right: 1.5rem;
+        margin-right: 1rem;
     }
 }
