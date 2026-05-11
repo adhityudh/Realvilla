@@ -5,6 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import gsap from 'gsap';
 import { urlForImage } from '@/sanity/lib/image';
+import { useParams } from 'next/navigation';
 
 export interface PropertyCardProps {
   prop: any;
@@ -88,8 +89,12 @@ export default function PropertyCard({ prop, variant = 'default', dict }: { prop
     });
   };
 
+  const params = useParams();
+  const activeLocale = prop.language || (params?.locale as string) || 'en';
+  const routePrefix = (activeLocale === 'es') ? 'propiedades' : 'properties';
+
   return (
-    <Link href={`/${prop.language || 'en'}/properties/${prop.slug}`} className={`property-card ${variant === 'seamless' ? 'property-card-seamless' : ''}`} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} style={{ display: 'block', textDecoration: 'none' }}>
+    <Link href={`/${activeLocale}/${routePrefix}/${prop.slug}`} className={`property-card ${variant === 'seamless' ? 'property-card-seamless' : ''}`} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} style={{ display: 'block', textDecoration: 'none' }}>
       <div className="property-image-wrapper">
         <Image 
           src={primarySrc} 

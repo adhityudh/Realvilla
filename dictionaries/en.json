@@ -117,5 +117,12 @@
     "title": "Exclusive Tenerife Homes",
     "no_results": "No properties found.",
     "price_upon_request": "Price upon request"
+  },
+  "property": {
+    "properties_breadcrumb": "Properties",
+    "see_all_photos": "See all photos",
+    "gallery_all": "All",
+    "gallery_video": "Video",
+    "gallery_grid_view": "Grid View"
   }
 }

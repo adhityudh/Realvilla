@@ -269,18 +269,13 @@ function useIntroOrchestrator() {
   const ctx = useRef<gsap.Context | null>(null);
 
   useEffect(() => {
-    // If we've already finished the preloader in this session, don't trigger it again
-    // This prevents the 'stuck' state during SPA navigation back to home
-    if (globalPreloaderFinished) {
-      document.body.classList.remove('preloading');
-      document.body.classList.remove('intro-active');
-      return;
-    }
-
     // Immediate cleanup for SPA navigations
     const existingLogo = document.getElementById('morph-breakout-logo');
     if (existingLogo) existingLogo.remove();
-    document.body.classList.add('preloading');
+    
+    if (!globalPreloaderFinished) {
+      document.body.classList.add('preloading');
+    }
 
     if (!lenis) return;
 
@@ -353,8 +348,10 @@ function useIntroOrchestrator() {
         getSplashIntroAnimations(tl, releaseScroll);
         tl.add(() => { initMorph(); }, 1.6);
 
-        // This would only happen if preloader somehow finished before this timer
+        // Play the full cinematic reveal sequence immediately if assets are cached
         if (globalPreloaderFinished) {
+          // Hide the circular preloader circle immediately since loading is pre-cached
+          gsap.set('.preloader-border-box', { opacity: 0, display: 'none' });
           tl.play();
         }
       }, 100); // Slightly longer delay for safer DOM check

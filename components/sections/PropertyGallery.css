@@ -22,6 +22,72 @@
   /* Hidden for now */
 }
 
+.property-breadcrumb-wrapper {
+  width: 100%;
+  padding: 6rem 3rem 1.5rem 3rem;
+  /* Account for sticky header */
+  display: flex;
+  align-items: center;
+}
+
+.property-breadcrumb {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  font-family: var(--font-manrope), sans-serif;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-black);
+}
+
+.breadcrumb-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-black);
+  text-decoration: none;
+  transition: all 0.3s var(--ease-smooth);
+}
+
+.breadcrumb-item:not(.current):hover {
+  opacity: 1;
+  color: var(--color-gold-dark, #c5a059);
+  /* Subdued site gold highlight if exists */
+}
+
+.breadcrumb-item.current {
+  display: block;
+  /* Crucial override to guarantee text-overflow: ellipsis works */
+  opacity: 1;
+  font-weight: 600;
+  pointer-events: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 300px;
+}
+
+.breadcrumb-logo {
+  display: block;
+  opacity: 0.85;
+  transition: opacity 0.3s var(--ease-smooth);
+  /* Force crisp rendering for raster content inside SVG */
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+}
+
+.breadcrumb-item:hover .breadcrumb-logo {
+  opacity: 1;
+}
+
+.breadcrumb-separator {
+  width: 12px;
+  opacity: 0.65;
+  filter: invert(1);
+  /* Converts the hardcoded white SVG icon to black for visibility on light backgrounds */
+}
+
 .property-gallery-grid {
   display: grid;
   grid-template-columns: 2fr 1fr 1fr;
@@ -29,7 +95,8 @@
   gap: 12px;
   width: 100%;
   max-width: 100%;
-  padding: 6rem 3rem 3rem 3rem;
+  padding: 0 3rem 3rem 3rem;
+  /* Moved top padding to breadcrumb wrapper */
 }
 
 .gallery-item {
@@ -119,12 +186,18 @@
 
 /* Mobile Responsiveness */
 @media (max-width: 1024px) {
+  .property-breadcrumb-wrapper {
+    padding: 7.5rem 1.5rem 1.5rem;
+    /* Added more breathing room below mobile header */
+  }
+
   .property-gallery-grid {
     grid-template-columns: repeat(4, 1fr);
     grid-template-rows: 320px 156px;
     /* Larger heights for tablet */
     gap: 12px;
-    padding: 7rem 1.5rem 1.5rem;
+    padding: 0 1.5rem 1.5rem;
+    /* Aligned left/right with breadcrumb */
   }
 
   .property-gallery-section::before {
@@ -158,6 +231,10 @@
     color: var(--text-black);
   }
 
+  .gallery-item.has-see-all .gallery-item-overlay {
+    display: none !important;
+  }
+
   .see-all-btn-overlay {
     position: absolute !important;
     top: 50% !important;
@@ -177,21 +254,61 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    pointer-events: none; /* Let click cascade to the parent grid-item */
   }
 
   .see-all-btn-overlay:hover {
     background: var(--bg-muted) !important;
     transform: translate(-50%, -54%) !important;
   }
+
+  .btn-content-mobile {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-manrope), sans-serif;
+    font-size: 1.25rem;
+    font-weight: var(--fw-bold);
+    color: var(--text-black);
+  }
 }
 
 @media (max-width: 768px) {
+  .property-breadcrumb-wrapper {
+    padding: 7.5rem 1.5rem 1rem;
+    /* Added extra headspace to perfectly clear mobile sticky header */
+  }
+
+  .property-breadcrumb {
+    flex-wrap: nowrap;
+    /* Force single line to prevent ugly breakages */
+    width: 100%;
+    gap: 0.5rem;
+    font-size: 0.8rem;
+  }
+
+  .breadcrumb-item {
+    gap: 0.35rem;
+  }
+
+  .breadcrumb-item.current {
+    flex: 1;
+    /* Consume exactly the remaining space */
+    min-width: 0;
+    /* Critical hook for flexbox overflow handling */
+    max-width: none;
+    /* Let flexbox compute the limit */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
   .property-gallery-grid {
     grid-template-columns: repeat(4, 1fr);
     grid-template-rows: 240px 88px;
     /* Main image height then small images height */
     gap: 8px;
-    padding: 7rem 1rem 1rem;
+    padding: 0 1rem 1rem;
   }
 
   .property-gallery-section::before {

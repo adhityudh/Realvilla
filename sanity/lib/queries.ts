@@ -21,6 +21,7 @@ export const INTERNAL_LINK_PROJECTION = `select(
 // Reusable property card projection (for listings, cards, carousels)
 export const PROPERTY_CARD_FIELDS = groq`
   _id,
+  language,
   "title": coalesce(title[$language], title.en, title),
   "address": coalesce(
     select(
@@ -339,7 +340,10 @@ export const PROPERTY_DETAIL_QUERY = groq`
     },
     "_translations": *[_type == "translation.metadata" && references(^._id)][0].translations[].value->{
       "language": language,
-      "slug": slug.current
+      "slug": select(
+        language == "es" => "propiedades/" + slug.current,
+        "properties/" + slug.current
+      )
     }
   }
 `

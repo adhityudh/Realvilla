@@ -142,13 +142,14 @@
 .gallery-modal-body {
     flex: 1;
     overflow-y: auto;
-    padding: 2.5rem;
+    padding: 1.5rem 2.5rem;
 }
 
 .gallery-grid-scrollable {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 1rem;
+    padding: 1rem 0;
 }
 
 .gallery-grid-item {
@@ -243,12 +244,14 @@
     color: var(--text-white);
 }
 
-.back-to-grid svg {
-    transition: transform 0.4s var(--ease-smooth);
+.back-to-grid img {
+    transition: transform 0.4s var(--ease-smooth), filter 0.3s ease;
+    filter: brightness(0); /* Convert white SVG to black */
 }
 
-.back-to-grid:hover svg {
+.back-to-grid:hover img {
     transform: translateX(-4px);
+    filter: none; /* Return to original white SVG */
 }
 
 .detail-main-content {
@@ -281,14 +284,17 @@
 
 /* SAFE CLIPPING: Using Optical Transform preserves internal layout calculations */
 .detail-media-wrapper .plyr__video-wrapper {
-    overflow: hidden; /* Clip the optical magnification */
+    overflow: hidden;
+    /* Clip the optical magnification */
     position: relative;
 }
 
 .detail-media-wrapper .plyr__video-wrapper iframe {
-    transform: scale(1.3) !important; /* Non-destructive zoom pushes artifacts out */
+    transform: scale(1.3) !important;
+    /* Non-destructive zoom pushes artifacts out */
     transform-origin: center center !important;
-    pointer-events: none; /* Let clicks cascade to Plyr facade */
+    pointer-events: none;
+    /* Let clicks cascade to Plyr facade */
 }
 
 .detail-media-wrapper .plyr {
@@ -353,7 +359,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 100; /* Stay way above player initially */
+    z-index: 100;
+    /* Stay way above player initially */
     transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.6s;
     pointer-events: none;
     opacity: 1;
@@ -361,8 +368,8 @@
 }
 
 /* DEFINITIVE HIDE: Lift the veil when the player confirms ready OR explicitly starts playing */
-.plyr-container .plyr--ready ~ .video-loading-overlay,
-.plyr-container .plyr--playing ~ .video-loading-overlay {
+.plyr-container .plyr--ready~.video-loading-overlay,
+.plyr-container .plyr--playing~.video-loading-overlay {
     opacity: 0 !important;
     visibility: hidden !important;
     pointer-events: none;
@@ -470,7 +477,7 @@
 
 .detail-thumb-item {
     flex: 0 0 120px;
-    height: 80px;
+    height: 88px;
     position: relative;
     overflow: hidden;
     cursor: pointer;
@@ -507,6 +514,66 @@
     height: 3rem !important;
     object-fit: contain !important;
     filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+/* BACK TO GRID THUMBNAIL SYSTEM */
+.back-to-grid-thumb {
+    display: none !important; /* Force hidden on Mobile/Tablet by default */
+    background: var(--bg-muted);
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    border: 1px solid var(--border-subtle);
+    transition: all 0.3s var(--ease-smooth);
+    padding: 0.5rem;
+}
+
+.back-to-grid-thumb .thumb-grid-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s var(--ease-smooth);
+}
+
+.back-to-grid-thumb .thumb-grid-icon img {
+    display: block;
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+    filter: brightness(0); /* Convert white SVG to black */
+}
+
+.back-to-grid-thumb .thumb-grid-label {
+    font-family: var(--font-manrope), sans-serif;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-black);
+    text-align: center;
+    line-height: 1.2;
+}
+
+.back-to-grid-thumb:hover {
+    background: var(--color-gold-light, #faf8f2);
+    border-color: var(--color-gold);
+}
+
+.back-to-grid-thumb:hover .thumb-grid-icon {
+    transform: translateY(-2px);
+}
+
+/* Desktop Swap Override */
+@media (min-width: 1025px) {
+    .back-to-grid-thumb {
+        display: flex !important; /* Prepend back-to-grid button into scroll bar on desktop */
+    }
+
+    /* Hide floating button on Desktop only */
+    .gallery-detail-view .back-to-grid {
+        display: none !important;
+    }
 }
 
 @keyframes fadeIn {
@@ -604,6 +671,7 @@
     .gallery-grid-scrollable {
         grid-template-columns: 1fr 1fr;
         gap: 0.5rem;
+        padding: 0;
     }
 
     .fullscreen-content {

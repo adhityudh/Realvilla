@@ -115,6 +115,14 @@
   },
   "properties": {
     "title": "Villas exclusivas en Tenerife",
-    "no_results": "No se han encontrado propiedades."
+    "no_results": "No se han encontrado propiedades.",
+    "price_upon_request": "Precio a consultar"
+  },
+  "property": {
+    "properties_breadcrumb": "Propiedades",
+    "see_all_photos": "Ver todas las fotos",
+    "gallery_all": "Todo",
+    "gallery_video": "Vídeo",
+    "gallery_grid_view": "Vista de cuadrícula"
   }
 }

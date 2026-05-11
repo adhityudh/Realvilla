@@ -193,8 +193,8 @@ export default function PropertyGalleryModal({ isOpen, onClose, property, dict, 
     const hasVideos = allMedia.some(m => m._type === 'videoItem');
 
     return [
-      { id: 'all', label: dict?.property?.gallery_all || 'All' },
-      ...(hasVideos ? [{ id: 'video', label: dict?.property?.gallery_video || 'Video' }] : []),
+      { id: 'all', label: dict?.property?.gallery_all },
+      ...(hasVideos ? [{ id: 'video', label: dict?.property?.gallery_video }] : []),
       ...Array.from(uniqueGroups).map(group => ({ id: `group-${group}`, label: group }))
     ];
   }, [gallery, allMedia, dict]);
@@ -287,7 +287,7 @@ export default function PropertyGalleryModal({ isOpen, onClose, property, dict, 
         : item.url?.split('/').pop();
       return videoId ? `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg` : '/placeholder-media.jpg';
     }
-    return '';
+    return '/placeholder-media.jpg'; // Secure fallback path to prevent recursive document loading
   };
 
   const renderDetailView = () => {
@@ -313,10 +313,8 @@ export default function PropertyGalleryModal({ isOpen, onClose, property, dict, 
       <div className="gallery-detail-view">
         {/* Back Button */}
         <button className="back-to-grid" onClick={() => setSelectedItem(null)}>
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M19 12H5M12 19l-7-7 7-7" />
-          </svg>
-          Grid View
+          <img src="/icons/arrow_left_alt.svg" alt="Back" width="20" height="20" />
+          {dict?.property?.gallery_grid_view}
         </button>
 
         <div className="detail-main-content">
@@ -336,7 +334,7 @@ export default function PropertyGalleryModal({ isOpen, onClose, property, dict, 
             ) : (
               <Image
                 src={getImageUrl(selectedItem)}
-                alt={selectedItem.alt || "Property"}
+                alt={selectedItem.alt || property?.title}
                 fill
                 style={{ objectFit: 'contain' }}
               />
@@ -351,6 +349,18 @@ export default function PropertyGalleryModal({ isOpen, onClose, property, dict, 
         {/* Horizontal Thumbnails */}
         <div className={`detail-thumbnails-container ${canScrollLeft ? 'can-scroll-left' : ''} ${canScrollRight ? 'can-scroll-right' : ''}`}>
           <div className="detail-thumbnails-scroll" ref={thumbScrollRef} onScroll={checkThumbnailScroll}>
+            {/* Static Back to Grid Thumbnail (Visible on Desktop via CSS) */}
+            <div 
+              className="detail-thumb-item back-to-grid-thumb"
+              onClick={() => setSelectedItem(null)}
+              title={dict?.property?.gallery_grid_view || "Back to grid"}
+            >
+              <div className="thumb-grid-icon">
+                <img src="/icons/grid_view.svg" alt="Grid" width="24" height="24" />
+              </div>
+              <span className="thumb-grid-label">{dict?.property?.gallery_grid_view || "Grid"}</span>
+            </div>
+
             {currentGroupItems.map((item, idx) => (
               <div
                 key={idx}
@@ -421,7 +431,7 @@ export default function PropertyGalleryModal({ isOpen, onClose, property, dict, 
                   >
                     <Image
                       src={getImageUrl(item)}
-                      alt={item.alt || 'Gallery item'}
+                      alt={item.alt || property?.title}
                       fill
                       sizes="(max-width: 768px) 50vw, 33vw"
                       style={{ objectFit: 'cover' }}

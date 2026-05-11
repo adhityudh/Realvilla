@@ -6,12 +6,17 @@ import { urlForImage } from '@/sanity/lib/image';
 import PropertyGalleryModal from './PropertyGalleryModal';
 import './PropertyGallery.css';
 
+import Link from 'next/link';
+import { useParams } from 'next/navigation';
+
 interface PropertyGalleryProps {
   property: any;
   dict?: any;
 }
 
 export default function PropertyGallery({ property, dict }: PropertyGalleryProps) {
+  const params = useParams();
+  const locale = params?.locale || 'en';
   const [imageSizes, setImageSizes] = useState<Record<string, { w: number; h: number }>>({});
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedGalleryItem, setSelectedGalleryItem] = useState<any>(null);
@@ -33,7 +38,7 @@ export default function PropertyGallery({ property, dict }: PropertyGalleryProps
   // 1. Initial items array - displayItems[0] is always the Primary Image
   const displayItems: any[] = [];
   if (mainImage) {
-    displayItems.push({ _type: 'image', asset: mainImage.asset, alt: property.title || 'Property', isMain: true });
+    displayItems.push({ _type: 'image', asset: mainImage.asset, alt: property.title, isMain: true });
   }
 
   // 2. Logic to pick 4 small items from groups with distributed selection and video priority
@@ -98,12 +103,32 @@ export default function PropertyGallery({ property, dict }: PropertyGalleryProps
 
   return (
     <section className="property-gallery-section">
+      <div className="property-breadcrumb-wrapper">
+        <nav className="property-breadcrumb">
+          <Link href={`/${locale}`} className="breadcrumb-item breadcrumb-home-link">
+            <img src="/images/logo-mark-raster.png" alt="Home" width="20" height="20" className="breadcrumb-logo" />
+          </Link>
+          
+          <img src="/icons/chevron_forward.svg" className="breadcrumb-separator" alt="separator" width="16" height="16" />
+          
+          <Link href={`/${locale}/${locale === 'es' ? 'propiedades' : 'properties'}`} className="breadcrumb-item">
+            <span>{dict?.property?.properties_breadcrumb}</span>
+          </Link>
+          
+          <img src="/icons/chevron_forward.svg" className="breadcrumb-separator" alt="separator" width="16" height="16" />
+          
+          <div className="breadcrumb-item current">
+            {property.title}
+          </div>
+        </nav>
+      </div>
+
       <div className="property-gallery-grid">
         {displayItems.map((item, index) => {
           const isVideo = item._type === 'videoItem';
           const isMain = index === 0;
           
-          let imageUrl = '';
+          let imageUrl = '/placeholder-media.jpg'; // Set safe fallback to avoid console warning on empty src
           let lqip = '';
 
           if (item._type === 'image') {
@@ -129,19 +154,21 @@ export default function PropertyGallery({ property, dict }: PropertyGalleryProps
             }
           }
 
+          const isSeeAllItem = index === 4 && remainingCount > 0;
+
           return (
             <div 
               key={item._id || item._key || index} 
-              className={`gallery-item item-${index} ${isMain ? 'main-item' : 'small-item'} ${isVideo ? 'video-item' : ''}`}
+              className={`gallery-item item-${index} ${isMain ? 'main-item' : 'small-item'} ${isVideo ? 'video-item' : ''} ${isSeeAllItem ? 'has-see-all' : ''}`}
               onClick={() => {
-                // Only set initial item if it's NOT the main photo (per user request)
-                setSelectedGalleryItem(isMain ? null : item);
+                // Only set initial item if it's NOT the main photo AND not the "See All" item
+                setSelectedGalleryItem((isMain || isSeeAllItem) ? null : item);
                 setIsModalOpen(true);
               }}
             >
               <Image
                 src={imageUrl}
-                alt={item.alt || property.title || 'Property media'}
+                alt={item.alt || property.title}
                 fill
                 sizes={isMain ? "(max-width: 1024px) 100vw, 50vw" : "(max-width: 1024px) 50vw, 25vw"}
                 className="img-reveal"
@@ -172,7 +199,7 @@ export default function PropertyGallery({ property, dict }: PropertyGalleryProps
                     <svg width="18" height="18" viewBox="0 -960 960 960" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                       <path d="M127.69-220q-30.3 0-51.3-21-21-21-21-51.31v-375.38q0-30.31 21-51.31 21-21 51.3-21h375.39q30.3 0 51.3 21 21 21 21 51.31v375.38q0 30.31-21 51.31-21 21-51.3 21H127.69Zm0-60h375.39q4.61 0 8.46-3.85 3.84-3.84 3.84-8.46v-375.38q0-4.62-3.84-8.46-3.85-3.85-8.46-3.85H127.69q-4.61 0-8.46 3.85-3.85 3.84-3.85 8.46v375.38q0 4.62 3.85 8.46 3.85 3.85 8.46 3.85Zm36.93-84.62h301.53l-94.77-127.69-76 100-56-74-74.76 101.69ZM680-220v-520h60v520h-60Zm164.62 0v-520h59.99v520h-59.99Zm-729.24-60v-400 400Z"/>
                     </svg>
-                    <span>{dict?.property?.see_all_photos || 'See all photos'}</span>
+                    <span>{dict?.property?.see_all_photos}</span>
                   </div>
                   <div className="btn-content-mobile">
                     +{remainingCount}
