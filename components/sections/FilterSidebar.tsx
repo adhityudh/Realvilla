@@ -472,32 +472,45 @@ export default function FilterSidebar({
     if (type === 'select' || type === 'multiSelect') {
       const options = def.filter?.selectOptions || [];
       const selected = filterValues[filterId] || (type === 'multiSelect' ? [] : '');
+      const displayStyle = def.selectDisplayType || 'pill';
 
-      const toggleOption = (opt: string) => {
+      const toggleOption = (optVal: string) => {
         if (type === 'multiSelect') {
           const arr = Array.isArray(selected) ? selected : [];
-          const next = arr.includes(opt) ? arr.filter((x: string) => x !== opt) : [...arr, opt];
+          const next = arr.includes(optVal) ? arr.filter((x: string) => x !== optVal) : [...arr, optVal];
           setFilterValues(prev => ({ ...prev, [filterId]: next }));
         } else {
-          setFilterValues(prev => ({ ...prev, [filterId]: selected === opt ? '' : opt }));
+          setFilterValues(prev => ({ ...prev, [filterId]: selected === optVal ? '' : optVal }));
         }
       };
+
+      const isGrid = displayStyle === 'grid';
 
       return (
         <div className="filter-group" key={filterId} style={hideLabel ? { paddingTop: '0.5rem' } : undefined}>
           {!hideLabel && <p className="filter-group-label" style={{ marginBottom: '1rem', marginTop: '0.5rem' }}>{label}</p>}
-          <div className="chips-container">
-            {options.map((opt: string) => {
+          <div className={isGrid ? "chips-grid-wrapper" : "chips-container"}>
+            {options.map((opt: any) => {
+              const optVal = typeof opt === 'object' && opt !== null ? opt.value : opt;
+              const optLabel = typeof opt === 'object' && opt !== null ? opt.label : opt;
+              const optIcon = typeof opt === 'object' && opt !== null ? opt.icon : null;
+              
               const active = type === 'multiSelect'
-                ? (Array.isArray(selected) && selected.includes(opt))
-                : selected === opt;
+                ? (Array.isArray(selected) && selected.includes(optVal))
+                : selected === optVal;
+                
               return (
                 <button
-                  key={`${filterId}-${opt}`}
-                  className={`filter-chip ${active ? 'active' : ''}`}
-                  onClick={() => toggleOption(opt)}
+                  key={`${filterId}-${optVal}`}
+                  className={isGrid ? `filter-grid-btn ${active ? 'active' : ''}` : `filter-chip ${active ? 'active' : ''}`}
+                  onClick={() => toggleOption(optVal)}
                 >
-                  {opt}
+                  {isGrid && optIcon && (
+                    <div className="filter-grid-icon-box">
+                      <img src={optIcon} alt={optLabel} className="filter-grid-icon" />
+                    </div>
+                  )}
+                  <span className={isGrid ? "filter-grid-text" : ""}>{optLabel}</span>
                 </button>
               );
             })}
@@ -550,236 +563,269 @@ export default function FilterSidebar({
     return defs.filter(isDefActive).length;
   };
 
-  const renderContent = () => (
-    <div className={`filter-sidebar-container ${isInline ? 'is-inline' : ''}`} ref={sidebarRef} style={{ display: isInline ? 'block' : 'none' }}>
-      {!isInline && (
-        <div 
-          className="filter-sidebar-overlay global-overlay" 
-          ref={overlayRef} 
-          onClick={handleOverlayClick} 
-          style={{ backdropFilter: 'blur(15px)', WebkitBackdropFilter: 'blur(15px)' }} 
-        />
-      )}
+  const renderContent = () => {
+    const orderedElements: Array<{ order: number; node: React.ReactNode; key: string }> = [];
 
-      <div className="filter-sidebar-content" ref={contentRef} data-lenis-prevent="true">
-        {/* Header */}
-        <div className="filter-sidebar-header">
-          <div>
-            <h3 className="filter-sidebar-title">
-              {dict?.filter?.title}
-            </h3>
-            <p className="filter-sidebar-subtitle">
-              {dict?.filter?.subtitle}
-            </p>
-          </div>
-          <button className="filter-sidebar-close" onClick={onClose} aria-label="Close">
-            <img src="/icons/close.svg" alt="Close" width="20" height="20" />
-          </button>
-        </div>
-
-        {/* Scrollable Filters Body */}
-        <div className="filter-sidebar-body" data-lenis-prevent="true">
-
-          {/* ─── A. MANDATORY PRICE RANGE (NON-SANITY) ─── */}
-          <AccordionWrapper
-            title={dict?.filter?.price_range}
-            isOpen={isGroupOpen('price')}
-            onToggle={() => toggleGroup('price')}
-            countLabel={(priceMin > 0 || priceMax < dbMaxPrice) ? 1 : undefined}
-          >
-            <div className="price-inputs-row">
-              <div className="price-input-box">
-                <span className="price-currency">€</span>
-                <input
-                  type="text"
-                  value={formatNumberWithCommas(priceMin)}
-                  onChange={(e) => setPriceMin(parseCommasToNumber(e.target.value))}
-                  placeholder={dict?.archive?.min}
-                />
-              </div>
-              <div className="price-divider">—</div>
-              <div className="price-input-box">
-                <span className="price-currency">€</span>
-                <input
-                  type="text"
-                  value={formatNumberWithCommas(priceMax)}
-                  onChange={(e) => setPriceMax(parseCommasToNumber(e.target.value))}
-                  placeholder={dict?.archive?.max}
-                />
-              </div>
-            </div>
-
-
-
-            <div className='filter-group'>
-              <div className="range-slider-wrapper">
-                <input
-                  type="range"
-                  min="0"
-                  max={dbMaxPrice}
-                  step="any"
-                  value={priceMin}
-                  onChange={(e) => {
-                    const rawVal = Number(e.target.value);
-                    let val = Math.round(rawVal / 50000) * 50000;
-                    if (rawVal < 25000) val = 0;
-                    if (val > priceMax) val = priceMax;
-                    setPriceMin(val);
-                  }}
-                  className="range-slider-input"
-                />
-                <input
-                  type="range"
-                  min="0"
-                  max={dbMaxPrice}
-                  step="any"
-                  value={priceMax}
-                  onChange={(e) => {
-                    const rawVal = Number(e.target.value);
-                    let val = Math.round(rawVal / 50000) * 50000;
-                    if (rawVal > dbMaxPrice - 25000) val = dbMaxPrice;
-                    if (val < priceMin) val = priceMin;
-                    setPriceMax(val);
-                  }}
-                  className="range-slider-input"
-                />
-                <div className="range-track-bar">
-                  <div
-                    className="range-active-fill"
-                    style={{
-                      left: `${(priceMin / dbMaxPrice) * 100}%`,
-                      width: `${((priceMax - priceMin) / dbMaxPrice) * 100}%`
-                    }}
-                  />
-                </div>
-              </div>
-              <div className="slider-value-display">
-                {priceMin > 0
-                  ? `€${priceMin.toLocaleString()} - €${priceMax.toLocaleString()}`
-                  : `${dict?.filter?.up_to} €${priceMax.toLocaleString()}`
-                }
-              </div>
-            </div>
-          </AccordionWrapper>
-
-          {/* ─── ACCORDION MUNICIPALITIES FILTER ─── */}
-          <AccordionWrapper
-            title={dict?.filter?.municipalities}
-            isOpen={isGroupOpen('municipalities', false)}
-            onToggle={() => toggleGroup('municipalities', false)}
-            countLabel={selectedMunicipalities.length > 0 ? selectedMunicipalities.length : undefined}
-          >
-            <div className="accordion-search-box">
-              <span className="search-box-icon">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                  <circle cx="11" cy="11" r="8"></circle>
-                  <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                </svg>
-              </span>
+    // A. PRICE RANGE
+    orderedElements.push({
+      key: 'price',
+      order: 0, // Default reference order
+      node: (
+        <AccordionWrapper
+          key="price"
+          title={dict?.filter?.price_range}
+          isOpen={isGroupOpen('price')}
+          onToggle={() => toggleGroup('price')}
+          countLabel={(priceMin > 0 || priceMax < dbMaxPrice) ? 1 : undefined}
+        >
+          <div className="price-inputs-row">
+            <div className="price-input-box">
+              <span className="price-currency">€</span>
               <input
-                ref={searchInputRef}
                 type="text"
-                value={municipalitySearch}
-                onChange={(e) => setMunicipalitySearch(e.target.value)}
-                placeholder={dict?.filter?.search_placeholder}
+                value={formatNumberWithCommas(priceMin)}
+                onChange={(e) => setPriceMin(parseCommasToNumber(e.target.value))}
+                placeholder={dict?.archive?.min}
               />
-              {municipalitySearch && (
-                <button
-                  type="button"
-                  className="search-box-clear"
-                  onClick={() => setMunicipalitySearch('')}
-                >
-                  ×
-                </button>
-              )}
             </div>
-
-            <div className="accordion-options-list" data-lenis-prevent="true">
-              {filteredMunicipalities.length === 0 ? (
-                <div className="accordion-empty">
-                  {dict?.filter?.no_results}
-                </div>
-              ) : (
-                filteredMunicipalities.map((mun) => {
-                  const isChecked = selectedMunicipalities.includes(mun);
-                  return (
-                    <div
-                      key={mun}
-                      className={`accordion-option-row ${isChecked ? 'selected' : ''}`}
-                      onClick={() => toggleMunicipality(mun)}
-                    >
-                      <div className="custom-checkbox-wrapper">
-                        <input
-                          type="checkbox"
-                          checked={isChecked}
-                          onChange={() => { }}
-                          className="accordion-checkbox-hidden"
-                        />
-                        <span className="custom-checkbox-box">
-                          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4">
-                            <polyline points="20 6 9 17 4 12"></polyline>
-                          </svg>
-                        </span>
-                      </div>
-                      <span className="accordion-option-label">{mun}</span>
-                    </div>
-                  );
-                })
-              )}
+            <div className="price-divider">—</div>
+            <div className="price-input-box">
+              <span className="price-currency">€</span>
+              <input
+                type="text"
+                value={formatNumberWithCommas(priceMax)}
+                onChange={(e) => setPriceMax(parseCommasToNumber(e.target.value))}
+                placeholder={dict?.archive?.max}
+              />
             </div>
-          </AccordionWrapper>
+          </div>
+          <div className='filter-group'>
+            <div className="range-slider-wrapper">
+              <input
+                type="range"
+                min="0"
+                max={dbMaxPrice}
+                step="any"
+                value={priceMin}
+                onChange={(e) => {
+                  const rawVal = Number(e.target.value);
+                  let val = Math.round(rawVal / 50000) * 50000;
+                  if (rawVal < 25000) val = 0;
+                  if (val > priceMax) val = priceMax;
+                  setPriceMin(val);
+                }}
+                className="range-slider-input"
+              />
+              <input
+                type="range"
+                min="0"
+                max={dbMaxPrice}
+                step="any"
+                value={priceMax}
+                onChange={(e) => {
+                  const rawVal = Number(e.target.value);
+                  let val = Math.round(rawVal / 50000) * 50000;
+                  if (rawVal > dbMaxPrice - 25000) val = dbMaxPrice;
+                  if (val < priceMin) val = priceMin;
+                  setPriceMax(val);
+                }}
+                className="range-slider-input"
+              />
+              <div className="range-track-bar">
+                <div
+                  className="range-active-fill"
+                  style={{
+                    left: `${(priceMin / dbMaxPrice) * 100}%`,
+                    width: `${((priceMax - priceMin) / dbMaxPrice) * 100}%`
+                  }}
+                />
+              </div>
+            </div>
+            <div className="slider-value-display">
+              {priceMin > 0
+                ? `€${priceMin.toLocaleString()} - €${priceMax.toLocaleString()}`
+                : `${dict?.filter?.up_to} €${priceMax.toLocaleString()}`
+              }
+            </div>
+          </div>
+        </AccordionWrapper>
+      )
+    });
 
-          {/* ─── B. DYNAMIC SANITY METADATA FILTERS ─── */}
-          {categorizedFilters.blocks.map((block: any) => {
-            if (block.type === 'ungrouped') {
-              return (
-                <div key={block.title} className="ungrouped-filters-wrapper" style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                  {block.defs.map((def: any) => (
-                    <AccordionWrapper
-                      key={def._id}
-                      title={def.shortLabel || def.longLabel}
-                      isOpen={isGroupOpen(def._id)}
-                      onToggle={() => toggleGroup(def._id)}
-                      countLabel={isDefActive(def) ? 1 : undefined}
-                    >
-                      {renderFilterDef(def, true)}
-                    </AccordionWrapper>
-                  ))}
-                </div>
-              );
-            }
-
-            const count = getGroupActiveCount(block.defs);
-            return (
-              <AccordionWrapper
-                key={block.title}
-                title={block.title}
-                isOpen={isGroupOpen(block.title)}
-                onToggle={() => toggleGroup(block.title)}
-                countLabel={count > 0 ? count : undefined}
+    // B. MUNICIPALITIES
+    orderedElements.push({
+      key: 'municipalities',
+      order: 1, // Default reference order
+      node: (
+        <AccordionWrapper
+          key="municipalities"
+          title={dict?.filter?.municipalities}
+          isOpen={isGroupOpen('municipalities', false)}
+          onToggle={() => toggleGroup('municipalities', false)}
+          countLabel={selectedMunicipalities.length > 0 ? selectedMunicipalities.length : undefined}
+        >
+          <div className="accordion-search-box">
+            <span className="search-box-icon">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              </svg>
+            </span>
+            <input
+              ref={searchInputRef}
+              type="text"
+              value={municipalitySearch}
+              onChange={(e) => setMunicipalitySearch(e.target.value)}
+              placeholder={dict?.filter?.search_placeholder}
+            />
+            {municipalitySearch && (
+              <button
+                type="button"
+                className="search-box-clear"
+                onClick={() => setMunicipalitySearch('')}
               >
-                {block.defs.map((def: any) => renderFilterDef(def))}
+                ×
+              </button>
+            )}
+          </div>
+          <div className="accordion-options-list" data-lenis-prevent="true">
+            {filteredMunicipalities.length === 0 ? (
+              <div className="accordion-empty">
+                {dict?.filter?.no_results}
+              </div>
+            ) : (
+              filteredMunicipalities.map((mun) => {
+                const isChecked = selectedMunicipalities.includes(mun);
+                return (
+                  <div
+                    key={mun}
+                    className={`accordion-option-row ${isChecked ? 'selected' : ''}`}
+                    onClick={() => toggleMunicipality(mun)}
+                  >
+                    <div className="custom-checkbox-wrapper">
+                      <input
+                        type="checkbox"
+                        checked={isChecked}
+                        onChange={() => { }}
+                        className="accordion-checkbox-hidden"
+                      />
+                      <span className="custom-checkbox-box">
+                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4">
+                          <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                      </span>
+                    </div>
+                    <span className="accordion-option-label">{mun}</span>
+                  </div>
+                );
+              })
+            )}
+          </div>
+        </AccordionWrapper>
+      )
+    });
+
+    // C. DYNAMIC SANITY METADATA FILTERS
+    categorizedFilters.blocks.forEach((block: any) => {
+      if (block.type === 'ungrouped') {
+        // Push each individual element from the ungrouped category so they can float independently by order
+        block.defs.forEach((def: any) => {
+          orderedElements.push({
+            key: `meta-${def._id}`,
+            order: def.filter?.filterOrder ?? 10,
+            node: (
+              <AccordionWrapper
+                key={def._id}
+                title={def.shortLabel || def.longLabel}
+                isOpen={isGroupOpen(def._id)}
+                onToggle={() => toggleGroup(def._id)}
+                countLabel={isDefActive(def) ? 1 : undefined}
+              >
+                {renderFilterDef(def, true)}
               </AccordionWrapper>
-            );
-          })}
+            )
+          });
+        });
+      } else {
+        // Standard Grouped block
+        const catObj = meta?.categories?.find((c: any) => c.title === block.title);
+        const blockOrder = catObj?.filterGroupDisplayOrder ?? 10;
+        const count = getGroupActiveCount(block.defs);
 
-          {categorizedFilters.uncategorized.length > 0 && (
-            (() => {
-              const count = getGroupActiveCount(categorizedFilters.uncategorized);
-              return (
-                <AccordionWrapper
-                  title={dict?.filter?.other}
-                  isOpen={isGroupOpen('uncategorized')}
-                  onToggle={() => toggleGroup('uncategorized')}
-                  countLabel={count > 0 ? count : undefined}
-                >
-                  {categorizedFilters.uncategorized.map((def: any) => renderFilterDef(def))}
-                </AccordionWrapper>
-              );
-            })()
-          )}
+        orderedElements.push({
+          key: `cat-${block.title}`,
+          order: blockOrder,
+          node: (
+            <AccordionWrapper
+              key={block.title}
+              title={block.title}
+              isOpen={isGroupOpen(block.title)}
+              onToggle={() => toggleGroup(block.title)}
+              countLabel={count > 0 ? count : undefined}
+            >
+              {block.defs.map((def: any) => renderFilterDef(def))}
+            </AccordionWrapper>
+          )
+        });
+      }
+    });
 
-        </div>
+    // D. UNCATEGORIZED
+    if (categorizedFilters.uncategorized.length > 0) {
+      // Let individual uncategorized items flow with their specific orders as well!
+      categorizedFilters.uncategorized.forEach((def: any) => {
+        orderedElements.push({
+          key: `uncat-${def._id}`,
+          order: def.filter?.filterOrder ?? 10,
+          node: (
+            <AccordionWrapper
+              key={def._id}
+              title={def.shortLabel || def.longLabel}
+              isOpen={isGroupOpen(def._id)}
+              onToggle={() => toggleGroup(def._id)}
+              countLabel={isDefActive(def) ? 1 : undefined}
+            >
+              {renderFilterDef(def, true)}
+            </AccordionWrapper>
+          )
+        });
+      });
+    }
+
+    // Perform Final Collective Sorting
+    orderedElements.sort((a, b) => a.order - b.order);
+
+    return (
+      <div className={`filter-sidebar-container ${isInline ? 'is-inline' : ''}`} ref={sidebarRef} style={{ display: isInline ? 'block' : 'none' }}>
+        {!isInline && (
+          <div
+            className="filter-sidebar-overlay global-overlay"
+            ref={overlayRef}
+            onClick={handleOverlayClick}
+            style={{ backdropFilter: 'blur(15px)', WebkitBackdropFilter: 'blur(15px)' }}
+          />
+        )}
+
+        <div className="filter-sidebar-content" ref={contentRef} data-lenis-prevent="true">
+          {/* Header */}
+          <div className="filter-sidebar-header">
+            <div>
+              <h3 className="filter-sidebar-title">
+                {dict?.filter?.title}
+              </h3>
+              <p className="filter-sidebar-subtitle">
+                {dict?.filter?.subtitle}
+              </p>
+            </div>
+            <button className="filter-sidebar-close" onClick={onClose} aria-label="Close">
+              <img src="/icons/close.svg" alt="Close" width="20" height="20" />
+            </button>
+          </div>
+
+          {/* Scrollable Filters Body (Now Sorted Verbally) */}
+          <div className="filter-sidebar-body" data-lenis-prevent="true">
+            {orderedElements.map(el => el.node)}
+          </div>
 
         {/* Footer Actions */}
         {!isInline && (
@@ -801,7 +847,8 @@ export default function FilterSidebar({
         )}
       </div>
     </div>
-  );
+    );
+  };
 
   if (!mounted) return null;
 

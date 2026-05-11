@@ -1,4 +1,5 @@
-import { defineField, defineType } from 'sanity'
+import { defineField, defineType, defineArrayMember } from 'sanity'
+import { FilterTypeInput } from '../../components/FilterTypeInput'
 
 export const propertyMeta = defineType({
   name: 'propertyMeta',
@@ -25,13 +26,66 @@ export const propertyMeta = defineType({
       options: {
         list: [
           { title: 'Number', value: 'number' },
-          { title: 'Text', value: 'string' },
           { title: 'Yes/No', value: 'boolean' },
+          { title: 'Select', value: 'select' },
         ],
         layout: 'radio',
       },
-      initialValue: 'string',
+      initialValue: 'number',
       validation: (Rule) => Rule.required(),
+    }),
+    defineField({
+      name: 'selectOptions',
+      title: 'Options',
+      type: 'array',
+      description: 'The list of available values for selection.',
+      of: [
+        defineArrayMember({
+          name: 'selectOption',
+          title: 'Option',
+          type: 'object',
+          fields: [
+            defineField({ name: 'en', title: 'English Label', type: 'string', validation: (Rule) => Rule.required() }),
+            defineField({ name: 'es', title: 'Spanish Label', type: 'string', validation: (Rule) => Rule.required() }),
+            defineField({ name: 'icon', title: 'Icon', type: 'image', description: 'Optional icon to display if using Grid view.' }),
+          ],
+          preview: {
+            select: { title: 'en', subtitle: 'es', media: 'icon' }
+          }
+        })
+      ],
+      hidden: ({ document }) => document?.valueType !== 'select',
+    }),
+    defineField({
+      name: 'isMultiSelect',
+      title: 'Allow Multi-Select',
+      type: 'boolean',
+      description: 'If enabled, users can select multiple values.',
+      initialValue: false,
+      hidden: ({ document }) => document?.valueType !== 'select',
+    }),
+    defineField({
+      name: 'selectDisplayType',
+      title: 'Display Style',
+      type: 'string',
+      options: {
+        list: [
+          { title: 'Pills / Chips', value: 'pill' },
+          { title: 'Grid Box', value: 'grid' },
+        ],
+        layout: 'radio',
+        direction: 'horizontal',
+      },
+      initialValue: 'pill',
+      hidden: ({ document }) => document?.valueType !== 'select',
+    }),
+    defineField({
+      name: 'showOnSearchModal',
+      title: 'Searchable & Show Options in Global Search',
+      type: 'boolean',
+      description: 'If enabled, properties containing this value will appear in keyword searches, AND the options themselves will appear as direct groupings in the search modal.',
+      initialValue: false,
+      hidden: ({ document }) => document?.valueType !== 'select',
     }),
     defineField({
       name: 'unit',
@@ -68,6 +122,14 @@ export const propertyMeta = defineType({
       initialValue: 0,
     }),
     defineField({
+      name: 'hideLabelOnHighlight',
+      title: 'Hide Label on Highlights',
+      type: 'boolean',
+      description: 'If enabled, the label/text unit won\'t show on cards/highlights, ONLY the value.',
+      hidden: ({ document }) => !document?.isHighlighted,
+      initialValue: false,
+    }),
+    defineField({
       name: 'filter',
       title: 'Filter Settings',
       type: 'object',
@@ -91,6 +153,9 @@ export const propertyMeta = defineType({
               { title: 'Single Select', value: 'select' },
               { title: 'Multi Select', value: 'multiSelect' },
             ],
+          },
+          components: {
+            input: FilterTypeInput,
           },
           hidden: ({ parent }) => !parent?.isFilterable,
         }),
@@ -214,9 +279,24 @@ export const propertyMeta = defineType({
           title: 'Select Options',
           type: 'array',
           description: 'Available choices for select/multi-select filters.',
-          of: [{ type: 'string' }],
-          hidden: ({ parent }) =>
-            parent?.filterType !== 'select' && parent?.filterType !== 'multiSelect',
+          of: [
+            defineArrayMember({
+              name: 'selectOption',
+              title: 'Option',
+              type: 'object',
+              fields: [
+                defineField({ name: 'en', title: 'English Label', type: 'string', validation: (Rule) => Rule.required() }),
+                defineField({ name: 'es', title: 'Spanish Label', type: 'string', validation: (Rule) => Rule.required() }),
+                defineField({ name: 'icon', title: 'Icon', type: 'image' }),
+              ],
+              preview: {
+                select: { title: 'en', subtitle: 'es', media: 'icon' }
+              }
+            })
+          ],
+          hidden: ({ parent, document }) =>
+            document?.valueType === 'select' ||
+            (parent?.filterType !== 'select' && parent?.filterType !== 'multiSelect'),
         }),
       ],
     }),

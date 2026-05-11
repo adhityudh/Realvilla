@@ -103,12 +103,36 @@ export default function PropertiesArchivePage({ dict, initialMeta }: { dict?: an
   }, []);
 
   const suggestions = useMemo(() => {
-    if (searchQuery.length < 2 || !municipalitiesList.length) return [];
+    if (searchQuery.length < 2) return [];
     const query = searchQuery.toLowerCase().trim();
-    return municipalitiesList.filter(mun => 
-      mun.toLowerCase().includes(query) && mun.toLowerCase() !== query
-    ).slice(0, 5);
-  }, [searchQuery, municipalitiesList]);
+    
+    // 1. Collect matching Municipalities
+    const matchedMuns = (municipalitiesList || [])
+      .filter(mun => mun.toLowerCase().includes(query) && mun.toLowerCase() !== query)
+      .slice(0, 4)
+      .map(m => ({ type: 'municipality', label: m, icon: '/icons/location_pin.svg' }));
+
+    // 2. Collect matching searchable Meta Options
+    const enabledDefs = (filterMeta?.definitions || []).filter((d: any) => d.showOnSearchModal === true);
+    const matchedMetaOpts: any[] = [];
+    
+    enabledDefs.forEach((def: any) => {
+      const opts = def.filter?.selectOptions || [];
+      opts.forEach((opt: any) => {
+        const lbl = opt.label || "";
+        if (lbl.toLowerCase().includes(query) && !matchedMetaOpts.some(exist => exist.label === lbl)) {
+          matchedMetaOpts.push({
+            type: 'meta',
+            label: lbl,
+            icon: opt.icon || '/icons/search.svg'
+          });
+        }
+      });
+    });
+
+    // Combine both pools capped sensibly
+    return [...matchedMuns, ...matchedMetaOpts.slice(0, 5)];
+  }, [searchQuery, municipalitiesList, filterMeta]);
   const locale = useMemo(() => {
     const segments = pathname.split('/');
     return segments[1] || 'en';
@@ -206,7 +230,7 @@ export default function PropertiesArchivePage({ dict, initialMeta }: { dict?: an
     }
     const fetchFilterMeta = async () => {
       try {
-        const res = await client.fetch(PROPERTY_META_QUERY, { language: locale });
+        const res = await client.fetch(PROPERTY_META_QUERY, { language: locale }, { stega: false });
         setFilterMeta(res);
       } catch (err) {
         console.error('Error fetching filter meta:', err);
@@ -258,6 +282,16 @@ export default function PropertiesArchivePage({ dict, initialMeta }: { dict?: an
           baseFilter += ` && location.municipality in $municipalities`;
         }
 
+        // Compute local mapping from user keyword to stable Meta identifiers for deep filtering
+        const searchNorm = debouncedSearchQuery.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+        const searchEnabledDefs = (filterMeta?.definitions || []).filter((d: any) => d.showOnSearchModal === true);
+        const matchedMetaValues = searchEnabledDefs.flatMap((def: any) => {
+          const opts = def.filter?.selectOptions || [];
+          return opts
+            .filter((opt: any) => (opt.label || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes(searchNorm))
+            .map((opt: any) => opt.value);
+        });
+
         // Search text filter
         if (debouncedSearchQuery.trim().length > 0) {
           baseFilter += ` && (
@@ -265,7 +299,11 @@ export default function PropertiesArchivePage({ dict, initialMeta }: { dict?: an
             title[$language] match $search ||
             location.streetAddress match $search || 
             location.complexName match $search || 
-            location.municipality match $search
+            location.municipality match $search ||
+            count(meta[
+              selectValue in $matchedMetaValues || 
+              count(selectArrayValue[@ in $matchedMetaValues]) > 0
+            ]) > 0
           )`;
         }
 
@@ -312,10 +350,10 @@ export default function PropertiesArchivePage({ dict, initialMeta }: { dict?: an
               baseFilter += ` && count(meta[(metaKey._ref == "${cleanMetaId}" || metaKey._ref == "drafts.${cleanMetaId}") && numberValue ${groqOperator} ${num}]) > 0`;
             }
           } else if (type === 'select') {
-            baseFilter += ` && count(meta[metaKey->_id == "${metaId}" && stringValue == "${val}"]) > 0`;
+            baseFilter += ` && count(meta[(metaKey._ref == "${cleanMetaId}" || metaKey._ref == "drafts.${cleanMetaId}") && (stringValue == "${val}" || selectValue == "${val}" || "${val}" in selectArrayValue)]) > 0`;
           } else if (type === 'multiSelect' && Array.isArray(val) && val.length > 0) {
             const joinedOptions = val.map(v => `"${v}"`).join(', ');
-            baseFilter += ` && count(meta[metaKey->_id == "${metaId}" && stringValue in [${joinedOptions}]]) > 0`;
+            baseFilter += ` && count(meta[(metaKey._ref == "${cleanMetaId}" || metaKey._ref == "drafts.${cleanMetaId}") && (stringValue in [${joinedOptions}] || selectValue in [${joinedOptions}] || count(selectArrayValue[@ in [${joinedOptions}]]) > 0)]) > 0`;
           }
         });
 
@@ -335,7 +373,8 @@ export default function PropertiesArchivePage({ dict, initialMeta }: { dict?: an
           priceMin: activeFilters.priceMin,
           priceMax: activeFilters.priceMax,
           municipalities: activeFilters.municipalities,
-          search: `*${debouncedSearchQuery}*`
+          search: `*${debouncedSearchQuery}*`,
+          matchedMetaValues: matchedMetaValues
         });
 
         if (isMounted) {
@@ -486,17 +525,23 @@ export default function PropertiesArchivePage({ dict, initialMeta }: { dict?: an
               {/* Suggestions Dropdown */}
               {showSuggestions && suggestions.length > 0 && (
                 <div className="search-suggestions-dropdown">
-                  {suggestions.map((mun) => (
+                  {suggestions.map((item: any, idx) => (
                     <div 
-                      key={mun} 
+                      key={`${item.type}-${item.label}-${idx}`} 
                       className="suggestion-item-row"
                       onClick={() => {
-                        setSearchQuery(mun);
+                        setSearchQuery(item.label);
                         setShowSuggestions(false);
                       }}
                     >
-                      <Image src="/icons/search.svg" alt="" width={14} height={14} className="suggestion-icon" />
-                      <span>{mun}</span>
+                      <img 
+                        src={item.icon} 
+                        alt="" 
+                        width={14} 
+                        height={14} 
+                        className="suggestion-icon" 
+                      />
+                      <span>{item.label}</span>
                     </div>
                   ))}
                 </div>

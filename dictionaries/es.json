@@ -123,6 +123,8 @@
     "see_all_photos": "Ver todas las fotos",
     "gallery_all": "Todo",
     "gallery_video": "Vídeo",
-    "gallery_grid_view": "Vista de cuadrícula"
+    "gallery_grid_view": "Vista de cuadrícula",
+    "cta_schedule": "Programar una visita",
+    "cta_touch": "Ponerse en contacto"
   }
 }

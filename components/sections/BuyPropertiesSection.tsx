@@ -53,6 +53,19 @@ export default function BuyPropertiesSection({ data, dict, filterMeta: initialMe
     return segments[1] || 'en';
   }, [pathname]);
 
+  const handleQuickFilterClick = (val: string) => {
+    const metaId = data?.quickFilterMeta?.metaId;
+    if (!metaId || !val) return;
+    const cleanId = metaId.replace('drafts.', '');
+    
+    // Clean stega characters from raw val before injecting to URL
+    const cleanedVal = typeof val === 'string' ? val.replace(/[\u2000-\u206F\u200B-\u200D\uFEFF]/g, '').trim() : val;
+    
+    const targetPath = locale === 'es' ? 'propiedades' : 'properties';
+    const metaObj = JSON.stringify({ [cleanId]: [cleanedVal] });
+    router.push(`/${locale}/${targetPath}?meta=${encodeURIComponent(metaObj)}`);
+  };
+
   useEffect(() => {
     if (initialMeta) {
       setFilterMeta(initialMeta);
@@ -60,7 +73,7 @@ export default function BuyPropertiesSection({ data, dict, filterMeta: initialMe
     }
     const fetchFilterMeta = async () => {
       try {
-        const res = await client.fetch(PROPERTY_META_QUERY, { language: locale });
+        const res = await client.fetch(PROPERTY_META_QUERY, { language: locale }, { stega: false });
         setFilterMeta(res);
       } catch (err) {
         console.error('Error fetching filter meta:', err);
@@ -186,10 +199,10 @@ export default function BuyPropertiesSection({ data, dict, filterMeta: initialMe
               baseFilter += ` && count(meta[(metaKey._ref == "${cleanMetaId}" || metaKey._ref == "drafts.${cleanMetaId}") && numberValue ${groqOperator} ${num}]) > 0`;
             }
           } else if (type === 'select') {
-            baseFilter += ` && count(meta[metaKey->_id == "${metaId}" && stringValue == "${val}"]) > 0`;
+            baseFilter += ` && count(meta[(metaKey._ref == "${cleanMetaId}" || metaKey._ref == "drafts.${cleanMetaId}") && (stringValue == "${val}" || selectValue == "${val}" || "${val}" in selectArrayValue)]) > 0`;
           } else if (type === 'multiSelect' && Array.isArray(val) && val.length > 0) {
             const joinedOptions = val.map(v => `"${v}"`).join(', ');
-            baseFilter += ` && count(meta[metaKey->_id == "${metaId}" && stringValue in [${joinedOptions}]]) > 0`;
+            baseFilter += ` && count(meta[(metaKey._ref == "${cleanMetaId}" || metaKey._ref == "drafts.${cleanMetaId}") && (stringValue in [${joinedOptions}] || selectValue in [${joinedOptions}] || count(selectArrayValue[@ in [${joinedOptions}]]) > 0)]) > 0`;
           }
         });
 
@@ -337,6 +350,28 @@ export default function BuyPropertiesSection({ data, dict, filterMeta: initialMe
             </button>
           </div>
         </div>
+        
+        {/* Quick Filters Chips */}
+        {data?.quickFilterMeta && data.quickFilterMeta.options?.length > 0 && (
+          <div className="buy-properties-quick-filters-wrapper">
+            <div className="buy-properties-quick-filters">
+              {data.quickFilterMeta.options.map((opt: any) => (
+                <button
+                  key={opt.value}
+                  className="quick-filter-chip"
+                  onClick={() => handleQuickFilterClick(opt.value)}
+                >
+                  {opt.icon && (
+                    <div className="quick-filter-icon-box">
+                      <img src={opt.icon} alt="" className="quick-filter-chip-icon" />
+                    </div>
+                  )}
+                  <span className="quick-filter-text">{opt.label}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Properties Grid */}
         <div className="buy-properties-grid-container">

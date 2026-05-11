@@ -136,13 +136,24 @@ export default function PropertyCard({ prop, variant = 'default', dict }: { prop
           {prop.meta
             ?.filter((m: any) => m.isHighlighted)
             .sort((a: any, b: any) => (a.highlightOrder || 0) - (b.highlightOrder || 0))
-            .slice(0, 3)
             .map((m: any, i: number, arr: any[]) => {
-              const value = m.numberValue ?? m.stringValue ?? (m.booleanValue ? 'Yes' : 'No');
+              // Helper to strip invisible Stega characters that break simple equality matching
+              const clean = (str: any) => typeof str === 'string' ? str.replace(/[\u2000-\u206F\u200B-\u200D\uFEFF]/g, '').trim() : str;
+              
+              const getDisplay = (val: string) => {
+                const cleanedVal = clean(val);
+                const match = m.selectOptions?.find((o: any) => clean(o.value) === cleanedVal);
+                return match?.label || val;
+              };
+
+              const sVal = m.selectValue ? getDisplay(m.selectValue) : null;
+              const aVal = Array.isArray(m.selectArrayValue) ? m.selectArrayValue.map(getDisplay).join(', ') : null;
+
+              const value = m.numberValue ?? m.stringValue ?? sVal ?? aVal ?? (m.booleanValue !== undefined ? (m.booleanValue ? dict?.common?.yes || 'Yes' : dict?.common?.no || 'No') : '—');
               return (
                 <div key={m.metaId || i} style={{ display: 'contents' }}>
                   <span className="detail-item">
-                    {value} {m.unit || m.shortLabel}
+                    {value} {!m.hideLabelOnHighlight && (m.unit || m.shortLabel)}
                   </span>
                   {i < arr.length - 1 && <div className="detail-dot"></div>}
                 </div>

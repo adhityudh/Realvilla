@@ -193,11 +193,20 @@
 .result-item-icon {
     color: var(--text-faint);
     flex-shrink: 0;
-    transition: color 0.3s ease;
+    transition: all 0.3s ease;
+}
+
+img.result-item-icon {
+    filter: brightness(0);
+    opacity: 0.5;
 }
 
 .result-item.clickable:hover .result-item-icon {
     color: var(--color-gold-hover);
+}
+
+.result-item.clickable:hover img.result-item-icon {
+    opacity: 1;
 }
 
 .result-text-block {

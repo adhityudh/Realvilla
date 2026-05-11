@@ -315,6 +315,19 @@ export const property = defineType({
               type: 'boolean',
               description: 'Value for boolean-type meta fields.',
             }),
+            defineField({
+              name: 'selectValue',
+              title: 'Selected Value',
+              type: 'string',
+              description: 'Value for single-select meta fields.',
+            }),
+            defineField({
+              name: 'selectArrayValue',
+              title: 'Selected Values',
+              type: 'array',
+              of: [{ type: 'string' }],
+              description: 'Values for multi-select meta fields.',
+            }),
           ],
           preview: {
             select: {
@@ -322,9 +335,18 @@ export const property = defineType({
               numberValue: 'numberValue',
               stringValue: 'stringValue',
               booleanValue: 'booleanValue',
+              selectValue: 'selectValue',
+              selectArrayValue: 'selectArrayValue',
             },
-            prepare({ metaKey, numberValue, stringValue, booleanValue }) {
-              const value = numberValue ?? stringValue ?? (booleanValue !== undefined ? (booleanValue ? 'Yes' : 'No') : '—')
+            prepare({ metaKey, numberValue, stringValue, booleanValue, selectValue, selectArrayValue }) {
+              let value: string | number | boolean = '—'
+              
+              if (numberValue !== undefined) value = numberValue
+              else if (stringValue !== undefined) value = stringValue
+              else if (booleanValue !== undefined) value = booleanValue ? 'Yes' : 'No'
+              else if (selectValue !== undefined) value = selectValue
+              else if (Array.isArray(selectArrayValue) && selectArrayValue.length > 0) value = selectArrayValue.join(', ')
+              
               return {
                 title: metaKey || 'No meta selected',
                 subtitle: `${value}`,

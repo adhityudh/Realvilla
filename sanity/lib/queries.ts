@@ -50,10 +50,21 @@ export const PROPERTY_CARD_FIELDS = groq`
     "unit": coalesce(metaKey->unit[$language], metaKey->unit.en),
     "isHighlighted": metaKey->isHighlighted,
     "highlightOrder": metaKey->highlightOrder,
+    "hideLabelOnHighlight": metaKey->hideLabelOnHighlight,
     "icon": metaKey->icon.asset->url,
     numberValue,
     stringValue,
-    booleanValue
+    booleanValue,
+    selectValue,
+    selectArrayValue,
+    "selectOptions": coalesce(
+      metaKey->selectOptions[] { 
+        "value": en, 
+        "label": coalesce(@[$language], en),
+        "icon": icon.asset->url 
+      },
+      []
+    )
   }
 `
 
@@ -201,7 +212,16 @@ export const PAGE_QUERY = groq`
         itemsPerPage,
         itemsPerPageMobile,
         orderBy,
-        showSold
+        showSold,
+        "quickFilterMeta": quickFilterMeta-> {
+          "metaId": _id,
+          "label": coalesce(shortLabel[$language], shortLabel.en, longLabel[$language], longLabel.en),
+          "options": selectOptions[] {
+            "value": en,
+            "label": coalesce(@[$language], en),
+            "icon": icon.asset->url
+          }
+        }
       }
     }
   }
@@ -328,10 +348,21 @@ export const PROPERTY_DETAIL_QUERY = groq`
       "category": coalesce(metaKey->category->title[$language], metaKey->category->title.en),
       "isHighlighted": metaKey->isHighlighted,
       "highlightOrder": metaKey->highlightOrder,
+      "hideLabelOnHighlight": metaKey->hideLabelOnHighlight,
       "icon": metaKey->icon.asset->url,
       numberValue,
       stringValue,
-      booleanValue
+      booleanValue,
+      selectValue,
+      selectArrayValue,
+      "selectOptions": coalesce(
+        metaKey->selectOptions[] { 
+          "value": en, 
+          "label": coalesce(@[$language], en),
+          "icon": icon.asset->url 
+        },
+        []
+      )
     },
     "seo": {
       "metaTitle": title + " | Realvilla",
@@ -364,11 +395,14 @@ export const PROPERTY_META_QUERY = groq`
       "shortLabel": coalesce(shortLabel[$language], shortLabel.en),
       "longLabel": coalesce(longLabel[$language], longLabel.en),
       valueType,
+      selectDisplayType,
+      showOnSearchModal,
       "unit": coalesce(unit[$language], unit.en),
       "icon": icon.asset->url,
       "category": coalesce(category->title[$language], category->title.en),
       isHighlighted,
       highlightOrder,
+      hideLabelOnHighlight,
       "autoMax": math::max(*[_type == "property" && status != "sold"].meta[metaKey._ref == ^._id || metaKey._ref == "drafts." + ^._id || ^._id == "drafts." + metaKey._ref].numberValue),
       filter {
         isFilterable,
@@ -387,7 +421,14 @@ export const PROPERTY_META_QUERY = groq`
           operator,
           value
         },
-        selectOptions
+        "selectOptions": coalesce(
+          select(^.valueType == "select" => ^.selectOptions, selectOptions)[] {
+            "value": en,
+            "label": coalesce(@[$language], en),
+            "icon": icon.asset->url
+          },
+          []
+        )
       }
     }
   }

@@ -47,7 +47,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
       client.fetch(PAGE_QUERY, { slug: 'home', language: locale }, fetchOptions),
       client.fetch(SETTINGS_QUERY, { language: locale }, fetchOptions),
       getDictionary(locale as any),
-      client.fetch(PROPERTY_META_QUERY, { language: locale }, { next: { revalidate: 3600, tags: ['meta'] } })
+      client.fetch(PROPERTY_META_QUERY, { language: locale }, { stega: false, next: { revalidate: 3600, tags: ['meta'] } })
     ]);
   } catch (error) {
     console.error('Sanity fetch error:', error);

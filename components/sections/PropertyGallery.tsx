@@ -8,6 +8,7 @@ import './PropertyGallery.css';
 
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
+import Button from '@/components/ui/Button';
 
 interface PropertyGalleryProps {
   property: any;
@@ -209,6 +210,56 @@ export default function PropertyGallery({ property, dict }: PropertyGalleryProps
             </div>
           );
         })}
+      </div>
+
+      <div className="property-gallery-summary">
+        <div className="summary-details-col">
+          <h1 className="summary-title">{property.title}</h1>
+          <p className="summary-address">{property.address}</p>
+          
+          <div className="summary-price">
+            {property.price ? new Intl.NumberFormat('en-IE', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(property.price) : dict?.properties?.price_upon_request}
+          </div>
+
+          <div className="summary-meta-row">
+            {property.meta
+              ?.filter((m: any) => m.isHighlighted)
+              .sort((a: any, b: any) => (a.highlightOrder || 0) - (b.highlightOrder || 0))
+              .map((m: any, i: number, arr: any[]) => {
+                // Helper to strip invisible Stega characters that break simple equality matching
+                const clean = (str: any) => typeof str === 'string' ? str.replace(/[\u2000-\u206F\u200B-\u200D\uFEFF]/g, '').trim() : str;
+                
+                const getDisplay = (val: string) => {
+                  const cleanedVal = clean(val);
+                  const match = m.selectOptions?.find((o: any) => clean(o.value) === cleanedVal);
+                  return match?.label || val;
+                };
+
+                const sVal = m.selectValue ? getDisplay(m.selectValue) : null;
+                const aVal = Array.isArray(m.selectArrayValue) ? m.selectArrayValue.map(getDisplay).join(', ') : null;
+                
+                const value = m.numberValue ?? m.stringValue ?? sVal ?? aVal ?? (m.booleanValue !== undefined ? (m.booleanValue ? dict?.common?.yes || 'Yes' : dict?.common?.no || 'No') : '—');
+                return (
+                  <div key={m.metaId || i} className="summary-meta-pill">
+                    <span className="meta-label">{value} {!m.hideLabelOnHighlight && (m.unit || m.shortLabel)}</span>
+                  </div>
+                );
+              })}
+          </div>
+        </div>
+
+        <div className="summary-cta-col">
+          <Button 
+            label={dict?.property?.cta_schedule || "Schedule a tour"} 
+            variant="pill" 
+            className="summary-cta-primary"
+          />
+          <Button 
+            label={dict?.property?.cta_touch || "Get in touch"} 
+            variant="link" 
+            className="summary-cta-secondary"
+          />
+        </div>
       </div>
       <PropertyGalleryModal 
         isOpen={isModalOpen} 

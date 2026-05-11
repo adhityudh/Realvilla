@@ -59,6 +59,16 @@ export const buyPropertiesSection = defineType({
       description: 'How many properties to display per page on mobile devices under 768px. (Optional, defaults to same as desktop limit)',
     }),
     defineField({
+      name: 'quickFilterMeta',
+      title: 'Quick Filter Meta Option',
+      description: 'Select a Meta field (type: select) to display horizontal quick-filter chips beneath the header.',
+      type: 'reference',
+      to: [{ type: 'propertyMeta' }],
+      options: {
+        filter: 'valueType == "select"'
+      }
+    }),
+    defineField({
       name: 'orderBy',
       title: 'Order By',
       type: 'string',

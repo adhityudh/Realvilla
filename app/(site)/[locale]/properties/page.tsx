@@ -26,6 +26,7 @@ export default async function PropertiesPage({ params }: { params: Promise<{ loc
   const [dict, initialMeta] = await Promise.all([
     getDictionary(locale as any),
     client.fetch(PROPERTY_META_QUERY, { language: locale }, { 
+      stega: false,
       next: { revalidate: 3600, tags: ['meta', 'properties'] } 
     })
   ]);

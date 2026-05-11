@@ -36,8 +36,15 @@ export default function SearchModal({ isOpen, onClose, dict }: SearchModalProps)
   const [results, setResults] = useState<SearchResultItem[]>([]);
   const [allMunicipalities, setAllMunicipalities] = useState<string[]>([]);
   const [trendingSearches, setTrendingSearches] = useState<string[]>(['Villa', 'Adeje', 'Costa Adeje', 'Arona', 'Santa Cruz']);
+  const [searchableMeta, setSearchableMeta] = useState<any[]>([]);
 
   const language = pathname.startsWith('/es') ? 'es' : 'en';
+
+  const router = useRouter();
+  const locale = useMemo(() => {
+    const segments = pathname.split('/');
+    return segments[1] || 'en';
+  }, [pathname]);
 
   // Fetch dynamic GeoNames municipalities on mount
   useEffect(() => {
@@ -62,17 +69,36 @@ export default function SearchModal({ isOpen, onClose, dict }: SearchModalProps)
     
     fetchTrendingSearches();
   }, [language]);
+
+  // Fetch metadata keys marked for search modal inclusion
+  useEffect(() => {
+    const fetchSearchableMeta = async () => {
+      try {
+        const query = `*[_type == "propertyMeta" && showOnSearchModal == true] {
+          _id,
+          "label": coalesce(longLabel[$language], longLabel.en),
+          "options": selectOptions[] {
+            "value": en,
+            "label": coalesce(@[$language], en),
+            "icon": icon.asset->url
+          }
+        }`;
+        // Important: disable stega to keep filter strings purely clean
+        const data = await client.fetch(query, { language: locale }, { stega: false });
+        setSearchableMeta(data || []);
+      } catch (e) {
+        console.error('Failed to fetch searchable meta:', e);
+      }
+    };
+    fetchSearchableMeta();
+  }, [locale]);
   
   const modalRef = useRef<HTMLDivElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const router = useRouter();
-  const locale = useMemo(() => {
-    const segments = pathname.split('/');
-    return segments[1] || 'en';
-  }, [pathname]);
+
 
   const isSearching = searchQuery.trim().length > 0;
 
@@ -90,12 +116,26 @@ export default function SearchModal({ isOpen, onClose, dict }: SearchModalProps)
 
     const debounceTimer = setTimeout(async () => {
       try {
+        // Compute normalized search string matching client-side memory list
+        const searchNorm = searchQuery.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
+        
+        // Map matches locally to robust stable value identifiers
+        const matchedMetaValues = searchableMeta.flatMap(meta => 
+          (meta.options || [])
+            .filter((opt: any) => (opt.label || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes(searchNorm))
+            .map((opt: any) => opt.value)
+        );
+
         const query = `*[_type == "property" && !(_id in path('drafts.**')) && (language == $language || (!defined(language) && $language == "en")) && (
           title match $search || 
           title[$language] match $search ||
           location.streetAddress match $search || 
           location.complexName match $search || 
-          location.municipality match $search
+          location.municipality match $search ||
+          count(meta[
+            selectValue in $matchedMetaValues || 
+            count(selectArrayValue[@ in $matchedMetaValues]) > 0
+          ]) > 0
         )] {
           _id,
           "title": coalesce(title[$language], title.en, title),
@@ -110,7 +150,8 @@ export default function SearchModal({ isOpen, onClose, dict }: SearchModalProps)
 
         const data = await client.fetch(query, { 
           search: `*${searchQuery}*`,
-          language: locale
+          language: locale,
+          matchedMetaValues: matchedMetaValues
         });
         
         if (active) {
@@ -129,7 +170,7 @@ export default function SearchModal({ isOpen, onClose, dict }: SearchModalProps)
       active = false;
       clearTimeout(debounceTimer);
     };
-  }, [searchQuery, locale]);
+  }, [searchQuery, locale, searchableMeta]);
 
   // GSAP Animations
   useEffect(() => {
@@ -185,22 +226,13 @@ export default function SearchModal({ isOpen, onClose, dict }: SearchModalProps)
         .filter(Boolean)
         .join(', ');
       
-      const matchText = (item.title || '') + ' ' + dynamicAddress;
-      
-      // Normalize any non-breaking spaces (\u00a0) or duplicate whitespaces to single normal spaces
-      const cleanSearch = searchQuery.replace(/\s+/g, ' ').trim().toLowerCase();
-      const cleanMatch = matchText.replace(/\s+/g, ' ').trim().toLowerCase();
-      const isMatch = cleanMatch.includes(cleanSearch);
-      
-      if (isMatch) {
-        // Use normalized title as the unique key to completely eliminate identical-looking properties
-        const key = (item.title || '').trim().toLowerCase();
-        if (key && !uniqueProps.has(key)) {
-          uniqueProps.set(key, {
-            ...item,
-            address: dynamicAddress
-          });
-        }
+      // Use normalized title as the unique key to eliminate identical-looking properties
+      const key = (item.title || '').trim().toLowerCase();
+      if (key && !uniqueProps.has(key)) {
+        uniqueProps.set(key, {
+          ...item,
+          address: dynamicAddress
+        });
       }
     });
     return Array.from(uniqueProps.values());
@@ -228,8 +260,40 @@ export default function SearchModal({ isOpen, onClose, dict }: SearchModalProps)
     return finalMuns;
   }, [allMunicipalities, searchQuery]);
 
+  const metaGroups = useMemo(() => {
+    if (!searchQuery.trim()) return [];
+
+    const normalizedSearch = searchQuery
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/\s+/g, ' ')
+      .trim();
+
+    return searchableMeta.map((meta) => {
+      const matchingOptions = (meta.options || []).filter((opt: any) => {
+        const normLabel = (opt.label || '')
+          .toLowerCase()
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "")
+          .replace(/\s+/g, ' ')
+          .trim();
+        return normLabel.includes(normalizedSearch);
+      });
+
+      if (matchingOptions.length === 0) return null;
+
+      return {
+        id: meta._id,
+        label: meta.label,
+        options: matchingOptions
+      };
+    }).filter(Boolean) as any[];
+  }, [searchableMeta, searchQuery]);
+
   const handlePropertyClick = (slug: string) => {
-    router.push(`/${locale}/${slug}`);
+    const targetPrefix = locale === 'es' ? 'propiedades' : 'properties';
+    router.push(`/${locale}/${targetPrefix}/${slug}`);
     onClose();
   };
 
@@ -237,6 +301,17 @@ export default function SearchModal({ isOpen, onClose, dict }: SearchModalProps)
     // Navigate to properties list with municipality search filter
     const targetPath = locale === 'es' ? 'propiedades' : 'properties';
     router.push(`/${locale}/${targetPath}?search=${encodeURIComponent(mun)}`);
+    onClose();
+  };
+
+  const handleMetaOptionClick = (metaId: string, value: string) => {
+    const targetPath = locale === 'es' ? 'propiedades' : 'properties';
+    
+    // Clean stega from value before pushing to URL logic
+    const cleanedValue = typeof value === 'string' ? value.replace(/[\u2000-\u206F\u200B-\u200D\uFEFF]/g, '').trim() : value;
+    
+    const metaObj = JSON.stringify({ [metaId]: [cleanedValue] });
+    router.push(`/${locale}/${targetPath}?meta=${encodeURIComponent(metaObj)}`);
     onClose();
   };
 
@@ -307,7 +382,7 @@ export default function SearchModal({ isOpen, onClose, dict }: SearchModalProps)
                   <div className="loading-shimmer" style={{ width: '80%', height: '20px', marginTop: '1.2rem', borderRadius: '4px' }} />
                   <div className="loading-shimmer" style={{ width: '60%', height: '20px', marginTop: '1.2rem', borderRadius: '4px' }} />
                 </div>
-              ) : propertiesGroup.length === 0 && municipalitiesGroup.length === 0 ? (
+              ) : propertiesGroup.length === 0 && municipalitiesGroup.length === 0 && metaGroups.length === 0 ? (
                 /* Empty State */
                 <div className="search-empty-state">
                   <p className="empty-message">
@@ -328,10 +403,14 @@ export default function SearchModal({ isOpen, onClose, dict }: SearchModalProps)
                             className="result-item clickable"
                             onClick={() => handleMunicipalityClick(mun)}
                           >
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="result-item-icon">
-                              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-                              <circle cx="12" cy="10" r="3"></circle>
-                            </svg>
+                            <img 
+                              src="/icons/location_pin.svg" 
+                              alt="" 
+                              width="16" 
+                              height="16" 
+                              className="result-item-icon" 
+                              style={{ opacity: 0.7 }} 
+                            />
                             <span className="result-title">{mun}</span>
                             <span className="result-meta-tag">{dict?.search?.view_all}</span>
                           </div>
@@ -339,6 +418,35 @@ export default function SearchModal({ isOpen, onClose, dict }: SearchModalProps)
                       </div>
                     </div>
                   )}
+
+
+
+                  {/* Group 1.5: Dynamic Meta Options (Matching Municipalities Style) */}
+                  {metaGroups.map((group: any) => (
+                    <div className="result-group" key={group.id}>
+                      <p className="group-label">{group.label}</p>
+                      <div className="result-items">
+                        {group.options.map((opt: any) => (
+                          <div 
+                            key={`${group.id}-${opt.value}`} 
+                            className="result-item clickable"
+                            onClick={() => handleMetaOptionClick(group.id, opt.value)}
+                          >
+                            <img 
+                              src={opt.icon || "/icons/search.svg"} 
+                              alt="Icon" 
+                              width="16" 
+                              height="16" 
+                              className="result-item-icon" 
+                              style={{ opacity: 0.7, filter: opt.icon ? 'none' : 'grayscale(1)' }} 
+                            />
+                            <span className="result-title">{opt.label}</span>
+                            <span className="result-meta-tag">{dict?.search?.view_all}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
 
                   {/* Group 2: Properties */}
                   {propertiesGroup.length > 0 && (
