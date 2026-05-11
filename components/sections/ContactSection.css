@@ -327,7 +327,7 @@
     background: none;
     border: none;
     font-family: var(--font-manrope), sans-serif;
-    font-size: var(--text-sm);
+    font-size: var(--text-base-sm);
     font-weight: var(--fw-medium);
     letter-spacing: var(--ls-wide);
     color: var(--color-gold-dark);
