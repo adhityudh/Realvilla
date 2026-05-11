@@ -214,12 +214,19 @@ export default function PropertyGallery({ property, dict }: PropertyGalleryProps
 
       <div className="property-gallery-summary">
         <div className="summary-details-col">
-          <div className="summary-price">
-            {property.price ? new Intl.NumberFormat('en-IE', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(property.price) : dict?.properties?.price_upon_request}
-          </div>
+          <div className="summary-info-group">
+            <div className="summary-price">
+              {property.price ? new Intl.NumberFormat('en-IE', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(property.price) : dict?.properties?.price_upon_request}
+            </div>
 
-          <h1 className="summary-title">{property.title}</h1>
-          <p className="summary-address">{property.address}</p>
+            <h1 className="summary-title">{property.title}</h1>
+            <p className="summary-address">{property.address}</p>
+            
+            <div 
+              className="summary-branding-logo" 
+              aria-hidden="true"
+            />
+          </div>
 
 
 
@@ -251,19 +258,6 @@ export default function PropertyGallery({ property, dict }: PropertyGalleryProps
                 );
               })}
           </div>
-        </div>
-
-        <div className="summary-cta-col">
-          <Button
-            label={dict?.property?.cta_schedule || "Schedule a tour"}
-            variant="pill"
-            className="summary-cta-primary"
-          />
-          <Button
-            label={dict?.property?.cta_touch || "Get in touch"}
-            variant="link"
-            className="summary-cta-secondary"
-          />
         </div>
       </div>
       <PropertyGalleryModal

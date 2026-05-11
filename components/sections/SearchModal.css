@@ -213,7 +213,7 @@ img.result-item-icon {
     display: flex;
     flex-direction: column;
     flex-grow: 1;
-    gap: 0.25rem;
+    gap: 0.5rem;
 }
 
 .result-title {
@@ -230,8 +230,8 @@ img.result-item-icon {
 .result-subtitle {
     font-family: var(--font-manrope), sans-serif;
     font-size: var(--text-sm);
-    color: var(--text-subtle);
-    font-weight: var(--fw-medium);
+    color: var(--text-black);
+    font-weight: var(--fw-regular);
 }
 
 .result-meta-tag {
@@ -270,7 +270,7 @@ img.result-item-icon {
     font-size: var(--text-base);
     color: var(--text-black);
     letter-spacing: var(--ls-tight);
-    font-weight: var(--fw-regular);
+    font-weight: var(--fw-medium);
 }
 
 .search-empty-state {

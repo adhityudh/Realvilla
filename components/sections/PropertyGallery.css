@@ -95,7 +95,7 @@
   gap: 12px;
   width: 100%;
   max-width: 100%;
-  padding: 0 3rem 3rem 3rem;
+  padding: 0 3rem 2.5rem 3rem;
   /* Moved top padding to breadcrumb wrapper */
 }
 
@@ -127,24 +127,38 @@
 
 .see-all-btn-overlay {
   position: absolute;
-  bottom: 20px;
-  right: 20px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   z-index: 2;
+  pointer-events: none;
+  transition: all 0.3s var(--ease-smooth);
+
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  color: #ffffff !important;
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--ls-wide);
 }
 
 .btn-content-desktop {
   display: flex;
   align-items: center;
-  gap: .75rem;
+  font-size: var(--text-base-sm);
+}
+
+.btn-content-desktop svg {
+  width: 4rem;
+  height: 4rem;
 }
 
 .btn-content-mobile {
   display: none;
 }
 
-.see-all-btn-overlay:hover {
-  background-color: var(--bg-muted);
-  transform: translateY(-2px);
+.gallery-item:hover .see-all-btn-overlay {
+  transform: translate(-50%, -54%);
 }
 
 .gallery-item-overlay {
@@ -163,6 +177,11 @@
   background-color: rgba(0, 0, 0, 0.45);
 }
 
+/* Permanently darken the background overlay only on the 'See all' tile to keep the text legible instantly */
+.gallery-item.has-see-all .gallery-item-overlay {
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
 .overlay-icon {
   opacity: 0;
   transform: scale(0.8);
@@ -178,6 +197,11 @@
 .gallery-item:hover .overlay-icon {
   opacity: 1;
   transform: scale(1.1);
+}
+
+/* Hide standard overlay icons when the "See all" button takes precedence */
+.gallery-item.has-see-all .overlay-icon {
+  display: none;
 }
 
 .overlay-icon img {
@@ -226,52 +250,25 @@
     align-items: center;
     justify-content: center;
     font-family: var(--font-manrope), sans-serif;
-    font-size: 1.25rem;
+    font-size: var(--text-lg);
     font-weight: var(--fw-bold);
-    color: var(--text-black);
+    color: #ffffff !important;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
   }
 
-  .gallery-item.has-see-all .gallery-item-overlay {
-    display: none !important;
-  }
 
   .see-all-btn-overlay {
-    position: absolute !important;
-    top: 50% !important;
-    left: 50% !important;
-    transform: translate(-50%, -50%) !important;
-    bottom: auto !important;
-    right: auto !important;
-    width: 80px;
-    height: 44px;
-    padding: 0 !important;
-    background: var(--bg-surface) !important;
-    border: none !important;
-    border-radius: var(--radius-full) !important;
-    box-shadow: var(--shadow-sm) !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    width: auto !important;
+    height: auto !important;
     min-width: 0 !important;
-    transition: all 0.3s var(--ease-smooth);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    pointer-events: none;
-    /* Let click cascade to the parent grid-item */
   }
 
   .see-all-btn-overlay:hover {
-    background: var(--bg-muted) !important;
     transform: translate(-50%, -54%) !important;
   }
 
-  .btn-content-mobile {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: var(--font-manrope), sans-serif;
-    font-size: 1.25rem;
-    font-weight: var(--fw-bold);
-    color: var(--text-black);
-  }
 }
 
 @media (max-width: 768px) {
@@ -327,16 +324,6 @@
     /* Show them on mobile now */
     grid-row: 2 / 3;
   }
-
-  /* Inherit the redesigned centered button from tablet */
-  .see-all-btn-overlay {
-    width: 64px;
-    height: 36px;
-  }
-
-  .btn-content-mobile {
-    font-size: var(--text-sm);
-  }
 }
 
 /* =============================================
@@ -359,6 +346,34 @@
   align-items: flex-start;
 }
 
+.summary-info-group {
+  width: 100%;
+  position: relative;
+}
+
+.summary-branding-logo {
+  background-color: var(--color-gold);
+  opacity: 0.15;
+  pointer-events: none;
+  z-index: 0;
+  height: 225%;
+  position: absolute;
+  top: -50%;
+  right: 0px;
+  aspect-ratio: 1 / 1;
+
+  -webkit-mask-image: url("/images/logo-mark.svg");
+  mask-image: url("/images/logo-mark.svg");
+
+  -webkit-mask-position-x: 100%;
+  -webkit-mask-position-y: center;
+
+  -webkit-mask-size: contain;
+  mask-size: contain;
+
+  mask-repeat: no-repeat;
+}
+
 .summary-title {
   font-size: var(--text-display-xs);
   line-height: var(--lh-tight);
@@ -374,7 +389,7 @@
   font-family: var(--font-manrope), sans-serif;
   font-size: var(--text-base);
   color: var(--text-black);
-  margin-bottom: 1.5rem;
+  margin-bottom: 2.5rem;
   letter-spacing: var(--ls-wide);
 }
 
@@ -388,6 +403,9 @@
 }
 
 .summary-meta-row {
+  border-top: 1px solid var(--border-strong);
+  padding-top: 1.5rem;
+  width: 100%;
   display: flex;
   align-items: center;
   flex-wrap: wrap;
@@ -412,21 +430,6 @@
   flex-shrink: 0;
 }
 
-.summary-cta-col {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 1.25rem;
-  padding-top: 0.75rem;
-  /* Align visually with large title cap-height */
-}
-
-/* Fine-tune specific button overrides within summary if needed */
-.summary-cta-secondary {
-  font-size: var(--text-sm-plus) !important;
-  padding-bottom: 4px;
-}
-
 /* =============================================
    RESPONSIVE SUMMARY
    ============================================= */
@@ -441,35 +444,27 @@
     width: 100%;
   }
 
-  .summary-cta-col {
-    width: 100%;
-    align-items: stretch;
-    flex-direction: row;
-    justify-content: flex-start;
-    gap: 1.5rem;
-  }
-
-  .summary-cta-primary {
-    flex: 1;
-    justify-content: center;
+  .summary-branding-logo {
+    display: none;
   }
 
   .summary-price {
     font-size: var(--text-md);
   }
+
+  .summary-address {
+    font-size: var(--text-base-sm);
+  }
+
+
+  .summary-meta-item {
+    font-size: var(--text-sm);
+  }
 }
 
 @media (max-width: 480px) {
-  .summary-cta-col {
-    flex-direction: column;
-  }
-
   .summary-meta-row {
     gap: 0.65rem;
-  }
-
-  .summary-meta-item {
-    font-size: var(--text-xs);
   }
 
   .summary-meta-dot {

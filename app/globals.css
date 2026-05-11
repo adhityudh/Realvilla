@@ -18,9 +18,12 @@
 
   /* Gold — single source of truth */
   --color-gold: #C8B48A;
-  --color-gold-light: #D1C39B;   /* backgrounds, section fills */
-  --color-gold-dark: #B8A87D;    /* borders, accents on white */
-  --color-gold-hover: #d4af37;   /* interactive gold on hover */
+  --color-gold-light: #D1C39B;
+  /* backgrounds, section fills */
+  --color-gold-dark: #B8A87D;
+  /* borders, accents on white */
+  --color-gold-hover: #d4af37;
+  /* interactive gold on hover */
   --color-gold-bg: rgba(200, 180, 138, 0.08);
 
   /* Dividers & borders */
@@ -34,15 +37,24 @@
   ================================================ */
 
   /* Font sizes — body scale */
-  --text-3xs: 0.45rem;    /*  7px — smallest caption */
-  --text-2xs: 0.55rem;    /*  9px — micro profile text */
-  --text-xs: 0.625rem;    /* 10px — reviewer-title, profile-creds */
-  --text-sm: 0.75rem;     /* 12px — labels, taglines, tags */
-  --text-sm-plus: 0.85rem; /* 14px — small UI text, footer nav, misc */
-  --text-base-sm: 0.9rem;  /* 14.4px — compact body, faq index */
-  --text-base: 1rem;      /* 16px — body text, card info */
-  --text-md: 1.1rem;      /* 17.6px — sub-copy, subtitles */
-  --text-lg: 1.25rem;     /* 20px — nav links, profile name */
+  --text-3xs: 0.45rem;
+  /*  7px — smallest caption */
+  --text-2xs: 0.55rem;
+  /*  9px — micro profile text */
+  --text-xs: 0.625rem;
+  /* 10px — reviewer-title, profile-creds */
+  --text-sm: 0.75rem;
+  /* 12px — labels, taglines, tags */
+  --text-sm-plus: 0.85rem;
+  /* 14px — small UI text, footer nav, misc */
+  --text-base-sm: 0.9rem;
+  /* 14.4px — compact body, faq index */
+  --text-base: 1rem;
+  /* 16px — body text, card info */
+  --text-md: 1.1rem;
+  /* 17.6px — sub-copy, subtitles */
+  --text-lg: 1.25rem;
+  /* 20px — nav links, profile name */
 
   /* Font sizes — display scale */
   --text-display-xs: clamp(1.4rem, 2.5vw, 1.8rem);
@@ -74,8 +86,10 @@
   --ls-wide: 0.05em;
   --ls-wider: 0.1em;
   --ls-widest: 0.15em;
-  --ls-label: 0.2em;      /* buttons, pill text */
-  --ls-tagline: 0.3em;    /* section taglines */
+  --ls-label: 0.2em;
+  /* buttons, pill text */
+  --ls-tagline: 0.3em;
+  /* section taglines */
 
   /* ================================================
      SHADOWS
