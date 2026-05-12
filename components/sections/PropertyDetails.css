@@ -163,6 +163,7 @@
   font-family: var(--font-manrope), sans-serif;
   font-size: var(--text-sm-plus);
   color: var(--text-black);
+  font-weight: var(--fw-medium);
 }
 
 .meta-value {

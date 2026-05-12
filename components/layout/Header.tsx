@@ -26,94 +26,121 @@ function useHeaderScrollAnimations(isHome: boolean, pathname: string) {
   useEffect(() => {
     if (!lenis) return;
 
-    const header = document.querySelector('.header') as HTMLElement;
-    if (!header) return;
+    let timeoutId = setTimeout(() => {
+      const header = document.querySelector('.header') as HTMLElement;
+      if (!header) return;
 
-    const isMobile = window.innerWidth <= 1024;
-    const heroTrigger = isHome ? '.main-hero' : '.buy-hero'; // Support buy-hero too if it exists
+      const isMobile = window.innerWidth <= 1024;
+      const heroTrigger = isHome ? '.main-hero' : '.buy-hero';
 
-    // If neither exists, we might still want basic scroll behavior or none
-    const hasHero = document.querySelector(heroTrigger);
+      // Ensure we capture DOM only AFTER the route has settled.
+      const hasHero = document.querySelector(heroTrigger);
+      const headerBg = header.querySelector('.header-bg');
 
-    const headerBg = header.querySelector('.header-bg');
-    const wipeAnim = gsap.to(headerBg, {
-      opacity: 1,
-      ease: 'none',
-      scrollTrigger: {
+      const wipeAnim = gsap.to(headerBg, {
+        opacity: 1,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: hasHero ? heroTrigger : 'body',
+          start: isHome ? () => `bottom ${header.offsetHeight}px` : "50px top",
+          end: isHome ? 'bottom top' : "150px top",
+          scrub: true,
+          invalidateOnRefresh: true,
+        },
+      } as gsap.TweenVars);
+
+      const colorST = ScrollTrigger.create({
         trigger: hasHero ? heroTrigger : 'body',
-        start: isHome ? () => `bottom ${header.offsetHeight}px` : "50px top",
-        end: isHome ? 'bottom top' : "150px top",
-        scrub: true,
-        invalidateOnRefresh: true,
-      },
-    } as gsap.TweenVars);
-
-    const colorST = ScrollTrigger.create({
-      trigger: hasHero ? heroTrigger : 'body',
-      start: hasHero
-        ? () => isMobile ? 'bottom top' : `bottom ${header.offsetHeight}px`
-        : "top top",
-      end: 'max',
-      onEnter: () => {
-        document.body.classList.add('header-dark-mode');
-        if (isMobile) {
-          gsap.to('.header-logo', { opacity: 1, visibility: 'visible', pointerEvents: 'auto', duration: 0.4, ease: 'power2.out', overwrite: 'auto' });
-        }
-      },
-      onLeaveBack: () => {
-        if (isHome) {
-          document.body.classList.remove('header-dark-mode');
+        start: hasHero
+          ? () => isMobile ? 'bottom top' : `bottom ${header.offsetHeight}px`
+          : "top top",
+        end: 'max',
+        onEnter: () => {
+          document.body.classList.add('header-dark-mode');
           if (isMobile) {
-            gsap.to('.header-logo', { opacity: 0, visibility: 'hidden', pointerEvents: 'none', duration: 0.3, ease: 'power2.in', overwrite: 'auto' });
+            gsap.to('.header-logo', { opacity: 1, visibility: 'visible', pointerEvents: 'auto', duration: 0.4, ease: 'power2.out', overwrite: 'auto' });
+          }
+        },
+        onLeaveBack: () => {
+          if (isHome) {
+            document.body.classList.remove('header-dark-mode');
+            if (isMobile) {
+              gsap.to('.header-logo', { opacity: 0, visibility: 'hidden', pointerEvents: 'none', duration: 0.3, ease: 'power2.in', overwrite: 'auto' });
+            }
+          }
+        },
+        onRefresh: (self) => {
+          // Catch case where we loaded already below trigger line
+          if (self.isActive) {
+             document.body.classList.add('header-dark-mode');
+          } else if (isHome) {
+             document.body.classList.remove('header-dark-mode');
           }
         }
-      },
-    });
+      });
 
-    // We don't add header-pill-mode immediately here anymore, 
-    // so it can animate width/radius when pillST triggers.
+      const pillST = ScrollTrigger.create({
+        trigger: hasHero ? heroTrigger : 'body',
+        start: isHome ? 'bottom top' : "150px top",
+        end: 'max',
+        onEnter: () => document.body.classList.add('header-pill-mode'),
+        onLeaveBack: () => {
+          document.body.classList.remove('header-pill-mode');
+        },
+        onRefresh: (self) => {
+          if (self.isActive) document.body.classList.add('header-pill-mode');
+        }
+      });
 
-    let pillST: ScrollTrigger | null = null;
-    let navST: ScrollTrigger | null = null;
-
-    pillST = ScrollTrigger.create({
-      trigger: hasHero ? heroTrigger : 'body',
-      start: isHome ? 'bottom top' : "150px top",
-      end: 'max',
-      onEnter: () => document.body.classList.add('header-pill-mode'),
-      onLeaveBack: () => {
-        document.body.classList.remove('header-pill-mode');
-      },
-    });
-
-    if (!isMobile) {
-      const headerNav = document.querySelector('.header-nav') as HTMLElement;
-      if (headerNav && isHome) {
-        const navLinks = headerNav.querySelectorAll('.nav-link');
-        navST = ScrollTrigger.create({
-          trigger: heroTrigger,
-          start: '30% top',
-          onEnter: () => {
-            gsap.to(headerNav, { opacity: 1, pointerEvents: 'auto', duration: 0.3 });
-            gsap.fromTo(
-              navLinks,
-              { opacity: 0, y: -15, filter: 'blur(5px)' },
-              { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.45, stagger: 0.08, ease: 'power2.out', overwrite: true },
-            );
-          },
-          onLeaveBack: () => {
-            gsap.to(headerNav, { opacity: 0, pointerEvents: 'none', duration: 0.3 });
-            gsap.to(navLinks, { opacity: 0, y: -15, filter: 'blur(5px)', duration: 0.3 });
-          },
-        });
+      let navST: ScrollTrigger | null = null;
+      if (!isMobile) {
+        const headerNav = document.querySelector('.header-nav') as HTMLElement;
+        if (headerNav && isHome) {
+          const navLinks = headerNav.querySelectorAll('.nav-link');
+          navST = ScrollTrigger.create({
+            trigger: heroTrigger,
+            start: '30% top',
+            onEnter: () => {
+              gsap.to(headerNav, { opacity: 1, pointerEvents: 'auto', duration: 0.3 });
+              gsap.fromTo(
+                navLinks,
+                { opacity: 0, y: -15, filter: 'blur(5px)' },
+                { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.45, stagger: 0.08, ease: 'power2.out', overwrite: true },
+              );
+            },
+            onLeaveBack: () => {
+              gsap.to(headerNav, { opacity: 0, pointerEvents: 'none', duration: 0.3 });
+              gsap.to(navLinks, { opacity: 0, y: -15, filter: 'blur(5px)', duration: 0.3 });
+            },
+          });
+        }
       }
-    }
+
+      // Stash cleanup refs on custom global storage on the elements or via context if needed, 
+      // but storing on window for ease of removal loop is a robust fallback here.
+      (header as any)._stWipe = wipeAnim;
+      (header as any)._stColor = colorST;
+      (header as any)._stPill = pillST;
+      (header as any)._stNav = navST;
+
+    }, 80); // Sufficient buffer for Next.js render paint.
 
     return () => {
-      wipeAnim.scrollTrigger?.kill();
-      colorST.kill();
-      pillST?.kill();
-      navST?.kill();
+      clearTimeout(timeoutId);
+      const header = document.querySelector('.header') as HTMLElement;
+      if (header) {
+        const h = header as any;
+        h._stWipe?.scrollTrigger?.kill();
+        h._stWipe?.kill();
+        h._stColor?.kill();
+        h._stPill?.kill();
+        h._stNav?.kill();
+      }
+      
+      // Hard reset generic system state to clean state on unmount before retrigger
+      document.body.classList.remove('header-dark-mode', 'header-pill-mode');
+      const headerBg = document.querySelector('.header .header-bg');
+      if (headerBg) gsap.set(headerBg, { opacity: 0, clearProps: 'opacity' });
     };
   }, [lenis, isHome, pathname]);
 }
