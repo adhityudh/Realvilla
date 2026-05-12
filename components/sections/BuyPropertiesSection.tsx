@@ -364,22 +364,33 @@ export default function BuyPropertiesSection({ data, dict, filterMeta: initialMe
           </div>
         </div>
         
-        {/* Quick Filters Chips (Fallback to Standalone Categories if quickFilterMeta is not set) */}
+        {/* Quick Filters Chips (Dynamic Category Filter Configuration) */}
         {(() => {
-          // Source 1: The legacy explicit filter list if configured
-          const legacyOptions = data?.quickFilterMeta?.options || [];
+          // If toggle is explicitly turned off, render nothing
+          if (data?.showQuickFilters === false) return null;
+
+          // Default setting fallback if not populated in studio yet
+          const isAllMode = data?.quickFilterSelection !== 'custom';
           
-          // Source 2: The new global standalone categories from system
-          const globalCategories = filterMeta?.standaloneCategories || [];
-          
-          // Decide which list to use - use specific defined list first, else global list
-          const hasLegacy = legacyOptions.length > 0;
-          const itemsToRender = hasLegacy ? legacyOptions : globalCategories.map((c: any) => ({
-            value: c._id,
-            label: c.label,
-            icon: c.icon,
-            isCategory: true
-          }));
+          let itemsToRender = [];
+
+          if (isAllMode) {
+            // Render ALL available categories
+            const globalCategories = filterMeta?.standaloneCategories || [];
+            itemsToRender = globalCategories.map((c: any) => ({
+              value: c._id,
+              label: c.label,
+              icon: c.icon
+            }));
+          } else {
+            // Render only specific categories chosen in the section
+            const selectedCats = data?.quickFilterCategories || [];
+            itemsToRender = selectedCats.map((c: any) => ({
+              value: c.value,
+              label: c.label,
+              icon: c.icon
+            }));
+          }
 
           if (itemsToRender.length === 0) return null;
 
@@ -390,11 +401,7 @@ export default function BuyPropertiesSection({ data, dict, filterMeta: initialMe
                   <button
                     key={opt.value}
                     className="quick-filter-chip"
-                    onClick={() => handleQuickFilterClick(
-                      opt.value, 
-                      opt.isCategory ? 'category' : 'meta',
-                      data?.quickFilterMeta?.metaId
-                    )}
+                    onClick={() => handleQuickFilterClick(opt.value, 'category')}
                   >
                     {opt.icon && (
                       <div className="quick-filter-icon-box">

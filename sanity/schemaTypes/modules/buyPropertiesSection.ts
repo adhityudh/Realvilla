@@ -61,14 +61,34 @@ export const buyPropertiesSection = defineType({
       description: 'How many properties to display per page on mobile devices under 768px. (Optional, defaults to same as desktop limit)',
     }),
     defineField({
-      name: 'quickFilterMeta',
-      title: 'Quick Filter Meta Option',
-      description: 'Select a Meta field (type: select) to display horizontal quick-filter chips beneath the header.',
-      type: 'reference',
-      to: [{ type: 'propertyMeta' }],
+      name: 'showQuickFilters',
+      title: 'Show Quick Filter Chips',
+      description: 'Whether to display horizontal quick-filter category chips beneath the section header.',
+      type: 'boolean',
+      initialValue: true,
+    }),
+    defineField({
+      name: 'quickFilterSelection',
+      title: 'Quick Filter Mode',
+      type: 'string',
       options: {
-        filter: 'valueType == "select"'
-      }
+        list: [
+          { title: 'Display All Categories', value: 'all' },
+          { title: 'Display Specific Selection', value: 'custom' },
+        ],
+        layout: 'radio',
+        direction: 'horizontal',
+      },
+      initialValue: 'all',
+      hidden: ({ parent }) => parent?.showQuickFilters !== true,
+    }),
+    defineField({
+      name: 'quickFilterCategories',
+      title: 'Select Specific Categories',
+      description: 'Choose which categories to display as quick filter chips in this section.',
+      type: 'array',
+      of: [{ type: 'reference', to: [{ type: 'propertyCategory' }] }],
+      hidden: ({ parent }) => parent?.showQuickFilters !== true || parent?.quickFilterSelection !== 'custom',
     }),
     defineField({
       name: 'orderBy',

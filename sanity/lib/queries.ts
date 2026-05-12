@@ -230,14 +230,12 @@ export const SECTION_PROJECTION = groq`
         itemsPerPageMobile,
         orderBy,
         showSold,
-        "quickFilterMeta": quickFilterMeta-> {
-          "metaId": _id,
-          "label": coalesce(shortLabel[$language], shortLabel.en, longLabel[$language], longLabel.en),
-          "options": selectOptions[] {
-            "value": en,
-            "label": coalesce(@[$language], en),
-            "icon": icon.asset->url
-          }
+        showQuickFilters,
+        quickFilterSelection,
+        "quickFilterCategories": quickFilterCategories[]-> {
+          "value": _id,
+          "label": coalesce(title[$language], title.en),
+          "icon": icon.asset->url
         }
       },
       _type == "buyingProcessSection" => {
