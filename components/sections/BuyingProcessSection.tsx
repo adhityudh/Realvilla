@@ -25,6 +25,7 @@ interface BuyingProcessSectionProps {
     tagline?: string;
     headline?: string;
     intro?: any;
+    imageOrder?: 'left-first' | 'right-first';
     steps?: Step[];
   };
 }
@@ -39,12 +40,12 @@ export default function BuyingProcessSection({ data }: BuyingProcessSectionProps
     // Animate Section Header
     gsap.fromTo(
       sectionRef.current.querySelectorAll('.process-tagline, .process-headline, .process-intro'),
-      { y: 50, opacity: 0, filter: 'blur(10px)' },
+      { y: 30, opacity: 0, filter: 'blur(10px)' },
       {
         y: 0,
         opacity: 1,
         filter: 'blur(0px)',
-        duration: 1,
+        duration: 1.2,
         stagger: 0.2,
         ease: 'power3.out',
         scrollTrigger: {
@@ -55,8 +56,10 @@ export default function BuyingProcessSection({ data }: BuyingProcessSectionProps
       }
     );
 
+    const imageOrder = data?.imageOrder || 'right-first';
+
     // Animate individual steps as they come into view
-    stepRefs.current.forEach((stepEl) => {
+    stepRefs.current.forEach((stepEl, idx) => {
       if (!stepEl) return;
       const content = stepEl.querySelector('.step-content-col');
       const media = stepEl.querySelector('.step-media-col');
@@ -71,16 +74,19 @@ export default function BuyingProcessSection({ data }: BuyingProcessSectionProps
 
       tl.fromTo(
         media,
-        { x: -40, opacity: 0, scale: 0.95 },
-        { x: 0, opacity: 1, scale: 1, duration: 1.2, ease: 'power3.out' },
+        { y: 30, opacity: 0, filter: 'blur(8px)' },
+        { y: 0, opacity: 1, filter: 'blur(0px)', duration: 1.2, ease: 'power3.out' },
         0
       ).fromTo(
         content,
-        { x: 40, opacity: 0, filter: 'blur(5px)' },
-        { x: 0, opacity: 1, filter: 'blur(0px)', duration: 1.2, ease: 'power3.out' },
+        { y: 30, opacity: 0, filter: 'blur(8px)' },
+        { y: 0, opacity: 1, filter: 'blur(0px)', duration: 1.2, ease: 'power3.out' },
         0.2
       );
     });
+
+    // Important: Refresh triggers after setup to account for initial layout
+    ScrollTrigger.refresh();
 
     return () => {
       ScrollTrigger.getAll().forEach((st) => st.kill());
@@ -89,10 +95,10 @@ export default function BuyingProcessSection({ data }: BuyingProcessSectionProps
 
   if (!data) return null;
 
-  const { tagline, headline, intro, steps } = data;
+  const { tagline, headline, intro, steps, imageOrder = 'right-first' } = data;
 
   return (
-    <section className="buying-process-section" ref={sectionRef}>
+    <section className={`buying-process-section order-${imageOrder}`} ref={sectionRef}>
       <div className="process-container">
         {/* Header */}
         {(tagline || headline || intro) && (

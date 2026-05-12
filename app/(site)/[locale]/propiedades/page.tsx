@@ -3,17 +3,20 @@ import { getDictionary } from '@/lib/get-dictionary';
 import TranslationSetter from '@/components/providers/TranslationSetter';
 import { Metadata } from 'next';
 
+import { getGlobalSettings, constructMetadata } from '@/lib/metadata';
+
 export async function generateMetadata(
   { params }: { params: Promise<{ locale: string }> }
 ): Promise<Metadata> {
   const { locale } = await params;
-  const isEs = locale === 'es';
-  return {
-    title: isEs ? 'Propiedades Exclusivas | Realvilla' : 'Exclusive Properties | Realvilla',
-    description: isEs 
-      ? 'Explore nuestra exclusiva selección de villas, apartamentos y casas en venta en Tenerife.' 
-      : 'Explore our exclusive selection of villas, apartments, and houses for sale in Tenerife.',
-  };
+  const settings = await getGlobalSettings(locale);
+  
+  return constructMetadata(
+    settings?.propertiesPageSeo, 
+    settings?.seo, 
+    `/${locale}/propiedades`, 
+    settings?.favicon
+  );
 }
 
 export default async function PropiedadesPage({ params }: { params: Promise<{ locale: string }> }) {

@@ -5,6 +5,7 @@ import { createPortal } from 'react-dom';
 import gsap from 'gsap';
 import Button from '../ui/Button';
 import { getMunicipalities } from '../../lib/municipalities';
+import { client } from '@/sanity/lib/client';
 import './FilterSidebar.css';
 
 interface FilterSidebarProps {
@@ -77,6 +78,23 @@ export default function FilterSidebar({
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  // Fetch dynamic Sidebar texts from global Sanity settings
+  const [sanityFilterTexts, setSanityFilterTexts] = useState<{ title?: string; subtitle?: string }>({});
+  useEffect(() => {
+    const fetchTexts = async () => {
+      try {
+        const query = `*[_type == "settings" && (language == $language || (!defined(language) && $language == "en"))][0].filterSidebar`;
+        const data = await client.fetch(query, { language: locale });
+        if (data) {
+          setSanityFilterTexts(data);
+        }
+      } catch (e) {
+        console.error('Failed fetching dynamic filter texts:', e);
+      }
+    };
+    fetchTexts();
+  }, [locale]);
 
   // 1. Mandatory Price Range State (reads highest price dynamically from meta)
   const [priceMin, setPriceMin] = useState<number>(0);
@@ -838,10 +856,10 @@ export default function FilterSidebar({
           <div className="filter-sidebar-header">
             <div>
               <h3 className="filter-sidebar-title">
-                {dict?.filter?.title}
+                {sanityFilterTexts.title || dict?.filter?.title}
               </h3>
               <p className="filter-sidebar-subtitle">
-                {dict?.filter?.subtitle}
+                {sanityFilterTexts.subtitle || dict?.filter?.subtitle}
               </p>
             </div>
             <button className="filter-sidebar-close" onClick={onClose} aria-label="Close">

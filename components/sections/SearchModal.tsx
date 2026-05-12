@@ -35,7 +35,7 @@ export default function SearchModal({ isOpen, onClose, dict }: SearchModalProps)
   const [isLoading, setIsLoading] = useState(false);
   const [results, setResults] = useState<SearchResultItem[]>([]);
   const [allMunicipalities, setAllMunicipalities] = useState<string[]>([]);
-  const [trendingSearches, setTrendingSearches] = useState<string[]>(['Villa', 'Adeje', 'Costa Adeje', 'Arona', 'Santa Cruz']);
+  const [trendingSearches, setTrendingSearches] = useState<string[]>([]);
   const [searchableMeta, setSearchableMeta] = useState<any[]>([]);
 
   const language = pathname.startsWith('/es') ? 'es' : 'en';
@@ -53,13 +53,13 @@ export default function SearchModal({ isOpen, onClose, dict }: SearchModalProps)
     });
   }, []);
 
-  // Fetch dynamic trending searches from Sanity
+  // Fetch dynamic trending searches from Sanity component data
   useEffect(() => {
     const fetchTrendingSearches = async () => {
       try {
-        const query = `*[_type == "settings" && (language == $language || (!defined(language) && $language == "en"))][0].trendingSearches`;
+        const query = `*[_type == "page" && (language == $language || (!defined(language) && $language == "en")) && count(sections[_type == "buyHeroSection"]) > 0][0].sections[_type == "buyHeroSection"][0].trendingSearches`;
         const data = await client.fetch(query, { language });
-        if (data && Array.isArray(data) && data.length > 0) {
+        if (data && Array.isArray(data)) {
           setTrendingSearches(data);
         }
       } catch (err) {

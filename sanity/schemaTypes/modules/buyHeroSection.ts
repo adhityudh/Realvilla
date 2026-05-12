@@ -37,7 +37,15 @@ export const buyHeroSection = defineType({
           ]
         }
       ]
-    })
+    }),
+    defineField({
+      name: 'trendingSearches',
+      title: 'Trending Searches',
+      description: 'The search recommendation terms displayed inside the Search Modal.',
+      type: 'array',
+      of: [{ type: 'string' }],
+      initialValue: ['Villa', 'Adeje', 'Costa Adeje', 'Arona', 'Santa Cruz'],
+    }),
   ],
   preview: {
     select: {

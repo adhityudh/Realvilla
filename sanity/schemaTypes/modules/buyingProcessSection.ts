@@ -26,6 +26,20 @@ export const buyingProcessSection = defineType({
       description: 'Optional introductory context.',
     }),
     defineField({
+      name: 'imageOrder',
+      title: 'First Item Image Side',
+      description: 'Choose which side the image appears on for the FIRST item. Subequent items alternate dynamically.',
+      type: 'string',
+      options: {
+        list: [
+          { title: 'Left First', value: 'left-first' },
+          { title: 'Right First', value: 'right-first' },
+        ],
+        layout: 'radio',
+      },
+      initialValue: 'left-first',
+    }),
+    defineField({
       name: 'steps',
       title: 'Process Steps',
       type: 'array',

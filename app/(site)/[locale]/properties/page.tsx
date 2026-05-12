@@ -3,21 +3,23 @@ import { getDictionary } from '@/lib/get-dictionary';
 import TranslationSetter from '@/components/providers/TranslationSetter';
 import { Metadata } from 'next';
 
+import { getGlobalSettings, constructMetadata } from '@/lib/metadata';
+import { client } from '@/sanity/lib/client';
+import { PROPERTY_META_QUERY } from '@/sanity/lib/queries';
+
 export async function generateMetadata(
   { params }: { params: Promise<{ locale: string }> }
 ): Promise<Metadata> {
   const { locale } = await params;
-  const isEs = locale === 'es';
-  return {
-    title: isEs ? 'Propiedades Exclusivas | Realvilla' : 'Exclusive Properties | Realvilla',
-    description: isEs 
-      ? 'Explore nuestra exclusiva selección de villas, apartamentos y casas en venta en Tenerife.' 
-      : 'Explore our exclusive selection of villas, apartments, and houses for sale in Tenerife.',
-  };
+  const settings = await getGlobalSettings(locale);
+  
+  return constructMetadata(
+    settings?.propertiesPageSeo, 
+    settings?.seo, 
+    `/${locale}/properties`, 
+    settings?.favicon
+  );
 }
-
-import { client } from '@/sanity/lib/client';
-import { PROPERTY_META_QUERY } from '@/sanity/lib/queries';
 
 export default async function PropertiesPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;

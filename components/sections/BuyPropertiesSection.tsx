@@ -237,6 +237,11 @@ export default function BuyPropertiesSection({ data, dict, filterMeta: initialMe
           setTotalCount(res.total || 0);
           setLoading(false);
 
+          // RECALIBRATE: Inform all other scroll triggers that height has changed
+          ScrollTrigger.refresh();
+          setTimeout(() => ScrollTrigger.refresh(), 300);
+          setTimeout(() => ScrollTrigger.refresh(), 1000); // Safety check
+
           // Trigger grid animation on load
           if (gridRef.current) {
             const cards = gridRef.current.querySelectorAll('.property-card');

@@ -140,5 +140,19 @@
     "status_for_sale": "For Sale",
     "status_reserved": "Reserved",
     "cta_find_similar": "Find Similar Properties"
+  },
+  "mortgage": {
+    "calc_title": "Mortgage Calculator",
+    "field_price": "Property Price",
+    "field_down": "Down Payment",
+    "field_term": "Loan Term",
+    "result_title": "Estimated Monthly Payment *",
+    "result_installments": "Number of installments",
+    "result_duration": "Mortgage duration",
+    "result_interest": "Interest rate (est.)",
+    "result_total": "Total repayment",
+    "unit_installments": "installments",
+    "unit_years": "years",
+    "unit_year": "year"
   }
 }

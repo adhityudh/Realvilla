@@ -9,6 +9,7 @@ export const property = defineType({
     { name: 'general', title: 'General', default: true },
     { name: 'media', title: 'Media' },
     { name: 'meta', title: 'Meta & Features' },
+    { name: 'seo', title: 'SEO' },
   ],
   fields: [
     defineField({
@@ -372,6 +373,13 @@ export const property = defineType({
       title: 'Sq.Ft. (Legacy)',
       type: 'string',
       hidden: true,
+    }),
+    defineField({
+      name: 'seo',
+      title: 'SEO Override',
+      description: 'Customize how this property appears in Search engines and social media. Leave blank to auto-generate from property name.',
+      type: 'seo',
+      group: 'seo',
     }),
   ],
   orderings: [

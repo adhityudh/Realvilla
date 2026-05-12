@@ -11,6 +11,7 @@ const MortgageFAQSection = dynamic(() => import('./MortgageFAQSection'), { ssr: 
 const BuyHeroSection = dynamic(() => import('./BuyHeroSection'), { ssr: true })
 const BuyPropertiesSection = dynamic(() => import('./BuyPropertiesSection'), { ssr: true })
 const BuyingProcessSection = dynamic(() => import('./BuyingProcessSection'), { ssr: true })
+const BuyMortgageSimSection = dynamic(() => import('./BuyMortgageSimSection'), { ssr: true })
 
 const sectionMap: Record<string, any> = {
   heroSection: HeroCombined,
@@ -24,9 +25,10 @@ const sectionMap: Record<string, any> = {
   buyHeroSection: BuyHeroSection,
   buyPropertiesSection: BuyPropertiesSection,
   buyingProcessSection: BuyingProcessSection,
+  buyMortgageSimSection: BuyMortgageSimSection,
 }
 
-export default function SectionRenderer({ sections, dict, filterMeta }: { sections: any[], dict?: any, filterMeta?: any }) {
+export default function SectionRenderer({ sections, dict, filterMeta, contextData }: { sections: any[], dict?: any, filterMeta?: any, contextData?: any }) {
   if (!sections) return null
 
   return (
@@ -37,7 +39,7 @@ export default function SectionRenderer({ sections, dict, filterMeta }: { sectio
           console.warn(`No component found for section type: ${section._type}`)
           return null
         }
-        return <Component key={section._key || index} data={section} dict={dict} filterMeta={filterMeta} />
+        return <Component key={section._key || index} data={section} dict={dict} filterMeta={filterMeta} contextData={contextData} />
       })}
     </>
   )

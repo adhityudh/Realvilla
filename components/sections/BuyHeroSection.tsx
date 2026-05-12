@@ -157,13 +157,15 @@ export default function BuyHeroSection({ data, dict }: BuyHeroSectionProps) {
     <>
       <section className="buy-hero" ref={sectionRef}>
         <div className="buy-hero-bg">
-          <Image
-            src={data.backgroundImage || '/images/img-hero-buy.png'}
-            alt="Buy Background"
-            fill
-            priority
-            className="buy-hero-img"
-          />
+          {data.backgroundImage && (
+            <Image
+              src={data.backgroundImage}
+              alt="Buy Background"
+              fill
+              priority
+              className="buy-hero-img"
+            />
+          )}
           <div className="buy-hero-overlay" />
         </div>
 

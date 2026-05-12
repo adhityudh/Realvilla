@@ -1,5 +1,5 @@
 .buying-process-section {
-  padding: 8rem 0;
+  padding: 5rem 0;
   background-color: var(--bg-white);
   overflow: hidden;
   position: relative;
@@ -78,12 +78,51 @@
   align-items: center;
 }
 
-.process-step-item:nth-child(even) {
-  direction: rtl;
+/* By default, Media goes 1st (Left), Content goes 2nd (Right) */
+.step-media-col {
+  order: 1;
+}
+.step-content-col {
+  order: 2;
 }
 
-.process-step-item:nth-child(even)>* {
-  direction: ltr;
+/* --- UNCONDITIONAL DEFAULT: Right First (Odd items swap: Media goes Right) --- */
+/* This ensures it works instantly even if dynamic parent classes fail to apply! */
+.process-step-item:nth-child(odd) .step-media-col {
+  order: 2;
+}
+.process-step-item:nth-child(odd) .step-content-col {
+  order: 1;
+}
+
+/* --- Layout Variation OVERRIDES: Left First (Even items swap: Media goes Right) --- */
+.buying-process-section.order-left-first .process-step-item:nth-child(even) .step-media-col {
+  order: 2;
+}
+.buying-process-section.order-left-first .process-step-item:nth-child(even) .step-content-col {
+  order: 1;
+}
+/* Reset odd items for Left First mode specifically */
+.buying-process-section.order-left-first .process-step-item:nth-child(odd) .step-media-col {
+  order: 1;
+}
+.buying-process-section.order-left-first .process-step-item:nth-child(odd) .step-content-col {
+  order: 2;
+}
+
+/* --- Layout Variation OVERRIDES: Right First (Explicitly reinforces Odd items swap) --- */
+.buying-process-section.order-right-first .process-step-item:nth-child(odd) .step-media-col {
+  order: 2;
+}
+.buying-process-section.order-right-first .process-step-item:nth-child(odd) .step-content-col {
+  order: 1;
+}
+/* Reset even items for Right First mode specifically */
+.buying-process-section.order-right-first .process-step-item:nth-child(even) .step-media-col {
+  order: 1;
+}
+.buying-process-section.order-right-first .process-step-item:nth-child(even) .step-content-col {
+  order: 2;
 }
 
 /* ── Media ── */
@@ -197,7 +236,7 @@
 
 @media (max-width: 768px) {
   .buying-process-section {
-    padding: 5rem 0;
+    padding: 3rem 0;
   }
 
   .process-header {
@@ -206,11 +245,15 @@
 
   .process-step-item {
     grid-template-columns: 1fr;
-    direction: ltr !important;
   }
 
-  .process-step-item:nth-child(even)>* {
-    direction: ltr !important;
+  /* Mobile: reset all alternating logic and always show photo above text */
+  .process-step-item .step-media-col {
+    order: 1 !important;
+  }
+  
+  .process-step-item .step-content-col {
+    order: 2 !important;
   }
 
   .process-steps-list {
@@ -227,9 +270,7 @@
     gap: 0.5rem;
   }
 
-  .step-media-col {
-    order: -1;
-  }
+
 
   .step-watermark-number.is-desktop {
     display: none;

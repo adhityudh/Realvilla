@@ -24,8 +24,8 @@ export function constructMetadata(
   favicon?: string
 ): Metadata {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || ''
-  const title = seo?.metaTitle || globalSeo?.metaTitle || 'RealVilla - Premium Real Estate'
-  const description = seo?.metaDescription || globalSeo?.metaDescription || 'Premium Tenerife real estate. Expert guidance for buyers, sellers, and investors.'
+  const title = seo?.metaTitle || globalSeo?.metaTitle
+  const description = seo?.metaDescription || globalSeo?.metaDescription
   const ogImage = seo?.ogImage?.asset?.url || globalSeo?.ogImage?.asset?.url
   const noIndex = seo?.noIndex || globalSeo?.noIndex
   const activeFavicon = favicon || globalSeo?.favicon
@@ -117,7 +117,7 @@ export function getSchemaData(settings: any, path?: string) {
         "url": baseUrl,
         "logo": {
           "@type": "ImageObject",
-          "url": settings?.logo || `${baseUrl}/logo.png`,
+          "url": settings?.logo,
         },
         "sameAs": settings?.socialLinks?.map((s: any) => s.url) || [],
       },
@@ -132,7 +132,7 @@ export function getSchemaData(settings: any, path?: string) {
         "@type": "WebPage",
         "@id": `${url}/#webpage`,
         "url": url,
-        "name": settings?.seo?.metaTitle || "RealVilla",
+        "name": settings?.seo?.metaTitle,
         "isPartOf": { "@id": `${baseUrl}/#website` },
         "about": { "@id": `${baseUrl}/#organization` },
         "description": settings?.seo?.metaDescription,

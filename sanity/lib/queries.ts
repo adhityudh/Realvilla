@@ -1,12 +1,16 @@
 import { groq } from 'next-sanity'
 
+export const SEO_SUBFIELDS = groq`
+  metaTitle,
+  metaDescription,
+  ogImage { asset->{ url } },
+  noIndex,
+  canonicalUrl
+`
+
 export const SEO_FIELDS = groq`
   seo {
-    metaTitle,
-    metaDescription,
-    ogImage { asset->{ url } },
-    noIndex,
-    canonicalUrl
+    ${SEO_SUBFIELDS}
   }
 `
 
@@ -67,15 +71,7 @@ export const PROPERTY_CARD_FIELDS = groq`
   }
 `
 
-export const PAGE_QUERY = groq`
-  *[_type == "page" && slug.current == $slug && (language == $language || (!defined(language) && $language == "en"))][0] {
-    title,
-    ${SEO_FIELDS},
-    "_translations": *[_type == "translation.metadata" && references(^._id)][0].translations[].value->{
-      "language": language,
-      "slug": slug.current
-    },
-    sections[] {
+export const SECTION_PROJECTION = groq`
       _type,
       _key,
       _type == "heroSection" => {
@@ -98,6 +94,20 @@ export const PAGE_QUERY = groq`
         trustText,
         ctaLabel,
         iframeUrl,
+        "ctaLink": ${INTERNAL_LINK_PROJECTION}
+      },
+      _type == "buyMortgageSimSection" => {
+        tagline,
+        headline,
+        body,
+        disclaimerText,
+        ctaLabel,
+        defaultInterestRate,
+        defaultPrice,
+        downPaymentMin,
+        downPaymentMax,
+        loanTermMin,
+        loanTermMax,
         "ctaLink": ${INTERNAL_LINK_PROJECTION}
       },
       _type == "aboutSection" => {
@@ -200,6 +210,7 @@ export const PAGE_QUERY = groq`
         title,
         "backgroundImage": backgroundImage.asset->url,
         searchPlaceholder,
+        trendingSearches,
         jumpLinks[] {
           label,
           link
@@ -227,6 +238,7 @@ export const PAGE_QUERY = groq`
         tagline,
         headline,
         intro,
+        imageOrder,
         steps[] {
           number,
           title,
@@ -238,6 +250,18 @@ export const PAGE_QUERY = groq`
           }
         }
       }
+`
+
+export const PAGE_QUERY = groq`
+  *[_type == "page" && slug.current == $slug && (language == $language || (!defined(language) && $language == "en"))][0] {
+    title,
+    ${SEO_FIELDS},
+    "_translations": *[_type == "translation.metadata" && references(^._id)][0].translations[].value->{
+      "language": language,
+      "slug": slug.current
+    },
+    sections[] {
+      ${SECTION_PROJECTION}
     }
   }
 `
@@ -246,7 +270,13 @@ export const SETTINGS_QUERY = groq`
   *[_type == "settings" && (language == $language || (!defined(language) && $language == "en"))][0] {
     ${SEO_FIELDS},
     "favicon": favicon.asset->url,
-    trendingSearches,
+    "propertiesPageSeo": propertiesPageSeo {
+      ${SEO_SUBFIELDS}
+    },
+    "propertyDetailSections": propertyDetailSections[] {
+      ${SECTION_PROJECTION}
+    },
+    filterSidebar,
     socialLinks[] {
       label,
       "icon": icon.asset->url,
@@ -294,6 +324,7 @@ export const SETTINGS_QUERY = groq`
 export const PROPERTY_DETAIL_QUERY = groq`
   *[_type == "property" && slug.current == $slug && (language == $language || (!defined(language) && $language == "en"))][0] {
     _id,
+    ${SEO_FIELDS},
     title,
     subtitle,
     "address": coalesce(

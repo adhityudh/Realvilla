@@ -140,5 +140,19 @@
     "status_for_sale": "En Venta",
     "status_reserved": "Reservado",
     "cta_find_similar": "Buscar propiedades similares"
+  },
+  "mortgage": {
+    "calc_title": "Calculadora Hipotecaria",
+    "field_price": "Precio de la propiedad",
+    "field_down": "Pago inicial",
+    "field_term": "Plazo (años)",
+    "result_title": "Cuota mensual *",
+    "result_installments": "Número de cuotas",
+    "result_duration": "Duración de la hipoteca",
+    "result_interest": "Tipo interés (estimado)",
+    "result_total": "Total desembolso",
+    "unit_installments": "cuotas",
+    "unit_years": "años",
+    "unit_year": "año"
   }
 }

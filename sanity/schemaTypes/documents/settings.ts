@@ -9,6 +9,9 @@ export const settings = defineType({
     { name: 'header', title: 'Header' },
     { name: 'footer', title: 'Footer' },
     { name: 'search', title: 'Search' },
+    { name: 'propertiesSeo', title: 'Properties Page' },
+    { name: 'propertyDetail', title: 'Property Detail Page' },
+    { name: 'filters', title: 'Filters' },
   ],
   fields: [
     defineField({
@@ -35,6 +38,44 @@ export const settings = defineType({
       title: 'Favicon',
       type: 'image',
       group: 'seo',
+    }),
+    defineField({
+      name: 'propertiesPageSeo',
+      title: 'Properties Page SEO',
+      description: 'SEO configurations for the properties archive/listing route (/properties).',
+      type: 'seo',
+      group: 'propertiesSeo',
+    }),
+    defineField({
+      name: 'propertyDetailSections',
+      title: 'Property Page Sections',
+      description: 'These sections will dynamically appear on ALL property detail pages AFTER the main details content.',
+      type: 'array',
+      group: 'propertyDetail',
+      of: [
+        { type: 'heroSection' },
+        { type: 'buyHeroSection' },
+        { type: 'buyPropertiesSection' },
+        { type: 'aboutSection' },
+        { type: 'propertiesSection' },
+        { type: 'valuationSection' },
+        { type: 'partnerSection' },
+        { type: 'testimonialsSection' },
+        { type: 'contactSection' },
+        { type: 'mortgageFAQSection' },
+        { type: 'buyingProcessSection' },
+        { type: 'buyMortgageSimSection' },
+      ],
+    }),
+    defineField({
+      name: 'filterSidebar',
+      title: 'Filter Sidebar Text',
+      type: 'object',
+      group: 'filters',
+      fields: [
+        defineField({ name: 'title', title: 'Title', type: 'string', initialValue: 'SEARCH FILTERS' }),
+        defineField({ name: 'subtitle', title: 'Subtitle', type: 'string', initialValue: 'Refine your perfect selection' }),
+      ]
     }),
 
     defineField({
@@ -194,15 +235,6 @@ export const settings = defineType({
           hidden: ({ parent }) => parent?.linkType !== 'external',
         }),
       ],
-    }),
-    defineField({
-      name: 'trendingSearches',
-      title: 'Trending Searches',
-      description: 'The search recommendation/trending terms displayed inside the Search Modal.',
-      type: 'array',
-      group: 'search',
-      of: [{ type: 'string' }],
-      initialValue: ['Villa', 'Adeje', 'Costa Adeje', 'Arona', 'Santa Cruz'],
     }),
     defineField({
       name: 'footer',

@@ -19,19 +19,30 @@ export async function generateMetadata(
   
   if (!property) return {};
 
-  return constructMetadata(property?.seo, settings?.seo, `/${locale}/properties/${slug}`, settings?.favicon);
+  const propertySeo = {
+    ...property?.seo,
+    metaTitle: property?.seo?.metaTitle || property?.title,
+    metaDescription: property?.seo?.metaDescription || property?.subtitle,
+    ogImage: property?.seo?.ogImage || property?.image
+  };
+
+  return constructMetadata(propertySeo, settings?.seo, `/${locale}/properties/${slug}`, settings?.favicon);
 }
+
+import SectionRenderer from '@/components/sections/SectionRenderer';
 
 export default async function PropertyPage({ params }: { params: Promise<{ locale: string, slug: string }> }) {
   const { locale, slug } = await params;
 
   let property = null;
   let dict = null;
+  let settings = null;
 
   try {
-    [property, dict] = await Promise.all([
+    [property, dict, settings] = await Promise.all([
       client.fetch(PROPERTY_DETAIL_QUERY, { slug, language: locale }, { next: { revalidate: 60 } }),
-      getDictionary(locale as any)
+      getDictionary(locale as any),
+      getGlobalSettings(locale)
     ]);
   } catch (error) {
     console.error('Sanity fetch error:', error);
@@ -46,7 +57,13 @@ export default async function PropertyPage({ params }: { params: Promise<{ local
       <TranslationSetter translations={property._translations ?? []} />
       <PropertyGallery property={property} dict={dict} />
       <PropertyDetails property={property} dict={dict} locale={locale} />
-      {/* Other sections will go here later */}
+      {settings?.propertyDetailSections && (
+        <SectionRenderer 
+          sections={settings.propertyDetailSections} 
+          dict={dict} 
+          contextData={{ propertyPrice: property?.price }}
+        />
+      )}
     </main>
   );
 }
