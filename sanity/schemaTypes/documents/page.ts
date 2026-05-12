@@ -58,6 +58,7 @@ export const page = defineType({
         { type: 'testimonialsSection' },
         { type: 'contactSection' },
         { type: 'mortgageFAQSection' },
+        { type: 'buyingProcessSection' },
       ],
     }),
     defineField({

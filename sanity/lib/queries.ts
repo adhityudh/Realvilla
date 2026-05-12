@@ -222,6 +222,21 @@ export const PAGE_QUERY = groq`
             "icon": icon.asset->url
           }
         }
+      },
+      _type == "buyingProcessSection" => {
+        tagline,
+        headline,
+        intro,
+        steps[] {
+          number,
+          title,
+          description,
+          image { asset->{ _id, url, metadata { lqip, dimensions } } },
+          quickFacts[] {
+            label,
+            value
+          }
+        }
       }
     }
   }

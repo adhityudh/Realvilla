@@ -14,6 +14,7 @@ import { contactSection } from './modules/contactSection'
 import { mortgageFAQSection } from './modules/mortgageFAQSection'
 import { buyHeroSection } from './modules/buyHeroSection'
 import { buyPropertiesSection } from './modules/buyPropertiesSection'
+import { buyingProcessSection } from './modules/buyingProcessSection'
 import { settings } from './documents/settings'
 import { seo } from './objects/seo'
 import { blockContent } from './objects/blockContent'
@@ -40,6 +41,7 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     partnerSection,
     testimonialsSection,
     contactSection,
-    mortgageFAQSection
+    mortgageFAQSection,
+    buyingProcessSection
   ],
 }
