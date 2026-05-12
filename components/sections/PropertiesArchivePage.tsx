@@ -272,7 +272,7 @@ export default function PropertiesArchivePage({ dict, initialMeta }: { dict?: an
 
     const fetchProperties = async () => {
       try {
-        let baseFilter = `_type == "property" && (language == $language || (!defined(language) && $language == "en")) && status != "sold"`;
+        let baseFilter = `_type == "property" && (language == $language || (!defined(language) && $language == "en"))`;
 
         // Price Range Filter
         baseFilter += ` && price >= $priceMin && price <= $priceMax`;
@@ -359,7 +359,7 @@ export default function PropertiesArchivePage({ dict, initialMeta }: { dict?: an
 
         const query = `
           {
-            "items": *[${baseFilter}] | order(${orderBy}) [$start...$end] {
+            "items": *[${baseFilter}] | order(select(status == "sold" => 1, 0) asc, ${orderBy}) [$start...$end] {
               ${PROPERTY_CARD_FIELDS}
             },
             "total": count(*[${baseFilter}])

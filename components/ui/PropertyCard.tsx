@@ -96,6 +96,11 @@ export default function PropertyCard({ prop, variant = 'default', dict }: { prop
   return (
     <Link href={`/${activeLocale}/${routePrefix}/${prop.slug}`} className={`property-card ${variant === 'seamless' ? 'property-card-seamless' : ''}`} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} style={{ display: 'block', textDecoration: 'none' }}>
       <div className="property-image-wrapper">
+        {prop.status === 'sold' && (
+          <div className="property-status-badge sold">
+            {dict?.property?.status_sold || 'Sold'}
+          </div>
+        )}
         <Image 
           src={primarySrc} 
           alt={prop.address || 'Property'} 

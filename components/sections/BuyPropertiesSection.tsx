@@ -215,7 +215,7 @@ export default function BuyPropertiesSection({ data, dict, filterMeta: initialMe
 
         const query = `
           {
-            "items": *[${baseFilter}] | order(${sortOrder}) [$start...$end] {
+            "items": *[${baseFilter}] | order(select(status == "sold" => 1, 0) asc, ${sortOrder}) [$start...$end] {
               ${PROPERTY_CARD_FIELDS}
             },
             "total": count(*[${baseFilter}])

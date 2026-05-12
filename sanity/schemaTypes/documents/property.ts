@@ -95,13 +95,7 @@ export const property = defineType({
       initialValue: 'for-sale',
       group: 'general',
     }),
-    defineField({
-      name: 'featured',
-      title: 'Featured',
-      type: 'boolean',
-      initialValue: false,
-      group: 'general',
-    }),
+
 
     // ── Location ──
     defineField({
@@ -377,6 +371,50 @@ export const property = defineType({
       hidden: true,
     }),
   ],
+  orderings: [
+    {
+      title: 'Recently Updated',
+      name: 'updatedAtDesc',
+      by: [
+        {field: '_updatedAt', direction: 'desc'}
+      ]
+    },
+    {
+      title: 'Price: High to Low',
+      name: 'priceDesc',
+      by: [
+        {field: 'price', direction: 'desc'}
+      ]
+    },
+    {
+      title: 'Price: Low to High',
+      name: 'priceAsc',
+      by: [
+        {field: 'price', direction: 'asc'}
+      ]
+    },
+    {
+      title: 'Status',
+      name: 'statusAsc',
+      by: [
+        {field: 'status', direction: 'asc'}
+      ]
+    },
+    {
+      title: 'Title',
+      name: 'titleAsc',
+      by: [
+        {field: 'title', direction: 'asc'}
+      ]
+    },
+    {
+      title: 'Language',
+      name: 'languageAsc',
+      by: [
+        {field: 'language', direction: 'asc'}
+      ]
+    }
+  ],
   preview: {
     select: {
       title: 'title',
@@ -386,13 +424,19 @@ export const property = defineType({
       legacyPrice: 'price',
       media: 'image',
       language: 'language',
+      status: 'status',
     },
-    prepare({ title, address, legacyAddress, price, legacyPrice, media, language }) {
+    prepare({ title, address, legacyAddress, price, legacyPrice, media, language, status }) {
       const displayTitle = title || address || legacyAddress || 'Untitled Property'
-      const displayPrice = price ? `${price}` : (legacyPrice ? `${legacyPrice}` : '')
+      const actualPrice = price ?? legacyPrice
+      const formattedPrice = actualPrice 
+        ? new Intl.NumberFormat('en-IE', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(actualPrice) 
+        : ''
+      const displayStatus = status ? status.toUpperCase().replace('-', ' ') : 'FOR SALE'
+      
       return {
         title: `${language ? `[${language.toUpperCase()}] ` : ''}${displayTitle}`,
-        subtitle: displayPrice,
+        subtitle: `${formattedPrice}${formattedPrice && displayStatus ? ' • ' : ''}${displayStatus}`,
         media,
       }
     },

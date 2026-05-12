@@ -34,7 +34,6 @@ export const PROPERTY_CARD_FIELDS = groq`
   ),
   price,
   status,
-  featured,
   "slug": slug.current,
   image { asset->{ _id, url, metadata { lqip, dimensions } } },
   secondaryImage { asset->{ _id, url, metadata { lqip, dimensions } } },
@@ -129,12 +128,13 @@ export const PAGE_QUERY = groq`
         limit,
         limitMobile,
         ctaLabel,
+        showSold,
         "ctaLink": ${INTERNAL_LINK_PROJECTION},
         "properties": select(
           selectionType == "manual" => manualProperties[]-> {
             ${PROPERTY_CARD_FIELDS}
           },
-          selectionType == "dynamic" || !selectionType => *[_type == "property" && (language == $language || (!defined(language) && $language == "en")) && (showSold == true || status != "sold")] | order(_createdAt desc) [0...10] {
+          selectionType == "dynamic" || !selectionType => *[_type == "property" && (language == $language || (!defined(language) && $language == "en")) && (^.showSold == true || status != "sold")] | order(select(status == "sold" => 1, 0) asc, _createdAt desc) [0...10] {
             ${PROPERTY_CARD_FIELDS}
           }
         )
@@ -292,7 +292,6 @@ export const PROPERTY_DETAIL_QUERY = groq`
     ),
     price,
     status,
-    featured,
     "slug": slug.current,
     _updatedAt,
     description,
@@ -384,7 +383,7 @@ export const PROPERTY_DETAIL_QUERY = groq`
 // Fetches all meta categories and definitions for building filter UIs
 export const PROPERTY_META_QUERY = groq`
   {
-    "maxPrice": math::max(*[_type == "property" && status != "sold"].price),
+    "maxPrice": math::max(*[_type == "property"].price),
     "categories": *[_type == "propertyMetaCategory"] | order(filterGroupDisplayOrder asc) {
       _id,
       "title": coalesce(title[$language], title.en),
@@ -404,7 +403,7 @@ export const PROPERTY_META_QUERY = groq`
       isHighlighted,
       highlightOrder,
       hideLabelOnHighlight,
-      "autoMax": math::max(*[_type == "property" && status != "sold"].meta[metaKey._ref == ^._id || metaKey._ref == "drafts." + ^._id || ^._id == "drafts." + metaKey._ref].numberValue),
+      "autoMax": math::max(*[_type == "property"].meta[metaKey._ref == ^._id || metaKey._ref == "drafts." + ^._id || ^._id == "drafts." + metaKey._ref].numberValue),
       filter {
         isFilterable,
         filterType,
@@ -437,7 +436,7 @@ export const PROPERTY_META_QUERY = groq`
 
 // ─── Properties List Query (for /buy page with filtering) ───
 export const PROPERTIES_LIST_QUERY = groq`
-  *[_type == "property" && (language == $language || (!defined(language) && $language == "en")) && status != "sold"] | order(_createdAt desc) {
+  *[_type == "property" && (language == $language || (!defined(language) && $language == "en"))] | order(select(status == "sold" => 1, 0) asc, _createdAt desc) {
     ${PROPERTY_CARD_FIELDS}
   }
 `

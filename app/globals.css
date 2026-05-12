@@ -396,3 +396,41 @@ html.lenis body {
   -webkit-backdrop-filter: blur(15px) !important;
   pointer-events: none !important;
 }
+/* Utility Badge for Property States (Luxury Glassmorphic Pill) */
+.property-status-badge {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    left: auto;
+    z-index: 20;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    color: var(--text-white);
+    padding: 0.5rem 1.1rem;
+    font-family: var(--font-manrope), sans-serif;
+    font-size: 0.65rem;
+    font-weight: 800;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    border-radius: 50px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.property-status-badge::before {
+    content: "";
+    display: block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--color-gold-dark);
+}
+
+.property-status-badge.sold {
+    /* Keeps neutral and airy, letting the Gold dot communicate prestige */
+}
+

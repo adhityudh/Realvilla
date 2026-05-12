@@ -133,6 +133,12 @@
     "basics_title": "Resumen de la propiedad",
     "price_label": "Precio",
     "address_label": "Dirección",
-    "updated_label": "Última actualización"
+    "updated_label": "Última actualización",
+    "location_title": "Ubicación",
+    "status_sold": "Vendido",
+    "status_label": "Estado",
+    "status_for_sale": "En Venta",
+    "status_reserved": "Reservado",
+    "cta_find_similar": "Buscar propiedades similares"
   }
 }

@@ -133,6 +133,12 @@
     "basics_title": "Property Overview",
     "price_label": "Price",
     "address_label": "Address",
-    "updated_label": "Last Updated"
+    "updated_label": "Last Updated",
+    "location_title": "Location",
+    "status_sold": "Sold",
+    "status_label": "Status",
+    "status_for_sale": "For Sale",
+    "status_reserved": "Reserved",
+    "cta_find_similar": "Find Similar Properties"
   }
 }

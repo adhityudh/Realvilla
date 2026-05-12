@@ -1,6 +1,7 @@
 'use client';
 
 import { PortableText } from 'next-sanity';
+import PropertyMap from '@/components/ui/Map';
 import './PropertyDetails.css';
 
 interface PropertyDetailsProps {
@@ -16,10 +17,10 @@ export default function PropertyDetails({ property, dict, locale = 'en' }: Prope
     if (!dateStr) return '—';
     try {
       const date = new Date(dateStr);
-      return new Intl.DateTimeFormat(locale === 'es' ? 'es-ES' : 'en-GB', { 
-        day: 'numeric', 
-        month: 'long', 
-        year: 'numeric' 
+      return new Intl.DateTimeFormat(locale === 'es' ? 'es-ES' : 'en-GB', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric'
       }).format(date);
     } catch (e) {
       return dateStr.split('T')[0];
@@ -29,6 +30,13 @@ export default function PropertyDetails({ property, dict, locale = 'en' }: Prope
   const price = property.price
     ? new Intl.NumberFormat('en-IE', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(property.price)
     : dict?.properties?.price_upon_request || 'Price upon request';
+
+  const statusLabel = (() => {
+    const raw = property?.status?.toLowerCase();
+    if (raw === 'sold') return dict?.property?.status_sold;
+    if (raw === 'reserved') return dict?.property?.status_reserved;
+    return dict?.property?.status_for_sale;
+  })();
 
   // Group dynamic meta by category
   const groupedMeta = (property.meta || []).reduce((acc: any, curr: any) => {
@@ -49,9 +57,9 @@ export default function PropertyDetails({ property, dict, locale = 'en' }: Prope
 
     const sVal = m.selectValue ? getDisplay(m.selectValue) : null;
     const aVal = Array.isArray(m.selectArrayValue) ? m.selectArrayValue.map(getDisplay).join(', ') : null;
-    
+
     let baseVal = m.numberValue ?? m.stringValue ?? sVal ?? aVal;
-    
+
     if (baseVal === null || baseVal === undefined) {
       if (m.booleanValue !== undefined) {
         baseVal = m.booleanValue ? (dict?.common?.yes || 'Yes') : (dict?.common?.no || 'No');
@@ -61,7 +69,7 @@ export default function PropertyDetails({ property, dict, locale = 'en' }: Prope
     }
 
     if (baseVal === '') return '—';
-    
+
     const unit = m.unit ? ` ${m.unit}` : '';
     return `${baseVal}${unit}`;
   };
@@ -69,7 +77,7 @@ export default function PropertyDetails({ property, dict, locale = 'en' }: Prope
   return (
     <section className="property-details-section">
       <div className="property-details-container">
-        
+
         <div className="details-left-col">
           {/* 1. Description */}
           {property.description && (
@@ -98,10 +106,22 @@ export default function PropertyDetails({ property, dict, locale = 'en' }: Prope
                 <span className="meta-info-value">{property.address || '—'}</span>
               </div>
               <div className="meta-info-item info-updated">
-                <span className="meta-info-label">{dict?.property?.updated_label || (locale === 'es' ? 'Última actualización' : 'Last Updated')}</span>
-                <span className="meta-info-value">{formatDate(property._updatedAt)}</span>
+                <span className="meta-info-label">{dict?.property?.status_label || (locale === 'es' ? 'Estado' : 'Status')}</span>
+                <span className="meta-info-value">{statusLabel}</span>
+                <div className="meta-info-subtext">
+                  {dict?.property?.updated_label || 'Last Updated'}: {formatDate(property._updatedAt)}
+                </div>
               </div>
             </div>
+            {property.location?.coordinates?.lat && property.location?.coordinates?.lng && (
+              <div style={{ marginTop: '1.5rem' }}>
+                <PropertyMap
+                  lat={property.location.coordinates.lat}
+                  lng={property.location.coordinates.lng}
+                  title={property.title}
+                />
+              </div>
+            )}
           </div>
 
           {/* 3. Dynamic Grouped Meta */}

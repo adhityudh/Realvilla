@@ -21,6 +21,9 @@ export default function PropertyGallery({ property, dict }: PropertyGalleryProps
   const [imageSizes, setImageSizes] = useState<Record<string, { w: number; h: number }>>({});
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedGalleryItem, setSelectedGalleryItem] = useState<any>(null);
+  
+  const isSold = property?.status === 'sold';
+  const archiveLink = `/${locale}/${locale === 'es' ? 'propiedades' : 'properties'}`;
 
   useEffect(() => {
     document.body.classList.remove('header-light-mode');
@@ -281,17 +284,33 @@ export default function PropertyGallery({ property, dict }: PropertyGalleryProps
             </div>
 
             <div className="summary-cta-group">
-              <Button 
-                label={dict?.property?.cta_make_offer || 'Make an offer'} 
-                href="#" 
-                variant="dark" 
-              />
-              <Button 
-                label={dict?.property?.cta_request_visit || 'Request a visit'} 
-                href="#" 
-                variant="pill" 
-                className="service-cta" 
-              />
+              {isSold ? (
+                <>
+                  <span className="summary-sold-badge">
+                    {dict?.property?.status_sold || 'Sold'}
+                  </span>
+                  <Button 
+                    label={dict?.property?.cta_find_similar || 'Find Similar Properties'} 
+                    href={archiveLink} 
+                    variant="dark" 
+                    className="find-similar-btn"
+                  />
+                </>
+              ) : (
+                <>
+                  <Button 
+                    label={dict?.property?.cta_make_offer || 'Make an offer'} 
+                    href="#" 
+                    variant="dark" 
+                  />
+                  <Button 
+                    label={dict?.property?.cta_request_visit || 'Request a visit'} 
+                    href="#" 
+                    variant="pill" 
+                    className="service-cta" 
+                  />
+                </>
+              )}
             </div>
           </div>
         </div>

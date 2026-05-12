@@ -59,7 +59,7 @@
   font-family: var(--font-manrope), sans-serif;
   font-size: var(--text-base);
   line-height: 1.8;
-  color: var(--text-body);
+  color: var(--text-black);
   max-width: 800px;
   /* Limit paragraph measure for easy reading */
 }
@@ -111,6 +111,14 @@
   font-size: var(--text-md);
   font-weight: var(--fw-bold);
   color: var(--text-black);
+}
+
+.meta-info-subtext {
+  font-family: var(--font-manrope), sans-serif;
+  font-size: var(--text-sm);
+  font-weight: var(--fw-medium);
+  color: var(--text-black);
+  margin-top: -0.4rem;
 }
 
 
@@ -184,6 +192,10 @@
   .meta-info-item {
     padding: 1rem;
     gap: 0.5rem;
+  }
+
+  .meta-info-subtext {
+    font-size: var(--text-xs);
   }
 }
 
