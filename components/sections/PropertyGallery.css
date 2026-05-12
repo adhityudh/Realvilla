@@ -133,7 +133,7 @@
   z-index: 2;
   pointer-events: none;
   transition: all 0.3s var(--ease-smooth);
-
+  width: fit-content;
   background: transparent !important;
   border: none !important;
   box-shadow: none !important;
@@ -146,6 +146,7 @@
   display: flex;
   align-items: center;
   font-size: var(--text-base-sm);
+  gap: 0.5rem;
 }
 
 .btn-content-desktop svg {
