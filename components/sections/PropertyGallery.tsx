@@ -255,10 +255,20 @@ export default function PropertyGallery({ property, dict }: PropertyGalleryProps
 
           <div className="summary-bottom-row">
             <div className="summary-meta-row">
-              {property.meta
-                ?.filter((m: any) => m.isHighlighted)
-                .sort((a: any, b: any) => (a.highlightOrder || 0) - (b.highlightOrder || 0))
-                .map((m: any, i: number, arr: any[]) => {
+              {(() => {
+                const highlights = [...(property.meta || [])]
+                  .filter((m: any) => m.isHighlighted)
+                  .sort((a: any, b: any) => (a.highlightOrder || 0) - (b.highlightOrder || 0));
+                
+                if (property.category) {
+                  highlights.unshift({
+                    metaId: 'injected-category',
+                    stringValue: property.category.title,
+                    hideLabelOnHighlight: true
+                  });
+                }
+
+                return highlights.map((m: any, i: number, arr: any[]) => {
                   // Helper to strip invisible Stega characters that break simple equality matching
                   const clean = (str: any) => typeof str === 'string' ? str.replace(/[\u2000-\u206F\u200B-\u200D\uFEFF]/g, '').trim() : str;
 
@@ -280,7 +290,8 @@ export default function PropertyGallery({ property, dict }: PropertyGalleryProps
                       {i < arr.length - 1 && <div className="summary-meta-dot"></div>}
                     </div>
                   );
-                })}
+                });
+              })()}
             </div>
 
             <div className="summary-cta-group">

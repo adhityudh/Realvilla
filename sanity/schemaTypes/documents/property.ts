@@ -108,6 +108,14 @@ export const property = defineType({
         collapsible: false,
       }
     }),
+    defineField({
+      name: 'category',
+      title: 'Property Category',
+      type: 'reference',
+      to: [{ type: 'propertyCategory' }],
+      description: 'Primary property type classification (e.g., Villa, Apartment).',
+      group: 'general',
+    }),
 
     // ── Legacy address field (for backwards compatibility) ──
     defineField({

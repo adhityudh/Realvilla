@@ -138,10 +138,20 @@ export default function PropertyCard({ prop, variant = 'default', dict }: { prop
           {prop.title || prop.address}
         </h3>
         <div className="property-details">
-          {prop.meta
-            ?.filter((m: any) => m.isHighlighted)
-            .sort((a: any, b: any) => (a.highlightOrder || 0) - (b.highlightOrder || 0))
-            .map((m: any, i: number, arr: any[]) => {
+          {(() => {
+            const highlights = [...(prop.meta || [])]
+              .filter((m: any) => m.isHighlighted)
+              .sort((a: any, b: any) => (a.highlightOrder || 0) - (b.highlightOrder || 0));
+            
+            if (prop.category) {
+              highlights.unshift({
+                metaId: 'injected-category',
+                stringValue: prop.category.title,
+                hideLabelOnHighlight: true
+              });
+            }
+
+            return highlights.map((m: any, i: number, arr: any[]) => {
               // Helper to strip invisible Stega characters that break simple equality matching
               const clean = (str: any) => typeof str === 'string' ? str.replace(/[\u2000-\u206F\u200B-\u200D\uFEFF]/g, '').trim() : str;
               
@@ -163,7 +173,8 @@ export default function PropertyCard({ prop, variant = 'default', dict }: { prop
                   {i < arr.length - 1 && <div className="detail-dot"></div>}
                 </div>
               );
-            })}
+            });
+          })()}
         </div>
       </div>
     </Link>

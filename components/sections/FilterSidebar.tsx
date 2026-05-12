@@ -18,12 +18,14 @@ interface FilterSidebarProps {
     priceMin: number;
     priceMax: number;
     municipalities: string[];
+    categories?: string[];
     metaFilters: Record<string, any>;
   };
   onApplyFilters?: (filters: {
     priceMin: number;
     priceMax: number;
     municipalities: string[];
+    categories: string[];
     metaFilters: Record<string, any>;
   }) => void;
   isInline?: boolean;
@@ -100,7 +102,10 @@ export default function FilterSidebar({
   const [priceMin, setPriceMin] = useState<number>(0);
   const [priceMax, setPriceMax] = useState<number>(3500000);
 
-  // 2. Dynamic Sanity-driven Filter Values State
+  // 2. Dynamic Standalone Categories State
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+
+  // 3. Dynamic Sanity-driven Filter Values State
   const [filterValues, setFilterValues] = useState<Record<string, any>>({});
 
   // Helper to format numeric values with thousand commas (e.g., 2,000,000)
@@ -170,6 +175,7 @@ export default function FilterSidebar({
       setPriceMin(activeFilters.priceMin);
       setPriceMax(activeFilters.priceMax);
       setSelectedMunicipalities(activeFilters.municipalities);
+      setSelectedCategories(activeFilters.categories || []);
       setFilterValues(activeFilters.metaFilters);
     }
   }, [isOpen, isInline, activeFilters]);
@@ -287,15 +293,20 @@ export default function FilterSidebar({
         selectedMunicipalities.length !== activeFilters.municipalities.length ||
         !selectedMunicipalities.every(m => activeFilters.municipalities.includes(m));
 
+      const isCatDiff =
+        selectedCategories.length !== (activeFilters.categories || []).length ||
+        !selectedCategories.every(c => (activeFilters.categories || []).includes(c));
+
       const isMetaDiff = JSON.stringify(filterValues) !== JSON.stringify(activeFilters.metaFilters);
 
-      if (isPriceMinDiff || isPriceMaxDiff || isMunDiff || isMetaDiff) {
+      if (isPriceMinDiff || isPriceMaxDiff || isMunDiff || isCatDiff || isMetaDiff) {
         // Debounce by 500ms to allow smooth dragging and prevent rapid API fetching
         const timer = setTimeout(() => {
           onApplyFilters({
             priceMin,
             priceMax,
             municipalities: selectedMunicipalities,
+            categories: selectedCategories,
             metaFilters: filterValues
           });
         }, 500);
@@ -303,7 +314,7 @@ export default function FilterSidebar({
         return () => clearTimeout(timer);
       }
     }
-  }, [priceMin, priceMax, selectedMunicipalities, filterValues, isInline, onApplyFilters, activeFilters]);
+  }, [priceMin, priceMax, selectedMunicipalities, selectedCategories, filterValues, isInline, onApplyFilters, activeFilters]);
 
   const handleOverlayClick = (e: React.MouseEvent) => {
     if (e.target === overlayRef.current) {
@@ -317,6 +328,7 @@ export default function FilterSidebar({
         priceMin,
         priceMax,
         municipalities: selectedMunicipalities,
+        categories: selectedCategories,
         metaFilters: filterValues
       });
     }
@@ -327,12 +339,14 @@ export default function FilterSidebar({
     setPriceMin(0);
     setPriceMax(dbMaxPrice);
     setSelectedMunicipalities([]);
+    setSelectedCategories([]);
     setFilterValues({});
     if (onApplyFilters) {
       onApplyFilters({
         priceMin: 0,
         priceMax: dbMaxPrice,
         municipalities: [],
+        categories: [],
         metaFilters: {}
       });
     }
@@ -610,6 +624,52 @@ export default function FilterSidebar({
 
   const renderContent = () => {
     const orderedElements: Array<{ order: number; node: React.ReactNode; key: string }> = [];
+
+    // A0. STANDALONE PROPERTY CATEGORIES
+    const categoriesList = meta?.standaloneCategories || [];
+    if (categoriesList.length > 0) {
+      orderedElements.push({
+        key: 'categories',
+        order: -10, // Forced top location to match legacy behavior
+        node: (
+          <AccordionWrapper
+            key="categories"
+            title={locale === 'es' ? 'Tipo de propiedad' : 'Property Type'}
+            isOpen={isGroupOpen('categories')}
+            onToggle={() => toggleGroup('categories')}
+            countLabel={selectedCategories.length > 0 ? selectedCategories.length : undefined}
+          >
+            <div className="filter-group" style={{ paddingTop: '0.5rem' }}>
+              <div className="chips-grid-wrapper">
+                {categoriesList.map((cat: any) => {
+                  const active = selectedCategories.includes(cat._id);
+                  return (
+                    <button
+                      key={cat._id}
+                      className={`filter-grid-btn ${active ? 'active' : ''}`}
+                      onClick={() => {
+                        setSelectedCategories(prev => 
+                          prev.includes(cat._id) 
+                            ? prev.filter(c => c !== cat._id) 
+                            : [...prev, cat._id]
+                        );
+                      }}
+                    >
+                      {cat.icon && (
+                        <div className="filter-grid-icon-box">
+                          <img src={cat.icon} alt={cat.label} className="filter-grid-icon" />
+                        </div>
+                      )}
+                      <span className="filter-grid-text">{cat.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          </AccordionWrapper>
+        )
+      });
+    }
 
     // A. PRICE RANGE
     orderedElements.push({

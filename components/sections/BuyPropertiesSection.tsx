@@ -35,11 +35,13 @@ export default function BuyPropertiesSection({ data, dict, filterMeta: initialMe
     priceMin: number;
     priceMax: number;
     municipalities: string[];
+    categories: string[];
     metaFilters: Record<string, any>;
   }>({
     priceMin: 0,
     priceMax: initialMeta?.maxPrice || 5000000,
     municipalities: [],
+    categories: [],
     metaFilters: {}
   });
 
@@ -53,17 +55,18 @@ export default function BuyPropertiesSection({ data, dict, filterMeta: initialMe
     return segments[1] || 'en';
   }, [pathname]);
 
-  const handleQuickFilterClick = (val: string) => {
-    const metaId = data?.quickFilterMeta?.metaId;
-    if (!metaId || !val) return;
-    const cleanId = metaId.replace('drafts.', '');
-    
-    // Clean stega characters from raw val before injecting to URL
+  const handleQuickFilterClick = (val: string, filterType: 'meta' | 'category' = 'category', rawMetaId?: string) => {
+    if (!val) return;
     const cleanedVal = typeof val === 'string' ? val.replace(/[\u2000-\u206F\u200B-\u200D\uFEFF]/g, '').trim() : val;
-    
     const targetPath = locale === 'es' ? 'propiedades' : 'properties';
-    const metaObj = JSON.stringify({ [cleanId]: [cleanedVal] });
-    router.push(`/${locale}/${targetPath}?meta=${encodeURIComponent(metaObj)}`);
+
+    if (filterType === 'category') {
+      router.push(`/${locale}/${targetPath}?categories=${encodeURIComponent(cleanedVal)}`);
+    } else if (rawMetaId) {
+      const metaId = rawMetaId.replace('drafts.', '');
+      const metaObj = JSON.stringify({ [metaId]: [cleanedVal] });
+      router.push(`/${locale}/${targetPath}?meta=${encodeURIComponent(metaObj)}`);
+    }
   };
 
   useEffect(() => {
@@ -229,7 +232,8 @@ export default function BuyPropertiesSection({ data, dict, filterMeta: initialMe
           manualIds: data?.manualIds || [],
           priceMin: activeFilters.priceMin,
           priceMax: activeFilters.priceMax,
-          municipalities: activeFilters.municipalities
+          municipalities: activeFilters.municipalities,
+          categories: activeFilters.categories || []
         });
 
         if (isMounted) {
@@ -360,27 +364,50 @@ export default function BuyPropertiesSection({ data, dict, filterMeta: initialMe
           </div>
         </div>
         
-        {/* Quick Filters Chips */}
-        {data?.quickFilterMeta && data.quickFilterMeta.options?.length > 0 && (
-          <div className="buy-properties-quick-filters-wrapper">
-            <div className="buy-properties-quick-filters">
-              {data.quickFilterMeta.options.map((opt: any) => (
-                <button
-                  key={opt.value}
-                  className="quick-filter-chip"
-                  onClick={() => handleQuickFilterClick(opt.value)}
-                >
-                  {opt.icon && (
-                    <div className="quick-filter-icon-box">
-                      <img src={opt.icon} alt="" className="quick-filter-chip-icon" />
-                    </div>
-                  )}
-                  <span className="quick-filter-text">{opt.label}</span>
-                </button>
-              ))}
+        {/* Quick Filters Chips (Fallback to Standalone Categories if quickFilterMeta is not set) */}
+        {(() => {
+          // Source 1: The legacy explicit filter list if configured
+          const legacyOptions = data?.quickFilterMeta?.options || [];
+          
+          // Source 2: The new global standalone categories from system
+          const globalCategories = filterMeta?.standaloneCategories || [];
+          
+          // Decide which list to use - use specific defined list first, else global list
+          const hasLegacy = legacyOptions.length > 0;
+          const itemsToRender = hasLegacy ? legacyOptions : globalCategories.map((c: any) => ({
+            value: c._id,
+            label: c.label,
+            icon: c.icon,
+            isCategory: true
+          }));
+
+          if (itemsToRender.length === 0) return null;
+
+          return (
+            <div className="buy-properties-quick-filters-wrapper">
+              <div className="buy-properties-quick-filters">
+                {itemsToRender.map((opt: any) => (
+                  <button
+                    key={opt.value}
+                    className="quick-filter-chip"
+                    onClick={() => handleQuickFilterClick(
+                      opt.value, 
+                      opt.isCategory ? 'category' : 'meta',
+                      data?.quickFilterMeta?.metaId
+                    )}
+                  >
+                    {opt.icon && (
+                      <div className="quick-filter-icon-box">
+                        <img src={opt.icon} alt="" className="quick-filter-chip-icon" />
+                      </div>
+                    )}
+                    <span className="quick-filter-text">{opt.label}</span>
+                  </button>
+                ))}
+              </div>
             </div>
-          </div>
-        )}
+          );
+        })()}
 
         {/* Properties Grid */}
         <div className="buy-properties-grid-container">
@@ -468,6 +495,7 @@ export default function BuyPropertiesSection({ data, dict, filterMeta: initialMe
           if (filters.priceMin > 0) params.set('priceMin', filters.priceMin.toString());
           if (filters.priceMax < maxLimit) params.set('priceMax', filters.priceMax.toString());
           if (filters.municipalities.length > 0) params.set('municipalities', filters.municipalities.join(','));
+          if (filters.categories && filters.categories.length > 0) params.set('categories', filters.categories.join(','));
           if (Object.keys(filters.metaFilters).length > 0) params.set('meta', JSON.stringify(filters.metaFilters));
 
           router.push(`/${locale}/${targetPath}?${params.toString()}`);

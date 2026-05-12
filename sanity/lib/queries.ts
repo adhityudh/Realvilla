@@ -45,6 +45,12 @@ export const PROPERTY_CARD_FIELDS = groq`
   beds,
   baths,
   sqft,
+  "category": category-> { 
+    _id, 
+    "title": coalesce(title[$language], title.en), 
+    "icon": icon.asset->url, 
+    "slug": slug.current 
+  },
   // New dynamic meta (resolved inline)
   meta[] {
     "metaId": metaKey->_id,
@@ -388,6 +394,12 @@ export const PROPERTY_DETAIL_QUERY = groq`
     beds,
     baths,
     sqft,
+    "category": category-> { 
+      _id, 
+      "title": coalesce(title[$language], title.en), 
+      "icon": icon.asset->url, 
+      "slug": slug.current 
+    },
     // Dynamic meta
     meta[] {
       "metaId": metaKey->_id,
@@ -396,6 +408,7 @@ export const PROPERTY_DETAIL_QUERY = groq`
       "valueType": metaKey->valueType,
       "unit": coalesce(metaKey->unit[$language], metaKey->unit.en),
       "category": coalesce(metaKey->category->title[$language], metaKey->category->title.en),
+      "categoryOrder": metaKey->category->filterGroupDisplayOrder,
       "isHighlighted": metaKey->isHighlighted,
       "highlightOrder": metaKey->highlightOrder,
       "hideLabelOnHighlight": metaKey->hideLabelOnHighlight,
@@ -439,6 +452,12 @@ export const PROPERTY_META_QUERY = groq`
       "title": coalesce(title[$language], title.en),
       filterGroupDisplayOrder,
       ungroupFilters
+    },
+    "standaloneCategories": *[_type == "propertyCategory"] | order(order asc) {
+      _id,
+      "label": coalesce(title[$language], title.en),
+      "icon": icon.asset->url,
+      order
     },
     "definitions": *[_type == "propertyMeta"] {
       _id,

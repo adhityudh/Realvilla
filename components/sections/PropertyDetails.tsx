@@ -38,11 +38,16 @@ export default function PropertyDetails({ property, dict, locale = 'en' }: Prope
     return dict?.property?.status_for_sale;
   })();
 
-  // Group dynamic meta by category
-  const groupedMeta = (property.meta || []).reduce((acc: any, curr: any) => {
+  // Group meta by category
+  const finalMeta = property.meta || [];
+  const groupedMeta = finalMeta.reduce((acc: any, curr: any) => {
     const cat = curr.category || dict?.property?.other_details || 'General';
-    if (!acc[cat]) acc[cat] = [];
-    acc[cat].push(curr);
+    const order = curr.categoryOrder ?? 999;
+
+    if (!acc[cat]) {
+      acc[cat] = { items: [], order };
+    }
+    acc[cat].items.push(curr);
     return acc;
   }, {});
 
@@ -101,6 +106,10 @@ export default function PropertyDetails({ property, dict, locale = 'en' }: Prope
                 <span className="meta-info-label">{dict?.property?.price_label || (locale === 'es' ? 'Precio' : 'Price')}</span>
                 <span className="meta-info-value">{price}</span>
               </div>
+              <div className="meta-info-item info-type">
+                <span className="meta-info-label">{locale === 'es' ? 'Tipo de propiedad' : 'Property Type'}</span>
+                <span className="meta-info-value">{property.category?.title || '—'}</span>
+              </div>
               <div className="meta-info-item info-address">
                 <span className="meta-info-label">{dict?.property?.address_label || (locale === 'es' ? 'Dirección' : 'Address')}</span>
                 <span className="meta-info-value">{property.address || '—'}</span>
@@ -124,12 +133,14 @@ export default function PropertyDetails({ property, dict, locale = 'en' }: Prope
             )}
           </div>
 
-          {/* 3. Dynamic Grouped Meta */}
-          {Object.entries(groupedMeta).map(([category, items]: [string, any]) => (
+          {/* 3. Dynamic Grouped Meta Sorted by Sanity Display Order */}
+          {Object.entries(groupedMeta)
+            .sort(([, a]: any, [, b]: any) => a.order - b.order)
+            .map(([category, data]: [string, any]) => (
             <div key={category} className="details-block dynamic-meta-block">
               <h3 className="details-subheading">{category}</h3>
               <div className="meta-items-grid">
-                {items.map((m: any, idx: number) => (
+                {data.items.map((m: any, idx: number) => (
                   <div key={m.metaId || idx} className="meta-item-row">
                     <div className="meta-label-wrap">
                       {m.icon && (

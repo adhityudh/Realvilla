@@ -47,9 +47,11 @@ export default function PropertiesArchivePage({ dict, initialMeta }: { dict?: an
     priceMin: number;
     priceMax: number;
     municipalities: string[];
+    categories: string[];
     metaFilters: Record<string, any>;
   }>(() => {
     const municipalities = searchParams.get('municipalities')?.split(',').filter(Boolean) || [];
+    const categories = searchParams.get('categories')?.split(',').filter(Boolean) || [];
     const priceMin = Number(searchParams.get('priceMin')) || 0;
     const priceMax = Number(searchParams.get('priceMax')) || (initialMeta?.maxPrice || 5000000);
     
@@ -68,6 +70,7 @@ export default function PropertiesArchivePage({ dict, initialMeta }: { dict?: an
       priceMin,
       priceMax,
       municipalities,
+      categories,
       metaFilters
     };
   });
@@ -130,8 +133,21 @@ export default function PropertiesArchivePage({ dict, initialMeta }: { dict?: an
       });
     });
 
-    // Combine both pools capped sensibly
-    return [...matchedMuns, ...matchedMetaOpts.slice(0, 5)];
+    // 3. Collect matching Standalone Categories
+    const matchedCats: any[] = [];
+    (filterMeta?.standaloneCategories || []).forEach((cat: any) => {
+      const lbl = cat.label || "";
+      if (lbl.toLowerCase().includes(query) && !matchedCats.some(e => e.label === lbl)) {
+        matchedCats.push({
+          type: 'category',
+          label: lbl,
+          icon: cat.icon || '/icons/search.svg'
+        });
+      }
+    });
+
+    // Combine all pools capped sensibly
+    return [...matchedMuns, ...matchedCats, ...matchedMetaOpts.slice(0, 5)];
   }, [searchQuery, municipalitiesList, filterMeta]);
   const locale = useMemo(() => {
     const segments = pathname.split('/');
@@ -164,6 +180,7 @@ export default function PropertiesArchivePage({ dict, initialMeta }: { dict?: an
     const priceMin = Number(searchParams.get('priceMin')) || 0;
     const priceMax = Number(searchParams.get('priceMax')) || (filterMeta?.maxPrice || 5000000);
     const municipalities = searchParams.get('municipalities')?.split(',').filter(Boolean) || [];
+    const categories = searchParams.get('categories')?.split(',').filter(Boolean) || [];
     
     let metaFilters = {};
     const metaStr = searchParams.get('meta');
@@ -177,13 +194,15 @@ export default function PropertiesArchivePage({ dict, initialMeta }: { dict?: an
 
     // Check if filters have actually changed to avoid unnecessary re-renders
     const isMunDiff = municipalities.length !== activeFilters.municipalities.length || !municipalities.every(m => activeFilters.municipalities.includes(m));
+    const isCatDiff = categories.length !== (activeFilters.categories || []).length || !categories.every(c => (activeFilters.categories || []).includes(c));
     const isMetaDiff = JSON.stringify(metaFilters) !== JSON.stringify(activeFilters.metaFilters);
     
-    if (priceMin !== activeFilters.priceMin || priceMax !== activeFilters.priceMax || isMunDiff || isMetaDiff) {
+    if (priceMin !== activeFilters.priceMin || priceMax !== activeFilters.priceMax || isMunDiff || isCatDiff || isMetaDiff) {
       setActiveFilters({
         priceMin,
         priceMax,
         municipalities,
+        categories,
         metaFilters
       });
     }
@@ -199,6 +218,7 @@ export default function PropertiesArchivePage({ dict, initialMeta }: { dict?: an
       if (activeFilters.priceMin > 0) params.set('priceMin', activeFilters.priceMin.toString());
       if (activeFilters.priceMax < maxLimit) params.set('priceMax', activeFilters.priceMax.toString());
       if (activeFilters.municipalities.length > 0) params.set('municipalities', activeFilters.municipalities.join(','));
+      if (activeFilters.categories && activeFilters.categories.length > 0) params.set('categories', activeFilters.categories.join(','));
       if (Object.keys(activeFilters.metaFilters).length > 0) params.set('meta', JSON.stringify(activeFilters.metaFilters));
       if (orderBy !== '_createdAt desc') params.set('orderBy', orderBy);
 
@@ -282,6 +302,11 @@ export default function PropertiesArchivePage({ dict, initialMeta }: { dict?: an
           baseFilter += ` && location.municipality in $municipalities`;
         }
 
+        // Direct Property Category Filter
+        if (activeFilters.categories && activeFilters.categories.length > 0) {
+          baseFilter += ` && category._ref in $categories`;
+        }
+
         // Compute local mapping from user keyword to stable Meta identifiers for deep filtering
         const searchNorm = debouncedSearchQuery.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
         const searchEnabledDefs = (filterMeta?.definitions || []).filter((d: any) => d.showOnSearchModal === true);
@@ -300,6 +325,8 @@ export default function PropertiesArchivePage({ dict, initialMeta }: { dict?: an
             location.streetAddress match $search || 
             location.complexName match $search || 
             location.municipality match $search ||
+            category->title match $search ||
+            category->title[$language] match $search ||
             count(meta[
               selectValue in $matchedMetaValues || 
               count(selectArrayValue[@ in $matchedMetaValues]) > 0
@@ -373,6 +400,7 @@ export default function PropertiesArchivePage({ dict, initialMeta }: { dict?: an
           priceMin: activeFilters.priceMin,
           priceMax: activeFilters.priceMax,
           municipalities: activeFilters.municipalities,
+          categories: activeFilters.categories || [],
           search: `*${debouncedSearchQuery}*`,
           matchedMetaValues: matchedMetaValues
         });
@@ -410,6 +438,7 @@ export default function PropertiesArchivePage({ dict, initialMeta }: { dict?: an
     if (activeFilters.priceMin > 0) count++;
     if (activeFilters.priceMax < (filterMeta?.maxPrice || 5000000)) count++;
     if (activeFilters.municipalities.length > 0) count++;
+    if (activeFilters.categories && activeFilters.categories.length > 0) count++;
 
     Object.values(activeFilters.metaFilters).forEach((val: any) => {
       if (val !== undefined && val !== '') {
@@ -466,6 +495,7 @@ export default function PropertiesArchivePage({ dict, initialMeta }: { dict?: an
       priceMin: 0,
       priceMax: filterMeta?.maxPrice || 5000000,
       municipalities: [],
+      categories: [],
       metaFilters: {}
     });
     setCurrentPage(1);

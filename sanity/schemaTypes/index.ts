@@ -4,6 +4,7 @@ import { page } from './documents/page'
 import { property } from './documents/property'
 import { propertyMeta } from './documents/propertyMeta'
 import { propertyMetaCategory } from './documents/propertyMetaCategory'
+import { propertyCategory } from './documents/propertyCategory'
 import { heroSection } from './modules/heroSection'
 import { aboutSection } from './modules/aboutSection'
 import { propertiesSection } from './modules/propertiesSection'
@@ -28,6 +29,7 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     property,
     propertyMeta,
     propertyMetaCategory,
+    propertyCategory,
     settings,
     seo,
     blockContent,

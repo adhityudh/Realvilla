@@ -74,7 +74,7 @@ export default function SearchModal({ isOpen, onClose, dict }: SearchModalProps)
   useEffect(() => {
     const fetchSearchableMeta = async () => {
       try {
-        const query = `*[_type == "propertyMeta" && showOnSearchModal == true] {
+        const metaQuery = `*[_type == "propertyMeta" && showOnSearchModal == true] {
           _id,
           "label": coalesce(longLabel[$language], longLabel.en),
           "options": selectOptions[] {
@@ -83,9 +83,32 @@ export default function SearchModal({ isOpen, onClose, dict }: SearchModalProps)
             "icon": icon.asset->url
           }
         }`;
-        // Important: disable stega to keep filter strings purely clean
-        const data = await client.fetch(query, { language: locale }, { stega: false });
-        setSearchableMeta(data || []);
+        const categoryQuery = `*[_type == "propertyCategory"] {
+          _id,
+          "label": coalesce(title[$language], title.en),
+          "icon": icon.asset->url
+        }`;
+
+        const [metas, cats] = await Promise.all([
+          client.fetch(metaQuery, { language: locale }, { stega: false }),
+          client.fetch(categoryQuery, { language: locale }, { stega: false })
+        ]);
+
+        // Wrap the categories as a simulated meta block for simple consumption
+        const combined = [...(metas || [])];
+        if (cats && cats.length > 0) {
+          combined.unshift({
+            _id: 'SPECIAL_CATEGORY_BLOCK',
+            label: locale === 'es' ? 'Tipo de propiedad' : 'Property Type',
+            options: cats.map((c: any) => ({
+              value: c._id, // Use ID directly for categories
+              label: c.label,
+              icon: c.icon
+            }))
+          });
+        }
+        
+        setSearchableMeta(combined);
       } catch (e) {
         console.error('Failed to fetch searchable meta:', e);
       }
@@ -119,12 +142,22 @@ export default function SearchModal({ isOpen, onClose, dict }: SearchModalProps)
         // Compute normalized search string matching client-side memory list
         const searchNorm = searchQuery.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
         
-        // Map matches locally to robust stable value identifiers
-        const matchedMetaValues = searchableMeta.flatMap(meta => 
-          (meta.options || [])
-            .filter((opt: any) => (opt.label || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes(searchNorm))
-            .map((opt: any) => opt.value)
-        );
+        // Split into two buckets
+        const matchedMetaValues = searchableMeta
+          .filter(m => m._id !== 'SPECIAL_CATEGORY_BLOCK')
+          .flatMap(meta => 
+            (meta.options || [])
+              .filter((opt: any) => (opt.label || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes(searchNorm))
+              .map((opt: any) => opt.value)
+          );
+
+        const matchedCategoryIds = searchableMeta
+          .filter(m => m._id === 'SPECIAL_CATEGORY_BLOCK')
+          .flatMap(meta => 
+            (meta.options || [])
+              .filter((opt: any) => (opt.label || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes(searchNorm))
+              .map((opt: any) => opt.value) // Stores the real category _id
+          );
 
         const query = `*[_type == "property" && !(_id in path('drafts.**')) && (language == $language || (!defined(language) && $language == "en")) && (
           title match $search || 
@@ -132,6 +165,9 @@ export default function SearchModal({ isOpen, onClose, dict }: SearchModalProps)
           location.streetAddress match $search || 
           location.complexName match $search || 
           location.municipality match $search ||
+          category->title match $search ||
+          category->title[$language] match $search ||
+          category._ref in $matchedCategoryIds ||
           count(meta[
             selectValue in $matchedMetaValues || 
             count(selectArrayValue[@ in $matchedMetaValues]) > 0
@@ -151,7 +187,8 @@ export default function SearchModal({ isOpen, onClose, dict }: SearchModalProps)
         const data = await client.fetch(query, { 
           search: `*${searchQuery}*`,
           language: locale,
-          matchedMetaValues: matchedMetaValues
+          matchedMetaValues: matchedMetaValues,
+          matchedCategoryIds: matchedCategoryIds
         });
         
         if (active) {
@@ -304,14 +341,18 @@ export default function SearchModal({ isOpen, onClose, dict }: SearchModalProps)
     onClose();
   };
 
-  const handleMetaOptionClick = (metaId: string, value: string) => {
+  const handleMetaOptionClick = (metaId: string, value: string, label?: string) => {
     const targetPath = locale === 'es' ? 'propiedades' : 'properties';
     
-    // Clean stega from value before pushing to URL logic
     const cleanedValue = typeof value === 'string' ? value.replace(/[\u2000-\u206F\u200B-\u200D\uFEFF]/g, '').trim() : value;
+    const cleanedLabel = typeof label === 'string' ? label.replace(/[\u2000-\u206F\u200B-\u200D\uFEFF]/g, '').trim() : label;
     
-    const metaObj = JSON.stringify({ [metaId]: [cleanedValue] });
-    router.push(`/${locale}/${targetPath}?meta=${encodeURIComponent(metaObj)}`);
+    if (metaId === 'SPECIAL_CATEGORY_BLOCK') {
+      router.push(`/${locale}/${targetPath}?search=${encodeURIComponent(cleanedLabel || cleanedValue)}`);
+    } else {
+      const metaObj = JSON.stringify({ [metaId]: [cleanedValue] });
+      router.push(`/${locale}/${targetPath}?meta=${encodeURIComponent(metaObj)}`);
+    }
     onClose();
   };
 
@@ -430,7 +471,7 @@ export default function SearchModal({ isOpen, onClose, dict }: SearchModalProps)
                           <div 
                             key={`${group.id}-${opt.value}`} 
                             className="result-item clickable"
-                            onClick={() => handleMetaOptionClick(group.id, opt.value)}
+                            onClick={() => handleMetaOptionClick(group.id, opt.value, opt.label)}
                           >
                             <img 
                               src={opt.icon || "/icons/search.svg"} 
