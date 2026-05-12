@@ -559,8 +559,35 @@ export default function FilterSidebar({
     return false;
   };
 
+  const getDefActiveCount = (def: any) => {
+    const filterId = def._id;
+    const type = def.filter?.filterType;
+    const val = filterValues[filterId];
+
+    if (val === undefined || val === null || val === '') return 0;
+
+    if (type === 'rangeSlider') {
+      return isDefActive(def) ? 1 : 0;
+    }
+    if (type === 'prefixRange') {
+      const options = def.filter?.prefixOptions || [];
+      const defaultVal = options[0]?.value ?? '';
+      return val !== defaultVal ? 1 : 0;
+    }
+    if (type === 'boolean') {
+      return val ? 1 : 0;
+    }
+    if (type === 'select') {
+      return val ? 1 : 0;
+    }
+    if (type === 'multiSelect') {
+      return Array.isArray(val) ? val.length : 0;
+    }
+    return 0;
+  };
+
   const getGroupActiveCount = (defs: any[]) => {
-    return defs.filter(isDefActive).length;
+    return defs.reduce((sum, def) => sum + getDefActiveCount(def), 0);
   };
 
   const renderContent = () => {
@@ -739,7 +766,7 @@ export default function FilterSidebar({
                 title={def.shortLabel || def.longLabel}
                 isOpen={isGroupOpen(def._id)}
                 onToggle={() => toggleGroup(def._id)}
-                countLabel={isDefActive(def) ? 1 : undefined}
+                countLabel={getDefActiveCount(def) || undefined}
               >
                 {renderFilterDef(def, true)}
               </AccordionWrapper>
@@ -783,7 +810,7 @@ export default function FilterSidebar({
               title={def.shortLabel || def.longLabel}
               isOpen={isGroupOpen(def._id)}
               onToggle={() => toggleGroup(def._id)}
-              countLabel={isDefActive(def) ? 1 : undefined}
+              countLabel={getDefActiveCount(def) || undefined}
             >
               {renderFilterDef(def, true)}
             </AccordionWrapper>

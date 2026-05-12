@@ -36,8 +36,8 @@
   flex-wrap: wrap;
   gap: 0.75rem;
   font-family: var(--font-manrope), sans-serif;
-  font-size: 0.875rem;
-  font-weight: 500;
+  font-size: var(--text-sm-plus);
+  font-weight: var(--fw-medium);
   color: var(--text-black);
 }
 
@@ -65,7 +65,6 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 300px;
 }
 
 .breadcrumb-logo {
@@ -283,7 +282,7 @@
     /* Force single line to prevent ugly breakages */
     width: 100%;
     gap: 0.5rem;
-    font-size: 0.8rem;
+    font-size: var(--text-sm);
   }
 
   .breadcrumb-item {

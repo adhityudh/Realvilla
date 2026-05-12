@@ -274,8 +274,12 @@ export default function BuyPropertiesSection({ data, dict, filterMeta: initialMe
     if (activeFilters.municipalities.length > 0) count++;
 
     Object.values(activeFilters.metaFilters).forEach((val: any) => {
-      if (val !== undefined && val !== '' && (Array.isArray(val) ? val.length > 0 : true)) {
-        count++;
+      if (val !== undefined && val !== '') {
+        if (Array.isArray(val)) {
+          count += val.length;
+        } else {
+          count += 1;
+        }
       }
     });
     return count;
