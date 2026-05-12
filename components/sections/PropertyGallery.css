@@ -452,7 +452,8 @@
 
 .summary-bottom-row {
   border-top: 1px solid var(--border-strong);
-  padding-top: 1.5rem;
+  border-bottom: 1px solid var(--border-strong);
+  padding: 1.5rem 0;
   width: 100%;
   display: flex;
   justify-content: space-between;
