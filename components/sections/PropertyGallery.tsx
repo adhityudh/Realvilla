@@ -215,8 +215,28 @@ export default function PropertyGallery({ property, dict }: PropertyGalleryProps
       <div className="property-gallery-summary">
         <div className="summary-details-col">
           <div className="summary-info-group">
-            <div className="summary-price">
-              {property.price ? new Intl.NumberFormat('en-IE', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(property.price) : dict?.properties?.price_upon_request}
+            <div className="summary-price-row">
+              <div className="summary-price">
+                {property.price ? new Intl.NumberFormat('en-IE', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(property.price) : dict?.properties?.price_upon_request}
+              </div>
+              <button 
+                className="summary-share-btn" 
+                onClick={() => {
+                  if (navigator.share) {
+                    navigator.share({
+                      title: property.title,
+                      text: `Check out this property: ${property.title}`,
+                      url: window.location.href,
+                    }).catch(() => { /* fail silently */ });
+                  } else {
+                    navigator.clipboard.writeText(window.location.href);
+                    alert("Link copied to clipboard!");
+                  }
+                }}
+              >
+                <img src="/icons/share.svg" alt="Share" />
+                <span>{dict?.property?.cta_share || 'Share'}</span>
+              </button>
             </div>
 
             <h1 className="summary-title">{property.title}</h1>

@@ -127,6 +127,7 @@
     "cta_schedule": "Programar una visita",
     "cta_touch": "Ponerse en contacto",
     "cta_make_offer": "Hacer una oferta",
-    "cta_request_visit": "Solicitar una visita"
+    "cta_request_visit": "Solicitar una visita",
+    "cta_share": "Compartir"
   }
 }
