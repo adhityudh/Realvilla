@@ -143,7 +143,7 @@
   font-family: var(--font-manrope), sans-serif;
   font-size: var(--text-base);
   line-height: var(--lh-relaxed);
-  color: var(--text-body);
+  color: var(--text-black);
   margin-bottom: 3rem;
   max-width: 85%;
 }

@@ -1,9 +1,11 @@
+import { HelpCircleIcon } from '@sanity/icons'
 import { defineField, defineType } from 'sanity'
 
 export const mortgageFAQSection = defineType({
   name: 'mortgageFAQSection',
   title: 'Mortgage FAQ Section',
   type: 'object',
+  icon: HelpCircleIcon,
   fields: [
     defineField({
       name: 'tagline',

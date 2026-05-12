@@ -1,9 +1,11 @@
+import { ThLargeIcon } from '@sanity/icons'
 import { defineField, defineType } from 'sanity'
 
 export const propertiesSection = defineType({
   name: 'propertiesSection',
   title: 'Properties Section',
   type: 'object',
+  icon: ThLargeIcon,
   fields: [
     defineField({
       name: 'tagline',

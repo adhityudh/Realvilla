@@ -1,9 +1,11 @@
+import { HeartIcon } from '@sanity/icons'
 import { defineField, defineType } from 'sanity'
 
 export const testimonialsSection = defineType({
   name: 'testimonialsSection',
   title: 'Testimonials Section',
   type: 'object',
+  icon: HeartIcon,
   fields: [
     defineField({
       name: 'title',

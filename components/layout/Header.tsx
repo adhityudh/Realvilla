@@ -20,7 +20,7 @@ gsap.registerPlugin(ScrollTrigger);
  *   - Pill-mode class once the hero is fully scrolled past (desktop)
  *   - Nav links fade-in once the user is 30% into the hero (desktop)
  */
-function useHeaderScrollAnimations(isHome: boolean) {
+function useHeaderScrollAnimations(isHome: boolean, pathname: string) {
   const lenis = useLenis();
 
   useEffect(() => {
@@ -115,7 +115,7 @@ function useHeaderScrollAnimations(isHome: boolean) {
       pillST?.kill();
       navST?.kill();
     };
-  }, [lenis, isHome]);
+  }, [lenis, isHome, pathname]);
 }
 
 export default function Header({ settings, dict }: { settings?: any; dict?: any }) {
@@ -132,7 +132,7 @@ export default function Header({ settings, dict }: { settings?: any; dict?: any 
     return segments[1] || 'en';
   }, [pathname]);
 
-  useHeaderScrollAnimations(isHome);
+  useHeaderScrollAnimations(isHome, pathname);
 
   const navLinks = settings?.mainNav;
 

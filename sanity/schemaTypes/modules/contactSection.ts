@@ -1,9 +1,11 @@
+import { EnvelopeIcon } from '@sanity/icons'
 import { defineField, defineType } from 'sanity'
 
 export const contactSection = defineType({
   name: 'contactSection',
   title: 'Contact Section',
   type: 'object',
+  icon: EnvelopeIcon,
   fields: [
     defineField({
       name: 'headline',

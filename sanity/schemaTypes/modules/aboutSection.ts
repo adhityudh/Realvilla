@@ -1,9 +1,11 @@
+import { InfoOutlineIcon } from '@sanity/icons'
 import { defineField, defineType } from 'sanity'
 
 export const aboutSection = defineType({
   name: 'aboutSection',
   title: 'About Section',
   type: 'object',
+  icon: InfoOutlineIcon,
   fields: [
     defineField({
       name: 'tagline',

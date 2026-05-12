@@ -1,9 +1,11 @@
+import { TrendUpwardIcon } from '@sanity/icons'
 import { defineField, defineType } from 'sanity'
 
 export const valuationSection = defineType({
   name: 'valuationSection',
   title: 'Valuation Section',
   type: 'object',
+  icon: TrendUpwardIcon,
   fields: [
     defineField({
       name: 'tagline',
