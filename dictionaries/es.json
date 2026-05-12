@@ -125,6 +125,8 @@
     "gallery_video": "Vídeo",
     "gallery_grid_view": "Vista de cuadrícula",
     "cta_schedule": "Programar una visita",
-    "cta_touch": "Ponerse en contacto"
+    "cta_touch": "Ponerse en contacto",
+    "cta_make_offer": "Hacer una oferta",
+    "cta_request_visit": "Solicitar una visita"
   }
 }

@@ -125,6 +125,8 @@
     "gallery_video": "Video",
     "gallery_grid_view": "Grid View",
     "cta_schedule": "Schedule a tour",
-    "cta_touch": "Get in touch"
+    "cta_touch": "Get in touch",
+    "cta_make_offer": "Make an offer",
+    "cta_request_visit": "Request a visit"
   }
 }
