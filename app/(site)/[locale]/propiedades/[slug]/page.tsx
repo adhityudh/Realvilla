@@ -6,6 +6,7 @@ import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import TranslationSetter from '@/components/providers/TranslationSetter';
 import PropertyGallery from '@/components/sections/PropertyGallery';
+import PropertyDetails from '@/components/sections/PropertyDetails';
 
 export async function generateMetadata(
   { params }: { params: Promise<{ locale: string, slug: string }> }
@@ -44,6 +45,7 @@ export default async function PropertyPage({ params }: { params: Promise<{ local
     <main>
       <TranslationSetter translations={property._translations ?? []} />
       <PropertyGallery property={property} dict={dict} />
+      <PropertyDetails property={property} dict={dict} locale={locale} />
       {/* Other sections will go here later */}
     </main>
   );

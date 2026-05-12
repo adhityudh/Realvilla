@@ -294,6 +294,7 @@ export const PROPERTY_DETAIL_QUERY = groq`
     status,
     featured,
     "slug": slug.current,
+    _updatedAt,
     description,
     location {
       streetAddress,

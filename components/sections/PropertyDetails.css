@@ -1,0 +1,234 @@
+.property-details-section {
+  width: 100%;
+  padding: 4rem 3rem;
+  background-color: var(--bg-white);
+  position: relative;
+}
+
+.property-details-container {
+  width: 100%;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 60fr 40fr;
+  gap: 4rem;
+  align-items: flex-start;
+}
+
+.details-left-col {
+  display: flex;
+  flex-direction: column;
+  gap: 4rem;
+}
+
+.details-right-col {
+  display: flex;
+  flex-direction: column;
+  position: sticky;
+  top: 100px;
+  /* Optional stickiness support */
+}
+
+.details-block {
+  width: 100%;
+}
+
+
+
+.details-heading {
+  font-family: var(--font-cormorant), serif;
+  font-size: var(--text-display-xs);
+  font-weight: var(--fw-bold);
+  text-transform: uppercase;
+  color: var(--text-black);
+  margin-bottom: 2rem;
+  letter-spacing: var(--ls-tight);
+}
+
+.details-subheading {
+  font-family: var(--font-manrope), sans-serif;
+  font-size: var(--text-md);
+  font-weight: var(--fw-extrabold);
+  text-transform: uppercase;
+  color: var(--text-black);
+  letter-spacing: var(--ls-wider);
+  margin-bottom: 2rem;
+}
+
+/* 1. Description Typography */
+.portable-text-wrapper {
+  font-family: var(--font-manrope), sans-serif;
+  font-size: var(--text-base);
+  line-height: 1.8;
+  color: var(--text-body);
+  max-width: 800px;
+  /* Limit paragraph measure for easy reading */
+}
+
+.portable-text-wrapper p {
+  margin-bottom: 1.5rem;
+}
+
+.portable-text-wrapper p:last-child {
+  margin-bottom: 0;
+}
+
+.portable-text-wrapper h1,
+.portable-text-wrapper h2,
+.portable-text-wrapper h3,
+.portable-text-wrapper h4 {
+  margin-top: 2.5rem;
+  margin-bottom: 1rem;
+  color: var(--text-black);
+}
+
+/* 2. & 3. Meta Lists & Grid */
+.meta-grid-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  width: 100%;
+}
+
+.meta-info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1.5rem;
+  background: var(--bg-muted);
+  border-radius: var(--radius-sm);
+}
+
+.meta-info-label {
+  font-family: var(--font-manrope), sans-serif;
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: var(--ls-widest);
+  color: var(--text-black);
+}
+
+.meta-info-value {
+  font-family: var(--font-manrope), sans-serif;
+  font-size: var(--text-md);
+  font-weight: var(--fw-bold);
+  color: var(--text-black);
+}
+
+
+
+/* Dynamic Group Grid */
+.meta-items-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem 3rem;
+}
+
+.meta-item-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 0;
+  border-bottom: 1px dashed var(--border-strong);
+}
+
+.meta-label-wrap {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.meta-icon-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: rgba(200, 180, 138, 0.1);
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.meta-icon-box img {
+  opacity: 0.75;
+}
+
+.meta-label {
+  font-family: var(--font-manrope), sans-serif;
+  font-size: var(--text-sm-plus);
+  font-weight: var(--fw-medium);
+  color: var(--text-black);
+}
+
+.meta-value {
+  font-family: var(--font-manrope), sans-serif;
+  font-size: var(--text-sm-plus);
+  font-weight: var(--fw-bold);
+  color: var(--text-black);
+  text-align: right;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .property-details-container {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+
+  .property-details-section {
+    padding: 3rem 2rem;
+  }
+
+  .meta-grid-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .meta-info-item {
+    padding: 1rem;
+    gap: 0.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .property-details-section {
+    padding: 3rem 1.5rem;
+  }
+
+  .property-details-container {
+    gap: 3rem;
+  }
+
+  .meta-grid-container {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+  }
+
+  .meta-info-label {
+    font-size: var(--text-2xs);
+  }
+
+  .meta-info-value {
+    font-size: var(--text-base-sm);
+  }
+
+  .info-price {
+    order: 1;
+  }
+
+  .info-updated {
+    order: 2;
+  }
+
+  .info-address {
+    order: 3;
+    grid-column: span 2;
+  }
+
+  .meta-items-grid {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+
+  .details-heading {
+    font-size: var(--text-display-xs);
+    margin-bottom: 1.5rem;
+  }
+}

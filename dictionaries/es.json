@@ -128,6 +128,11 @@
     "cta_touch": "Ponerse en contacto",
     "cta_make_offer": "Hacer una oferta",
     "cta_request_visit": "Solicitar una visita",
-    "cta_share": "Compartir"
+    "cta_share": "Compartir",
+    "description_title": "Descripción",
+    "basics_title": "Resumen de la propiedad",
+    "price_label": "Precio",
+    "address_label": "Dirección",
+    "updated_label": "Última actualización"
   }
 }

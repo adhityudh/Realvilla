@@ -334,7 +334,7 @@
   justify-content: space-between;
   align-items: flex-start;
   gap: 4rem;
-  padding: 0 3rem 4rem 3rem;
+  padding: 0 3rem 0rem 3rem;
   width: 100%;
   max-width: 100%;
 }
@@ -500,7 +500,7 @@
   .property-gallery-summary {
     flex-direction: column;
     gap: 2.5rem;
-    padding: 0 1.5rem 3rem 1.5rem;
+    padding: 0 1.5rem 0rem 1.5rem;
   }
 
   .summary-details-col {
