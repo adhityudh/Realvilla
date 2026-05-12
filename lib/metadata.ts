@@ -24,7 +24,7 @@ export function constructMetadata(
   favicon?: string
 ): Metadata {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || ''
-  const title = seo?.metaTitle || globalSeo?.metaTitle
+  const title = seo?.metaTitle || globalSeo?.metaTitle || ''
   const description = seo?.metaDescription || globalSeo?.metaDescription
   const ogImage = seo?.ogImage?.asset?.url || globalSeo?.ogImage?.asset?.url
   const noIndex = seo?.noIndex || globalSeo?.noIndex
