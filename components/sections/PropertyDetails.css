@@ -197,6 +197,10 @@
   .meta-info-subtext {
     font-size: var(--text-xs);
   }
+
+  .details-left-col {
+    gap: 3rem;
+  }
 }
 
 @media (max-width: 768px) {

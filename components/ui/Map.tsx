@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import './Map.css';
 
 interface PropertyMapProps {
   lat: number;
@@ -49,48 +50,45 @@ export default function PropertyMap({ lat, lng, title }: PropertyMapProps) {
     if (apiLoaded && mapRef.current && lat && lng) {
       const position = { lat, lng };
 
-      // Minimalistic sleek Silver design (eliminates "barren" look, feels modern & clean)
+      // High-Contrast Branded Premium Style
       const mapStyle = [
-        { "elementType": "geometry", "stylers": [{ "color": "#f5f5f5" }] },
+        { "elementType": "geometry", "stylers": [{ "color": "#f4f1eb" }] }, // Darkened base for road contrast
         { "elementType": "labels.icon", "stylers": [{ "visibility": "off" }] },
-        { "elementType": "labels.text.fill", "stylers": [{ "color": "#616161" }] },
-        { "elementType": "labels.text.stroke", "stylers": [{ "color": "#f5f5f5" }] },
-        { "featureType": "administrative.land_parcel", "elementType": "labels.text.fill", "stylers": [{ "color": "#bdbdbd" }] },
-        { "featureType": "poi", "elementType": "geometry", "stylers": [{ "color": "#eeeeee" }] },
-        { "featureType": "poi", "elementType": "labels.text.fill", "stylers": [{ "color": "#757575" }] },
-        { "featureType": "poi.park", "elementType": "geometry", "stylers": [{ "color": "#e5e5e5" }] },
-        { "featureType": "poi.park", "elementType": "labels.text.fill", "stylers": [{ "color": "#9e9e9e" }] },
-        { "featureType": "road", "elementType": "geometry", "stylers": [{ "color": "#ffffff" }] },
-        { "featureType": "road.arterial", "elementType": "labels.text.fill", "stylers": [{ "color": "#757575" }] },
-        { "featureType": "road.highway", "elementType": "geometry", "stylers": [{ "color": "#dadada" }] },
-        { "featureType": "road.highway", "elementType": "labels.text.fill", "stylers": [{ "color": "#616161" }] },
-        { "featureType": "road.local", "elementType": "labels.text.fill", "stylers": [{ "color": "#9e9e9e" }] },
-        { "featureType": "transit.line", "elementType": "geometry", "stylers": [{ "color": "#e5e5e5" }] },
-        { "featureType": "transit.station", "elementType": "geometry", "stylers": [{ "color": "#eeeeee" }] },
-        { "featureType": "water", "elementType": "geometry", "stylers": [{ "color": "#c9c9c9" }] },
-        { "featureType": "water", "elementType": "labels.text.fill", "stylers": [{ "color": "#9e9e9e" }] }
+        { "elementType": "labels.text.fill", "stylers": [{ "color": "#2c2b29" }] }, // High contrast text
+        { "elementType": "labels.text.stroke", "stylers": [{ "color": "#f4f1eb" }] },
+        { "featureType": "administrative", "elementType": "geometry.stroke", "stylers": [{ "color": "#c4b8a4" }] },
+        { "featureType": "administrative.land_parcel", "elementType": "labels.text.fill", "stylers": [{ "color": "#78746b" }] },
+        { "featureType": "poi", "elementType": "geometry", "stylers": [{ "color": "#e8e3d9" }] },
+        { "featureType": "poi", "elementType": "labels.text.fill", "stylers": [{ "color": "#4a463f" }] },
+        { "featureType": "poi.park", "elementType": "geometry", "stylers": [{ "color": "#e2ddcd" }] },
+        { "featureType": "poi.park", "elementType": "labels.text.fill", "stylers": [{ "color": "#615d54" }] },
+        { "featureType": "road", "elementType": "geometry", "stylers": [{ "color": "#ffffff" }] }, // Pure white roads on cream base pops perfectly
+        { "featureType": "road.arterial", "elementType": "geometry", "stylers": [{ "color": "#ffffff" }] },
+        { "featureType": "road.highway", "elementType": "geometry", "stylers": [{ "color": "#dfd2ba" }] }, // Clear, definitive brand highway gold
+        { "featureType": "road.highway", "elementType": "labels.text.fill", "stylers": [{ "color": "#423e37" }] },
+        { "featureType": "road.local", "elementType": "labels.text.fill", "stylers": [{ "color": "#524e47" }] },
+        { "featureType": "transit.line", "elementType": "geometry", "stylers": [{ "color": "#dacfb9" }] },
+        { "featureType": "water", "elementType": "geometry", "stylers": [{ "color": "#a6aeba" }] }, // Deeper distinct water
+        { "featureType": "water", "elementType": "labels.text.fill", "stylers": [{ "color": "#4a4c50" }] }
       ];
 
       const map = new window.google.maps.Map(mapRef.current, {
         center: position,
-        zoom: 14,
+        zoom: 15,
         styles: mapStyle,
         disableDefaultUI: false,
         zoomControl: true,
         mapTypeControl: false,
         streetViewControl: false,
-        fullscreenControl: false
+        fullscreenControl: true
       });
 
-      // Custom elegant Gold marker
+      // Custom Brand Logo Marker
       const markerIcon = {
-        path: 'M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z',
-        fillColor: '#C8B48A', // Site Brand Gold
-        fillOpacity: 1,
-        strokeWeight: 2,
-        strokeColor: '#ffffff',
-        scale: 2,
-        anchor: new window.google.maps.Point(12, 22),
+        url: "/images/logo-mark-raster.png",
+        scaledSize: new window.google.maps.Size(36, 36),
+        origin: new window.google.maps.Point(0, 0),
+        anchor: new window.google.maps.Point(22, 22),
       };
 
       new window.google.maps.Marker({
@@ -109,7 +107,7 @@ export default function PropertyMap({ lat, lng, title }: PropertyMapProps) {
     <div className="map-outer-wrapper">
       <div
         ref={mapRef}
-        style={{ width: '100%', height: '450px', backgroundColor: '#f5f5f5', overflow: 'hidden' }}
+        className="map-inner-element"
       />
       {apiKey === '' && (
         <p style={{ fontSize: '12px', marginTop: '8px', opacity: 0.6, color: '#666' }}>

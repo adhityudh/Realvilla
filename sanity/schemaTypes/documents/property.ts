@@ -103,6 +103,9 @@ export const property = defineType({
       title: 'Location',
       type: 'propertyLocation',
       group: 'general',
+      options: {
+        collapsible: false,
+      }
     }),
 
     // ── Legacy address field (for backwards compatibility) ──

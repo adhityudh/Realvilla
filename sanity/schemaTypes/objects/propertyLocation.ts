@@ -47,30 +47,44 @@ export const propertyLocation = defineType({
       description: 'E.g. 38679',
     }),
 
-    // ── Map Coordinates ──
+    // ── Coordinate Input Method Switch ──
     defineField({
-      name: 'googleMapsUrl',
-      title: 'Google Maps URL',
-      type: 'url',
-      description: 'Paste a Google Maps link here. Coordinates will be extracted automatically when you save. Supports links like "https://maps.google.com/?q=28.0468,-16.5722" or shared links with @lat,lng.',
+      name: 'coordinateMethod',
+      title: 'Input Method',
+      type: 'string',
+      options: {
+        list: [
+          { title: 'Interactive Map (Visual)', value: 'visual' },
+          { title: 'Google Maps URL / Manual Coordinates', value: 'url' },
+        ],
+        layout: 'radio',
+        direction: 'horizontal',
+      },
+      initialValue: 'visual',
+      description: 'Choose how you want to provide the coordinates.',
     }),
+
+    // ── Map Coordinates (Visible only when visual selected) ──
+    defineField({
+      name: 'coordinates',
+      title: 'Map Coordinates (Visual Picker)',
+      type: 'geopoint',
+      description: 'Interactively pick the location on the map.',
+      hidden: ({ parent }) => parent?.coordinateMethod === 'url',
+    }),
+
+    // ── URL & Manual (Visible only when url selected) ──
     defineField({
       name: 'lat',
-      title: 'Latitude',
+      title: 'Manual Latitude',
       type: 'number',
-      description: 'E.g. 28.0468',
+      hidden: ({ parent }) => parent?.coordinateMethod !== 'url',
     }),
     defineField({
       name: 'lng',
-      title: 'Longitude',
+      title: 'Manual Longitude',
       type: 'number',
-      description: 'E.g. -16.5722',
-    }),
-    defineField({
-      name: 'coordinates',
-      title: 'Map Coordinates (Visual)',
-      type: 'geopoint',
-      description: 'Visual map point. This can be used if you prefer the map UI.',
+      hidden: ({ parent }) => parent?.coordinateMethod !== 'url',
     }),
   ],
 })

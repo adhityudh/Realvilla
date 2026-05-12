@@ -300,8 +300,12 @@ export const PROPERTY_DETAIL_QUERY = groq`
       complexName,
       municipality,
       postalCode,
-      googleMapsUrl,
-      coordinates
+      coordinateMethod,
+      "coordinates": select(
+        coordinateMethod == "url" && defined(lat) && defined(lng) => { "_type": "geopoint", "lat": lat, "lng": lng },
+        defined(coordinates) => coordinates,
+        null
+      )
     },
     image { asset->{ _id, url, metadata { lqip, dimensions } } },
     secondaryImage { asset->{ _id, url, metadata { lqip, dimensions } } },

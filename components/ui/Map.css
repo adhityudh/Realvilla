@@ -1,0 +1,12 @@
+.map-inner-element {
+  width: 100%;
+  height: 450px;
+  background-color: #f4f1eb;
+  overflow: hidden;
+}
+
+@media (max-width: 768px) {
+  .map-inner-element {
+    height: 280px; /* Shorter height on mobile to avoid overwhelming layout */
+  }
+}
