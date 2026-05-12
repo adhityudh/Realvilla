@@ -145,6 +145,7 @@
   line-height: var(--lh-relaxed);
   color: var(--text-body);
   margin-bottom: 3rem;
+  max-width: 85%;
 }
 
 /* ── Facts Row ── */
@@ -190,6 +191,7 @@
 
   .step-body {
     margin-bottom: 1.5rem;
+    width: 100%;
   }
 }
 
