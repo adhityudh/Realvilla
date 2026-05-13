@@ -121,7 +121,9 @@
         grid-row: auto;
         font-size: var(--text-display-md);
         max-width: 100%;
-        /* Spacing below Heading on mobile */
+        order: 1;
+        /* Heading first */
+        margin-bottom: 1rem;
     }
 
     /* Allow stat items to auto-flow 2x2 under the Heading on Mobile */
@@ -129,15 +131,21 @@
         grid-column: auto !important;
         grid-row: auto !important;
         margin-top: 0 !important;
+        order: 3;
+        /* Stats third */
     }
 
-    /* Place Copy at absolute bottom filling width on mobile */
+    /* Place Copy directly beneath header on mobile */
     .stats-copy {
         grid-column: 1 / span 2;
         grid-row: auto;
         max-width: 600px;
-        margin-top: 1rem;
-        /* Breathing room after stats above it */
+        order: 2;
+        /* Copy second! */
+        margin-top: -2rem;
+        /* Pulls copy closer to header, tightening uniform grid-gap */
+        margin-bottom: 0.5rem;
+        /* Buffer space above statistical numbers */
     }
 
     .stats-value {
