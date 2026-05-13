@@ -100,7 +100,7 @@ export async function POST(request: Request) {
                   <td style="padding: 50px 45px 45px 45px;">
                     <!-- Direct Header Introduction -->
                     <h2 style="font-family: 'Cormorant Garamond', 'Georgia', serif; font-size: 25px; font-weight: 400; color: #111111; margin: 0 0 35px 0; letter-spacing: -0.2px; line-height: 1.3; text-transform: uppercase">
-                      New touchpoint submission from ${name}
+                      New touchpoint submission
                     </h2>
                     
                     <table width="100%" border="0" cellspacing="0" cellpadding="0">

@@ -31,7 +31,9 @@ function useHeaderScrollAnimations(isHome: boolean, pathname: string) {
       if (!header) return;
 
       const isMobile = window.innerWidth <= 1024;
-      const heroTrigger = isHome ? '.main-hero' : '.buy-hero';
+      
+      // Decoupled unified selector for any section acting as the topmost hero
+      const heroTrigger = '[data-is-hero="true"]';
 
       // Ensure we capture DOM only AFTER the route has settled.
       const hasHero = document.querySelector(heroTrigger);

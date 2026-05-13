@@ -6,6 +6,7 @@ import PropertyMap from '@/components/ui/Map';
 import Button from '@/components/ui/Button';
 import ContactModal from '@/components/ui/ContactModal';
 import ContactCard from '@/components/ui/ContactCard';
+import { smoothScrollToAnchor } from '@/lib/scroll';
 import './PropertyDetails.css';
 
 interface PropertyDetailsProps {
@@ -32,36 +33,16 @@ export default function PropertyDetails({
   const handleQuickLinkClick = (e: React.MouseEvent<any>, url: string) => {
     if (!url) return;
 
-    const smoothScrollTo = (target: HTMLElement) => {
-      if (typeof window !== 'undefined' && (window as any).lenis) {
-        (window as any).lenis.scrollTo(target, { offset: -80, duration: 1.2 });
-      } else {
-        target.scrollIntoView({ behavior: 'smooth' });
-      }
-    };
+    // 1. Attempt central smooth scroll first
+    const didScroll = smoothScrollToAnchor(e, url);
+    if (didScroll) return; // Element was present and scrolled perfectly!
 
-    // 1. Comprehensive Dynamic Anchor Interceptor
-    // EXTREME PURGE: Strips invisible unicode characters & zero-width sequences to prevent selector mismatch!
+    // 2. If target element was NOT found on this details viewport, fallback to cross-page routing
     const cleanUrl = String(url)
-      .replace(/[\u200B-\u200D\uFEFF]/g, '') // zero-width space/joiners
-      .replace(/[^\x20-\x7E]/g, '') // remove all non-printable ascii/utf chars
+      .replace(/[\u200B-\u200D\uFEFF]/g, '') 
+      .replace(/[^\x20-\x7E]/g, '')
       .trim();
-    const hashIndex = cleanUrl.indexOf('#');
-    
-    if (hashIndex !== -1) {
-      const anchorId = cleanUrl.substring(hashIndex + 1).trim();
-      if (anchorId) {
-        const el = document.getElementById(anchorId);
-        if (el) {
-          // Found the element! Block default action and trigger smooth scroll!
-          e.preventDefault();
-          smoothScrollTo(el);
-          return; // Mission accomplished
-        }
-      }
-    }
 
-    // 2. Contextual Fallbacks for System-Known Anchors (if element isn't loaded on this page)
     if (cleanUrl.includes('#mortgage-simulator')) {
       e.preventDefault();
       window.location.href = locale === 'es' ? '/es/comprar#mortgage-simulator' : '/en/buy#mortgage-simulator';

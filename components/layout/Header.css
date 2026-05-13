@@ -219,7 +219,6 @@
         .btn-book {
             background-color: var(--bg-surface);
             color: var(--text-black);
-            padding: 0.75rem 1.75rem;
             border-radius: var(--radius-full);
             font-size: var(--text-sm);
             font-weight: var(--fw-extrabold);

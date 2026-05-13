@@ -50,6 +50,7 @@ export const page = defineType({
       of: [
         { type: 'heroSection' },
         { type: 'buyHeroSection' },
+        { type: 'generalHeroSection' },
         { type: 'buyPropertiesSection' },
         { type: 'aboutSection' },
         { type: 'propertiesSection' },

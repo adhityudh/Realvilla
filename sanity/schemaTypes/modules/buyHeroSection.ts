@@ -33,7 +33,33 @@ export const buyHeroSection = defineType({
           type: 'object',
           fields: [
             defineField({ name: 'label', title: 'Label', type: 'string' }),
-            defineField({ name: 'link', title: 'Link', type: 'string' }),
+            defineField({
+              name: 'linkType',
+              title: 'Link Type',
+              type: 'string',
+              options: {
+                list: [
+                  { title: 'Internal Page', value: 'internal' },
+                  { title: 'External URL / Anchor', value: 'external' },
+                ],
+                layout: 'radio',
+              },
+              initialValue: 'external',
+            }),
+            defineField({
+              name: 'internalLink',
+              title: 'Internal Link',
+              type: 'reference',
+              to: [{ type: 'page' }],
+              hidden: ({ parent }) => parent?.linkType !== 'internal',
+            }),
+            defineField({
+              name: 'externalLink',
+              title: 'External Link / Anchor',
+              type: 'string',
+              description: 'Can be a full URL, absolute path, or an anchor like #buying-process.',
+              hidden: ({ parent }) => parent?.linkType !== 'external',
+            }),
           ]
         }
       ]

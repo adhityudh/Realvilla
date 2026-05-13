@@ -12,6 +12,7 @@ const BuyHeroSection = dynamic(() => import('./BuyHeroSection'), { ssr: true })
 const BuyPropertiesSection = dynamic(() => import('./BuyPropertiesSection'), { ssr: true })
 const BuyingProcessSection = dynamic(() => import('./BuyingProcessSection'), { ssr: true })
 const BuyMortgageSimSection = dynamic(() => import('./BuyMortgageSimSection'), { ssr: true })
+const GeneralHeroSection = dynamic(() => import('./GeneralHeroSection'), { ssr: true })
 
 const sectionMap: Record<string, any> = {
   heroSection: HeroCombined,
@@ -26,6 +27,7 @@ const sectionMap: Record<string, any> = {
   buyPropertiesSection: BuyPropertiesSection,
   buyingProcessSection: BuyingProcessSection,
   buyMortgageSimSection: BuyMortgageSimSection,
+  generalHeroSection: GeneralHeroSection,
 }
 
 export default function SectionRenderer({ sections, dict, filterMeta, contextData }: { sections: any[], dict?: any, filterMeta?: any, contextData?: any }) {

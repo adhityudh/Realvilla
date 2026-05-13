@@ -6,6 +6,7 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import SearchModal from './SearchModal';
 import Button from '../ui/Button';
+import { smoothScrollToAnchor } from '@/lib/scroll';
 import './BuyHeroSection.css';
 
 if (typeof window !== 'undefined') {
@@ -28,6 +29,10 @@ export default function BuyHeroSection({ data, dict }: BuyHeroSectionProps) {
   const contentRef = useRef<HTMLDivElement>(null);
   const [placeholderText, setPlaceholderText] = useState('');
   const fullPlaceholder = data.searchPlaceholder || dict?.hero?.search_placeholder;
+
+  const handleJumpLinkClick = (e: React.MouseEvent<any>, url: string) => {
+    smoothScrollToAnchor(e, url);
+  };
 
   useEffect(() => {
     if (!contentRef.current || !sectionRef.current) return;
@@ -155,7 +160,7 @@ export default function BuyHeroSection({ data, dict }: BuyHeroSectionProps) {
 
   return (
     <>
-      <section className="buy-hero" ref={sectionRef}>
+      <section className="buy-hero" ref={sectionRef} data-is-hero="true">
         <div className="buy-hero-bg">
           {data.backgroundImage && (
             <Image
@@ -219,6 +224,7 @@ export default function BuyHeroSection({ data, dict }: BuyHeroSectionProps) {
                 key={idx}
                 label={link.label}
                 href={link.link || '#'}
+                onClick={(e) => handleJumpLinkClick(e, link.link)}
                 variant="link"
                 className="jump-link"
                 priority={true}

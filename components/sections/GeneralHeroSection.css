@@ -1,0 +1,200 @@
+.general-hero {
+    position: relative;
+    width: 100%;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    padding-top: 10rem;
+    padding-bottom: 7.5rem;
+    margin-bottom: 5rem;
+}
+
+.general-hero-bg {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+}
+
+.general-hero-img {
+    object-fit: cover;
+}
+
+.general-hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.2) 0%, rgba(45, 35, 15, 0.25) 50%, rgba(0, 0, 0, 0.3) 100%);
+}
+
+.general-hero-content>.general-hero-title,
+.general-hero-content>.general-hero-subtitle,
+.general-hero-cta-wrapper,
+.general-jump-links {
+    opacity: 0;
+    /* Handled by GSAP entry timelines */
+}
+
+.general-hero-cta-wrapper {
+    margin-top: 3rem;
+    display: flex;
+    justify-content: center;
+}
+
+.general-hero-content {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+    width: 100%;
+    max-width: 900px;
+    padding: 0 3rem;
+    color: var(--text-white);
+}
+
+.general-hero-title {
+    font-family: var(--font-cormorant), serif;
+    font-size: var(--text-display-lg);
+    font-weight: var(--fw-extrabold);
+    text-transform: uppercase;
+    letter-spacing: var(--ls-tight);
+    margin-bottom: 2rem;
+    line-height: var(--lh-tight);
+}
+
+.general-hero-subtitle {
+    font-family: var(--font-manrope), sans-serif;
+    font-size: var(--text-md);
+    font-weight: var(--fw-light);
+    line-height: var(--lh-base);
+    color: var(--text-white);
+    opacity: 0.8;
+    max-width: 600px;
+    margin: 0 auto;
+    letter-spacing: var(--ls-normal);
+}
+
+.general-jump-links {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-top: 3rem;
+    padding: 0 3rem;
+}
+
+.general-jump-links .btn-link-styled {
+    font-size: var(--text-base);
+}
+
+.jump-link {
+    /* Inherits properties from global layout design system */
+}
+
+@media (max-width: 1024px) {
+    .general-hero {
+        padding-bottom: 5rem;
+        margin-bottom: 3rem;
+    }
+
+    .general-hero-title {
+        font-size: var(--text-display-xl);
+        margin-bottom: 1.5rem;
+    }
+
+    .general-hero-subtitle {
+        font-size: var(--text-base);
+        line-height: 1.6;
+        padding: 0 1rem;
+    }
+
+    .general-hero-cta-wrapper {
+        margin-top: 2.5rem;
+    }
+
+    .general-jump-links {
+        flex-direction: column;
+        gap: 1.5rem;
+        margin-top: 3rem;
+        align-items: center;
+        padding: 0 1.5rem;
+    }
+
+    .general-hero-content {
+        padding: 0 1.5rem;
+    }
+
+    .general-jump-links .jump-link {
+        font-size: var(--text-base) !important;
+        letter-spacing: var(--ls-wider) !important;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.3) !important;
+        gap: 0.5rem !important;
+    }
+}
+
+/* ==================================================
+   🚀 HORIZONTAL LAYOUT VARIANT (High Desktop Efficiency)
+   ================================================== */
+@media (min-width: 1025px) {
+    .general-hero.layout-horizontal .general-hero-content {
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        justify-content: space-between;
+        text-align: left;
+        max-width: var(--container-max-width);
+        gap: 6rem;
+        padding: 0 3rem;
+    }
+
+    .general-hero.layout-horizontal .general-hero-title {
+        flex: 1.2;
+        /* Elegant weighting for the display title */
+        text-align: left;
+        margin-bottom: 0;
+    }
+
+    .general-hero.layout-horizontal .general-hero-body-col {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        text-align: left;
+    }
+
+    .general-hero.layout-horizontal .general-hero-subtitle {
+        margin: 0;
+        text-align: left;
+        max-width: 100%;
+    }
+
+    .general-hero.layout-horizontal .general-hero-cta-wrapper {
+        margin-top: 2.5rem;
+        justify-content: flex-start;
+    }
+
+    .general-hero.layout-horizontal .general-hero-cta {
+        background-color: rgba(255, 255, 255, 0.18) !important;
+        color: var(--text-white) !important;
+        border: 1px solid rgba(255, 255, 255, 0.8) !important;
+        box-shadow: none !important;
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.15) !important;
+        transition: background-color 0.4s ease, border-color 0.4s ease, color 0.4s ease, text-shadow 0.4s ease !important;
+    }
+
+    .general-hero.layout-horizontal .general-hero-cta:hover {
+        background-color: var(--bg-surface) !important;
+        color: var(--text-black) !important;
+        border-color: var(--bg-surface) !important;
+        text-shadow: none !important;
+    }
+
+    .general-hero.layout-horizontal .general-jump-links {
+        max-width: var(--container-max-width);
+        width: 100%;
+        justify-content: flex-start;
+        padding: 0 3rem;
+        margin-top: 1.5rem;
+    }
+}

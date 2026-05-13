@@ -224,7 +224,21 @@ export const SECTION_PROJECTION = groq`
         trendingSearches,
         jumpLinks[] {
           label,
-          link
+          "link": ${INTERNAL_LINK_PROJECTION}
+        }
+      },
+      _type == "generalHeroSection" => {
+        title,
+        subtitle,
+        desktopLayout,
+        primaryButton {
+          label,
+          "link": ${INTERNAL_LINK_PROJECTION}
+        },
+        "backgroundImage": backgroundImage.asset->url,
+        jumpLinks[] {
+          label,
+          "link": ${INTERNAL_LINK_PROJECTION}
         }
       },
       _type == "buyPropertiesSection" => {
