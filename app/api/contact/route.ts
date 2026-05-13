@@ -13,7 +13,7 @@ export async function POST(request: Request) {
     const ua = userAgent(request);
     const browser = `${ua.browser.name || ''} ${ua.browser.version || ''}`.trim() || 'Unknown Browser';
     const os = `${ua.os.name || ''} ${ua.os.version || ''}`.trim() || 'Unknown OS';
-    
+
     // Derive a neat Device Model name
     let deviceType = 'Desktop/PC';
     if (ua.device.type) {
@@ -57,8 +57,8 @@ export async function POST(request: Request) {
     let subject = '';
 
     const titleLabel = formType === 'sell' ? 'VALUATION REQUEST' : 'GENERAL INQUIRY';
-    subject = formType === 'sell' 
-      ? `[REALVILLA] Valuation Request: ${name} (${municipality || 'General'})` 
+    subject = formType === 'sell'
+      ? `[REALVILLA] Valuation Request: ${name} (${municipality || 'General'})`
       : `[REALVILLA] Contact Inquiry: ${name}`;
 
     htmlContent = `
@@ -99,7 +99,7 @@ export async function POST(request: Request) {
                 <tr>
                   <td style="padding: 50px 45px 45px 45px;">
                     <!-- Direct Header Introduction -->
-                    <h2 style="font-family: 'Cormorant Garamond', 'Georgia', serif; font-size: 25px; font-weight: 400; color: #111111; margin: 0 0 35px 0; letter-spacing: -0.2px; line-height: 1.3;">
+                    <h2 style="font-family: 'Cormorant Garamond', 'Georgia', serif; font-size: 25px; font-weight: 400; color: #111111; margin: 0 0 35px 0; letter-spacing: -0.2px; line-height: 1.3; text-transform: uppercase">
                       New touchpoint submission from ${name}
                     </h2>
                     
