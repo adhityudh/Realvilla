@@ -1,5 +1,5 @@
 .partner-section {
-    padding: 5rem 3rem;
+    padding: 5rem 0;
     background-color: var(--bg-white);
     position: relative;
     overflow: hidden;
@@ -10,8 +10,9 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    max-width: 1400px;
+    max-width: var(--container-max-width);
     margin: 0 auto;
+    padding: 0 3rem;
     gap: 2rem;
 }
 
@@ -80,13 +81,14 @@
 
 @media (max-width: 1024px) {
     .partner-section {
-        padding: 3rem 5%;
+        padding: 3rem 0;
     }
 
     .partner-container {
         flex-direction: column;
         align-items: center;
         gap: 2rem;
+        padding: 0 5%;
     }
 
     .partner-title-wrapper {
@@ -103,7 +105,11 @@
 
 @media (max-width: 768px) {
     .partner-section {
-        padding: 3rem 1.5rem;
+        padding: 3rem 0;
+    }
+
+    .partner-container {
+        padding: 0 1.5rem;
     }
 
     /* Removed redundant mobile overrides */

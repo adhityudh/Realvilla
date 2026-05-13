@@ -1,0 +1,304 @@
+/* ContactCard.css - Standalone Encapsulated Component Styling */
+.contact-card {
+    background: var(--bg-surface);
+    width: 100%;
+    max-width: 600px;
+    height: auto;
+    box-shadow: var(--shadow-lg);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    border-radius: 0;
+    padding: 4rem;
+    margin-left: 0;
+    z-index: 20;
+    /* Reset transform defaults so they can be overwritten by parents or GSAP safely */
+}
+
+.contact-form {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    justify-content: center;
+}
+
+.form-title {
+    font-family: var(--font-cormorant), serif;
+    letter-spacing: var(--ls-tight);
+    text-transform: uppercase;
+    color: var(--text-black);
+    font-size: var(--text-display-md);
+    font-weight: var(--fw-light);
+    line-height: var(--lh-tight);
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.form-subtitle {
+    font-family: var(--font-manrope), sans-serif;
+    font-size: var(--text-base-sm);
+    color: var(--text-black);
+    text-align: center;
+    margin-bottom: 3rem;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: var(--lh-base);
+}
+
+.form-group {
+    margin-bottom: 2.5rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    font-family: var(--font-manrope), sans-serif;
+    font-size: var(--text-sm);
+    font-weight: var(--fw-bold);
+    text-transform: uppercase;
+    letter-spacing: var(--ls-widest);
+    color: var(--text-black);
+    margin-bottom: 0.75rem;
+    opacity: 0.9;
+}
+
+.form-group input,
+.form-group textarea {
+    font-family: var(--font-manrope), sans-serif;
+    font-size: var(--text-base);
+    padding: 1rem 0;
+    border: none;
+    border-bottom: 1px solid var(--border-light);
+    background: transparent;
+    transition: border-color 0.3s ease;
+    outline: none;
+    resize: none;
+    color: var(--text-black);
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    border-bottom-color: var(--color-gold-light);
+}
+
+.form-submit-btn {
+    margin-top: 2rem;
+    align-self: center;
+    padding: 1.1rem 3.5rem !important;
+    font-size: var(--text-sm-plus) !important;
+}
+
+/* Back Button */
+.form-back-btn {
+    background: none;
+    border: none;
+    font-family: var(--font-manrope), sans-serif;
+    font-size: var(--text-base-sm);
+    font-weight: var(--fw-medium);
+    letter-spacing: var(--ls-wide);
+    color: var(--color-gold-dark);
+    cursor: pointer;
+    padding: 0;
+    margin-bottom: 1.5rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    transition: opacity 0.3s ease;
+    align-self: flex-start;
+}
+
+.form-back-btn:hover {
+    opacity: 0.7;
+}
+
+/* Intent Step */
+.contact-intent {
+    justify-content: center;
+}
+
+.intent-options {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.intent-option-btn {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    /* 3 columns: left pad, center text, right arrow */
+    align-items: center;
+    width: 100%;
+    padding: 1.5rem 0;
+    background: none;
+    border: none;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.intent-option-btn:last-child {
+    border-bottom: none;
+}
+
+.intent-option-btn:hover {
+    background-color: rgba(188, 175, 139, 0.03);
+}
+
+.intent-option-label {
+    grid-column: 2;
+    font-family: var(--font-manrope), sans-serif;
+    font-size: var(--text-base);
+    font-weight: var(--fw-medium);
+    color: var(--text-black);
+    letter-spacing: var(--ls-normal);
+    transition: color 0.3s ease;
+    text-align: center;
+}
+
+.intent-option-btn:hover .intent-option-label {
+    color: var(--color-gold-dark);
+}
+
+.intent-option-arrow {
+    grid-column: 3;
+    justify-self: start;
+    padding-left: 15px;
+    font-size: var(--text-md);
+    color: var(--text-black);
+    opacity: 0;
+    transform: translateX(-10px);
+    transition: all 0.4s var(--ease-gentle);
+    pointer-events: none;
+}
+
+.intent-option-btn:hover .intent-option-arrow {
+    opacity: 1;
+    transform: translateX(0);
+    color: var(--color-gold-light);
+}
+
+/* Select Dropdown */
+.form-select {
+    font-family: var(--font-manrope), sans-serif;
+    font-size: var(--text-base);
+    padding: 1rem 0;
+    border: none;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    background: transparent;
+    transition: border-color 0.3s ease;
+    outline: none;
+    color: var(--text-black);
+    cursor: pointer;
+    border-radius: 0;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23111' d='M6 8.825L0.35 3.175l0.7-0.7L6 7.425l4.95-4.95 0.7 0.7z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0 center;
+}
+
+.form-select:focus {
+    border-bottom-color: var(--color-gold-light);
+}
+
+/* Required / Optional Labels */
+.form-required {
+    color: var(--color-gold-light);
+    font-weight: var(--fw-bold);
+}
+
+.form-optional {
+    font-weight: var(--fw-regular);
+    text-transform: none;
+    letter-spacing: var(--ls-normal);
+    opacity: 0.5;
+    font-size: var(--text-xs);
+}
+
+/* Legal Checkboxes */
+.form-legal-checkboxes {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.form-checkbox-label {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    cursor: pointer;
+}
+
+.form-checkbox {
+    flex-shrink: 0;
+    width: 18px;
+    height: 18px;
+    margin-top: 2px;
+    accent-color: var(--color-gold-light);
+    cursor: pointer;
+}
+
+.form-checkbox-text {
+    font-family: var(--font-manrope), sans-serif;
+    font-size: var(--text-sm);
+    line-height: var(--lh-base);
+    color: var(--text-black);
+    opacity: 0.7;
+    white-space: normal;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+/* Encapsulated Responsive Media Queries */
+@media (max-width: 1024px) {
+    .contact-card {
+        padding: 4rem 3rem;
+    }
+
+    .form-title {
+        font-size: clamp(1.8rem, 5vw, 2.4rem);
+    }
+}
+
+@media (max-width: 768px) {
+    .contact-card {
+        padding: 2rem 1.5rem;
+    }
+
+    .form-subtitle {
+        margin-bottom: 2rem;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-legal-checkboxes {
+        margin-top: 1.2rem;
+    }
+
+    /* Intent Options Mobile Expansion */
+    .intent-option-btn {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1.25rem 0;
+        text-align: left;
+    }
+
+    .intent-option-label {
+        grid-column: auto;
+        text-align: left;
+    }
+
+    .intent-option-arrow {
+        grid-column: auto;
+        opacity: 1;
+        transform: translateX(0);
+        padding-left: 0;
+    }
+}

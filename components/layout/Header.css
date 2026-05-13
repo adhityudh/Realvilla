@@ -386,9 +386,7 @@
                 transform-origin: top;
             }
 
-            body.header-light-mode .header-bg {
-                background: rgba(209, 195, 155, 0.85);
-            }
+
 
             body.header-light-mode.header-black-bg .header-bg {
                 background: linear-gradient(to bottom,

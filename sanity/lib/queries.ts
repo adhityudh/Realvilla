@@ -167,8 +167,15 @@ export const SECTION_PROJECTION = groq`
       },
       _type == "contactSection" => {
         headline,
+        subtitle,
         formTitle,
         formSubtitle,
+        initialStep,
+        allowBack,
+        generalTitle,
+        generalSubtitle,
+        sellTitle,
+        sellSubtitle,
         marketData[] {
           value,
           prefix,
@@ -259,6 +266,7 @@ export const SECTION_PROJECTION = groq`
 export const PAGE_QUERY = groq`
   *[_type == "page" && slug.current == $slug && (language == $language || (!defined(language) && $language == "en"))][0] {
     title,
+    footerPaddingHigh,
     ${SEO_FIELDS},
     "_translations": *[_type == "translation.metadata" && references(^._id)][0].translations[].value->{
       "language": language,

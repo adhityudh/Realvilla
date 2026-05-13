@@ -9,8 +9,6 @@
   },
   "contact": {
     "intent": {
-      "title": "HOW CAN WE ASSIST YOU?",
-      "subtitle": "Select an option below to get started with your inquiry.",
       "options": {
         "general": "General Inquiry",
         "sell": "Sell a Property",
@@ -20,8 +18,6 @@
     },
     "general": {
       "back": "Go Back",
-      "title": "Send us a message",
-      "subtitle": "We will contact you as soon as possible.",
       "fields": {
         "name": "Full Name",
         "name_placeholder": "Enter your full name",
@@ -36,8 +32,6 @@
     },
     "sell": {
       "back": "Go Back",
-      "title": "Start selling your property",
-      "subtitle": "Fill in the details below and an expert will reach out to you.",
       "fields": {
         "name": "Full Name",
         "name_placeholder": "Enter your full name",

@@ -1,13 +1,15 @@
 .property-details-section {
   width: 100%;
-  padding: 4rem 3rem;
+  padding: 4rem 0;
   background-color: var(--bg-white);
   position: relative;
 }
 
 .property-details-container {
   width: 100%;
+  max-width: var(--container-max-width);
   margin: 0 auto;
+  padding: 0 3rem;
   display: grid;
   grid-template-columns: 60fr 40fr;
   gap: 4rem;
@@ -179,10 +181,11 @@
   .property-details-container {
     grid-template-columns: 1fr;
     gap: 3rem;
+    padding: 0 2rem;
   }
 
   .property-details-section {
-    padding: 3rem 2rem;
+    padding: 3rem 0;
   }
 
   .meta-grid-container {
@@ -205,11 +208,12 @@
 
 @media (max-width: 768px) {
   .property-details-section {
-    padding: 3rem 1.5rem;
+    padding: 3rem 0;
   }
 
   .property-details-container {
     gap: 3rem;
+    padding: 0 1.5rem;
   }
 
   .meta-grid-container {

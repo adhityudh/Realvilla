@@ -10,7 +10,7 @@
 }
 
 .properties-main-wrapper {
-    max-width: 1500px;
+    max-width: var(--container-max-width);
     /* Restored and refined for luxury balance */
     margin: 0 auto;
     padding: 0 3rem;
@@ -23,8 +23,8 @@
     justify-content: center;
     text-align: center;
     color: var(--text-black);
-    min-height: 70vh;
-    margin-bottom: 10vh;
+    height: 70vh;
+    max-height: 800px;
     will-change: transform, opacity, filter;
 }
 
@@ -178,7 +178,7 @@
     }
 
     .properties-intro-container {
-        min-height: 40vh;
+        height: 40vh;
         margin-bottom: 5vh;
     }
 

@@ -8,6 +8,8 @@
 
 .mortgage-faq-wrapper {
     width: 100%;
+    max-width: var(--container-max-width);
+    margin: 0 auto;
     padding: 0 3rem;
 }
 
@@ -164,7 +166,7 @@
 @media (max-width: 1024px) {
     .mortgage-faq-section {
         color: var(--text-black);
-        padding: 6rem 0;
+        padding: 3rem 0;
     }
 
     .mortgage-faq-wrapper {

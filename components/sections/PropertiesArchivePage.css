@@ -1,5 +1,5 @@
 .archive-properties-section {
-    padding: 5.5rem 3rem 0rem 3rem;
+    padding: 5.5rem 0rem 0rem 0rem;
     background-color: var(--bg-white, #fdfcfb);
     min-height: 100vh;
     border-bottom: 1px solid var(--border-light);
@@ -23,6 +23,8 @@
 }
 
 .archive-properties-wrapper {
+    max-width: var(--container-max-width);
+    padding: 0 3rem;
     margin: 0 auto;
     width: 100%;
     position: relative;
@@ -281,7 +283,7 @@
 
 .archive-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
     gap: 4rem 1.5rem;
 }
 
@@ -410,6 +412,10 @@
     .archive-properties-section {
         padding: 7rem 0rem 3rem 0rem;
         border-bottom: none
+    }
+
+    .archive-properties-wrapper {
+        padding: 0;
     }
 
     .archive-main-layout {

@@ -8,6 +8,7 @@
 
 .buy-properties-wrapper {
     width: 100%;
+    max-width: var(--container-max-width);
     padding: 0;
     margin: 0 auto;
 }

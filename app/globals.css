@@ -123,6 +123,11 @@
   --ease-smooth: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-gentle: cubic-bezier(0.19, 1, 0.22, 1);
   --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* ================================================
+     LAYOUT & CONTAINERS
+  ================================================ */
+  --container-max-width: 1500px;
 }
 
 * {

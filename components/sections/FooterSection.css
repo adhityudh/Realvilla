@@ -12,7 +12,7 @@
 }
 
 .footer-container {
-    max-width: 100%;
+    max-width: var(--container-max-width);
     margin: 0 auto;
     padding: 0 3rem;
     display: flex;
@@ -372,5 +372,22 @@
         flex-direction: column;
         align-items: flex-start;
         gap: 2rem;
+    }
+}
+
+/* Dynamic Sanity Override: Force High Footer Padding */
+body.footer-force-high-padding .footer-section {
+    padding-top: 12rem !important;
+}
+
+@media (max-width: 1024px) {
+    body.footer-force-high-padding .footer-section {
+        padding-top: 6rem !important; /* Safe tablet middle-ground padding */
+    }
+}
+
+@media (max-width: 768px) {
+    body.footer-force-high-padding .footer-section {
+        padding-top: 10rem !important; /* Exact homepage mobile padding */
     }
 }

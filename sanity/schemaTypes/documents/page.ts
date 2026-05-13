@@ -63,6 +63,13 @@ export const page = defineType({
       ],
     }),
     defineField({
+      name: 'footerPaddingHigh',
+      title: 'Footer: High Padding Mode',
+      description: 'If enabled, the footer will have larger top padding (like the homepage).',
+      type: 'boolean',
+      initialValue: false,
+    }),
+    defineField({
       name: 'seo',
       title: 'SEO & Social',
       type: 'seo',

@@ -13,7 +13,7 @@
 
         .mortgage-sim-container {
             width: 100%;
-            max-width: 1500px;
+            max-width: var(--container-max-width);
             margin: 0 auto;
             padding: 0 3rem;
             display: flex;
@@ -23,24 +23,23 @@
 
         /* ── Header Row: Left & Right ── */
         .mortgage-sim-header-row {
-            display: flex;
-            justify-content: space-between;
+            display: grid;
+            grid-template-columns: 1.15fr 1fr;
             align-items: flex-end;
-            gap: 5rem;
         }
 
         .mortgage-sim-header-left {
-            flex: 1;
-            max-width: 650px;
+            width: 100%;
+            padding-right: 4rem;
+            max-width: 600px;
         }
 
         .mortgage-sim-header-right {
-            flex: 1;
-            max-width: 500px;
+            width: 100%;
             display: flex;
             flex-direction: column;
             gap: 2rem;
-            align-items: flex-start;
+            align-items: end;
         }
 
         .mortgage-sim-tagline {
@@ -79,6 +78,8 @@
             line-height: var(--lh-base);
             color: var(--text-black);
             margin: 0;
+            max-width: 400px;
+            text-align: end;
         }
 
         /* ── Horizontal Card Setup ── */
@@ -91,7 +92,7 @@
             width: 100%;
             box-shadow: var(--shadow-lg);
             display: grid;
-            grid-template-columns: 1.5fr 1fr;
+            grid-template-columns: 1.15fr 1fr;
             border-radius: 0;
             min-height: 450px;
             /* Thinner horizontal profile */
@@ -413,15 +414,20 @@
             }
 
             .mortgage-sim-header-row {
+                display: flex;
                 flex-direction: column;
                 align-items: flex-start;
-                gap: 2rem;
+                gap: 1.5rem;
             }
 
             .mortgage-sim-header-left,
             .mortgage-sim-header-right {
                 max-width: 100%;
                 flex: none;
+                padding-left: 0;
+                padding-right: 0;
+                align-items: start;
+                gap: 1.5rem;
             }
 
             .mortgage-sim-headline {
@@ -431,6 +437,10 @@
             .mortgage-sim-card {
                 grid-template-columns: 1fr;
                 /* Stack on top of each other */
+            }
+
+            .mortgage-sim-body {
+                text-align: start;
             }
         }
 
