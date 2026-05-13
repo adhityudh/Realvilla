@@ -12,6 +12,7 @@ export const settings = defineType({
     { name: 'propertiesSeo', title: 'Properties Page' },
     { name: 'propertyDetail', title: 'Property Detail Page' },
     { name: 'filters', title: 'Filters' },
+    { name: 'contact', title: 'Contact Form' },
   ],
   fields: [
     defineField({
@@ -84,6 +85,18 @@ export const settings = defineType({
         defineField({ name: 'title', title: 'Title', type: 'string', initialValue: 'SEARCH FILTERS' }),
         defineField({ name: 'subtitle', title: 'Subtitle', type: 'string', initialValue: 'Refine your perfect selection' }),
       ]
+    }),
+    defineField({
+      name: 'contactRecipientEmails',
+      title: 'Contact Recipient Email(s)',
+      description: 'Submit notifications from contact forms will be delivered to these addresses. If empty, the system uses defaults.',
+      type: 'array',
+      group: 'contact',
+      of: [{ 
+        type: 'string',
+        validation: (Rule) => Rule.email().error('Must enter a valid email formatting (e.g. name@domain.com)')
+      }],
+      initialValue: ['hello@realvilla.es'],
     }),
 
     defineField({

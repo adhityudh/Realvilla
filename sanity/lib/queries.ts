@@ -171,7 +171,7 @@ export const SECTION_PROJECTION = groq`
         formTitle,
         formSubtitle,
         initialStep,
-        allowBack,
+        nextStepAsModal,
         generalTitle,
         generalSubtitle,
         sellTitle,
@@ -181,9 +181,7 @@ export const SECTION_PROJECTION = groq`
           prefix,
           unit,
           label
-        },
-        ctaLabel,
-        "ctaLink": ${INTERNAL_LINK_PROJECTION}
+        }
       },
       _type == "partnerSection" => {
         title,

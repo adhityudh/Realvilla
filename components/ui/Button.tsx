@@ -15,6 +15,8 @@ interface ButtonProps {
   id?: string;
   type?: 'button' | 'submit' | 'reset';
   priority?: boolean;
+  form?: string;
+  disabled?: boolean;
 }
 
 /**
@@ -34,6 +36,8 @@ export default function Button({
   id,
   type = 'button',
   priority = false,
+  form,
+  disabled = false,
 }: ButtonProps) {
   const Component = href ? 'a' : 'button';
   
@@ -49,7 +53,9 @@ export default function Button({
       href={href}
       onClick={onClick}
       type={Component === 'button' ? type : undefined}
-      className={`${variantClass} ${className}`}
+      form={Component === 'button' ? form : undefined}
+      disabled={Component === 'button' ? disabled : undefined}
+      className={`${variantClass} ${className} ${disabled ? 'btn-disabled' : ''}`}
     >
       {icon && (
         <Image 

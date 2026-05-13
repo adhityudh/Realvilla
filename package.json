@@ -15,6 +15,7 @@
     "@sanity/google-maps-input": "^4.2.1",
     "@sanity/icons": "^3.7.4",
     "@sanity/image-url": "^2.1.1",
+    "@sanity/language-filter": "^5.0.1",
     "@sanity/ui": "^3.2.0",
     "@sanity/vision": "^5.23.0",
     "@types/negotiator": "^0.6.4",
@@ -30,8 +31,12 @@
     "plyr-react": "^6.0.0",
     "react": "19.2.4",
     "react-dom": "19.2.4",
+    "react-phone-number-input": "^3.4.16",
     "react-photoswipe-gallery": "^4.0.0",
-    "sanity": "^5.23.0"
+    "resend": "^6.12.3",
+    "sanity": "^5.23.0",
+    "sanity-plugin-internationalized-array": "^5.1.1",
+    "styled-components": "^6.4.1"
   },
   "devDependencies": {
     "@types/iframe-resizer": "^4.0.0",

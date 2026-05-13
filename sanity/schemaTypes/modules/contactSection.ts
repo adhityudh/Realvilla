@@ -35,12 +35,12 @@ export const contactSection = defineType({
       description: 'Select which form step appears first by default.'
     }),
     defineField({
-      name: 'allowBack',
-      title: 'Allow Navigation Back to Multi-choice',
+      name: 'nextStepAsModal',
+      title: 'Display Next Step as Sidebar Modal',
       type: 'boolean',
-      initialValue: true,
-      hidden: ({ parent }) => (parent?.initialStep || 'intent') === 'intent',
-      description: 'Controls if the user can go back to the multi-choice selector from within general/sell forms.'
+      initialValue: false,
+      hidden: ({ parent }) => (parent?.initialStep || 'intent') !== 'intent',
+      description: 'If enabled, choosing a choice from the Intent Selector opens the form in a sliding sidebar modal.'
     }),
     defineField({
       name: 'formTitle',
@@ -100,47 +100,6 @@ export const contactSection = defineType({
           ],
         },
       ],
-    }),
-    defineField({
-      name: 'ctaLabel',
-      title: 'CTA Label',
-      type: 'string',
-    }),
-    defineField({
-      name: 'linkType',
-      title: 'Link Type',
-      type: 'string',
-      options: {
-        list: [
-          { title: 'Internal Page', value: 'internal' },
-          { title: 'External URL', value: 'external' },
-        ],
-        layout: 'radio',
-      },
-      initialValue: 'internal',
-    }),
-    defineField({
-      name: 'internalLink',
-      title: 'Internal Link',
-      type: 'reference',
-      to: [{ type: 'page' }],
-      hidden: ({ parent }) => parent?.linkType !== 'internal',
-      options: {
-        filter: ({ document }) => {
-          const language = document?.language;
-          if (!language) return {};
-          return {
-            filter: 'language == $language || !defined(language)',
-            params: { language }
-          };
-        }
-      }
-    }),
-    defineField({
-      name: 'externalLink',
-      title: 'External Link',
-      type: 'string',
-      hidden: ({ parent }) => parent?.linkType !== 'external',
     }),
   ],
   preview: {

@@ -139,7 +139,7 @@ export default function ContactSection({ data, dict }: { data?: any, dict?: any 
           <ContactCard 
             dict={dict}
             initialStep={data.initialStep || 'intent'}
-            allowBack={data.allowBack !== false}
+            nextStepAsModal={data.nextStepAsModal === true}
             intentTitle={data.formTitle}
             intentSubtitle={data.formSubtitle}
             generalTitle={data.generalTitle}

@@ -302,3 +302,343 @@
         padding-left: 0;
     }
 }
+
+/* =========================================
+   PREMIUM RICH FORM FIELD COMPONENT STYLES
+   ========================================= */
+
+/* Phone Input Custom Styling Overrides */
+.PhoneInput {
+    width: 100%;
+    border-bottom: 1px solid var(--border-light);
+    padding: 0.25rem 0;
+    transition: border-color 0.3s ease;
+}
+
+.PhoneInput:focus-within {
+    border-bottom-color: var(--color-gold-light);
+}
+
+.PhoneInputCountry {
+    margin-right: 10px;
+    padding: 0.5rem;
+    cursor: pointer;
+}
+
+.PhoneInputCountryIcon {
+    width: 24px !important;
+    height: 18px !important;
+    box-shadow: var(--shadow-xs);
+    border-radius: 2px;
+}
+
+.PhoneInputInput {
+    border: none !important;
+    outline: none !important;
+    background: transparent !important;
+    font-family: var(--font-manrope), sans-serif !important;
+    font-size: var(--text-base) !important;
+    color: var(--text-black) !important;
+    padding: 0.75rem 0 !important;
+    flex: 1;
+}
+
+.PhoneInputCountrySelect {
+    cursor: pointer;
+}
+
+/* Custom Select2 Style (Municipality) Dropdown */
+.form-custom-select-group {
+    position: relative;
+}
+
+.custom-select-trigger {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border-light);
+    padding: 1rem 0;
+    font-family: var(--font-manrope), sans-serif;
+    font-size: var(--text-base);
+    color: var(--text-placeholder);
+    cursor: pointer;
+    transition: border-color 0.3s ease, color 0.3s ease;
+}
+
+.custom-select-trigger.has-value {
+    color: var(--text-black);
+}
+
+.custom-select-trigger:hover,
+.custom-select-trigger.active {
+    border-bottom-color: var(--color-gold-light);
+}
+
+.custom-select-trigger .select-arrow-icon {
+    color: var(--text-subtle);
+    transition: transform 0.3s ease;
+}
+
+.custom-select-trigger.active .select-arrow-icon {
+    transform: rotate(180deg);
+}
+
+.custom-select-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-lg);
+    z-index: 9999;
+    margin-top: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    max-height: 280px;
+    overflow: hidden;
+}
+
+.select-search-box {
+    padding: 0.75rem;
+    border-bottom: 1px solid var(--border-subtle);
+    display: flex;
+    align-items: center;
+    background: var(--bg-muted);
+    position: relative;
+}
+
+.select-search-box input {
+    border: none !important;
+    background: transparent !important;
+    font-family: var(--font-manrope), sans-serif !important;
+    font-size: var(--text-sm-plus) !important;
+    padding: 0.5rem 1.5rem 0.5rem 0.5rem !important;
+    width: 100% !important;
+    outline: none !important;
+    color: var(--text-black) !important;
+}
+
+.select-search-box .clear-btn {
+    position: absolute;
+    right: 1rem;
+    background: none;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    color: var(--text-subtle);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.select-options-list {
+    overflow-y: auto;
+    flex: 1;
+}
+
+.select-options-list::-webkit-scrollbar {
+    width: 5px;
+}
+
+.select-options-list::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.select-options-list::-webkit-scrollbar-thumb {
+    background: var(--bg-subtle);
+    border-radius: 10px;
+}
+
+.select-option-row {
+    padding: 0.75rem 1rem;
+    font-family: var(--font-manrope), sans-serif;
+    font-size: var(--text-sm-plus);
+    color: var(--text-black);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.select-option-row:hover {
+    background: var(--bg-muted);
+    color: var(--color-gold-dark);
+}
+
+.select-option-row.selected {
+    background: var(--color-gold-light);
+    color: var(--text-white);
+}
+
+.select-no-results {
+    padding: 1.5rem;
+    text-align: center;
+    color: var(--text-subtle);
+    font-family: var(--font-manrope), sans-serif;
+    font-size: var(--text-sm);
+}
+
+/* Property Type Selective Grid */
+.chips-grid-wrapper {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.65rem;
+    margin-top: 0.25rem;
+}
+
+.filter-grid-btn {
+    background: var(--bg-muted);
+    border: 1px solid transparent;
+    border-radius: var(--radius-md);
+    padding: 0.75rem;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 0.6rem;
+    cursor: pointer;
+    transition: all 0.3s var(--ease-smooth);
+    text-align: left;
+    min-height: 52px;
+}
+
+.filter-grid-btn:hover {
+    background: var(--bg-surface);
+    border-color: var(--color-gold-hover);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-xs);
+}
+
+.filter-grid-btn.active {
+    background: var(--text-black);
+    border-color: var(--text-black);
+    box-shadow: var(--shadow-sm);
+}
+
+.filter-grid-icon-box {
+    width: 22px;
+    height: 22px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.filter-grid-icon {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    opacity: 0.75;
+    filter: brightness(0);
+    transition: all 0.3s var(--ease-smooth);
+}
+
+.filter-grid-btn:hover .filter-grid-icon {
+    opacity: 1;
+}
+
+.filter-grid-btn.active .filter-grid-icon {
+    filter: brightness(0) invert(1);
+    opacity: 1;
+}
+
+.filter-grid-label {
+    font-family: var(--font-manrope), sans-serif;
+    font-size: var(--text-sm);
+    font-weight: var(--fw-medium);
+    color: var(--text-muted);
+    line-height: 1.2;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    transition: all 0.3s ease;
+}
+
+.filter-grid-btn:hover .filter-grid-label {
+    color: var(--text-black);
+}
+
+.filter-grid-btn.active .filter-grid-label {
+    color: var(--text-white);
+    font-weight: var(--fw-semibold);
+}
+
+.filter-grid-btn:active {
+    transform: scale(0.98);
+}
+
+@media (max-width: 480px) {
+    .chips-grid-wrapper {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* =========================================
+   SUCCESS STATE BRAND VIEWPORT COMPONENT
+   ========================================= */
+
+.contact-success-view {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    width: 100%;
+    animation: fadeInModal 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.contact-card .contact-success-view {
+    min-height: 480px;
+    /* Locks fixed dimension matching average form height! */
+    flex: 1;
+}
+
+.contact-modal-body .contact-success-view {
+    min-height: 480px;
+    /* Ensures modal height remains fixed and stable across state transitions! */
+    flex: 1;
+    padding: 2rem 0;
+}
+
+.success-check-icon {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 2rem auto;
+    display: block;
+    /* High precision CSS filter to convert static Black SVG (#000) to Realvilla brand Gold (#D4AF37) */
+    animation: popInSuccess 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.contact-success-view .form-title {
+    margin-bottom: 0.75rem;
+    font-weight: var(--fw-medium);
+    font-size: var(--text-display-sm) !important;
+}
+
+.contact-success-view .form-subtitle {
+    margin: 0 auto 2.5rem auto !important;
+    max-width: 360px !important;
+}
+
+@keyframes popInSuccess {
+    0% {
+        transform: scale(0.6);
+        opacity: 0;
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeInModal {
+    0% {
+        transform: translateY(8px);
+        opacity: 0;
+    }
+
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
