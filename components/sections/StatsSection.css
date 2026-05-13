@@ -1,0 +1,172 @@
+.stats-section {
+    background-color: var(--bg-white);
+    padding: 5rem 0;
+    width: 100%;
+    overflow: hidden;
+}
+
+.stats-container {
+    max-width: var(--container-max-width);
+    margin: 0 auto;
+    padding: 0 3rem;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 4.5rem 5rem;
+    align-items: start;
+}
+
+.stats-heading {
+    font-family: var(--font-cormorant), serif;
+    font-size: var(--text-display-sm);
+    font-weight: var(--fw-light);
+    line-height: var(--lh-tight);
+    text-transform: uppercase;
+    color: var(--text-black);
+    letter-spacing: var(--ls-tight);
+
+    /* Explicit Placement */
+    grid-column: 1;
+    grid-row: 1;
+    padding-right: 2rem;
+}
+
+.stats-copy {
+    font-family: var(--font-manrope), sans-serif;
+    font-size: var(--text-base);
+    color: var(--text-black);
+    line-height: var(--lh-base);
+    max-width: 420px;
+    padding-right: 2rem;
+}
+
+.stats-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+}
+
+.stats-value-wrapper {
+    display: flex;
+    align-items: baseline;
+    gap: 0.35rem;
+}
+
+.stats-value {
+    font-family: var(--font-cormorant), serif;
+    font-size: var(--text-display-lg);
+    font-weight: var(--fw-regular);
+    line-height: var(--lh-ultra);
+    color: var(--text-black);
+    letter-spacing: var(--ls-tighter);
+}
+
+.stats-suffix {
+    font-family: var(--font-cormorant), serif;
+    font-size: var(--text-display-xs);
+    font-style: italic;
+    color: var(--text-muted);
+    transform: translateY(-2px);
+}
+
+.stats-label {
+    font-family: var(--font-manrope), sans-serif;
+    font-size: var(--text-sm-plus);
+    color: var(--text-body);
+    line-height: var(--lh-base);
+    max-width: 240px;
+    font-weight: var(--fw-medium);
+}
+
+/* 💎 Premium Dynamic Asymmetric Mapping - Fully Auto-Scaling Grid */
+@media (min-width: 1025px) {
+    .stats-copy {
+        /* Forces the final Copy block to ALWAYS anchor to the rightmost column,
+           automatically moving to the next row only if preceding items fill the grid! */
+        grid-column: 3;
+    }
+}
+
+/* RESPONSIVE */
+@media (max-width: 1200px) {
+    .stats-grid {
+        gap: 3.5rem 4rem;
+    }
+
+    .stats-heading,
+    .stats-copy {
+        padding-right: 0;
+    }
+}
+
+@media (max-width: 1024px) {
+    .stats-section {
+        padding: 3rem 0;
+    }
+
+    .stats-container {
+        padding: 0 1.5rem;
+    }
+
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 3.5rem 2.5rem;
+    }
+
+    /* Mobile Flow override */
+    .stats-heading {
+        grid-column: 1 / span 2;
+        grid-row: auto;
+        font-size: var(--text-display-md);
+        max-width: 100%;
+        /* Spacing below Heading on mobile */
+    }
+
+    /* Allow stat items to auto-flow 2x2 under the Heading on Mobile */
+    .stats-item {
+        grid-column: auto !important;
+        grid-row: auto !important;
+        margin-top: 0 !important;
+    }
+
+    /* Place Copy at absolute bottom filling width on mobile */
+    .stats-copy {
+        grid-column: 1 / span 2;
+        grid-row: auto;
+        max-width: 600px;
+        margin-top: 1rem;
+        /* Breathing room after stats above it */
+    }
+
+    .stats-value {
+        /* Let fluid --text-display-xl cascade down automatically, but adjust for constrained widths if necessary */
+        font-size: var(--text-display-lg);
+    }
+}
+
+@media (max-width: 480px) {
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        /* Enforce 2 Columns on Mobile */
+        gap: 2.5rem 1.5rem;
+        /* Tighten spacing for small viewports */
+    }
+
+    .stats-heading,
+    .stats-copy {
+        grid-column: 1 / span 2;
+        /* Force heading & copy to span full width */
+    }
+
+    .stats-value {
+        font-size: var(--text-display-md);
+        /* Standardised fluid display size for mobile */
+    }
+
+    .stats-suffix {
+        font-size: var(--text-md);
+        /* Uses global variable instead of hardcoded units */
+    }
+}
