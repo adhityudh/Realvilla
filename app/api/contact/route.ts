@@ -252,7 +252,10 @@ export async function POST(request: Request) {
     try {
       const settings = await client.fetch(`*[_type == "settings"][0]{ contactRecipientEmails }`);
       if (settings?.contactRecipientEmails && Array.isArray(settings.contactRecipientEmails) && settings.contactRecipientEmails.length > 0) {
-        toEmails = settings.contactRecipientEmails.map((e: string) => e.trim()).filter(Boolean);
+        // Sanitize to strip all invisible non-ASCII noise (like Mac non-breaking spaces \u00A0 from manual typing)
+        toEmails = settings.contactRecipientEmails
+          .map((e: string) => e.replace(/[^\x20-\x7E]/g, '').trim())
+          .filter(Boolean);
       }
     } catch (fetchErr) {
       console.warn('[Contact API] Dynamic settings fetch from Sanity failed, reverting to environment default:', fetchErr);
@@ -261,15 +264,20 @@ export async function POST(request: Request) {
     // Fallback to environment configurations (which allows comma-separated strings)
     if (toEmails.length === 0) {
       const fallbackEmail = process.env.CONTACT_RECIPIENT_EMAIL || 'delivered@resend.dev';
-      toEmails = fallbackEmail.split(',').map(item => item.trim()).filter(Boolean);
+      toEmails = fallbackEmail.split(',')
+        .map(item => item.replace(/[^\x20-\x7E]/g, '').trim())
+        .filter(Boolean);
     }
+
+    // Also sanitize the replyTo field from client side payload for total system safety
+    const sanitizedReplyTo = email ? String(email).replace(/[^\x20-\x7E]/g, '').trim() : undefined;
 
     const { data, error } = await resend.emails.send({
       from: 'REALVILLA <hello@realvilla.es>',
       to: toEmails,
       subject: subject,
       html: htmlContent,
-      replyTo: email || undefined,
+      replyTo: sanitizedReplyTo || undefined,
     });
 
     if (error) {
