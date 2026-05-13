@@ -21,15 +21,28 @@ if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
 }
 
-export default function PropertiesArchivePage({ dict, initialMeta }: { dict?: any, initialMeta?: any }) {
+interface PropertiesArchivePageProps {
+  dict?: any;
+  initialMeta?: any;
+  initialProperties?: any[];
+  initialTotalCount?: number;
+}
+
+export default function PropertiesArchivePage({ 
+  dict, 
+  initialMeta,
+  initialProperties,
+  initialTotalCount
+}: PropertiesArchivePageProps) {
   const sectionRef = useRef<HTMLElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
   const paginationRef = useRef<HTMLDivElement>(null);
+  const hasRunInitialFetch = useRef<boolean>(false);
 
-  const [properties, setProperties] = useState<any[]>([]);
-  const [totalCount, setTotalCount] = useState<number>(0);
+  const [properties, setProperties] = useState<any[]>(initialProperties || []);
+  const [totalCount, setTotalCount] = useState<number>(initialTotalCount || 0);
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(!initialProperties);
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
   const [filterMeta, setFilterMeta] = useState<any>(initialMeta || null);
 
@@ -285,6 +298,26 @@ export default function PropertiesArchivePage({ dict, initialMeta }: { dict?: an
   // Fetch properties based on search, filters, and page changes
   useEffect(() => {
     let isMounted = true;
+
+    // Check if we are in the initial default state (no active filters, page 1)
+    const isInitialDefaultState = 
+      currentPage === 1 &&
+      debouncedSearchQuery === '' &&
+      orderBy === '_createdAt desc' &&
+      activeFilters.municipalities.length === 0 &&
+      (activeFilters.categories?.length || 0) === 0 &&
+      activeFilters.priceMin === 0 &&
+      Object.keys(activeFilters.metaFilters).length === 0;
+
+    // If initial properties were prefetched on server, short-circuit client call for the first render
+    if (initialProperties && isInitialDefaultState && !hasRunInitialFetch.current) {
+      hasRunInitialFetch.current = true;
+      setLoading(false);
+      return;
+    }
+
+    // Mark that initial state window has passed for future interactions
+    hasRunInitialFetch.current = true;
     setLoading(true);
 
     const start = (currentPage - 1) * itemsPerPage;

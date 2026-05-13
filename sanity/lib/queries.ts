@@ -516,3 +516,12 @@ export const PROPERTIES_LIST_QUERY = groq`
     ${PROPERTY_CARD_FIELDS}
   }
 `
+
+export const INITIAL_PROPERTIES_QUERY = groq`
+  {
+    "items": *[_type == "property" && (language == $language || (!defined(language) && $language == "en"))] | order(select(status == "sold" => 1, 0) asc, _createdAt desc) [0...12] {
+      ${PROPERTY_CARD_FIELDS}
+    },
+    "total": count(*[_type == "property" && (language == $language || (!defined(language) && $language == "en"))])
+  }
+`
