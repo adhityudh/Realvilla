@@ -249,32 +249,45 @@ export default function PropertyDetails({
         </div>
       </div>
 
-      <ContactModal
-        isOpen={isContactModalOpen}
-        onClose={() => {
+      {/* Fully synchronized structural contact modal clone */}
+      {(() => {
+        const handleCloseModal = () => {
           setIsContactModalOpen(false);
-          // Wait for exit transition, then reset state seamlessly
+          // Exit transition grace delay before wiping state
           setTimeout(() => {
             setSubmitSuccess(null);
             setIsSubmitting(false);
           }, 450);
-        }}
-        title={locale === 'es' ? 'Solicitar Asesoramiento' : 'Request Guidance'}
-        subtitle={property.title}
-        footer={
-          !submitSuccess && (
-            <Button 
-              type="submit" 
-              form="contact-modal-general-form"
-              variant="dark" 
-              label={isSubmitting ? (dict?.contact?.sending || (locale === 'es' ? 'Enviando...' : 'Sending...')) : (dict?.contact?.general?.submit || (locale === 'es' ? 'ENVIAR MENSAJE' : 'SEND MESSAGE'))} 
-              className="form-submit-btn" 
-              showArrow={!isSubmitting}
-              disabled={isSubmitting}
-            />
-          )
-        }
-      >
+        };
+
+        return (
+          <ContactModal
+            isOpen={isContactModalOpen}
+            onClose={handleCloseModal}
+            title={submitSuccess ? "" : (locale === 'es' ? 'Solicitar Asesoramiento' : 'Request Guidance')}
+            subtitle={submitSuccess ? "" : property.title}
+            footer={
+              submitSuccess ? (
+                <Button 
+                  type="button" 
+                  variant="dark" 
+                  label={dict?.contact?.success?.close || (locale === 'es' ? 'Volver al inicio' : 'Back to start')} 
+                  className="form-submit-btn"
+                  onClick={handleCloseModal}
+                />
+              ) : (
+                <Button 
+                  type="submit" 
+                  form="contact-modal-general-form"
+                  variant="dark" 
+                  label={isSubmitting ? (dict?.contact?.sending || (locale === 'es' ? 'Enviando...' : 'Sending...')) : (dict?.contact?.general?.submit || (locale === 'es' ? 'ENVIAR MENSAJE' : 'SEND MESSAGE'))} 
+                  className="form-submit-btn" 
+                  showArrow={!isSubmitting}
+                  disabled={isSubmitting}
+                />
+              )
+            }
+          >
         <ContactCard
           dict={dict}
           initialStep="general"
@@ -283,7 +296,9 @@ export default function PropertyDetails({
           onSubmittingChange={setIsSubmitting}
           onSubmitSuccessChange={setSubmitSuccess}
         />
-      </ContactModal>
+        </ContactModal>
+        );
+      })()}
     </section>
   );
 }
