@@ -136,7 +136,6 @@
     "cta_find_similar": "Find Similar Properties"
   },
   "mortgage": {
-    "calc_title": "Mortgage Calculator",
     "field_price": "Property Price",
     "field_down": "Down Payment",
     "field_term": "Loan Term",

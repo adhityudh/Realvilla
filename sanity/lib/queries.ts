@@ -288,6 +288,7 @@ export const SETTINGS_QUERY = groq`
     "propertyDetailSections": propertyDetailSections[] {
       ${SECTION_PROJECTION}
     },
+    propertyDetailFooterPaddingHigh,
     filterSidebar,
     socialLinks[] {
       label,

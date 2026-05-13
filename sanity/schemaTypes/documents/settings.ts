@@ -68,6 +68,14 @@ export const settings = defineType({
       ],
     }),
     defineField({
+      name: 'propertyDetailFooterPaddingHigh',
+      title: 'Footer: High Padding Mode',
+      description: 'If enabled, the footer on all property detail pages will have larger top padding (like the homepage).',
+      type: 'boolean',
+      initialValue: false,
+      group: 'propertyDetail',
+    }),
+    defineField({
       name: 'filterSidebar',
       title: 'Filter Sidebar Text',
       type: 'object',

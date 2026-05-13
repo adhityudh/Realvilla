@@ -30,6 +30,7 @@ export async function generateMetadata(
 }
 
 import SectionRenderer from '@/components/sections/SectionRenderer';
+import FooterPaddingSetter from '@/components/providers/FooterPaddingSetter';
 
 export default async function PropertyPage({ params }: { params: Promise<{ locale: string, slug: string }> }) {
   const { locale, slug } = await params;
@@ -54,6 +55,7 @@ export default async function PropertyPage({ params }: { params: Promise<{ local
 
   return (
     <main>
+      <FooterPaddingSetter active={settings?.propertyDetailFooterPaddingHigh} />
       <TranslationSetter translations={property._translations ?? []} />
       <PropertyGallery property={property} dict={dict} />
       <PropertyDetails property={property} dict={dict} locale={locale} />

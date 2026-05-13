@@ -108,8 +108,8 @@
 
         .calc-sliders-row {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 3rem;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
             margin-top: 1rem;
         }
 
@@ -236,19 +236,6 @@
 
         .result-cta-link:hover svg {
             transform: translateX(3px);
-        }
-
-        /* --- Inner Input Component Styles --- */
-        .calc-title {
-            font-family: var(--font-manrope), sans-serif;
-            font-size: var(--text-sm);
-            font-weight: var(--fw-bold);
-            text-transform: uppercase;
-            letter-spacing: var(--ls-wider);
-            color: var(--text-black);
-            margin-bottom: 3rem;
-            border-bottom: 1px solid var(--border-subtle);
-            padding-bottom: 1.25rem;
         }
 
         .calc-field {
@@ -468,10 +455,6 @@
             }
 
             .calc-field {
-                margin-bottom: 1.5rem;
-            }
-
-            .calc-title {
                 margin-bottom: 1.5rem;
             }
 

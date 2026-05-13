@@ -25,7 +25,6 @@ export default function BuyMortgageSimSection({ data, dict, contextData }: { dat
     unitInstallments: dict?.mortgage?.unit_installments,
     unitYears: dict?.mortgage?.unit_years,
     unitYear: dict?.mortgage?.unit_year,
-    calcTitle: dict?.mortgage?.calc_title,
     price: dict?.mortgage?.field_price,
     down: dict?.mortgage?.field_down,
     term: dict?.mortgage?.field_term,
@@ -58,7 +57,7 @@ export default function BuyMortgageSimSection({ data, dict, contextData }: { dat
 
   const monthlyPayment = useMemo(() => {
     if (loanPrincipal <= 0) return 0;
-    
+
     const monthlyRate = annualInterestRate / 100 / 12;
     const numberOfPayments = loanTerm * 12;
 
@@ -66,9 +65,9 @@ export default function BuyMortgageSimSection({ data, dict, contextData }: { dat
       return loanPrincipal / numberOfPayments;
     }
 
-    const payment = (loanPrincipal * monthlyRate * Math.pow(1 + monthlyRate, numberOfPayments)) / 
-                    (Math.pow(1 + monthlyRate, numberOfPayments) - 1);
-    
+    const payment = (loanPrincipal * monthlyRate * Math.pow(1 + monthlyRate, numberOfPayments)) /
+      (Math.pow(1 + monthlyRate, numberOfPayments) - 1);
+
     return isFinite(payment) ? payment : 0;
   }, [loanPrincipal, annualInterestRate, loanTerm]);
 
@@ -148,23 +147,23 @@ export default function BuyMortgageSimSection({ data, dict, contextData }: { dat
   return (
     <section className="mortgage-sim-section" ref={sectionRef}>
       <div className="mortgage-sim-container">
-        
+
         {/* ── Top Row: Split Header ── */}
         <div className="mortgage-sim-header-row">
           <div className="mortgage-sim-header-left">
             {data.tagline && <div className="mortgage-sim-tagline">{data.tagline}</div>}
             <h2 className="mortgage-sim-headline">{data.headline}</h2>
           </div>
-          
+
           <div className="mortgage-sim-header-right">
             <p className="mortgage-sim-body">{data.body}</p>
             {data.ctaLabel && (
               <div className="mortgage-sim-cta-wrap">
-                <Button 
-                  label={data.ctaLabel} 
-                  href={data.ctaLink || '#'} 
-                  variant="dark" 
-                  className="mortgage-sim-cta" 
+                <Button
+                  label={data.ctaLabel}
+                  href={data.ctaLink || '#'}
+                  variant="dark"
+                  className="mortgage-sim-cta"
                 />
               </div>
             )}
@@ -174,11 +173,9 @@ export default function BuyMortgageSimSection({ data, dict, contextData }: { dat
         {/* ── Bottom Row: Wide Split Card ── */}
         <div className="mortgage-sim-card-wrapper">
           <div className="mortgage-sim-card">
-            
+
             {/* Left Side: Inputs Collection */}
             <div className="mortgage-sim-inputs-col">
-              <div className="calc-title">{labels.calcTitle}</div>
-
               {/* Field 1: Price */}
               <div className="calc-field">
                 <div className="calc-label-row">
@@ -186,10 +183,10 @@ export default function BuyMortgageSimSection({ data, dict, contextData }: { dat
                 </div>
                 <div className="calc-input-group">
                   <span className="calc-currency-symbol">€</span>
-                  <input 
-                    type="text" 
-                    className="calc-text-input" 
-                    value={formatNumberWithCommas(price)} 
+                  <input
+                    type="text"
+                    className="calc-text-input"
+                    value={formatNumberWithCommas(price)}
                     onChange={(e) => setPrice(parseCommasToNumber(e.target.value))}
                   />
                 </div>
@@ -203,17 +200,17 @@ export default function BuyMortgageSimSection({ data, dict, contextData }: { dat
                     <span className="calc-value-display">{downPaymentPercent}% ({formatEuro(downPaymentAmount)})</span>
                   </div>
                   <div className="calc-slider-wrapper">
-                    <input 
-                      type="range" 
-                      min={minDP} 
-                      max={maxDP} 
+                    <input
+                      type="range"
+                      min={minDP}
+                      max={maxDP}
                       step="5"
-                      className="calc-slider" 
+                      className="calc-slider"
                       value={downPaymentPercent}
                       onChange={(e) => setDownPaymentPercent(Number(e.target.value))}
                     />
                     <div className="range-track-bar">
-                      <div 
+                      <div
                         className="range-active-fill"
                         style={{ width: `${((downPaymentPercent - minDP) / Math.max(1, maxDP - minDP)) * 100}%` }}
                       />
@@ -232,17 +229,17 @@ export default function BuyMortgageSimSection({ data, dict, contextData }: { dat
                     <span className="calc-value-display">{loanTerm} {labels.unitYears}</span>
                   </div>
                   <div className="calc-slider-wrapper">
-                    <input 
-                      type="range" 
-                      min={minTerm} 
-                      max={maxTerm} 
+                    <input
+                      type="range"
+                      min={minTerm}
+                      max={maxTerm}
                       step="1"
-                      className="calc-slider" 
+                      className="calc-slider"
                       value={loanTerm}
                       onChange={(e) => setLoanTerm(Number(e.target.value))}
                     />
                     <div className="range-track-bar">
-                      <div 
+                      <div
                         className="range-active-fill"
                         style={{ width: `${((loanTerm - minTerm) / Math.max(1, maxTerm - minTerm)) * 100}%` }}
                       />
@@ -259,7 +256,7 @@ export default function BuyMortgageSimSection({ data, dict, contextData }: { dat
             {/* Right Side: Solid Gold Output Banner */}
             <div className="calc-results-col">
               <div className="calc-results-inner">
-                
+
                 <div className="results-hero">
                   <div className="result-label">{labels.title}</div>
                   <div className="result-value">{formatEuroDec(monthlyPayment)}</div>
@@ -292,7 +289,7 @@ export default function BuyMortgageSimSection({ data, dict, contextData }: { dat
                   <div className="result-cta">
                     <Link href={data.ctaLink} className="result-cta-link">
                       {data.ctaLabel}
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
                     </Link>
                   </div>
                 )}
