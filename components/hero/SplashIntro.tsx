@@ -424,12 +424,16 @@ export default function SplashIntro({ data, dict }: { data?: any, dict?: any }) 
       gsap.set(preloaderRectEl, { strokeDashoffset: currentOffset });
       if (preloaderShine) gsap.to(preloaderShine, { opacity: 0, duration: 0.4, ease: 'power2.out' });
       gsap.to(preloaderRectEl, {
-        strokeDashoffset: 0, duration: 0.5, ease: 'power2.out',
+        strokeDashoffset: 0, duration: 0.3, ease: 'power2.out', // Snappy completion (was 0.5s)
         onComplete: () => {
           globalPreloaderFinished = true;
+          
+          // 🚀 Parallel Trigger: Instantly play the cinematic timeline!
+          window.dispatchEvent(new CustomEvent('preloader-complete'));
+          
+          // Concurrently fade out the preloader border box!
           gsap.to(preloaderBox, {
-            opacity: 0, duration: 0.8, ease: 'power2.out',
-            onComplete: () => { window.dispatchEvent(new CustomEvent('preloader-complete')); }
+            opacity: 0, duration: 0.5, ease: 'power2.out', // Faster fade (was 0.8s)
           });
         },
       });
