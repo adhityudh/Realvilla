@@ -31,6 +31,7 @@ export async function generateMetadata(
 
 import SectionRenderer from '@/components/sections/SectionRenderer';
 import FooterPaddingSetter from '@/components/providers/FooterPaddingSetter';
+import OtherProperties from '@/components/sections/OtherProperties';
 
 export default async function PropertyPage({ params }: { params: Promise<{ locale: string, slug: string }> }) {
   const { locale, slug } = await params;
@@ -58,7 +59,21 @@ export default async function PropertyPage({ params }: { params: Promise<{ local
       <FooterPaddingSetter active={settings?.propertyDetailFooterPaddingHigh} />
       <TranslationSetter translations={property._translations ?? []} />
       <PropertyGallery property={property} dict={dict} />
-      <PropertyDetails property={property} dict={dict} locale={locale} />
+      <PropertyDetails 
+        property={property} 
+        dict={dict} 
+        locale={locale} 
+        quickLinks={settings?.propertyQuickLinks}
+        useRequestGuidance={settings?.propertyUseRequestGuidance}
+      />
+      <OtherProperties 
+        currentPropertyId={property._id}
+        categoryId={property.category?._id}
+        municipality={property.location?.municipality}
+        price={property.price}
+        locale={locale}
+        dict={dict}
+      />
       {settings?.propertyDetailSections && (
         <SectionRenderer 
           sections={settings.propertyDetailSections} 

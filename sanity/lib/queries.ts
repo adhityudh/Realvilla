@@ -287,6 +287,11 @@ export const SETTINGS_QUERY = groq`
       ${SECTION_PROJECTION}
     },
     propertyDetailFooterPaddingHigh,
+    propertyQuickLinks[] {
+      label,
+      "link": ${INTERNAL_LINK_PROJECTION}
+    },
+    propertyUseRequestGuidance,
     filterSidebar,
     socialLinks[] {
       label,

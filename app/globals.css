@@ -436,6 +436,9 @@ html.lenis body {
   background: var(--color-gold-dark);
 }
 
-.property-status-badge.sold {
-  /* Keeps neutral and airy, letting the Gold dot communicate prestige */
+@media (max-width: 1024px) {
+  .btn-pill {
+    padding: 0.925rem 1.75rem;
+    font-size: var(--text-sm);
+  }
 }

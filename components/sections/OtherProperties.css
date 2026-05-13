@@ -1,0 +1,76 @@
+.other-properties-section {
+  background-color: var(--bg-cream, #F9F9F6);
+  padding: 8rem 0;
+  margin: 5rem 0;
+}
+
+.other-properties-container {
+  max-width: var(--container-max-width, 1440px);
+  margin: 0 auto;
+  padding: 0 3rem;
+}
+
+.other-properties-title {
+  font-family: var(--font-cormorant), 'Cormorant Garamond', serif;
+  font-size: var(--text-display-md, 3rem);
+  line-height: var(--lh-tight, 1.1);
+  font-weight: var(--fw-light, 300);
+  letter-spacing: var(--ls-tight, -0.02em);
+  text-transform: uppercase;
+  color: var(--text-black, #111);
+  margin-bottom: 5rem;
+  text-align: center;
+}
+
+.properties-grid-suggested {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4rem 1.5rem;
+  margin-bottom: 5rem;
+}
+
+.other-properties-cta {
+  display: flex;
+  justify-content: center;
+}
+
+/* Tablet Responsive Overrides */
+@media (max-width: 1024px) {
+  .other-properties-section {
+    padding: 5rem 0;
+    margin: 3rem 0;
+  }
+
+  .other-properties-container {
+    padding: 0 1.5rem;
+  }
+
+  .properties-grid-suggested {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 3rem 1.5rem;
+    margin-bottom: 3rem;
+  }
+
+  .other-properties-title {
+    font-size: var(--text-display-sm, 2.5rem);
+    margin-bottom: 3rem;
+  }
+}
+
+/* Mobile Responsive Overrides */
+@media (max-width: 768px) {
+  .other-properties-section {
+    padding: 5rem 0;
+  }
+
+  .properties-grid-suggested {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+    margin-bottom: 3rem;
+  }
+
+  .other-properties-title {
+    font-size: var(--text-3xl, 1.875rem);
+    margin-bottom: 3rem;
+  }
+}

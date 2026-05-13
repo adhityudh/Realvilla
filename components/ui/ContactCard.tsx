@@ -29,6 +29,9 @@ export interface ContactCardProps {
   
   className?: string;
   onStepChange?: (step: ContactFormStep) => void;
+  isInsideExternalModal?: boolean;
+  onSubmittingChange?: (isSubmitting: boolean) => void;
+  onSubmitSuccessChange?: (success: boolean | null) => void;
 }
 
 const intentKeys = ['general', 'sell', 'buy', 'invest'] as const;
@@ -45,7 +48,10 @@ export default function ContactCard({
   sellTitle,
   sellSubtitle,
   className = '',
-  onStepChange
+  onStepChange,
+  isInsideExternalModal = false,
+  onSubmittingChange,
+  onSubmitSuccessChange
 }: ContactCardProps) {
   // Added for displaying next step in sliding sidebar drawer
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -99,6 +105,19 @@ export default function ContactCard({
   // Adaptive height locking for anti-jumping transitions
   const cardRef = useRef<HTMLDivElement>(null);
   const [lockedHeight, setLockedHeight] = useState<number | null>(null);
+
+  // Forward states up if inside external containers
+  useEffect(() => {
+    if (onSubmittingChange) {
+      onSubmittingChange(isSubmitting);
+    }
+  }, [isSubmitting, onSubmittingChange]);
+
+  useEffect(() => {
+    if (onSubmitSuccessChange) {
+      onSubmitSuccessChange(submitSuccess);
+    }
+  }, [submitSuccess, onSubmitSuccessChange]);
 
   // Anti-spam stealth trackers
   const [formStartTime] = useState(() => Date.now());
@@ -694,6 +713,22 @@ export default function ContactCard({
     if (modalStep === 'sell') return sellDict.subtitle;
     return '';
   };
+
+  if (isInsideExternalModal) {
+    return (
+      <>
+        {submitSuccess ? (
+          renderSuccessState(true)
+        ) : (
+          <>
+            {step === 'intent' && renderIntentStep()}
+            {step === 'general' && renderGeneralForm(true)}
+            {step === 'sell' && renderSellForm(true)}
+          </>
+        )}
+      </>
+    );
+  }
 
   return (
     <>

@@ -103,7 +103,7 @@ export default function BuyingProcessSection({ data }: BuyingProcessSectionProps
   });
 
   return (
-    <section className={`buying-process-section order-${imageOrder}`} ref={sectionRef}>
+    <section className={`buying-process-section order-${imageOrder}`} id="buying-process" ref={sectionRef}>
       <div className="process-container">
         {/* Header */}
         {(tagline || headline || intro) && (

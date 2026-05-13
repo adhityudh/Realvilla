@@ -77,6 +77,62 @@ export const settings = defineType({
       group: 'propertyDetail',
     }),
     defineField({
+      name: 'propertyQuickLinks',
+      title: 'Property Quick Links',
+      description: 'Add editorial jumping links right beneath the property description block (e.g. BUYING PROCESS, MORTGAGE OPTIONS).',
+      type: 'array',
+      group: 'propertyDetail',
+      of: [
+        {
+          type: 'object',
+          fields: [
+            defineField({ name: 'label', title: 'Label', type: 'string' }),
+            defineField({
+              name: 'linkType',
+              title: 'Link Type',
+              type: 'string',
+              options: {
+                list: [
+                  { title: 'Internal Page', value: 'internal' },
+                  { title: 'External URL / Anchor Hash', value: 'external' },
+                ],
+                layout: 'radio',
+              },
+              initialValue: 'external',
+            }),
+            defineField({
+              name: 'internalLink',
+              title: 'Internal Link',
+              type: 'reference',
+              to: [{ type: 'page' }],
+              hidden: ({ parent }) => parent?.linkType !== 'internal',
+            }),
+            defineField({
+              name: 'externalLink',
+              title: 'External Link / Anchor Hash',
+              type: 'string',
+              hidden: ({ parent }) => parent?.linkType !== 'external',
+              description: 'Enter a full URL or a relative hash anchor (e.g., #buying-process)',
+            }),
+          ],
+          preview: {
+            select: {
+              title: 'label',
+              subtitle: 'externalLink',
+            },
+          },
+        },
+      ],
+    }),
+    defineField({
+      name: 'propertyUseRequestGuidance',
+      title: 'Use Request Guidance Modal',
+      description: 'If enabled, the "REQUEST GUIDANCE" link will appear in the quick links and trigger the direct contact modal on click.',
+      type: 'boolean',
+      initialValue: true,
+      group: 'propertyDetail',
+    }),
+    defineField({
       name: 'filterSidebar',
       title: 'Filter Sidebar Text',
       type: 'object',

@@ -129,6 +129,17 @@
 }
 
 /* Overrides for form nested inside modal body */
+.contact-modal-body .contact-card {
+    background: transparent !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow: visible !important; /* Allows outer modal container scrollbars to take over */
+    height: auto !important;
+    z-index: 1 !important;
+}
+
 .contact-modal-body .contact-form {
     padding: 0;
 }

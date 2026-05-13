@@ -145,7 +145,7 @@ export default function BuyMortgageSimSection({ data, dict, contextData }: { dat
   if (!data) return null;
 
   return (
-    <section className="mortgage-sim-section" ref={sectionRef}>
+    <section className="mortgage-sim-section" id="mortgage-simulator" ref={sectionRef}>
       <div className="mortgage-sim-container">
 
         {/* ── Top Row: Split Header ── */}

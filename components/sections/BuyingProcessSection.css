@@ -53,7 +53,6 @@
   letter-spacing: var(--ls-tight);
   text-transform: uppercase;
   max-width: 800px;
-  margin-bottom: 1.5rem;
 }
 
 .process-intro {
@@ -62,6 +61,7 @@
   line-height: var(--lh-relaxed);
   color: var(--text-body);
   max-width: 600px;
+  margin-top: 1.5rem;
 }
 
 /* ── Steps Loop ── */

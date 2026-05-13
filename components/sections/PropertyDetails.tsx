@@ -1,17 +1,75 @@
 'use client';
 
+import { useState } from 'react';
 import { PortableText } from 'next-sanity';
 import PropertyMap from '@/components/ui/Map';
+import Button from '@/components/ui/Button';
+import ContactModal from '@/components/ui/ContactModal';
+import ContactCard from '@/components/ui/ContactCard';
 import './PropertyDetails.css';
 
 interface PropertyDetailsProps {
   property: any;
   dict?: any;
   locale?: string;
+  quickLinks?: any[];
+  useRequestGuidance?: boolean;
 }
 
-export default function PropertyDetails({ property, dict, locale = 'en' }: PropertyDetailsProps) {
+export default function PropertyDetails({ 
+  property, 
+  dict, 
+  locale = 'en',
+  quickLinks = [],
+  useRequestGuidance = true
+}: PropertyDetailsProps) {
+  const [isContactModalOpen, setIsContactModalOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitSuccess, setSubmitSuccess] = useState<boolean | null>(null);
+
   if (!property) return null;
+
+  const handleQuickLinkClick = (e: React.MouseEvent<any>, url: string) => {
+    if (!url) return;
+
+    const smoothScrollTo = (target: HTMLElement) => {
+      if (typeof window !== 'undefined' && (window as any).lenis) {
+        (window as any).lenis.scrollTo(target, { offset: -80, duration: 1.2 });
+      } else {
+        target.scrollIntoView({ behavior: 'smooth' });
+      }
+    };
+
+    // 1. Comprehensive Dynamic Anchor Interceptor
+    // EXTREME PURGE: Strips invisible unicode characters & zero-width sequences to prevent selector mismatch!
+    const cleanUrl = String(url)
+      .replace(/[\u200B-\u200D\uFEFF]/g, '') // zero-width space/joiners
+      .replace(/[^\x20-\x7E]/g, '') // remove all non-printable ascii/utf chars
+      .trim();
+    const hashIndex = cleanUrl.indexOf('#');
+    
+    if (hashIndex !== -1) {
+      const anchorId = cleanUrl.substring(hashIndex + 1).trim();
+      if (anchorId) {
+        const el = document.getElementById(anchorId);
+        if (el) {
+          // Found the element! Block default action and trigger smooth scroll!
+          e.preventDefault();
+          smoothScrollTo(el);
+          return; // Mission accomplished
+        }
+      }
+    }
+
+    // 2. Contextual Fallbacks for System-Known Anchors (if element isn't loaded on this page)
+    if (cleanUrl.includes('#mortgage-simulator')) {
+      e.preventDefault();
+      window.location.href = locale === 'es' ? '/es/comprar#mortgage-simulator' : '/en/buy#mortgage-simulator';
+    } else if (cleanUrl.includes('#buying-process')) {
+      e.preventDefault();
+      window.location.href = locale === 'es' ? '/es/comprar#buying-process' : '/en/buy#buying-process';
+    }
+  };
 
   const formatDate = (dateStr: string) => {
     if (!dateStr) return '—';
@@ -93,6 +151,34 @@ export default function PropertyDetails({ property, dict, locale = 'en' }: Prope
               <div className="portable-text-wrapper">
                 <PortableText value={property.description} />
               </div>
+              
+              {((quickLinks && quickLinks.length > 0) || useRequestGuidance) && (
+                <div className="property-quick-links">
+                  {/* Dynamically rendered editorial links */}
+                  {quickLinks?.map((ql: any, qIdx: number) => (
+                    <Button
+                      key={qIdx}
+                      label={ql.label}
+                      href={ql.link || '#'}
+                      onClick={(e) => handleQuickLinkClick(e, ql.link)}
+                      variant="link"
+                    />
+                  ))}
+
+                  {/* Fixed optional guidance direct modal trigger */}
+                  {useRequestGuidance && (
+                    <Button
+                      label={locale === 'es' ? 'SOLICITAR ASESORAMIENTO' : 'REQUEST GUIDANCE'}
+                      href="#"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setIsContactModalOpen(true);
+                      }}
+                      variant="link"
+                    />
+                  )}
+                </div>
+              )}
             </div>
           )}
 
@@ -161,8 +247,43 @@ export default function PropertyDetails({ property, dict, locale = 'en' }: Prope
         <div className="details-right-col">
           {/* Placeholder for right column content */}
         </div>
-
       </div>
+
+      <ContactModal
+        isOpen={isContactModalOpen}
+        onClose={() => {
+          setIsContactModalOpen(false);
+          // Wait for exit transition, then reset state seamlessly
+          setTimeout(() => {
+            setSubmitSuccess(null);
+            setIsSubmitting(false);
+          }, 450);
+        }}
+        title={locale === 'es' ? 'Solicitar Asesoramiento' : 'Request Guidance'}
+        subtitle={property.title}
+        footer={
+          !submitSuccess && (
+            <Button 
+              type="submit" 
+              form="contact-modal-general-form"
+              variant="dark" 
+              label={isSubmitting ? (dict?.contact?.sending || (locale === 'es' ? 'Enviando...' : 'Sending...')) : (dict?.contact?.general?.submit || (locale === 'es' ? 'ENVIAR MENSAJE' : 'SEND MESSAGE'))} 
+              className="form-submit-btn" 
+              showArrow={!isSubmitting}
+              disabled={isSubmitting}
+            />
+          )
+        }
+      >
+        <ContactCard
+          dict={dict}
+          initialStep="general"
+          allowBack={false}
+          isInsideExternalModal={true}
+          onSubmittingChange={setIsSubmitting}
+          onSubmitSuccessChange={setSubmitSuccess}
+        />
+      </ContactModal>
     </section>
   );
 }
