@@ -143,7 +143,7 @@
   font-size: var(--text-sm);
   font-weight: var(--fw-medium);
   color: var(--text-black);
-  margin-top: -0.4rem;
+  margin-top: -0.3rem;
 }
 
 
@@ -226,6 +226,10 @@
 
   .details-left-col {
     gap: 3rem;
+  }
+
+  .meta-info-value {
+    font-size: var(--text-base-sm);
   }
 }
 

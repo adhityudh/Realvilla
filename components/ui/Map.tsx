@@ -53,7 +53,7 @@ export default function PropertyMap({ lat, lng, title }: PropertyMapProps) {
       // High-Contrast Branded Premium Style
       const mapStyle = [
         { "elementType": "geometry", "stylers": [{ "color": "#f4f1eb" }] }, // Darkened base for road contrast
-        { "elementType": "labels.icon", "stylers": [{ "visibility": "off" }] },
+        { "elementType": "labels.icon", "stylers": [{ "saturation": -100 }, { "lightness": -10 }] }, // Charcoal-grey POI icons for deep editorial defining
         { "elementType": "labels.text.fill", "stylers": [{ "color": "#2c2b29" }] }, // High contrast text
         { "elementType": "labels.text.stroke", "stylers": [{ "color": "#f4f1eb" }] },
         { "featureType": "administrative", "elementType": "geometry.stroke", "stylers": [{ "color": "#c4b8a4" }] },
