@@ -277,6 +277,7 @@ export const SECTION_PROJECTION = groq`
         heading,
         body,
         stats[] {
+          prefix,
           value,
           suffix,
           label

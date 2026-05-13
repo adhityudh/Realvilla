@@ -26,6 +26,12 @@ export const statsSection = defineType({
           type: 'object',
           fields: [
             defineField({ 
+              name: 'prefix', 
+              title: 'Prefix Text', 
+              type: 'string',
+              description: 'Optional smaller text before the value, e.g., Up to, Avg., Over'
+            }),
+            defineField({ 
               name: 'value', 
               title: 'Main Value', 
               type: 'string',
@@ -47,13 +53,14 @@ export const statsSection = defineType({
           ],
           preview: {
             select: {
+              prefix: 'prefix',
               value: 'value',
               suffix: 'suffix',
               label: 'label'
             },
-            prepare({ value, suffix, label }) {
+            prepare({ prefix, value, suffix, label }) {
               return {
-                title: `${value || ''} ${suffix || ''}`,
+                title: `${prefix ? prefix + ' ' : ''}${value || ''}${suffix ? ' ' + suffix : ''}`,
                 subtitle: label || 'No label'
               }
             }

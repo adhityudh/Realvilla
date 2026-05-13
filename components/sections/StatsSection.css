@@ -16,11 +16,34 @@
     grid-template-columns: 1fr 1fr 1fr;
     gap: 4.5rem 5rem;
     align-items: start;
+    position: relative;
+    /* Anchor for grid-aware absolute pseudo-elements */
+}
+
+.stats-divider {
+    position: absolute;
+    background-color: var(--border-light);
+    pointer-events: none;
+}
+
+/* Horizontal Separators */
+.stats-divider-h {
+    left: 0;
+    right: 0;
+    height: 1px;
+}
+
+.stats-divider-h-1 {
+    grid-column: 1 / -1;
+    /* Spans full width of all columns */
+    grid-row: 1;
+    bottom: -4.5rem;
+    /* Locks flush to bottom of row 1 (gap = 4.5rem) */
 }
 
 .stats-heading {
     font-family: var(--font-cormorant), serif;
-    font-size: var(--text-display-sm);
+    font-size: var(--text-display-xs);
     font-weight: var(--fw-light);
     line-height: var(--lh-tight);
     text-transform: uppercase;
@@ -31,15 +54,19 @@
     grid-column: 1;
     grid-row: 1;
     padding-right: 2rem;
+    padding-bottom: 1.5rem;
+    align-self: end;
 }
 
 .stats-copy {
     font-family: var(--font-manrope), sans-serif;
-    font-size: var(--text-base);
+    font-size: var(--text-base-sm);
     color: var(--text-black);
     line-height: var(--lh-base);
     max-width: 420px;
-    padding-right: 2rem;
+    padding-right: 5rem;
+    padding-bottom: 1.5rem;
+    align-self: end;
 }
 
 .stats-item {
@@ -56,13 +83,14 @@
 
 .stats-value {
     font-family: var(--font-cormorant), serif;
-    font-size: var(--text-display-lg);
+    font-size: var(--text-display-xl);
     font-weight: var(--fw-regular);
     line-height: var(--lh-ultra);
     color: var(--text-black);
     letter-spacing: var(--ls-tighter);
 }
 
+.stats-prefix,
 .stats-suffix {
     font-family: var(--font-cormorant), serif;
     font-size: var(--text-display-xs);
@@ -95,6 +123,12 @@
         gap: 3.5rem 4rem;
     }
 
+
+    .stats-divider-h-1 {
+        bottom: -3.5rem;
+        /* Locks flush to row 1 bottom */
+    }
+
     .stats-heading,
     .stats-copy {
         padding-right: 0;
@@ -115,6 +149,12 @@
         gap: 3.5rem 2.5rem;
     }
 
+
+    .stats-divider-h-1 {
+        bottom: -3.5rem;
+        /* Adjust horizontal offset for new row-gap */
+    }
+
     /* Mobile Flow override */
     .stats-heading {
         grid-column: 1 / span 2;
@@ -124,6 +164,7 @@
         order: 1;
         /* Heading first */
         margin-bottom: 1rem;
+        padding: 0;
     }
 
     /* Allow stat items to auto-flow 2x2 under the Heading on Mobile */
@@ -145,6 +186,7 @@
         margin-top: -2rem;
         /* Pulls copy closer to header, tightening uniform grid-gap */
         margin-bottom: 0.5rem;
+        padding-bottom: 0;
         /* Buffer space above statistical numbers */
     }
 
@@ -162,6 +204,12 @@
         /* Tighten spacing for small viewports */
     }
 
+
+    .stats-divider-h-1 {
+        bottom: -2.5rem;
+        /* Mobile row-gap offset adjustment */
+    }
+
     .stats-heading,
     .stats-copy {
         grid-column: 1 / span 2;
@@ -173,6 +221,7 @@
         /* Standardised fluid display size for mobile */
     }
 
+    .stats-prefix,
     .stats-suffix {
         font-size: var(--text-md);
         /* Uses global variable instead of hardcoded units */

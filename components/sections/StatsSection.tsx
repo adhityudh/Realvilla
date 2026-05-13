@@ -11,6 +11,7 @@ if (typeof window !== 'undefined') {
 
 interface StatItem {
   _key?: string;
+  prefix?: string;
   value: string;
   suffix?: string;
   label?: string;
@@ -84,6 +85,9 @@ export default function StatsSection({ data }: StatsSectionProps) {
     <section className="stats-section" ref={sectionRef}>
       <div className="stats-container">
         <div className="stats-grid" ref={gridRef}>
+          {/* Structural Layout Dividers */}
+          <div className="stats-divider stats-divider-h stats-divider-h-1" aria-hidden="true" />
+
           {/* Heading - integrated at the absolute top of the grid tree */}
           {data.heading && <h2 className="stats-heading">{data.heading}</h2>}
 
@@ -91,6 +95,7 @@ export default function StatsSection({ data }: StatsSectionProps) {
           {data.stats?.map((item, idx) => (
             <div key={item._key || idx} className="stats-item">
               <div className="stats-value-wrapper">
+                {item.prefix && <span className="stats-prefix">{item.prefix}</span>}
                 <span className="stats-value">{item.value}</span>
                 {item.suffix && <span className="stats-suffix">{item.suffix}</span>}
               </div>
