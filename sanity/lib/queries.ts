@@ -272,6 +272,15 @@ export const SECTION_PROJECTION = groq`
             value
           }
         }
+      },
+      _type == "statsSection" => {
+        heading,
+        body,
+        stats[] {
+          value,
+          suffix,
+          label
+        }
       }
 `
 

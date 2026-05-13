@@ -1,0 +1,107 @@
+'use client';
+
+import React, { useEffect, useRef } from 'react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import './StatsSection.css';
+
+if (typeof window !== 'undefined') {
+  gsap.registerPlugin(ScrollTrigger);
+}
+
+interface StatItem {
+  _key?: string;
+  value: string;
+  suffix?: string;
+  label?: string;
+}
+
+interface StatsSectionProps {
+  data: {
+    heading?: string;
+    body?: string;
+    stats?: StatItem[];
+  };
+}
+
+export default function StatsSection({ data }: StatsSectionProps) {
+  const sectionRef = useRef<HTMLElement>(null);
+  const gridRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!sectionRef.current || !gridRef.current) return;
+
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: sectionRef.current,
+        start: 'top 85%',
+        toggleActions: 'play none none reverse',
+      }
+    });
+
+    const heading = gridRef.current.querySelector('.stats-heading');
+    const items = gridRef.current.querySelectorAll('.stats-item');
+    const copy = gridRef.current.querySelector('.stats-copy');
+
+    if (heading) {
+      tl.fromTo(
+        heading,
+        { opacity: 0, filter: 'blur(10px)' },
+        { opacity: 1, filter: 'blur(0px)', duration: 1, ease: 'power3.out' }
+      );
+    }
+
+    if (items.length > 0) {
+      tl.fromTo(
+        items,
+        { opacity: 0, filter: 'blur(10px)' },
+        { opacity: 1, filter: 'blur(0px)', duration: 0.8, stagger: 0.12, ease: 'power3.out' },
+        heading ? '-=0.7' : '0'
+      );
+    }
+
+    if (copy) {
+      tl.fromTo(
+        copy,
+        { opacity: 0, filter: 'blur(8px)' },
+        { opacity: 1, filter: 'blur(0px)', duration: 0.8, ease: 'power3.out' },
+        '-=0.6'
+      );
+    }
+
+    return () => {
+      ScrollTrigger.getAll().forEach(st => {
+        if (st.trigger === sectionRef.current) {
+          st.kill();
+        }
+      });
+    };
+  }, []);
+
+  if (!data) return null;
+
+  return (
+    <section className="stats-section" ref={sectionRef}>
+      <div className="stats-container">
+        <div className="stats-grid" ref={gridRef}>
+          {/* Heading - integrated at the absolute top of the grid tree */}
+          {data.heading && <h2 className="stats-heading">{data.heading}</h2>}
+
+          {/* Stat Items */}
+          {data.stats?.map((item, idx) => (
+            <div key={item._key || idx} className="stats-item">
+              <div className="stats-value-wrapper">
+                <span className="stats-value">{item.value}</span>
+                {item.suffix && <span className="stats-suffix">{item.suffix}</span>}
+              </div>
+              {item.label && <p className="stats-label">{item.label}</p>}
+            </div>
+          ))}
+
+          {/* Copy Text - now placed as the final element in the grid tree */}
+          {data.body && <p className="stats-copy">{data.body}</p>}
+        </div>
+      </div>
+    </section>
+  );
+}

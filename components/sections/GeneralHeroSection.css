@@ -103,8 +103,6 @@
 
     .general-hero-subtitle {
         font-size: var(--text-base);
-        line-height: 1.6;
-        padding: 0 1rem;
     }
 
     .general-hero-cta-wrapper {
