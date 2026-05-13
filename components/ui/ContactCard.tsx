@@ -112,6 +112,15 @@ export default function ContactCard({
 
     const currentUrl = typeof window !== 'undefined' ? window.location.href : '';
 
+    // Validate custom dynamic select fields which lack native HTML5 form validation triggers
+    if (formType === 'sell' && (!selectedMunicipality || !selectedPropertyType)) {
+      setSubmitError(
+        dict?.filter?.no_results ? "Por favor, complete todos los campos obligatorios." : "Please fill out all required fields."
+      );
+      setIsSubmitting(false);
+      return;
+    }
+
     const payload = formType === 'sell' ? {
       formType: 'sell',
       name: sellName,
@@ -246,7 +255,7 @@ export default function ContactCard({
 
   const renderMunicipalitySelector = (isInsideModal: boolean) => (
     <div className="form-group form-custom-select-group" ref={munDropdownRef}>
-      <label>{sellDict.fields.municipality}</label>
+      <label>{sellDict.fields.municipality} <span className="form-required">{sellDict.fields.required || "*"}</span></label>
       <div 
         className={`custom-select-trigger ${selectedMunicipality ? 'has-value' : ''} ${munDropdownOpen ? 'active' : ''}`}
         onClick={() => setMunDropdownOpen(!munDropdownOpen)}
@@ -305,7 +314,7 @@ export default function ContactCard({
 
   const renderPropertyTypeSelector = (isInsideModal: boolean) => (
     <div className="form-group">
-      <label>{sellDict.fields.property_type}</label>
+      <label>{sellDict.fields.property_type} <span className="form-required">{sellDict.fields.required || "*"}</span></label>
       
       <input 
         type="hidden" 
@@ -498,7 +507,9 @@ export default function ContactCard({
       <p className="form-subtitle">{generalDict.subtitle}</p>
       
       <div className="form-group">
-        <label htmlFor={isInsideModal ? "modal-name" : "name"}>{generalDict.fields.name}</label>
+        <label htmlFor={isInsideModal ? "modal-name" : "name"}>
+          {generalDict.fields.name} <span className="form-required">{sellDict.fields.required || "*"}</span>
+        </label>
         <input 
           type="text" 
           id={isInsideModal ? "modal-name" : "name"} 
@@ -510,7 +521,9 @@ export default function ContactCard({
       </div>
       
       <div className="form-group">
-        <label htmlFor={isInsideModal ? "modal-email" : "email"}>{generalDict.fields.email}</label>
+        <label htmlFor={isInsideModal ? "modal-email" : "email"}>
+          {generalDict.fields.email} <span className="form-required">{sellDict.fields.required || "*"}</span>
+        </label>
         <input 
           type="email" 
           id={isInsideModal ? "modal-email" : "email"} 
@@ -522,12 +535,15 @@ export default function ContactCard({
       </div>
       
       <div className="form-group">
-        <label>{generalDict.fields.phone}</label>
+        <label>
+          {generalDict.fields.phone} <span className="form-required">{sellDict.fields.required || "*"}</span>
+        </label>
         <PhoneInput
           placeholder={generalDict.fields.phone_placeholder}
           value={generalPhone}
           onChange={setGeneralPhone}
           defaultCountry={detectedCountry}
+          required
           numberInputProps={{
             id: isInsideModal ? "modal-phone" : "phone"
           }}
@@ -621,12 +637,13 @@ export default function ContactCard({
       
       <div className="form-group">
         <label htmlFor={isInsideModal ? "modal-sell-email" : "sell-email"}>
-          {sellDict.fields.email} <span className="form-optional">{sellDict.fields.optional}</span>
+          {sellDict.fields.email} <span className="form-required">{sellDict.fields.required || "*"}</span>
         </label>
         <input 
           type="email" 
           id={isInsideModal ? "modal-sell-email" : "sell-email"} 
           placeholder={sellDict.fields.email_placeholder}
+          required
           value={sellEmail}
           onChange={(e) => setSellEmail(e.target.value)}
         />
