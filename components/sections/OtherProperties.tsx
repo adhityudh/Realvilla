@@ -9,23 +9,24 @@ interface OtherPropertiesProps {
   currentPropertyId: string;
   categoryId?: string;
   municipality?: string;
-  price?: number;
   locale: string;
   dict: any;
 }
 
-// Single GROQ Query with high-dimensional additive score sorting:
-// - Same Category: weight 5 (Primary context: type match)
-// - Similar Price (±30%): weight 4 (High psychological constraint: budget match)
-// - Same Municipality: weight 3 (Geographic constraint: area match)
-// Summation provides perfect matching (12), cross-attribute blends, or newest fallback (0).
+// Single GROQ Query with smart sorting weights:
+// Priority score: 
+// 3 = SAME Category && SAME Municipality
+// 2 = SAME Category ONLY
+// 1 = SAME Municipality ONLY
+// 0 = Default (Fallback to newest)
 const SUGGESTED_PROPERTIES_QUERY = groq`
   *[_type == "property" && (language == $language || (!defined(language) && $language == "en")) && status == "for-sale" && _id != $currentId] 
   | order(
-      (
-        select(category._ref == $categoryId => 5, 0) + 
-        select(price >= $minPrice && price <= $maxPrice => 4, 0) + 
-        select(location.municipality == $municipality => 3, 0)
+      select(
+        category._ref == $categoryId && location.municipality == $municipality => 3,
+        category._ref == $categoryId => 2,
+        location.municipality == $municipality => 1,
+        0
       ) desc,
       _createdAt desc
     ) [0...3] {
@@ -33,14 +34,8 @@ const SUGGESTED_PROPERTIES_QUERY = groq`
     }
 `;
 
-export default async function OtherProperties({ currentPropertyId, categoryId, municipality, price, locale, dict }: OtherPropertiesProps) {
+export default async function OtherProperties({ currentPropertyId, categoryId, municipality, locale, dict }: OtherPropertiesProps) {
   let properties = [];
-  
-  // Calculate similar budget thresholds (±30%) to feed matching engine
-  const currentPrice = Number(price) || 0;
-  const minPrice = currentPrice > 0 ? currentPrice * 0.70 : 0;
-  const maxPrice = currentPrice > 0 ? currentPrice * 1.30 : 0;
-
   try {
     properties = await client.fetch(
       SUGGESTED_PROPERTIES_QUERY, 
@@ -48,9 +43,7 @@ export default async function OtherProperties({ currentPropertyId, categoryId, m
         language: locale, 
         currentId: currentPropertyId, 
         categoryId: categoryId || '', 
-        municipality: municipality || '',
-        minPrice,
-        maxPrice
+        municipality: municipality || '' 
       },
       { next: { revalidate: 60 } }
     );
@@ -71,7 +64,7 @@ export default async function OtherProperties({ currentPropertyId, categoryId, m
         
         <div className="properties-grid-suggested">
           {properties.map((prop: any) => (
-            <PropertyCard key={prop._id} prop={prop} dict={dict} />
+            <PropertyCard key={prop._id} prop={prop} variant="seamless" dict={dict} />
           ))}
         </div>
 

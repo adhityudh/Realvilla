@@ -70,7 +70,6 @@ export default async function PropertyPage({ params }: { params: Promise<{ local
         currentPropertyId={property._id}
         categoryId={property.category?._id}
         municipality={property.location?.municipality}
-        price={property.price}
         locale={locale}
         dict={dict}
       />
