@@ -60,6 +60,25 @@ export default function FinancingCardsSection({ data }: FinancingCardsSectionPro
       }
     );
 
+    // 🌌 Pure Luxury: Soft GSAP Scrubber for Subdued Background Motion
+    const bgAsset = sectionRef.current.querySelector('.financing-bg-asset');
+    if (bgAsset) {
+      gsap.fromTo(
+        bgAsset,
+        { yPercent: -8 }, // 🔭 Starts slightly raised
+        {
+          yPercent: 8, // 🔭 Gently lowers down
+          ease: 'none',
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: 'top bottom',
+            end: 'bottom top',
+            scrub: 0.6, // 🧘‍♂️ Buttery slow deceleration tracker
+          },
+        }
+      );
+    }
+
     return () => {
       ScrollTrigger.getAll().forEach((st) => st.kill());
     };

@@ -2,8 +2,6 @@
   position: relative;
   padding: 7rem 0;
   margin: 5rem 0;
-  margin: 0;
-  /* 🧼 Removed redundant margin stack */
   display: flex;
   align-items: center;
   overflow: hidden;
@@ -12,15 +10,13 @@
 /* ── Full Width High-End Interior Backdrop ── */
 .financing-bg-asset {
   position: absolute;
-  top: 0;
+  top: -10%; /* 🔭 Bleed top slightly for soft motion */
   left: 0;
   right: 0;
-  bottom: 0;
-  /* 🌌 Dynamic Image is injected via React 'style' tags now! */
+  height: 120%; /* 🔭 Overflow buffer for GSAP scroll track */
   background-size: cover;
   background-position: center center;
-  background-attachment: fixed;
-  /* Elegant subtle parallax anchor */
+  background-attachment: scroll; /* 🧼 Stripped heavy fixed parallax */
   opacity: 1;
   z-index: 1;
 }
