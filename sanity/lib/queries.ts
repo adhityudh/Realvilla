@@ -273,6 +273,19 @@ export const SECTION_PROJECTION = groq`
           }
         }
       },
+      _type == "mortgageProcessSection" => {
+        tagline,
+        headline,
+        intro,
+        imageOrder,
+        steps[] {
+          number,
+          title,
+          description,
+          image { asset->{ _id, url, metadata { lqip, dimensions } } },
+          icon { asset->{ _id, url } }
+        }
+      },
       _type == "statsSection" => {
         heading,
         body,

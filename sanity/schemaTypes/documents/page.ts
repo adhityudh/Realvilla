@@ -62,6 +62,7 @@ export const page = defineType({
         { type: 'buyingProcessSection' },
         { type: 'buyMortgageSimSection' },
         { type: 'statsSection' },
+        { type: 'mortgageProcessSection' },
       ],
     }),
     defineField({

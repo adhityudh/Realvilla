@@ -54,8 +54,7 @@
     grid-column: 1;
     grid-row: 1;
     padding-right: 2rem;
-    padding-bottom: 1.5rem;
-    align-self: end;
+    align-self: center;
 }
 
 .stats-copy {
@@ -65,8 +64,7 @@
     line-height: var(--lh-base);
     max-width: 420px;
     padding-right: 5rem;
-    padding-bottom: 1.5rem;
-    align-self: end;
+    align-self: center;
 }
 
 .stats-item {
@@ -84,7 +82,7 @@
 .stats-value {
     font-family: var(--font-cormorant), serif;
     font-size: var(--text-display-xl);
-    font-weight: var(--fw-regular);
+    font-weight: var(--fw-light);
     line-height: var(--lh-ultra);
     color: var(--text-black);
     letter-spacing: var(--ls-tighter);
