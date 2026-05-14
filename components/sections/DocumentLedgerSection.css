@@ -42,7 +42,7 @@
   margin-bottom: 1.5rem;
 }
 
-.ledger-tagline::after {
+.ledger-tagline::before {
   content: '';
   width: 30px;
   height: 1px;
