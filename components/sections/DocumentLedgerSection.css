@@ -213,6 +213,6 @@
   }
 
   .ledger-item-title {
-    font-size: var(--text-base-md);
+    font-size: var(--text-base);
   }
 }
