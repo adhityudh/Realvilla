@@ -268,7 +268,7 @@
   }
 
   .mortgage-step-title {
-    font-size: var(--text-base);
+    font-size: var(--text-md);
   }
 
   .mortgage-step-body {

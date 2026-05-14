@@ -193,7 +193,6 @@
         order: 2;
         text-align: left;
         width: 100%;
-        margin-bottom: 1.5rem;
     }
 
     .mortgage-faq-description {
@@ -204,6 +203,7 @@
         margin-top: 0;
         color: var(--text-muted);
         line-height: var(--lh-relaxed);
+        margin-top: 1.5rem;
     }
 
     .faq-item {
