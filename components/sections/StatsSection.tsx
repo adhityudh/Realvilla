@@ -35,7 +35,7 @@ export default function StatsSection({ data }: StatsSectionProps) {
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: sectionRef.current,
-        start: 'top 90%', // 🚀 Triggers sooner on mobile scrolling gestures!
+        start: 'top 78%', // 📐 Perfect golden ratio to witness the luxury reveal!
         toggleActions: 'play none none reverse',
       }
     });

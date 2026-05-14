@@ -66,7 +66,7 @@ export default function FinancingCardsSection({ data }: FinancingCardsSectionPro
         ease: 'power3.out',
         scrollTrigger: {
           trigger: sectionRef.current,
-          start: 'top 90%', // 🚀 Activates much sooner on fast mobile scrolls!
+          start: 'top 78%', // 📐 Golden sightline for the staggered luxury cards reveal!
           toggleActions: 'play none none reverse',
         },
       }
