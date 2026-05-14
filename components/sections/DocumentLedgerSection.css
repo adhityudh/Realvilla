@@ -25,7 +25,7 @@
 .ledger-header-sticky {
   position: sticky;
   top: 120px;
-  padding-bottom: 5rem;
+  padding-bottom: 3rem;
   /* Keeps it locked cleanly while scrolling a long ledger */
 }
 
