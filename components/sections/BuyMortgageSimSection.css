@@ -203,7 +203,7 @@
 
         .result-note {
             font-family: var(--font-manrope), sans-serif;
-            font-size: 0.75rem;
+            font-size: var(--text-sm);
             color: var(--text-black);
         }
 

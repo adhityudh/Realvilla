@@ -296,6 +296,18 @@ export const SECTION_PROJECTION = groq`
           hint
         }
       },
+      _type == "financingCardsSection" => {
+        mainDescription,
+        backgroundImage { asset-> { _id, url } },
+        cta {
+          label,
+          "link": ${INTERNAL_LINK_PROJECTION}
+        },
+        cards[] {
+          heading,
+          copy
+        }
+      },
       _type == "statsSection" => {
         heading,
         body,

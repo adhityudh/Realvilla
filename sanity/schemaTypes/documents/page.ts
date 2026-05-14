@@ -64,6 +64,7 @@ export const page = defineType({
         { type: 'statsSection' },
         { type: 'mortgageProcessSection' },
         { type: 'documentLedgerSection' },
+        { type: 'financingCardsSection' },
       ],
     }),
     defineField({

@@ -1,0 +1,390 @@
+.financing-cards-section {
+  position: relative;
+  padding: 7rem 0;
+  margin: 5rem 0;
+  margin: 0;
+  /* 🧼 Removed redundant margin stack */
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+
+/* ── Full Width High-End Interior Backdrop ── */
+.financing-bg-asset {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  /* 🌌 Dynamic Image is injected via React 'style' tags now! */
+  background-size: cover;
+  background-position: center center;
+  background-attachment: fixed;
+  /* Elegant subtle parallax anchor */
+  opacity: 1;
+  z-index: 1;
+}
+
+.financing-dark-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.2) 0%, rgba(45, 35, 15, 0.25) 50%, rgba(0, 0, 0, 0.3) 100%);
+  z-index: 2;
+}
+
+.financing-container {
+  position: relative;
+  width: 100%;
+  max-width: var(--container-max-width);
+  margin: 0 auto;
+  padding: 0 3rem;
+  z-index: 3;
+  /* Sits above background and dark overlays */
+}
+
+/* ── The Staggered 4-Column Grid ── */
+.financing-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 3rem 2.5rem;
+  /* 📐 Condensed gutter matrix */
+}
+
+.financing-col {
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+  /* 📐 Condensed vertical column flow */
+  height: 100%;
+}
+
+/* Direct top-or-bottom forces for specific elements */
+.glass-card-item.align-bottom {
+  margin-top: auto;
+  /* Pushes card into Row 2 dynamically */
+}
+
+/* ── Column 4 (Top Right) Main Content ── */
+.financing-main-content {
+  padding-bottom: 2rem;
+}
+
+.financing-main-desc {
+  font-family: var(--font-manrope), sans-serif;
+  font-size: var(--text-base);
+  line-height: var(--lh-relaxed);
+  color: rgba(255, 255, 255, 0.85);
+  font-weight: var(--fw-light);
+  max-width: 320px;
+  margin-left: auto;
+  /* Align right inside its grid block */
+  text-align: left;
+}
+
+/* ── 💎 Master glassmorphism Card Shell ── */
+.glass-card-item {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3 / 4.2;
+  /* Luxurious vertical portrait rectangle */
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  border: 1.25px solid rgba(255, 255, 255, 0.2);
+  border-radius: 2px;
+
+  /* 📐 Dynamic Hole-Puncher: Slices the exact notch gaps mathematically */
+  -webkit-mask-image:
+    radial-gradient(circle 18px at 50% 0, transparent 98%, black),
+    radial-gradient(circle 18px at 50% 100%, transparent 98%, black);
+  -webkit-mask-composite: destination-in;
+  mask-image:
+    radial-gradient(circle 18px at 50% 0, transparent 98%, black),
+    radial-gradient(circle 18px at 50% 100%, transparent 98%, black);
+  mask-composite: intersect;
+
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.6s ease;
+}
+
+.glass-card-item:hover {
+  transform: translateY(-8px);
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* ── Precision SVG Arcs (Fills the notched border gaps) ── */
+.glass-notch-svg {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 36px;
+  height: 18px;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.glass-notch-svg.notch-top {
+  top: -0.5px;
+}
+
+.glass-notch-svg.notch-bottom {
+  bottom: -0.5px;
+}
+
+/* ── Inner Content Styling ── */
+.glass-card-inner {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  padding: 2.5rem 1.75rem;
+  /* 📐 Streamlined internal breathing room */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 1.15rem;
+}
+
+.glass-card-number {
+  position: absolute;
+  top: 2rem;
+  left: 1.75rem;
+  font-family: var(--font-manrope), sans-serif;
+  font-size: var(--text-sm);
+  font-weight: var(--fw-light);
+  letter-spacing: var(--ls-wider);
+  color: #fff;
+}
+
+.glass-card-title {
+  font-family: var(--font-cormorant), serif;
+  font-size: var(--text-display-xs);
+  /* 🔑 Standardized to Display XS Fluid Token */
+  font-weight: var(--fw-light);
+  color: #ffffff;
+  text-transform: uppercase;
+  line-height: var(--lh-tight);
+  letter-spacing: var(--ls-tight);
+}
+
+.glass-card-copy {
+  font-family: var(--font-manrope), sans-serif;
+  font-size: var(--text-base-sm);
+  /* 🔑 Standardized to SM Plus Token */
+  font-weight: var(--fw-light);
+  color: rgba(255, 255, 255, 0.7);
+  line-height: var(--lh-base);
+  /* 🔑 Standardized to Base Line Height */
+  max-width: 90%;
+}
+
+/* ── 👑 Bottom-Left CTA Module ── */
+.financing-cta-box {
+  margin-top: auto;
+  /* Forces lock to the absolute bottom row */
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding-bottom: 2rem;
+}
+
+.financing-cta-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 1.5rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  text-align: left;
+  text-decoration: none;
+  /* 🧼 Eliminates native hyperlink underlining */
+}
+
+.cta-pill-text {
+  font-family: var(--font-manrope), sans-serif;
+  font-size: var(--text-sm);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--ls-widest);
+  color: #ffffff;
+  text-transform: uppercase;
+  transition: color 0.4s ease;
+}
+
+.cta-pill-arrow {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.financing-cta-pill:hover .cta-pill-arrow {
+  background: #ffffff;
+  border-color: #ffffff;
+  color: var(--text-black);
+  transform: scale(1.1);
+}
+
+.financing-cta-pill:hover .cta-pill-text {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* ── Responsive Scalings ── */
+@media (max-width: 1200px) {
+  .financing-grid {
+    gap: 2.5rem;
+  }
+
+  .financing-main-desc {
+    max-width: 100%;
+  }
+
+  .glass-card-title {
+    font-size: var(--text-lg);
+  }
+}
+
+@media (max-width: 1024px) {
+  .financing-cards-section {
+    padding: 4rem 0;
+    margin: 3rem 0;
+  }
+
+  .financing-container {
+    padding: 0 2rem;
+  }
+
+  .financing-bg-asset {
+    background-attachment: scroll;
+    /* 🛑 Prevents performance stutter on mobile devices */
+  }
+
+  /* 🧩 UNLOCK LAYOUT FREEDOM:
+     Dissolves column boundaries to turn all items into direct grid siblings! */
+  .financing-col {
+    display: contents;
+  }
+
+  /* 📐 Tablet Transition Matrix */
+  .financing-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+    /* 📐 Tightened responsive matrix */
+  }
+
+  /* 🎯 Mathematical Reordering Layer */
+  .financing-main-content {
+    grid-column: 1 / span 2;
+    order: 1;
+    text-align: center;
+    padding-bottom: 1.5rem;
+    /* 📐 Streamlined desc margin */
+  }
+
+  .financing-main-desc {
+    max-width: 520px;
+    margin: 0 auto;
+    text-align: center;
+    font-size: var(--text-base-sm);
+  }
+
+  .glass-card-item.card-1 {
+    order: 2;
+  }
+
+  .glass-card-item.card-2 {
+    order: 3;
+  }
+
+  .glass-card-item.card-3 {
+    order: 4;
+  }
+
+  .glass-card-item.card-4 {
+    order: 5;
+  }
+
+  .financing-cta-box {
+    grid-column: 1 / span 2;
+    order: 6;
+    justify-content: center;
+    padding: 1.5rem 0 0 0;
+    /* 📐 Lower padding above final button */
+    margin: 0;
+  }
+
+  .glass-card-item.align-bottom {
+    margin-top: 0;
+  }
+
+  .glass-card-copy {
+    font-size: var(--text-sm-plus);
+    max-width: 100%;
+  }
+
+  .glass-card-inner {
+    gap: 1rem;
+  }
+
+  .glass-card-item {
+    aspect-ratio: auto;
+    min-height: auto;
+  }
+
+  /* 🏹 Smoothly scaling the Luxury CTA Arrow & Button on Smaller Screens */
+  .financing-cta-pill {
+    gap: 1rem;
+  }
+
+  .cta-pill-text {
+    font-size: var(--text-xs);
+  }
+
+  .cta-pill-arrow {
+    width: 38px;
+    height: 38px;
+  }
+
+  .cta-pill-arrow svg {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+@media (max-width: 768px) {
+
+  /* 📐 Absolute 1-Column Stack on Mobile Phones */
+  .financing-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    /* 📐 Balanced visual separation on tiny scrolls */
+  }
+
+  .financing-main-content,
+  .financing-cta-box {
+    grid-column: 1;
+  }
+
+  .glass-card-inner {
+    padding: 3rem 1.5rem;
+    /* 📐 Significantly tightened inner padding */
+  }
+
+  .glass-card-number {
+    top: 1.5rem;
+    left: 1.5rem;
+    /* 📐 Compact indicators */
+  }
+
+  .financing-main-desc {
+    text-align: left;
+  }
+}
