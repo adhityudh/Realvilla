@@ -37,10 +37,22 @@ export default function FinancingCardsSection({ data }: FinancingCardsSectionPro
   useEffect(() => {
     if (!sectionRef.current) return;
 
-    // GSAP Staggered Smooth Revelations
-    const elements = sectionRef.current.querySelectorAll(
-      '.financing-main-content, .glass-card-item, .financing-cta-box'
-    );
+    // 📐 Advanced Dynamic Sorting: Aggregates and sequences cards by numerical class suffixes!
+    const mainDesc = sectionRef.current.querySelector('.financing-main-content');
+    const ctaBox = sectionRef.current.querySelector('.financing-cta-box');
+    
+    // Queries all existing cards dynamically
+    const cardElements = Array.from(sectionRef.current.querySelectorAll('.glass-card-item'));
+    
+    // Sorts sequentially by "card-{N}" to guarantee flawless top-to-bottom mobile flow
+    cardElements.sort((a, b) => {
+      const numA = parseInt(a.className.match(/card-(\d+)/)?.[1] || '999');
+      const numB = parseInt(b.className.match(/card-(\d+)/)?.[1] || '999');
+      return numA - numB;
+    });
+
+    // Final structural chain: Banner -> Dynamic Sorted Cards -> Call to Action
+    const elements = [mainDesc, ...cardElements, ctaBox].filter(Boolean);
 
     gsap.fromTo(
       elements,
@@ -49,12 +61,12 @@ export default function FinancingCardsSection({ data }: FinancingCardsSectionPro
         y: 0,
         opacity: 1,
         filter: 'blur(0px)',
-        duration: 1.4,
-        stagger: 0.15,
+        duration: 1.2,
+        stagger: 0.12,
         ease: 'power3.out',
         scrollTrigger: {
           trigger: sectionRef.current,
-          start: 'top 80%',
+          start: 'top 90%', // 🚀 Activates much sooner on fast mobile scrolls!
           toggleActions: 'play none none reverse',
         },
       }

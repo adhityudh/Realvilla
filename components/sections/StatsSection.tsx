@@ -35,29 +35,20 @@ export default function StatsSection({ data }: StatsSectionProps) {
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: sectionRef.current,
-        start: 'top 85%',
+        start: 'top 90%', // 🚀 Triggers sooner on mobile scrolling gestures!
         toggleActions: 'play none none reverse',
       }
     });
 
     const heading = gridRef.current.querySelector('.stats-heading');
-    const items = gridRef.current.querySelectorAll('.stats-item');
     const copy = gridRef.current.querySelector('.stats-copy');
+    const items = gridRef.current.querySelectorAll('.stats-item');
 
     if (heading) {
       tl.fromTo(
         heading,
         { opacity: 0, filter: 'blur(10px)' },
-        { opacity: 1, filter: 'blur(0px)', duration: 1, ease: 'power3.out' }
-      );
-    }
-
-    if (items.length > 0) {
-      tl.fromTo(
-        items,
-        { opacity: 0, filter: 'blur(10px)' },
-        { opacity: 1, filter: 'blur(0px)', duration: 0.8, stagger: 0.12, ease: 'power3.out' },
-        heading ? '-=0.7' : '0'
+        { opacity: 1, filter: 'blur(0px)', duration: 0.9, ease: 'power3.out' }
       );
     }
 
@@ -66,7 +57,16 @@ export default function StatsSection({ data }: StatsSectionProps) {
         copy,
         { opacity: 0, filter: 'blur(8px)' },
         { opacity: 1, filter: 'blur(0px)', duration: 0.8, ease: 'power3.out' },
-        '-=0.6'
+        heading ? '-=0.6' : '0' // ⚡ Animates immediately after heading!
+      );
+    }
+
+    if (items.length > 0) {
+      tl.fromTo(
+        items,
+        { opacity: 0, filter: 'blur(10px)' },
+        { opacity: 1, filter: 'blur(0px)', duration: 0.8, stagger: 0.1, ease: 'power3.out' },
+        copy ? '-=0.5' : (heading ? '-=0.5' : '0') // 📊 Numbers roll in last!
       );
     }
 
