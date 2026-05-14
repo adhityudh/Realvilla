@@ -224,7 +224,7 @@
   font-size: var(--text-base);
   /* 💎 Refined, clean typography for high density reading */
   line-height: var(--lh-relaxed);
-  color: var(--text-body);
+  color: var(--text-black);
   max-width: 100%;
 }
 

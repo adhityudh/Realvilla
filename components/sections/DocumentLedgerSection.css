@@ -1,0 +1,218 @@
+.document-ledger-section {
+  padding: 5rem 0;
+  background-color: var(--bg-white);
+  position: relative;
+  /* 🧼 Removed 'overflow: hidden' to ensure 'position: sticky' scroll contexts function correctly */
+}
+
+.ledger-container {
+  width: 100%;
+  max-width: var(--container-max-width);
+  margin: 0 auto;
+  padding: 0 3rem;
+}
+
+/* 🏛️ Symmetric Two Column Grid */
+.ledger-grid {
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  /* 45% left, 55% right approx */
+  gap: 5rem;
+  /* 📐 Let items default to 'stretch' so the left column matches the height of the right stack, giving the sticky element space to slide! */
+}
+
+/* 👈 Left Column Content Sticky */
+.ledger-header-sticky {
+  position: sticky;
+  top: 120px;
+  padding-bottom: 5rem;
+  /* Keeps it locked cleanly while scrolling a long ledger */
+}
+
+.ledger-tagline {
+  font-family: var(--font-manrope), sans-serif;
+  font-size: var(--text-sm);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--ls-tagline);
+  text-transform: uppercase;
+  color: var(--color-gold-dark);
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.ledger-tagline::after {
+  content: '';
+  width: 30px;
+  height: 1px;
+  background: var(--border-strong);
+}
+
+.ledger-headline {
+  font-family: var(--font-cormorant), serif;
+  font-size: var(--text-display-md);
+  font-weight: var(--fw-light);
+  color: var(--text-black);
+  line-height: var(--lh-tight);
+  letter-spacing: var(--ls-tight);
+  text-transform: uppercase;
+}
+
+.ledger-intro {
+  font-family: var(--font-manrope), sans-serif;
+  font-size: var(--text-base);
+  line-height: var(--lh-relaxed);
+  color: var(--text-black);
+  margin-top: 1.5rem;
+  max-width: 90%;
+}
+
+.ledger-intro p {
+  margin: 0;
+}
+
+/* 👉 Right Column Ledger Stack */
+.ledger-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.ledger-row-item {
+  border-bottom: 1px solid var(--border-subtle);
+  /* Clean separators */
+  transition: background-color 0.4s ease;
+}
+
+.ledger-row-inner {
+  display: grid;
+  grid-template-columns: 85px 1fr 30px;
+  /* 📐 Expanded for grand, elegant serif numbers */
+  align-items: center;
+  padding: 2rem 1rem 2rem 0;
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.ledger-row-item:hover {
+  background-color: rgba(0, 0, 0, 0.015);
+  /* Ultra subtle light gold/gray shade on hover */
+}
+
+.ledger-row-item:hover .ledger-row-inner {
+  transform: translateX(15px);
+  /* Elegant slide forward */
+}
+
+.ledger-left-identifier {
+  display: flex;
+  align-items: center;
+}
+
+.ledger-num {
+  font-family: var(--font-cormorant), serif;
+  /* 💎 Elite Serif Signature */
+  font-size: var(--text-display-xs);
+  /* 📐 Large, ethereal and architectural */
+  font-weight: var(--fw-light);
+  line-height: 1;
+  color: var(--color-gold-dark);
+}
+
+.ledger-mid-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.ledger-item-title {
+  font-family: var(--font-manrope), sans-serif;
+  font-size: var(--text-lg);
+  font-weight: var(--fw-medium);
+  color: var(--text-black);
+  letter-spacing: var(--ls-tight);
+  line-height: var(--lh-snug);
+}
+
+.ledger-item-hint {
+  font-family: var(--font-manrope), sans-serif;
+  font-size: var(--text-sm-plus);
+  color: var(--text-black);
+  line-height: var(--lh-base);
+  margin: 0;
+}
+
+.ledger-right-indicator {
+  opacity: 0;
+  transform: translateX(-10px);
+  color: var(--color-gold-dark);
+  transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  justify-content: flex-end;
+}
+
+.ledger-row-item:hover .ledger-right-indicator {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.ledger-placeholder {
+  font-family: var(--font-manrope), sans-serif;
+  font-size: var(--text-base);
+  color: var(--text-muted);
+  font-style: italic;
+  padding: 2rem 0;
+}
+
+/* ── Responsive Adapters ── */
+@media (max-width: 1024px) {
+  .ledger-container {
+    padding: 0 1.5rem;
+  }
+
+  .ledger-grid {
+    grid-template-columns: 1fr;
+    /* Collapses to simple single stack on tablet */
+    gap: 1.5rem;
+  }
+
+  .ledger-header-sticky {
+    position: relative;
+    top: 0;
+    padding: 0;
+  }
+
+  .ledger-headline {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .document-ledger-section {
+    padding: 3rem 0;
+  }
+
+  .ledger-row-inner {
+    grid-template-columns: 65px 1fr;
+    /* Expanded on mobile for the gorgeous large number */
+    padding: 1.5rem 0;
+  }
+
+  .ledger-num {
+    font-size: 2rem;
+    /* Slightly smaller on mobile to stay elegant and proportionate */
+  }
+
+  .ledger-right-indicator {
+    display: none;
+    /* Suppressed to prevent mobile clutter */
+  }
+
+  .ledger-row-item:hover .ledger-row-inner {
+    transform: none;
+    /* Eliminate sliding transforms on tap interfaces */
+  }
+
+  .ledger-item-title {
+    font-size: var(--text-base-md);
+  }
+}

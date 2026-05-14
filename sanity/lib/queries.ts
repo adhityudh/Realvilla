@@ -286,6 +286,16 @@ export const SECTION_PROJECTION = groq`
           icon { asset->{ _id, url } }
         }
       },
+      _type == "documentLedgerSection" => {
+        tagline,
+        headline,
+        intro,
+        items[] {
+          number,
+          title,
+          hint
+        }
+      },
       _type == "statsSection" => {
         heading,
         body,
