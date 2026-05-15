@@ -10,13 +10,16 @@
 /* ── Full Width High-End Interior Backdrop ── */
 .financing-bg-asset {
   position: absolute;
-  top: -10%; /* 🔭 Bleed top slightly for soft motion */
+  top: -10%;
+  /* 🔭 Bleed top slightly for soft motion */
   left: 0;
   right: 0;
-  height: 120%; /* 🔭 Overflow buffer for GSAP scroll track */
+  height: 120%;
+  /* 🔭 Overflow buffer for GSAP scroll track */
   background-size: cover;
   background-position: center center;
-  background-attachment: scroll; /* 🧼 Stripped heavy fixed parallax */
+  background-attachment: scroll;
+  /* 🧼 Stripped heavy fixed parallax */
   opacity: 1;
   z-index: 1;
 }
@@ -83,10 +86,11 @@
   width: 100%;
   aspect-ratio: 3 / 4.2;
   /* Luxurious vertical portrait rectangle */
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(20px) saturate(160%);
-  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  background-color: #bcaf8b66;
+  backdrop-filter: blur(20px) brightness(102%);
+  -webkit-backdrop-filter: blur(20px) brightness(102%);
   border: 1.25px solid rgba(255, 255, 255, 0.2);
+  box-shadow: none;
   border-radius: 2px;
 
   /* 📐 Dynamic Hole-Puncher: Slices the exact notch gaps mathematically */
@@ -104,7 +108,7 @@
 
 .glass-card-item:hover {
   transform: translateY(-8px);
-  background: rgba(255, 255, 255, 0.08);
+  background-color: #bcaf8b88;
   border-color: rgba(255, 255, 255, 0.3);
 }
 
@@ -157,7 +161,7 @@
   font-family: var(--font-cormorant), serif;
   font-size: var(--text-display-xs);
   /* 🔑 Standardized to Display XS Fluid Token */
-  font-weight: var(--fw-light);
+  font-weight: var(--fw-medium);
   color: #ffffff;
   text-transform: uppercase;
   line-height: var(--lh-tight);
@@ -169,7 +173,7 @@
   font-size: var(--text-base-sm);
   /* 🔑 Standardized to SM Plus Token */
   font-weight: var(--fw-light);
-  color: rgba(255, 255, 255, 0.7);
+  color: #fff;
   line-height: var(--lh-base);
   /* 🔑 Standardized to Base Line Height */
   max-width: 90%;

@@ -91,8 +91,20 @@ export default function FinancingCardsSection({ data }: FinancingCardsSectionPro
       );
     }
 
+    // 🌗 Visual Contrast Engine: Activates Dark Header Theme during section overlap
+    ScrollTrigger.create({
+      trigger: sectionRef.current,
+      start: 'top 50px',
+      end: 'bottom 50px',
+      onEnter: () => document.body.classList.add('header-light-mode'),
+      onLeave: () => document.body.classList.remove('header-light-mode'),
+      onEnterBack: () => document.body.classList.add('header-light-mode'),
+      onLeaveBack: () => document.body.classList.remove('header-light-mode'),
+    });
+
     return () => {
       ScrollTrigger.getAll().forEach((st) => st.kill());
+      document.body.classList.remove('header-light-mode');
     };
   }, [data]);
 
