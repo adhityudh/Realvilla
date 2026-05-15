@@ -21,6 +21,16 @@
   /* 📐 Let items default to 'stretch' so the left column matches the height of the right stack, giving the sticky element space to slide! */
 }
 
+/* 👈 Left Column Flex Stack */
+.ledger-content-col {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  padding-bottom: 1rem;
+  /* Small buffer safety at visual base */
+}
+
 /* 👈 Left Column Content Sticky */
 .ledger-header-sticky {
   /* position: sticky;
@@ -70,6 +80,13 @@
 
 .ledger-intro p {
   margin: 0;
+}
+
+/* 🎯 Base Column Call to Action Wrapper */
+.ledger-cta-box {
+  margin-top: 4rem;
+  display: flex;
+  justify-content: flex-start;
 }
 
 /* 👉 Right Column Ledger Stack */
@@ -181,6 +198,12 @@
     padding: 0;
   }
 
+  .ledger-content-col {
+    display: block;
+    height: auto;
+    padding-bottom: 0;
+  }
+
   .ledger-headline {
     max-width: 100%;
   }
@@ -214,5 +237,11 @@
 
   .ledger-item-title {
     font-size: var(--text-base);
+  }
+
+  .ledger-cta-box {
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+    /* Ensures breathing room above the first document item */
   }
 }

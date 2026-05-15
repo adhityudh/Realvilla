@@ -290,6 +290,10 @@ export const SECTION_PROJECTION = groq`
         tagline,
         headline,
         intro,
+        cta {
+          label,
+          "link": ${INTERNAL_LINK_PROJECTION}
+        },
         items[] {
           number,
           title,

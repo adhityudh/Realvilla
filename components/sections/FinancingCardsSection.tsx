@@ -148,7 +148,7 @@ export default function FinancingCardsSection({ data }: FinancingCardsSectionPro
             <div className="financing-cta-box">
               {cta?.link ? (
                 <Link href={cta.link} className="financing-cta-pill">
-                  <span className="cta-pill-text">{cta.label || 'REQUEST A MORTGAGE STUDY'}</span>
+                  <span className="cta-pill-text">{cta.label || 'SPEAK TO AN EXPERT'}</span>
                   <div className="cta-pill-arrow">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
                       <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
@@ -167,7 +167,7 @@ export default function FinancingCardsSection({ data }: FinancingCardsSectionPro
                     }
                   }}
                 >
-                  <span className="cta-pill-text">{cta?.label || 'REQUEST A MORTGAGE STUDY'}</span>
+                  <span className="cta-pill-text">{cta?.label || 'SPEAK TO AN EXPERT'}</span>
                   <div className="cta-pill-arrow">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
                       <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>

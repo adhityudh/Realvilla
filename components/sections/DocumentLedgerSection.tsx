@@ -1,6 +1,7 @@
 'use client';
 
 import { useRef, useEffect } from 'react';
+import Button from '../ui/Button';
 import { PortableText } from '@portabletext/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
@@ -21,6 +22,10 @@ interface DocumentLedgerSectionProps {
     tagline?: string;
     headline?: string;
     intro?: any;
+    cta?: {
+      label?: string;
+      link?: string;
+    };
     items?: LedgerItem[];
   };
 }
@@ -34,7 +39,7 @@ export default function DocumentLedgerSection({ data }: DocumentLedgerSectionPro
 
     // 1. Left Column Content Entrance
     gsap.fromTo(
-      sectionRef.current.querySelectorAll('.ledger-tagline, .ledger-headline, .ledger-intro'),
+      sectionRef.current.querySelectorAll('.ledger-tagline, .ledger-headline, .ledger-intro, .ledger-cta-box'),
       { y: 30, opacity: 0, filter: 'blur(10px)' },
       {
         y: 0,
@@ -81,7 +86,7 @@ export default function DocumentLedgerSection({ data }: DocumentLedgerSectionPro
 
   if (!data) return null;
 
-  const { tagline, headline, intro, items } = data;
+  const { tagline, headline, intro, items, cta } = data;
 
   return (
     <section className="document-ledger-section" ref={sectionRef}>
@@ -103,6 +108,24 @@ export default function DocumentLedgerSection({ data }: DocumentLedgerSectionPro
                   )}
                 </div>
               )}
+            </div>
+
+            {/* 🎯 Positioned at base of flex column, pushed away from top content */}
+            <div className="ledger-cta-box">
+              <Button 
+                label={cta?.label || 'REQUEST A MORTGAGE STUDY'} 
+                href={cta?.link || '#contact'} 
+                variant="dark"
+                onClick={!cta?.link ? (e) => {
+                  e.preventDefault();
+                  const contactBtn = document.getElementById('nav-contact-btn');
+                  if (contactBtn) {
+                    (contactBtn as HTMLElement).click();
+                  } else {
+                    window.location.href = '#contact';
+                  }
+                } : undefined}
+              />
             </div>
           </div>
 
