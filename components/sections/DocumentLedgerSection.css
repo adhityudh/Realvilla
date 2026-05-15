@@ -23,8 +23,8 @@
 
 /* 👈 Left Column Content Sticky */
 .ledger-header-sticky {
-  position: sticky;
-  top: 120px;
+  /* position: sticky;
+  top: 120px; */
   padding-bottom: 3rem;
   /* Keeps it locked cleanly while scrolling a long ledger */
 }
