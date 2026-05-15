@@ -465,4 +465,9 @@
             .result-summary-box {
                 padding: 2rem 1.5rem;
             }
+
+            .mortgage-sim-card {
+                width: calc(100% + 1rem);
+                margin-left: -0.5rem;
+            }
         }
