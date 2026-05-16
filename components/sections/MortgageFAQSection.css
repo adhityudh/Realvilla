@@ -105,7 +105,7 @@
 .faq-index {
     font-family: var(--font-manrope), sans-serif;
     font-size: var(--text-base-sm);
-    opacity: 0.4;
+    color: var(--text-black);
     width: 60px;
     flex-shrink: 0;
 }

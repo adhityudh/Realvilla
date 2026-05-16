@@ -6,6 +6,7 @@ import Link from 'next/link';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Button from '@/components/ui/Button';
+import { smoothScrollToAnchor } from '@/lib/scroll';
 import './BuyMortgageSimSection.css';
 
 if (typeof window !== 'undefined') {
@@ -164,6 +165,7 @@ export default function BuyMortgageSimSection({ data, dict, contextData }: { dat
                   href={data.ctaLink || '#'}
                   variant="dark"
                   className="mortgage-sim-cta"
+                  onClick={(e) => smoothScrollToAnchor(e, data.ctaLink || '#')}
                 />
               </div>
             )}
@@ -287,7 +289,11 @@ export default function BuyMortgageSimSection({ data, dict, contextData }: { dat
 
                 {data?.ctaLabel && data?.ctaLink && (
                   <div className="result-cta">
-                    <Link href={data.ctaLink} className="result-cta-link">
+                    <Link 
+                      href={data.ctaLink} 
+                      className="result-cta-link"
+                      onClick={(e) => smoothScrollToAnchor(e, data.ctaLink)}
+                    >
                       {data.ctaLabel}
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
                     </Link>

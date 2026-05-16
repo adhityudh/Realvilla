@@ -5,6 +5,7 @@ import Button from '../ui/Button';
 import { PortableText } from '@portabletext/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
+import { smoothScrollToAnchor } from '@/lib/scroll';
 import './DocumentLedgerSection.css';
 
 if (typeof window !== 'undefined') {
@@ -25,6 +26,7 @@ interface DocumentLedgerSectionProps {
     cta?: {
       label?: string;
       link?: string;
+      externalLink?: string;
     };
     items?: LedgerItem[];
   };
@@ -114,17 +116,9 @@ export default function DocumentLedgerSection({ data }: DocumentLedgerSectionPro
             <div className="ledger-cta-box">
               <Button 
                 label={cta?.label || 'REQUEST A MORTGAGE STUDY'} 
-                href={cta?.link || '#contact'} 
+                href={cta?.externalLink || cta?.link || '#contact'} 
                 variant="dark"
-                onClick={!cta?.link ? (e) => {
-                  e.preventDefault();
-                  const contactBtn = document.getElementById('nav-contact-btn');
-                  if (contactBtn) {
-                    (contactBtn as HTMLElement).click();
-                  } else {
-                    window.location.href = '#contact';
-                  }
-                } : undefined}
+                onClick={(e) => smoothScrollToAnchor(e, cta?.externalLink || cta?.link || '#contact')}
               />
             </div>
           </div>

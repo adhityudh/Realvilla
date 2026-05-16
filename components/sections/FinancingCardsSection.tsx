@@ -4,6 +4,7 @@ import { useRef, useEffect } from 'react';
 import Link from 'next/link';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
+import { smoothScrollToAnchor } from '@/lib/scroll';
 import './FinancingCardsSection.css';
 
 if (typeof window !== 'undefined') {
@@ -26,6 +27,7 @@ interface FinancingCardsSectionProps {
     cta?: {
       label?: string;
       link?: string;
+      externalLink?: string;
     };
     cards?: FinancingCard[];
   };
@@ -158,35 +160,18 @@ export default function FinancingCardsSection({ data }: FinancingCardsSectionPro
 
             {/* Row 2: The Master CTA Block (Replaces Bottom-Left Card) */}
             <div className="financing-cta-box">
-              {cta?.link ? (
-                <Link href={cta.link} className="financing-cta-pill">
-                  <span className="cta-pill-text">{cta.label || 'SPEAK TO AN EXPERT'}</span>
-                  <div className="cta-pill-arrow">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                      <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
-                  </div>
-                </Link>
-              ) : (
-                <button 
-                  className="financing-cta-pill"
-                  onClick={() => {
-                    const contactBtn = document.getElementById('nav-contact-btn');
-                    if (contactBtn) {
-                      (contactBtn as HTMLElement).click();
-                    } else {
-                      window.location.href = '#contact';
-                    }
-                  }}
-                >
-                  <span className="cta-pill-text">{cta?.label || 'SPEAK TO AN EXPERT'}</span>
-                  <div className="cta-pill-arrow">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                      <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
-                  </div>
-                </button>
-              )}
+              <Link 
+                href={cta?.externalLink || cta?.link || '#contact'} 
+                className="financing-cta-pill"
+                onClick={(e) => smoothScrollToAnchor(e, cta?.externalLink || cta?.link || '#contact')}
+              >
+                <span className="cta-pill-text">{cta?.label || 'SPEAK TO AN EXPERT'}</span>
+                <div className="cta-pill-arrow">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                    <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </div>
+              </Link>
             </div>
           </div>
 
