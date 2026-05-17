@@ -146,6 +146,7 @@ export default function ContactSection({ data, dict }: { data?: any, dict?: any 
             generalSubtitle={data.generalSubtitle}
             sellTitle={data.sellTitle}
             sellSubtitle={data.sellSubtitle}
+            presetMessage={data.presetMessage}
           />
         </div>
       </div>

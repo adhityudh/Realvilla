@@ -86,12 +86,21 @@ export async function POST(request: Request) {
 
                 <!-- Header Section (Branding & Logo) -->
                 <tr>
-                  <td align="center" style="padding: 50px 40px 35px 40px; border-bottom: 1px solid #F4F4F0;">
-                    <!-- Official Realvilla Brand Logo Hosted Asset -->
-                    <img src="https://realvilla.es/images/logo-mark-raster.png" alt="Realvilla Logo" width="52" style="display: block; border: 0; outline: none;" />
-                    <div style="font-family: 'Manrope', sans-serif; font-size: 11px; font-weight: 400; color: #111111; letter-spacing: 4px; text-transform: uppercase; margin-top: 16px; text-align: center;">
-                      ${titleLabel}
-                    </div>
+                  <td style="padding: 50px 40px 35px 40px; border-bottom: 1px solid #F4F4F0;">
+                    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                      <tr>
+                        <!-- Left side: Logo -->
+                        <td align="left" valign="middle">
+                          <img src="https://realvilla.es/images/logo-mark-raster.png" alt="Realvilla Logo" width="52" style="display: block; border: 0; outline: none;" />
+                        </td>
+                        <!-- Right side: Title -->
+                        <td align="right" valign="middle">
+                          <div style="font-family: 'Manrope', sans-serif; font-size: 11px; font-weight: 600; color: #111111; letter-spacing: 3px; text-transform: uppercase;">
+                            ${titleLabel}
+                          </div>
+                        </td>
+                      </tr>
+                    </table>
                   </td>
                 </tr>
 

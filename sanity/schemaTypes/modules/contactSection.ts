@@ -85,6 +85,14 @@ export const contactSection = defineType({
       description: 'Subtitle text when viewing the Sell Property form.'
     }),
     defineField({
+      name: 'presetMessage',
+      title: 'Preset Form Message (Hidden)',
+      type: 'text',
+      rows: 3,
+      hidden: ({ parent }) => (parent?.initialStep || 'intent') === 'sell',
+      description: 'Optional: Provide a default message. If set, this exact text will be pre-filled and the message input field will be hidden from the user.'
+    }),
+    defineField({
       name: 'marketData',
       title: 'Market Data',
       type: 'array',

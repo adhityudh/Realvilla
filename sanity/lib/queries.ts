@@ -176,6 +176,7 @@ export const SECTION_PROJECTION = groq`
         generalSubtitle,
         sellTitle,
         sellSubtitle,
+        presetMessage,
         marketData[] {
           value,
           prefix,

@@ -27,6 +27,8 @@ export interface ContactCardProps {
   sellTitle?: string;
   sellSubtitle?: string;
   
+  presetMessage?: string;
+  
   className?: string;
   onStepChange?: (step: ContactFormStep) => void;
   isInsideExternalModal?: boolean;
@@ -47,6 +49,7 @@ export default function ContactCard({
   generalSubtitle,
   sellTitle,
   sellSubtitle,
+  presetMessage,
   className = '',
   onStepChange,
   isInsideExternalModal = false,
@@ -92,7 +95,12 @@ export default function ContactCard({
   // Input binding states
   const [generalName, setGeneralName] = useState('');
   const [generalEmail, setGeneralEmail] = useState('');
-  const [generalMessage, setGeneralMessage] = useState('');
+  const [generalMessage, setGeneralMessage] = useState(presetMessage || '');
+
+  // Update general message seamlessly if presetMessage changes dynamically
+  useEffect(() => {
+    if (presetMessage) setGeneralMessage(presetMessage);
+  }, [presetMessage]);
 
   const [sellName, setSellName] = useState('');
   const [sellEmail, setSellEmail] = useState('');
@@ -569,16 +577,18 @@ export default function ContactCard({
         />
       </div>
       
-      <div className="form-group">
-        <label htmlFor={isInsideModal ? "modal-message" : "message"}>{generalDict.fields.message}</label>
-        <textarea 
-          id={isInsideModal ? "modal-message" : "message"} 
-          rows={4} 
-          placeholder={generalDict.fields.message_placeholder}
-          value={generalMessage}
-          onChange={(e) => setGeneralMessage(e.target.value)}
-        ></textarea>
-      </div>
+      {!presetMessage && (
+        <div className="form-group">
+          <label htmlFor={isInsideModal ? "modal-message" : "message"}>{generalDict.fields.message}</label>
+          <textarea 
+            id={isInsideModal ? "modal-message" : "message"} 
+            rows={4} 
+            placeholder={generalDict.fields.message_placeholder}
+            value={generalMessage}
+            onChange={(e) => setGeneralMessage(e.target.value)}
+          ></textarea>
+        </div>
+      )}
 
       {submitError && (
         <div className="form-error-message" style={{ color: '#D32F2F', fontSize: 'var(--text-sm)', marginTop: '0.5rem', fontFamily: 'var(--font-manrope)' }}>

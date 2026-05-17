@@ -276,6 +276,9 @@ export default function PropertyDetails({
           isInsideExternalModal={true}
           onSubmittingChange={setIsSubmitting}
           onSubmitSuccessChange={setSubmitSuccess}
+          presetMessage={locale === 'es' 
+            ? `Estoy interesado en la propiedad: ${property.title}. Por favor, contáctenme con más información.`
+            : `I am interested in the property: ${property.title}. Please contact me with more information.`}
         />
         </ContactModal>
         );
