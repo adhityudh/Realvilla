@@ -34,7 +34,7 @@ export default function MobileNav({ settings, dict }: { settings?: any; dict?: a
     };
 
     window.addEventListener('toggle-mobile-menu', handleToggle);
-    
+
     const mobileNavOverlay = document.getElementById('mobileNavOverlay');
     const links = mobileNavOverlay?.querySelectorAll('a');
     links?.forEach(link => link.addEventListener('click', handleLinkClick));
@@ -45,14 +45,8 @@ export default function MobileNav({ settings, dict }: { settings?: any; dict?: a
     };
   }, [lenis]);
 
-  const defaultNavLinks = [
-    { label: dict?.nav?.buy, link: '/buy' },
-    { label: dict?.nav?.sell, link: '/#contact' },
-    { label: dict?.nav?.invest, link: '/invest' },
-    { label: dict?.nav?.mortgages, link: '/#contact' },
-  ];
 
-  const navLinks = settings?.mobileNav || defaultNavLinks;
+  const navLinks = settings?.mobileNav;
   const cta = settings?.headerCta;
 
   return (

@@ -36,7 +36,7 @@ export interface ContactCardProps {
   onSubmitSuccessChange?: (success: boolean | null) => void;
 }
 
-const intentKeys = ['general', 'sell', 'buy', 'invest'] as const;
+const intentKeys = ['general', 'sell', 'buy'] as const;
 
 export default function ContactCard({
   initialStep = 'intent',
@@ -439,7 +439,6 @@ export default function ContactCard({
   const handleIntentClick = (key: string) => {
     switch (key) {
       case 'buy': router.push('/buy'); break;
-      case 'invest': router.push('/invest'); break;
       case 'general': 
         if (nextStepAsModal) {
           setModalStep('general');
