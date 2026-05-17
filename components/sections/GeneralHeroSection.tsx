@@ -65,9 +65,11 @@ export default function GeneralHeroSection({ data, dict }: GeneralHeroSectionPro
       0.3
     );
 
-    // 3. Animate primary CTA button (Start at 0.5s)
+    // 3. Animate primary CTA (Start at 0.5s)
+    // Ghost Blur pattern: keep wrapper opacity at 1 to preserve backdrop-filter in Chrome
+    gsap.set('.general-hero-cta-wrapper', { opacity: 1 });
     tl.fromTo(
-      '.general-hero-cta-wrapper',
+      '.general-hero-cta',
       { y: 20, opacity: 0 },
       {
         y: 0,

@@ -53,7 +53,10 @@ export default function FinancingCardsSection({ data }: FinancingCardsSectionPro
       return numA - numB;
     });
 
-    // Final structural chain: Banner -> Dynamic Sorted Cards -> Call to Action
+    // All elements animate together — y, opacity, filter as a single unified entrance.
+    // Chrome backdrop-filter fix is handled by CSS hardware acceleration (will-change, translateZ)
+    // on .glass-card-item. Animating opacity on the element itself is fine — the Chrome bug
+    // only occurs when a PARENT has opacity < 1.
     const elements = [mainDesc, ...cardElements, ctaBox].filter(Boolean);
 
     gsap.fromTo(
@@ -68,7 +71,7 @@ export default function FinancingCardsSection({ data }: FinancingCardsSectionPro
         ease: 'power3.out',
         scrollTrigger: {
           trigger: sectionRef.current,
-          start: 'top 78%', // 📐 Golden sightline for the staggered luxury cards reveal!
+          start: 'top 78%',
           toggleActions: 'play none none reverse',
         },
       }
