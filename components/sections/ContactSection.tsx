@@ -10,7 +10,7 @@ if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
 }
 
-export default function ContactSection({ data, dict }: { data?: any, dict?: any }) {
+export default function ContactSection({ data, dict, contextData }: { data?: any, dict?: any, contextData?: any }) {
   const sectionRef = useRef<HTMLElement>(null);
 
   if (!data) return null;
@@ -142,11 +142,18 @@ export default function ContactSection({ data, dict }: { data?: any, dict?: any 
             nextStepAsModal={data.nextStepAsModal === true}
             intentTitle={data.formTitle}
             intentSubtitle={data.formSubtitle}
+            showIntentWhatsApp={data.showIntentWhatsApp}
+            intentWhatsappMessageTemplate={data.intentWhatsappMessageTemplate}
             generalTitle={data.generalTitle}
             generalSubtitle={data.generalSubtitle}
+            showGeneralWhatsApp={!data.hideGeneralWhatsApp}
             sellTitle={data.sellTitle}
             sellSubtitle={data.sellSubtitle}
+            showSellWhatsApp={!data.hideSellWhatsApp}
+            sellWhatsappMessageTemplate={data.sellWhatsappMessageTemplate}
             presetMessage={data.presetMessage}
+            whatsappNumber={contextData?.whatsappNumber}
+            whatsappMessageTemplate={data.whatsappMessageTemplate}
           />
         </div>
       </div>

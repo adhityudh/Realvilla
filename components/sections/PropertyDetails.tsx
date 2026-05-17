@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { PortableText } from 'next-sanity';
 import PropertyMap from '@/components/ui/Map';
 import Button from '@/components/ui/Button';
@@ -15,6 +15,10 @@ interface PropertyDetailsProps {
   locale?: string;
   quickLinks?: any[];
   useRequestGuidance?: boolean;
+  whatsappNumber?: string;
+  whatsappMessageTemplate?: string;
+  requestGuidancePresetMessage?: string;
+  hideRequestGuidanceWhatsApp?: boolean;
 }
 
 export default function PropertyDetails({ 
@@ -22,11 +26,21 @@ export default function PropertyDetails({
   dict, 
   locale = 'en',
   quickLinks = [],
-  useRequestGuidance = true
+  useRequestGuidance = true,
+  whatsappNumber,
+  whatsappMessageTemplate,
+  requestGuidancePresetMessage,
+  hideRequestGuidanceWhatsApp
 }: PropertyDetailsProps) {
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState<boolean | null>(null);
+  const [pageUrl, setPageUrl] = useState('');
+
+  // Update the page url for link injections on the client
+  useEffect(() => {
+    setPageUrl(window.location.href);
+  }, []);
 
   if (!property) return null;
 
@@ -276,9 +290,10 @@ export default function PropertyDetails({
           isInsideExternalModal={true}
           onSubmittingChange={setIsSubmitting}
           onSubmitSuccessChange={setSubmitSuccess}
-          presetMessage={locale === 'es' 
-            ? `Estoy interesado en la propiedad: ${property.title}. Por favor, contáctenme con más información.`
-            : `I am interested in the property: ${property.title}. Please contact me with more information.`}
+          presetMessage={requestGuidancePresetMessage ? requestGuidancePresetMessage.replace(/{{property_title}}/g, property.title).replace(/{{property_link}}/g, pageUrl) : ''}
+          whatsappNumber={whatsappNumber}
+          whatsappMessageTemplate={whatsappMessageTemplate ? whatsappMessageTemplate.replace(/{{property_title}}/g, property.title).replace(/{{property_link}}/g, pageUrl) : undefined}
+          showGeneralWhatsApp={!hideRequestGuidanceWhatsApp}
         />
         </ContactModal>
         );

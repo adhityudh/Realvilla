@@ -2,7 +2,7 @@
     position: relative;
     width: 100%;
     height: auto;
-    background-color: var(--color-gold-light);
+    background-color: var(--bg-cream);
     padding: 0;
     overflow: hidden;
     z-index: 5;
@@ -81,13 +81,14 @@
     flex-direction: column;
     text-decoration: none;
     color: var(--text-black);
-    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-    will-change: transform, opacity, filter;
+    box-shadow: var(--shadow-md);
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: transform, opacity, filter, box-shadow;
     cursor: pointer;
 }
 
 .property-card:hover {
-    /* Removed float effect */
+    box-shadow: var(--shadow-xl);
 }
 
 .property-image-wrapper {

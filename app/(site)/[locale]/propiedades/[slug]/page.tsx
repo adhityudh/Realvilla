@@ -65,6 +65,10 @@ export default async function PropertyPage({ params }: { params: Promise<{ local
         locale={locale} 
         quickLinks={settings?.propertyQuickLinks}
         useRequestGuidance={settings?.propertyUseRequestGuidance}
+        whatsappNumber={settings?.contactWhatsAppNumber}
+        whatsappMessageTemplate={settings?.contactPresetMessageTemplate}
+        requestGuidancePresetMessage={settings?.requestGuidancePresetMessage}
+        hideRequestGuidanceWhatsApp={settings?.hideRequestGuidanceWhatsApp}
       />
       <OtherProperties 
         currentPropertyId={property._id}
@@ -77,7 +81,7 @@ export default async function PropertyPage({ params }: { params: Promise<{ local
         <SectionRenderer 
           sections={settings.propertyDetailSections} 
           dict={dict} 
-          contextData={{ propertyPrice: property?.price }}
+          contextData={{ propertyPrice: property?.price, whatsappNumber: settings?.contactWhatsAppNumber }}
         />
       )}
     </main>

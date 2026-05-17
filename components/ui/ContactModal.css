@@ -18,7 +18,7 @@
     position: relative;
     width: 100%;
     max-width: 540px;
-    max-height: calc(100vh - 2rem);
+    height: calc(100vh - 2rem);
     background: var(--bg-surface);
     box-shadow: var(--shadow-modal);
     display: flex;
@@ -135,7 +135,8 @@
     padding: 0 !important;
     width: 100% !important;
     max-width: 100% !important;
-    overflow: visible !important; /* Allows outer modal container scrollbars to take over */
+    overflow: visible !important;
+    /* Allows outer modal container scrollbars to take over */
     height: auto !important;
     z-index: 1 !important;
 }
@@ -146,7 +147,8 @@
 
 .contact-modal-body .form-title,
 .contact-modal-body .form-subtitle {
-    display: none; /* Hidden because header replaces them */
+    display: none;
+    /* Hidden because header replaces them */
 }
 
 .contact-modal-body .form-submit-btn {

@@ -170,13 +170,19 @@ export const SECTION_PROJECTION = groq`
         subtitle,
         formTitle,
         formSubtitle,
+        showIntentWhatsApp,
+        intentWhatsappMessageTemplate,
         initialStep,
         nextStepAsModal,
         generalTitle,
         generalSubtitle,
+        hideGeneralWhatsApp,
         sellTitle,
         sellSubtitle,
+        hideSellWhatsApp,
+        sellWhatsappMessageTemplate,
         presetMessage,
+        whatsappMessageTemplate,
         marketData[] {
           value,
           prefix,
@@ -344,6 +350,10 @@ export const SETTINGS_QUERY = groq`
   *[_type == "settings" && (language == $language || (!defined(language) && $language == "en"))][0] {
     ${SEO_FIELDS},
     "favicon": favicon.asset->url,
+    contactWhatsAppNumber,
+    hideRequestGuidanceWhatsApp,
+    requestGuidancePresetMessage,
+    contactPresetMessageTemplate,
     "propertiesPageSeo": propertiesPageSeo {
       ${SEO_SUBFIELDS}
     },

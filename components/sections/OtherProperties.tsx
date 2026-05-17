@@ -64,7 +64,7 @@ export default async function OtherProperties({ currentPropertyId, categoryId, m
         
         <div className="properties-grid-suggested">
           {properties.map((prop: any) => (
-            <PropertyCard key={prop._id} prop={prop} variant="seamless" dict={dict} />
+            <PropertyCard key={prop._id} prop={prop} variant="default" dict={dict} />
           ))}
         </div>
 

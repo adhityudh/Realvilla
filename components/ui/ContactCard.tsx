@@ -17,18 +17,25 @@ export interface ContactCardProps {
   allowBack?: boolean;
   nextStepAsModal?: boolean;
   dict?: any;
-  
+
   intentTitle?: string;
   intentSubtitle?: string;
-  
+  showIntentWhatsApp?: boolean;
+  intentWhatsappMessageTemplate?: string;
+
   generalTitle?: string;
   generalSubtitle?: string;
-  
+  showGeneralWhatsApp?: boolean;
+
   sellTitle?: string;
   sellSubtitle?: string;
-  
+  showSellWhatsApp?: boolean;
+  sellWhatsappMessageTemplate?: string;
+
   presetMessage?: string;
-  
+  whatsappNumber?: string;
+  whatsappMessageTemplate?: string;
+
   className?: string;
   onStepChange?: (step: ContactFormStep) => void;
   isInsideExternalModal?: boolean;
@@ -45,11 +52,18 @@ export default function ContactCard({
   dict,
   intentTitle,
   intentSubtitle,
+  showIntentWhatsApp,
+  intentWhatsappMessageTemplate,
   generalTitle,
   generalSubtitle,
+  showGeneralWhatsApp = true,
   sellTitle,
   sellSubtitle,
+  showSellWhatsApp = true,
+  sellWhatsappMessageTemplate,
   presetMessage,
+  whatsappNumber,
+  whatsappMessageTemplate,
   className = '',
   onStepChange,
   isInsideExternalModal = false,
@@ -69,7 +83,7 @@ export default function ContactCard({
 
   const [step, setStep] = useState<ContactFormStep>(getValidStep(initialStep));
   const router = useRouter();
-  
+
   // Locales tracking
   const pathname = usePathname();
   const locale = useMemo(() => {
@@ -187,7 +201,7 @@ export default function ContactCard({
         setLockedHeight(cardRef.current.clientHeight);
       }
       setSubmitSuccess(true);
-      
+
       // Clear fields upon successful submission
       if (formType === 'sell') {
         setSellName('');
@@ -228,6 +242,46 @@ export default function ContactCard({
   }, []);
 
   // 1. Auto-Detect Country IP (Third-Party API)
+  const renderWhatsAppOption = (overrideTemplate?: string) => {
+    if (!whatsappNumber) return null;
+    const cleanNumber = whatsappNumber.replace(/[^0-9]/g, '');
+    const activeTemplate = overrideTemplate || whatsappMessageTemplate;
+    const text = activeTemplate ? encodeURIComponent(activeTemplate) : (presetMessage ? encodeURIComponent(presetMessage) : '');
+    const waUrl = `https://wa.me/${cleanNumber}${text ? `?text=${text}` : ''}`;
+
+    // We get locale from pathname
+    const waLabel = dict?.contact?.whatsapp_cta;
+    const orLabel = dict?.contact?.whatsapp_or_form;
+
+    return (
+      <div className="whatsapp-option" style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        '--btn-link-color': 'var(--text-black)',
+        '--btn-link-border': 'var(--border-strong)'
+      } as React.CSSProperties}>
+        <Button
+          href={waUrl}
+          variant="link"
+          label={waLabel}
+          icon="/icons/logo-wa.svg"
+          className="whatsapp-link-sm"
+          target="_blank"
+          rel="noopener noreferrer"
+        />
+        <div style={{ display: 'flex', alignItems: 'center', margin: '2rem 0', color: 'var(--text-subtle)', width: '100%' }}>
+          <div style={{ flex: 1, height: '1px', background: 'var(--border-subtle)' }}></div>
+          <div style={{ padding: '0 15px', fontSize: 'var(--text-xs)', fontFamily: 'var(--font-manrope)', textTransform: 'uppercase', letterSpacing: 'var(--ls-wider)', fontWeight: 'var(--fw-bold)' }}>
+            {orLabel}
+          </div>
+          <div style={{ flex: 1, height: '1px', background: 'var(--border-subtle)' }}></div>
+        </div>
+      </div>
+    );
+  };
+
+  // 1. Auto-Detect Country IP (Third-Party API)
   useEffect(() => {
     fetch('https://ipapi.co/json/')
       .then(res => res.json())
@@ -242,7 +296,7 @@ export default function ContactCard({
           const language = navigator.language || 'ES';
           const country = language.split('-')[1]?.toUpperCase();
           if (country) setDetectedCountry(country);
-        } catch (e) {}
+        } catch (e) { }
       });
   }, []);
 
@@ -275,7 +329,7 @@ export default function ContactCard({
 
   // Renderers helpers
   const filteredMunicipalities = useMemo(() => {
-    return municipalities.filter(m => 
+    return municipalities.filter(m =>
       m.toLowerCase().includes(munSearch.toLowerCase())
     );
   }, [municipalities, munSearch]);
@@ -283,29 +337,29 @@ export default function ContactCard({
   const renderMunicipalitySelector = (isInsideModal: boolean) => (
     <div className="form-group form-custom-select-group" ref={munDropdownRef}>
       <label>{sellDict.fields.municipality} <span className="form-required">{sellDict.fields.required || "*"}</span></label>
-      <div 
+      <div
         className={`custom-select-trigger ${selectedMunicipality ? 'has-value' : ''} ${munDropdownOpen ? 'active' : ''}`}
         onClick={() => setMunDropdownOpen(!munDropdownOpen)}
       >
         <span>{selectedMunicipality || sellDict.fields.municipality_placeholder}</span>
         <svg width="12" height="12" viewBox="0 0 12 12" className="select-arrow-icon">
-          <path fill="currentColor" d="M6 8.825L0.35 3.175l0.7-0.7L6 7.425l4.95-4.95 0.7 0.7z"/>
+          <path fill="currentColor" d="M6 8.825L0.35 3.175l0.7-0.7L6 7.425l4.95-4.95 0.7 0.7z" />
         </svg>
       </div>
-      
-      <input 
-        type="hidden" 
-        id={isInsideModal ? "modal-sell-municipality" : "sell-municipality"} 
-        name="municipality" 
+
+      <input
+        type="hidden"
+        id={isInsideModal ? "modal-sell-municipality" : "sell-municipality"}
+        name="municipality"
         value={selectedMunicipality}
       />
 
       {munDropdownOpen && (
         <div className="custom-select-dropdown" data-lenis-prevent="true">
           <div className="select-search-box">
-            <input 
-              type="text" 
-              placeholder={dict?.filter?.search_municipalities || "Search..."} 
+            <input
+              type="text"
+              placeholder={dict?.filter?.search_municipalities || "Search..."}
               value={munSearch}
               onChange={(e) => setMunSearch(e.target.value)}
               autoFocus
@@ -320,8 +374,8 @@ export default function ContactCard({
               <div className="select-no-results">{dict?.filter?.no_municipalities || "No results"}</div>
             ) : (
               filteredMunicipalities.map(mun => (
-                <div 
-                  key={mun} 
+                <div
+                  key={mun}
                   className={`select-option-row ${selectedMunicipality === mun ? 'selected' : ''}`}
                   onClick={() => {
                     setSelectedMunicipality(mun);
@@ -342,11 +396,11 @@ export default function ContactCard({
   const renderPropertyTypeSelector = (isInsideModal: boolean) => (
     <div className="form-group">
       <label>{sellDict.fields.property_type} <span className="form-required">{sellDict.fields.required || "*"}</span></label>
-      
-      <input 
-        type="hidden" 
-        id={isInsideModal ? "modal-sell-property-type" : "sell-property-type"} 
-        name="property_type" 
+
+      <input
+        type="hidden"
+        id={isInsideModal ? "modal-sell-property-type" : "sell-property-type"}
+        name="property_type"
         value={selectedPropertyType}
       />
 
@@ -391,7 +445,7 @@ export default function ContactCard({
 
   // Extract purely from dictionary data tree with zero hardcoded visual string fallbacks
   const c = dict?.contact || {};
-  
+
   const intentDict = {
     title: intentTitle || "",
     subtitle: intentSubtitle || "",
@@ -439,20 +493,20 @@ export default function ContactCard({
   const handleIntentClick = (key: string) => {
     switch (key) {
       case 'buy': router.push('/buy'); break;
-      case 'general': 
+      case 'general':
         if (nextStepAsModal) {
           setModalStep('general');
           setIsModalOpen(true);
         } else {
-          handleStepTransition('general'); 
+          handleStepTransition('general');
         }
         break;
-      case 'sell': 
+      case 'sell':
         if (nextStepAsModal) {
           setModalStep('sell');
           setIsModalOpen(true);
         } else {
-          handleStepTransition('sell'); 
+          handleStepTransition('sell');
         }
         break;
     }
@@ -462,12 +516,15 @@ export default function ContactCard({
     <div className="contact-form contact-intent">
       <h3 className="form-title">{intentDict.title}</h3>
       <p className="form-subtitle">{intentDict.subtitle}</p>
+
+      {showIntentWhatsApp && renderWhatsAppOption(intentWhatsappMessageTemplate)}
+
       <div className="intent-options">
         {intentKeys.map((key) => (
-          <button 
-            key={key} 
-            type="button" 
-            className="intent-option-btn" 
+          <button
+            key={key}
+            type="button"
+            className="intent-option-btn"
             onClick={() => handleIntentClick(key)}
           >
             <span className="intent-option-label">{intentDict.options[key] || ""}</span>
@@ -480,8 +537,8 @@ export default function ContactCard({
 
   const renderSuccessState = (isInsideModal = false) => (
     <div className="contact-success-view">
-      <img 
-        src="/icons/check_circle.svg" 
+      <img
+        src="/icons/check_circle.svg"
         alt="Success Checkmark"
         className="success-check-icon"
       />
@@ -492,36 +549,36 @@ export default function ContactCard({
         {dict?.contact?.success?.subtitle || "Thank you for contacting us. Our specialists will respond shortly."}
       </p>
       {!isInsideModal && (
-        <Button 
-          type="button" 
-          variant="dark" 
-          label={dict?.contact?.success?.close || "Back to start"} 
+        <Button
+          type="button"
+          variant="dark"
+          label={dict?.contact?.success?.close || "Back to start"}
           onClick={() => {
             setSubmitSuccess(null);
             setLockedHeight(null); // Reset viewport lock for next session
             setIsModalOpen(false);
             handleStepTransition(initialStep); // Properly maintain user determined initial step
-          }} 
+          }}
         />
       )}
     </div>
   );
 
   const renderGeneralForm = (isInsideModal = false) => (
-    <form 
-      className="contact-form" 
+    <form
+      className="contact-form"
       id={isInsideModal ? "contact-modal-general-form" : undefined}
       onSubmit={(e) => handleSubmit(e, 'general')}
     >
       {/* Stealth anti-spam honeypot trap */}
       <div style={{ display: 'none', opacity: 0, position: 'absolute', width: 0, height: 0, overflow: 'hidden' }} aria-hidden="true">
-        <input 
-          type="text" 
-          name="fax" 
-          value={honeypot} 
-          onChange={(e) => setHoneypot(e.target.value)} 
-          tabIndex={-1} 
-          autoComplete="off" 
+        <input
+          type="text"
+          name="fax"
+          value={honeypot}
+          onChange={(e) => setHoneypot(e.target.value)}
+          tabIndex={-1}
+          autoComplete="off"
         />
       </div>
       {!isInsideModal && allowBack && initialStep === 'intent' && (
@@ -531,35 +588,37 @@ export default function ContactCard({
       )}
       <h3 className="form-title">{generalDict.title}</h3>
       <p className="form-subtitle">{generalDict.subtitle}</p>
-      
+
+      {showGeneralWhatsApp && renderWhatsAppOption()}
+
       <div className="form-group">
         <label htmlFor={isInsideModal ? "modal-name" : "name"}>
           {generalDict.fields.name} <span className="form-required">{sellDict.fields.required || "*"}</span>
         </label>
-        <input 
-          type="text" 
-          id={isInsideModal ? "modal-name" : "name"} 
+        <input
+          type="text"
+          id={isInsideModal ? "modal-name" : "name"}
           placeholder={generalDict.fields.name_placeholder}
           value={generalName}
           onChange={(e) => setGeneralName(e.target.value)}
           required
         />
       </div>
-      
+
       <div className="form-group">
         <label htmlFor={isInsideModal ? "modal-email" : "email"}>
           {generalDict.fields.email} <span className="form-required">{sellDict.fields.required || "*"}</span>
         </label>
-        <input 
-          type="email" 
-          id={isInsideModal ? "modal-email" : "email"} 
+        <input
+          type="email"
+          id={isInsideModal ? "modal-email" : "email"}
           placeholder={generalDict.fields.email_placeholder}
           value={generalEmail}
           onChange={(e) => setGeneralEmail(e.target.value)}
           required
         />
       </div>
-      
+
       <div className="form-group">
         <label>
           {generalDict.fields.phone} <span className="form-required">{sellDict.fields.required || "*"}</span>
@@ -575,13 +634,13 @@ export default function ContactCard({
           }}
         />
       </div>
-      
+
       {!presetMessage && (
         <div className="form-group">
           <label htmlFor={isInsideModal ? "modal-message" : "message"}>{generalDict.fields.message}</label>
-          <textarea 
-            id={isInsideModal ? "modal-message" : "message"} 
-            rows={4} 
+          <textarea
+            id={isInsideModal ? "modal-message" : "message"}
+            rows={4}
             placeholder={generalDict.fields.message_placeholder}
             value={generalMessage}
             onChange={(e) => setGeneralMessage(e.target.value)}
@@ -594,13 +653,13 @@ export default function ContactCard({
           ✕ {submitError}
         </div>
       )}
-      
+
       {!isInsideModal && (
-        <Button 
-          type="submit" 
-          variant="dark" 
-          label={isSubmitting ? (dict?.contact?.sending || "Sending...") : generalDict.submit} 
-          className="form-submit-btn" 
+        <Button
+          type="submit"
+          variant="dark"
+          label={isSubmitting ? (dict?.contact?.sending || "Sending...") : generalDict.submit}
+          className="form-submit-btn"
           showArrow={!isSubmitting}
           disabled={isSubmitting}
         />
@@ -609,20 +668,20 @@ export default function ContactCard({
   );
 
   const renderSellForm = (isInsideModal = false) => (
-    <form 
-      className="contact-form" 
+    <form
+      className="contact-form"
       id={isInsideModal ? "contact-modal-sell-form" : undefined}
       onSubmit={(e) => handleSubmit(e, 'sell')}
     >
       {/* Stealth anti-spam honeypot trap */}
       <div style={{ display: 'none', opacity: 0, position: 'absolute', width: 0, height: 0, overflow: 'hidden' }} aria-hidden="true">
-        <input 
-          type="text" 
-          name="fax" 
-          value={honeypot} 
-          onChange={(e) => setHoneypot(e.target.value)} 
-          tabIndex={-1} 
-          autoComplete="off" 
+        <input
+          type="text"
+          name="fax"
+          value={honeypot}
+          onChange={(e) => setHoneypot(e.target.value)}
+          tabIndex={-1}
+          autoComplete="off"
         />
       </div>
       {!isInsideModal && allowBack && initialStep === 'intent' && (
@@ -632,21 +691,23 @@ export default function ContactCard({
       )}
       <h3 className="form-title">{sellDict.title}</h3>
       <p className="form-subtitle">{sellDict.subtitle}</p>
-      
+
+      {showSellWhatsApp && renderWhatsAppOption(sellWhatsappMessageTemplate)}
+
       <div className="form-group">
         <label htmlFor={isInsideModal ? "modal-sell-name" : "sell-name"}>
           {sellDict.fields.name} <span className="form-required">{sellDict.fields.required}</span>
         </label>
-        <input 
-          type="text" 
-          id={isInsideModal ? "modal-sell-name" : "sell-name"} 
-          placeholder={sellDict.fields.name_placeholder} 
-          required 
+        <input
+          type="text"
+          id={isInsideModal ? "modal-sell-name" : "sell-name"}
+          placeholder={sellDict.fields.name_placeholder}
+          required
           value={sellName}
           onChange={(e) => setSellName(e.target.value)}
         />
       </div>
-      
+
       <div className="form-group">
         <label>
           {sellDict.fields.phone} <span className="form-required">{sellDict.fields.required}</span>
@@ -662,25 +723,25 @@ export default function ContactCard({
           }}
         />
       </div>
-      
+
       <div className="form-group">
         <label htmlFor={isInsideModal ? "modal-sell-email" : "sell-email"}>
           {sellDict.fields.email} <span className="form-required">{sellDict.fields.required || "*"}</span>
         </label>
-        <input 
-          type="email" 
-          id={isInsideModal ? "modal-sell-email" : "sell-email"} 
+        <input
+          type="email"
+          id={isInsideModal ? "modal-sell-email" : "sell-email"}
           placeholder={sellDict.fields.email_placeholder}
           required
           value={sellEmail}
           onChange={(e) => setSellEmail(e.target.value)}
         />
       </div>
-      
+
       {renderMunicipalitySelector(isInsideModal)}
-      
+
       {renderPropertyTypeSelector(isInsideModal)}
-      
+
       <div className="form-legal-checkboxes">
         <label className="form-checkbox-label">
           <input type="checkbox" className="form-checkbox" required />
@@ -697,13 +758,13 @@ export default function ContactCard({
           ✕ {submitError}
         </div>
       )}
-      
+
       {!isInsideModal && (
-        <Button 
-          type="submit" 
-          variant="dark" 
-          label={isSubmitting ? (dict?.contact?.sending || "Sending...") : sellDict.submit} 
-          className="form-submit-btn" 
+        <Button
+          type="submit"
+          variant="dark"
+          label={isSubmitting ? (dict?.contact?.sending || "Sending...") : sellDict.submit}
+          className="form-submit-btn"
           showArrow={!isSubmitting}
           disabled={isSubmitting}
         />
@@ -741,7 +802,7 @@ export default function ContactCard({
 
   return (
     <>
-      <div 
+      <div
         ref={cardRef}
         className={`contact-card ${className}`}
         style={submitSuccess && !isModalOpen && lockedHeight ? { minHeight: `${lockedHeight}px` } : {}}
@@ -774,10 +835,10 @@ export default function ContactCard({
           subtitle={submitSuccess ? "" : getModalSubtitle()}
           footer={
             submitSuccess ? (
-              <Button 
-                type="button" 
-                variant="dark" 
-                label={dict?.contact?.success?.close || "Back to start"} 
+              <Button
+                type="button"
+                variant="dark"
+                label={dict?.contact?.success?.close || "Back to start"}
                 className="form-submit-btn"
                 onClick={() => {
                   setIsModalOpen(false); // Trigger slide-out transition immediately!
@@ -787,26 +848,26 @@ export default function ContactCard({
                     setLockedHeight(null);
                     handleStepTransition(initialStep);
                   }, 400);
-                }} 
+                }}
               />
             ) : (
               modalStep === 'general' ? (
-                <Button 
-                  type="submit" 
-                  variant="dark" 
-                  label={isSubmitting ? (dict?.contact?.sending || "Sending...") : generalDict.submit} 
-                  className="form-submit-btn" 
-                  showArrow={!isSubmitting} 
+                <Button
+                  type="submit"
+                  variant="dark"
+                  label={isSubmitting ? (dict?.contact?.sending || "Sending...") : generalDict.submit}
+                  className="form-submit-btn"
+                  showArrow={!isSubmitting}
                   form="contact-modal-general-form"
                   disabled={isSubmitting}
                 />
               ) : (
-                <Button 
-                  type="submit" 
-                  variant="dark" 
-                  label={isSubmitting ? (dict?.contact?.sending || "Sending...") : sellDict.submit} 
-                  className="form-submit-btn" 
-                  showArrow={!isSubmitting} 
+                <Button
+                  type="submit"
+                  variant="dark"
+                  label={isSubmitting ? (dict?.contact?.sending || "Sending...") : sellDict.submit}
+                  className="form-submit-btn"
+                  showArrow={!isSubmitting}
                   form="contact-modal-sell-form"
                   disabled={isSubmitting}
                 />

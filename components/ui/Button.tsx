@@ -17,6 +17,8 @@ interface ButtonProps {
   priority?: boolean;
   form?: string;
   disabled?: boolean;
+  target?: string;
+  rel?: string;
 }
 
 /**
@@ -38,6 +40,8 @@ export default function Button({
   priority = false,
   form,
   disabled = false,
+  target,
+  rel,
 }: ButtonProps) {
   const Component = href ? 'a' : 'button';
   
@@ -55,6 +59,8 @@ export default function Button({
       type={Component === 'button' ? type : undefined}
       form={Component === 'button' ? form : undefined}
       disabled={Component === 'button' ? disabled : undefined}
+      target={Component === 'a' ? target : undefined}
+      rel={Component === 'a' ? rel : undefined}
       className={`${variantClass} ${className} ${disabled ? 'btn-disabled' : ''}`}
     >
       {icon && (

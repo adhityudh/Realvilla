@@ -30,6 +30,7 @@ export default async function DynamicPage({ params }: { params: Promise<{ locale
 
   let data = null;
   let dict = null;
+  let settings = null;
 
   try {
     const fetchOptions = { 
@@ -41,9 +42,10 @@ export default async function DynamicPage({ params }: { params: Promise<{ locale
       } 
     };
 
-    [data, dict] = await Promise.all([
+    [data, dict, settings] = await Promise.all([
       client.fetch(PAGE_QUERY, { slug, language: locale }, fetchOptions),
-      getDictionary(locale as any)
+      getDictionary(locale as any),
+      client.fetch(SETTINGS_QUERY, { language: locale }, fetchOptions)
     ]);
   } catch (error) {
     console.error('Sanity fetch error:', error);
@@ -57,7 +59,7 @@ export default async function DynamicPage({ params }: { params: Promise<{ locale
     <>
       <FooterPaddingSetter active={data.footerPaddingHigh} />
       <TranslationSetter translations={data._translations ?? []} />
-      <SectionRenderer sections={data.sections} dict={dict} />
+      <SectionRenderer sections={data.sections} dict={dict} contextData={{ whatsappNumber: settings?.contactWhatsAppNumber }} />
     </>
   );
 }

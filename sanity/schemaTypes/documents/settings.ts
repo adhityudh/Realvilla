@@ -136,6 +136,34 @@ export const settings = defineType({
       group: 'propertyDetail',
     }),
     defineField({
+      name: 'requestGuidancePresetMessage',
+      title: 'Preset Form Message (Hidden)',
+      description: 'Optional: Provide a default message. If set, this exact text will be pre-filled and the message input field will be hidden from the user. Use {{property_title}} and {{property_link}} to dynamically inject property details.',
+      type: 'text',
+      rows: 3,
+      group: 'propertyDetail',
+      hidden: ({ parent }) => !parent?.propertyUseRequestGuidance,
+    }),
+    defineField({
+      name: 'hideRequestGuidanceWhatsApp',
+      title: 'Hide WhatsApp Option (Request Guidance)',
+      description: 'Check this to hide the WhatsApp option in the Request Guidance modal on Property pages.',
+      type: 'boolean',
+      initialValue: false,
+      group: 'propertyDetail',
+      hidden: ({ parent }) => !parent?.propertyUseRequestGuidance,
+    }),
+
+    defineField({
+      name: 'contactPresetMessageTemplate',
+      title: 'Request Guidance WhatsApp Template',
+      description: 'The default text template for the WhatsApp button when requesting guidance on individual Property pages. Use {{property_title}} and {{property_link}} to dynamically inject property details.',
+      type: 'text',
+      rows: 2,
+      group: 'propertyDetail',
+      hidden: ({ parent }) => !parent?.propertyUseRequestGuidance || parent?.hideRequestGuidanceWhatsApp === true,
+    }),
+    defineField({
       name: 'filterSidebar',
       title: 'Filter Sidebar Text',
       type: 'object',
@@ -158,6 +186,13 @@ export const settings = defineType({
       initialValue: ['hello@realvilla.es'],
     }),
 
+    defineField({
+      name: 'contactWhatsAppNumber',
+      title: 'WhatsApp Contact Number',
+      description: 'The phone number for the WhatsApp CTA link (e.g. +34612345678). If empty, the WhatsApp option will not be displayed.',
+      type: 'string',
+      group: 'contact',
+    }),
     defineField({
       name: 'mainNav',
       title: 'Main Navigation (Desktop & Nav Pill)',

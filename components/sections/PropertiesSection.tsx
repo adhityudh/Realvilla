@@ -97,15 +97,7 @@ const PropertiesSection = ({ data, dict }: { data?: any, dict?: any }) => {
       }
     );
 
-    ScrollTrigger.create({
-      trigger: sectionRef.current,
-      start: 'top 50px',
-      end: 'bottom 50px',
-      onEnter: () => document.body.classList.add('header-light-mode'),
-      onLeave: () => document.body.classList.remove('header-light-mode'),
-      onEnterBack: () => document.body.classList.add('header-light-mode'),
-      onLeaveBack: () => document.body.classList.remove('header-light-mode'),
-    });
+    // Header color mode override removed for light theme
 
     return () => {
       ScrollTrigger.getAll().forEach(st => {

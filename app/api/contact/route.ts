@@ -227,9 +227,14 @@ export async function POST(request: Request) {
                     <table width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-top: 50px;">
                       <tr>
                         <td align="center">
-                          <a href="mailto:${email}" style="display: inline-block; background-color: #111111; color: #FFFFFF; font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 600; letter-spacing: 3px; text-transform: uppercase; text-decoration: none; padding: 18px 38px; transition: background-color 0.3s ease;">
-                            RESPOND TO CLIENT
+                          <a href="mailto:${email}" style="display: inline-block; background-color: #111111; color: #FFFFFF; font-family: 'Manrope', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; text-decoration: none; padding: 16px 32px; margin: 0 5px 10px 5px;">
+                            REPLY VIA EMAIL
                           </a>
+                          ${phone ? `
+                          <a href="https://wa.me/${phone.replace(/[^0-9]/g, '')}" target="_blank" style="display: inline-block; background-color: #25D366; color: #FFFFFF; font-family: 'Manrope', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; text-decoration: none; padding: 16px 32px; margin: 0 5px 10px 5px;">
+                            RESPOND VIA WHATSAPP
+                          </a>
+                          ` : ''}
                         </td>
                       </tr>
                     </table>
