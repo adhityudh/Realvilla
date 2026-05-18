@@ -1,5 +1,5 @@
 import SectionRenderer from '@/components/sections/SectionRenderer';
-import { client } from '@/sanity/lib/client';
+import { client, getClient } from '@/sanity/lib/client';
 import { PAGE_QUERY, SETTINGS_QUERY } from '@/sanity/lib/queries';
 import { getGlobalSettings, constructMetadata } from '@/lib/metadata';
 import { getDictionary } from '@/lib/get-dictionary';
@@ -27,6 +27,7 @@ export async function generateMetadata(
 export default async function DynamicPage({ params }: { params: Promise<{ locale: string, slug: string }> }) {
   const { locale, slug } = await params;
   const isDraftMode = (await draftMode()).isEnabled;
+  const activeClient = getClient(isDraftMode);
 
   let data = null;
   let dict = null;
@@ -43,9 +44,9 @@ export default async function DynamicPage({ params }: { params: Promise<{ locale
     };
 
     [data, dict, settings] = await Promise.all([
-      client.fetch(PAGE_QUERY, { slug, language: locale }, fetchOptions),
+      activeClient.fetch(PAGE_QUERY, { slug, language: locale }, fetchOptions),
       getDictionary(locale as any),
-      client.fetch(SETTINGS_QUERY, { language: locale }, fetchOptions)
+      activeClient.fetch(SETTINGS_QUERY, { language: locale }, fetchOptions)
     ]);
   } catch (error) {
     console.error('Sanity fetch error:', error);

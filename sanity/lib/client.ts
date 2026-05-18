@@ -2,6 +2,7 @@ import { createClient } from 'next-sanity'
 
 import { apiVersion, dataset, projectId } from '../env'
 
+// Public client for standard visitors (super-fast, hits Sanity Edge CDN in production, no token)
 export const client = createClient({
   projectId,
   dataset,
@@ -11,5 +12,24 @@ export const client = createClient({
     enabled: process.env.NEXT_PUBLIC_SANITY_STEGA === 'true',
     studioUrl: '/studio',
   },
-  token: process.env.SANITY_API_READ_TOKEN,
 })
+
+// Preview client for draft reviews (bypasses CDN, authenticated with token)
+export const previewClient = createClient({
+  projectId,
+  dataset,
+  apiVersion,
+  useCdn: false,
+  token: process.env.SANITY_API_READ_TOKEN,
+  stega: {
+    enabled: true,
+    studioUrl: '/studio',
+  },
+})
+
+/**
+ * Returns the appropriate Sanity client based on whether draft/preview mode is active.
+ */
+export function getClient(usePreview = false) {
+  return usePreview ? previewClient : client
+}
