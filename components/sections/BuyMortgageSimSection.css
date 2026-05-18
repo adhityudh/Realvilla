@@ -660,7 +660,7 @@
 .msim-bar-divider {
   position: absolute;
   top: 0;
-  height: 30px;
+  height: 4rem;
   width: 1px;
   border-left: 1px dashed var(--border-strong);
   transform: translateX(-50%);
