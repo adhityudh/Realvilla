@@ -59,7 +59,7 @@
   background: var(--text-black);
   color: var(--text-white);
   font-family: var(--font-manrope), sans-serif;
-  font-size: var(--textsms);
+  font-size: var(--text-sm-plus);
   line-height: var(--lh-base);
   padding: 0.8rem 1rem;
   border-radius: var(--radius-md);
@@ -67,6 +67,7 @@
   text-align: left;
   font-weight: var(--fw-medium);
   text-transform: none;
+  letter-spacing: normal;
 }
 
 /* Dynamic Positions & Arrows */
