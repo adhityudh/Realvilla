@@ -66,6 +66,7 @@
   box-shadow: var(--shadow-lg);
   text-align: left;
   font-weight: var(--fw-medium);
+  text-transform: none;
 }
 
 /* Dynamic Positions & Arrows */
