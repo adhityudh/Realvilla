@@ -175,9 +175,13 @@ function breakoutLogoSynchronously(logoArea: HTMLElement, splashIntro: HTMLEleme
   // BATCH WRITES
   const spacer = logoArea.cloneNode(false) as HTMLElement;
   spacer.className = 'logo-content-area-spacer';
+  
+  const widthToSet = logoAreaRect.width > 0 ? `${logoAreaRect.width}px` : 'max-content';
+  const heightToSet = logoAreaRect.height > 0 ? `${logoAreaRect.height}px` : 'auto';
+  
   Object.assign(spacer.style, {
-    width: `${logoAreaRect.width}px`,
-    height: `${logoAreaRect.height}px`,
+    width: widthToSet,
+    height: heightToSet,
     flexShrink: '0',
     visibility: 'hidden',
     pointerEvents: 'none',
@@ -192,7 +196,7 @@ function breakoutLogoSynchronously(logoArea: HTMLElement, splashIntro: HTMLEleme
     position: 'fixed',
     left: `${logoAreaRect.left}px`,
     top: `${logoAreaRect.top + scrollY}px`,
-    width: `${logoAreaRect.width}px`,
+    width: widthToSet,
     margin: '0',
     padding: '0',
     zIndex: '300000',
@@ -341,9 +345,11 @@ function useIntroOrchestrator() {
           return;
         }
         
-        if (!isMobile) breakoutLogoSynchronously(logoArea, splashIntro);
-        else gsap.set(logoArea, { opacity: 1, visibility: 'visible' });
-
+        if (globalPreloaderFinished) {
+          if (!isMobile) breakoutLogoSynchronously(logoArea, splashIntro);
+          else gsap.set(logoArea, { opacity: 1, visibility: 'visible' });
+        }
+        
         getHeroRevealAnimation(tl, isMobile);
         getSplashIntroAnimations(tl, releaseScroll);
         tl.add(() => { initMorph(); }, 1.6);
@@ -356,7 +362,15 @@ function useIntroOrchestrator() {
         }
       }, 100); // Slightly longer delay for safer DOM check
 
-      const handlePreloaderComplete = () => { tl.play(); };
+      const handlePreloaderComplete = () => {
+        const logoArea = document.querySelector('.logo-content-area') as HTMLElement;
+        const splashIntro = document.querySelector('.splash-intro') as HTMLElement;
+        if (logoArea && splashIntro) {
+          if (!isMobile) breakoutLogoSynchronously(logoArea, splashIntro);
+          else gsap.set(logoArea, { opacity: 1, visibility: 'visible' });
+        }
+        tl.play();
+      };
       window.addEventListener('preloader-complete', handlePreloaderComplete);
       
       const handleSkip = () => {
