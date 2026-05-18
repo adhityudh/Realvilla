@@ -10,9 +10,9 @@
   overflow: hidden;
 
   /* Custom chart and interface color tokens */
-  --msim-color-savings: #6bbfbf;
-  --msim-color-mortgage: #2d8c8c;
-  --msim-color-interest: #1a5555;
+  --msim-color-savings: #b5c4b1;
+  --msim-color-mortgage: #6e7f67;
+  --msim-color-interest: #354a3b;
   --msim-color-gold: #a17e25;
   --msim-color-brown: #9e472a;
 }
