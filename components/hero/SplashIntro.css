@@ -310,7 +310,7 @@
             position: relative;
             height: 5.6vw;
             width: calc(5.6vw * var(--letter-w, 0.75));
-            opacity: 0.001;
+            opacity: 0;
             /* Hidden initially so it only appears when GSAP reveals it */
         }
 

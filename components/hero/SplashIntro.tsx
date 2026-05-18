@@ -104,7 +104,7 @@ export function getSplashIntroAnimations(tl: gsap.core.Timeline, onReleaseScroll
   // Start logo reveal earlier in the timeline
   tl.fromTo(
     '.letter-wrapper',
-    { opacity: 0.001, y: 40, filter: 'blur(10px)', scale: 0.95 },
+    { opacity: 0, y: 40, filter: 'blur(10px)', scale: 0.95 },
     { opacity: 1, y: 0, filter: 'blur(0px)', scale: 1, duration: 0.8, stagger: 0.08, ease: 'power3.out' },
     0.4, // Faster reveal (was 1.0)
   );
@@ -495,23 +495,8 @@ export default function SplashIntro({ data, dict }: { data?: any, dict?: any }) 
 
       assets.forEach(src => {
         const img = new Image();
-        
-        const handleDecode = () => {
-          if (typeof img.decode === 'function') {
-            img.decode()
-              .then(onAssetLoaded)
-              .catch(onAssetLoaded);
-          } else {
-            onAssetLoaded();
-          }
-        };
-
-        if (img.complete) {
-          handleDecode();
-        } else {
-          img.onload = handleDecode;
-          img.onerror = onAssetLoaded;
-        }
+        img.onload = onAssetLoaded;
+        img.onerror = onAssetLoaded; // Resolve anyway on error to avoid hanging
         img.src = src;
       });
     });
