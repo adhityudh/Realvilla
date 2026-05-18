@@ -32,7 +32,7 @@ function useSplashIntroAnimations() {
 
         const words = text.split(' ');
         const fragment = document.createDocumentFragment();
-        
+
         words.forEach((w, i) => {
           const mask = document.createElement('span');
           mask.className = 'word-mask';
@@ -57,15 +57,15 @@ function useSplashIntroAnimations() {
 
   useEffect(() => {
     if (!lenis || window.innerWidth > 1024) return;
-    
+
     // Ensure the logo area is fully visible before we start the scroll trigger
     gsap.set('.logo-content-area', { opacity: 1, visibility: 'visible' });
 
     const fadeTl = gsap.timeline();
     fadeTl
-      .fromTo('.logo-content-area', 
+      .fromTo('.logo-content-area',
         { opacity: 1, visibility: 'visible' },
-        { opacity: 0, y: '-=40', ease: 'none' }, 
+        { opacity: 0, y: '-=40', ease: 'none' },
         0
       )
       .fromTo('.hero-title',
@@ -104,7 +104,7 @@ export function getSplashIntroAnimations(tl: gsap.core.Timeline, onReleaseScroll
   // Start logo reveal earlier in the timeline
   tl.fromTo(
     '.letter-wrapper',
-    { opacity: 0, y: 40, filter: 'blur(10px)', scale: 0.95 },
+    { opacity: 0.001, y: 40, filter: 'blur(10px)', scale: 0.95 },
     { opacity: 1, y: 0, filter: 'blur(0px)', scale: 1, duration: 0.8, stagger: 0.08, ease: 'power3.out' },
     0.4, // Faster reveal (was 1.0)
   );
@@ -165,7 +165,7 @@ export function getSplashIntroAnimations(tl: gsap.core.Timeline, onReleaseScroll
 
 function breakoutLogoSynchronously(logoArea: HTMLElement, splashIntro: HTMLElement) {
   if (logoArea.id === 'morph-breakout-logo') return;
-  
+
   // BATCH READS
   const logoAreaRect = logoArea.getBoundingClientRect();
   const computedStyle = window.getComputedStyle(logoArea);
@@ -175,10 +175,10 @@ function breakoutLogoSynchronously(logoArea: HTMLElement, splashIntro: HTMLEleme
   // BATCH WRITES
   const spacer = logoArea.cloneNode(false) as HTMLElement;
   spacer.className = 'logo-content-area-spacer';
-  
+
   const widthToSet = logoAreaRect.width > 0 ? `${logoAreaRect.width}px` : 'max-content';
   const heightToSet = logoAreaRect.height > 0 ? `${logoAreaRect.height}px` : 'auto';
-  
+
   Object.assign(spacer.style, {
     width: widthToSet,
     height: heightToSet,
@@ -187,10 +187,10 @@ function breakoutLogoSynchronously(logoArea: HTMLElement, splashIntro: HTMLEleme
     pointerEvents: 'none',
     margin: margin
   });
-  
+
   logoArea.parentNode?.insertBefore(spacer, logoArea);
   logoArea.id = 'morph-breakout-logo';
-  
+
   // Set fixed position but keep invisible until ready
   Object.assign(logoArea.style, {
     position: 'fixed',
@@ -213,11 +213,11 @@ function breakoutLogoSynchronously(logoArea: HTMLElement, splashIntro: HTMLEleme
 
 export function setupLogoMorph(isMobile: boolean, heroEl: HTMLElement) {
   if (isMobile) return { morphTl: null, morphST: null };
-  
+
   const logoArea = document.getElementById('morph-breakout-logo') as HTMLElement;
   const headerContent = document.querySelector('.header-content') as HTMLElement;
   const splashIntro = document.querySelector('.splash-intro') as HTMLElement;
-  
+
   if (!logoArea || !headerContent || !splashIntro) return { morphTl: null, morphST: null };
 
   const wordContainer = logoArea.querySelector('.word-container') as HTMLElement;
@@ -256,11 +256,11 @@ export function setupLogoMorph(isMobile: boolean, heroEl: HTMLElement) {
     .to(wordContainer, { x: toX, y: wordLocalY, scale: targetScale, duration: 1, ease: 'none', force3D: true, overwrite: 'auto' }, 0);
 
   const morphST = ScrollTrigger.create({
-    trigger: '.main-hero', 
-    start: 'top top', 
-    end: '50% top', 
-    scrub: true, 
-    animation: morphTl, 
+    trigger: '.main-hero',
+    start: 'top top',
+    end: '50% top',
+    scrub: true,
+    animation: morphTl,
     invalidateOnRefresh: true,
   });
 
@@ -276,7 +276,7 @@ function useIntroOrchestrator() {
     // Immediate cleanup for SPA navigations
     const existingLogo = document.getElementById('morph-breakout-logo');
     if (existingLogo) existingLogo.remove();
-    
+
     if (!globalPreloaderFinished) {
       document.body.classList.add('preloading');
     }
@@ -344,10 +344,10 @@ function useIntroOrchestrator() {
           releaseScroll();
           return;
         }
-        
+
         if (!isMobile) breakoutLogoSynchronously(logoArea, splashIntro);
         else gsap.set(logoArea, { opacity: 1, visibility: 'visible' });
-        
+
         getHeroRevealAnimation(tl, isMobile);
         getSplashIntroAnimations(tl, releaseScroll);
         tl.add(() => { initMorph(); }, 1.6);
@@ -364,7 +364,7 @@ function useIntroOrchestrator() {
         tl.play();
       };
       window.addEventListener('preloader-complete', handlePreloaderComplete);
-      
+
       const handleSkip = () => {
         if (tl.time() < 1.4) return;
         if (tl.progress() < 1 && tl.isActive()) {
@@ -433,10 +433,10 @@ export default function SplashIntro({ data, dict }: { data?: any, dict?: any }) 
         strokeDashoffset: 0, duration: 0.3, ease: 'power2.out', // Snappy completion (was 0.5s)
         onComplete: () => {
           globalPreloaderFinished = true;
-          
+
           // 🚀 Parallel Trigger: Instantly play the cinematic timeline!
           window.dispatchEvent(new CustomEvent('preloader-complete'));
-          
+
           // Concurrently fade out the preloader border box!
           gsap.to(preloaderBox, {
             opacity: 0, duration: 0.5, ease: 'power2.out', // Faster fade (was 0.8s)
@@ -479,7 +479,7 @@ export default function SplashIntro({ data, dict }: { data?: any, dict?: any }) 
         ...REALVILLA_LETTERS.map(l => l.svg),
         ...(ctas?.map((c: any) => c.icon).filter(Boolean) || [])
       ];
-      
+
       if (assets.length === 0) {
         resolve(true);
         return;
@@ -495,8 +495,23 @@ export default function SplashIntro({ data, dict }: { data?: any, dict?: any }) 
 
       assets.forEach(src => {
         const img = new Image();
-        img.onload = onAssetLoaded;
-        img.onerror = onAssetLoaded; // Resolve anyway on error to avoid hanging
+
+        const handleDecode = () => {
+          if (typeof img.decode === 'function') {
+            img.decode()
+              .then(onAssetLoaded)
+              .catch(onAssetLoaded);
+          } else {
+            onAssetLoaded();
+          }
+        };
+
+        if (img.complete) {
+          handleDecode();
+        } else {
+          img.onload = handleDecode;
+          img.onerror = onAssetLoaded;
+        }
         img.src = src;
       });
     });
@@ -508,9 +523,9 @@ export default function SplashIntro({ data, dict }: { data?: any, dict?: any }) 
 
     const safetyTimeout = setTimeout(finishPreloader, 5000);
     // Wait for DOM, Assets (Logo/Icons), and the Video Background (with timeout)
-    Promise.all([waitForDOM, waitForAssets, waitForVideoWithTimeout]).then(() => { 
-      clearTimeout(safetyTimeout); 
-      finishPreloader(); 
+    Promise.all([waitForDOM, waitForAssets, waitForVideoWithTimeout]).then(() => {
+      clearTimeout(safetyTimeout);
+      finishPreloader();
     });
     return () => clearTimeout(safetyTimeout);
   }, []);
