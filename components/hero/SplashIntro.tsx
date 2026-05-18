@@ -104,7 +104,7 @@ export function getSplashIntroAnimations(tl: gsap.core.Timeline, onReleaseScroll
   // Start logo reveal earlier in the timeline
   tl.fromTo(
     '.letter-wrapper',
-    { opacity: 0.001, y: 40, filter: 'blur(10px)', scale: 0.95 },
+    { opacity: 0, y: 40, filter: 'blur(10px)', scale: 0.95 },
     { opacity: 1, y: 0, filter: 'blur(0px)', scale: 1, duration: 0.8, stagger: 0.08, ease: 'power3.out' },
     0.4, // Faster reveal (was 1.0)
   );
