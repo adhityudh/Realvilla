@@ -103,7 +103,7 @@
 
 .ledger-row-inner {
   display: grid;
-  grid-template-columns: 85px 1fr 30px;
+  grid-template-columns: 85px 1fr;
   /* 📐 Expanded for grand, elegant serif numbers */
   align-items: center;
   padding: 2rem 1rem 2rem 0;
@@ -111,13 +111,8 @@
 }
 
 .ledger-row-item:hover {
-  background-color: rgba(0, 0, 0, 0.015);
-  /* Ultra subtle light gold/gray shade on hover */
-}
-
-.ledger-row-item:hover .ledger-row-inner {
-  transform: translateX(15px);
-  /* Elegant slide forward */
+  background-color: rgba(0, 0, 0, 0.008);
+  /* Very elegant, extremely subtle soft highlight */
 }
 
 .ledger-left-identifier {
@@ -158,19 +153,7 @@
   margin: 0;
 }
 
-.ledger-right-indicator {
-  opacity: 0;
-  transform: translateX(-10px);
-  color: var(--color-gold-dark);
-  transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-  display: flex;
-  justify-content: flex-end;
-}
 
-.ledger-row-item:hover .ledger-right-indicator {
-  opacity: 1;
-  transform: translateX(0);
-}
 
 .ledger-placeholder {
   font-family: var(--font-manrope), sans-serif;

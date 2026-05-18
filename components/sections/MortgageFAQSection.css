@@ -176,6 +176,7 @@
     .mortgage-faq-header {
         flex-direction: column;
         margin-bottom: 3rem;
+        align-items: start;
     }
 
     .mortgage-faq-info {
@@ -193,6 +194,7 @@
         order: 2;
         text-align: left;
         width: 100%;
+        max-width: none;
     }
 
     .mortgage-faq-description {

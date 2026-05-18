@@ -146,13 +146,7 @@ export default function DocumentLedgerSection({ data }: DocumentLedgerSectionPro
                         <h4 className="ledger-item-title">{item.title}</h4>
                         {item.hint && <p className="ledger-item-hint">{item.hint}</p>}
                       </div>
-                      {/* Tiny aesthetic gold indicator chevron */}
-                      <div className="ledger-right-indicator">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <path d="M9 6L15 12L9 18" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                        </svg>
                       </div>
-                    </div>
                   </div>
                 ))}
               </div>
