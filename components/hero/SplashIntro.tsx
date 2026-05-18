@@ -495,23 +495,8 @@ export default function SplashIntro({ data, dict }: { data?: any, dict?: any }) 
 
       assets.forEach(src => {
         const img = new Image();
-
-        const handleDecode = () => {
-          if (typeof img.decode === 'function') {
-            img.decode()
-              .then(onAssetLoaded)
-              .catch(onAssetLoaded);
-          } else {
-            onAssetLoaded();
-          }
-        };
-
-        if (img.complete) {
-          handleDecode();
-        } else {
-          img.onload = handleDecode;
-          img.onerror = onAssetLoaded;
-        }
+        img.onload = onAssetLoaded;
+        img.onerror = onAssetLoaded;
         img.src = src;
       });
     });
