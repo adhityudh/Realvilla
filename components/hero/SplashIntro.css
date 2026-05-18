@@ -134,12 +134,12 @@
             flex-direction: column;
             gap: 4rem;
             align-items: flex-start;
-            pointer-events: auto;
+            pointer-events: none;
             z-index: 10000;
             align-self: center;
-            /* Prevent flash at original position before JS breakout */
-            opacity: 0;
-            visibility: hidden;
+            /* Prevent flash at original position before JS breakout & force layout mask engine decode */
+            opacity: 0.001;
+            visibility: visible;
         }
 
         .word-container {
@@ -310,7 +310,7 @@
             position: relative;
             height: 5.6vw;
             width: calc(5.6vw * var(--letter-w, 0.75));
-            opacity: 0;
+            opacity: 0.001; /* Force browser mask layer decoding on load */
             /* Hidden initially so it only appears when GSAP reveals it */
         }
 
