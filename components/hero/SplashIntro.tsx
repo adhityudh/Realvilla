@@ -345,10 +345,8 @@ function useIntroOrchestrator() {
           return;
         }
         
-        if (globalPreloaderFinished) {
-          if (!isMobile) breakoutLogoSynchronously(logoArea, splashIntro);
-          else gsap.set(logoArea, { opacity: 1, visibility: 'visible' });
-        }
+        if (!isMobile) breakoutLogoSynchronously(logoArea, splashIntro);
+        else gsap.set(logoArea, { opacity: 1, visibility: 'visible' });
         
         getHeroRevealAnimation(tl, isMobile);
         getSplashIntroAnimations(tl, releaseScroll);
@@ -363,12 +361,6 @@ function useIntroOrchestrator() {
       }, 100); // Slightly longer delay for safer DOM check
 
       const handlePreloaderComplete = () => {
-        const logoArea = document.querySelector('.logo-content-area') as HTMLElement;
-        const splashIntro = document.querySelector('.splash-intro') as HTMLElement;
-        if (logoArea && splashIntro) {
-          if (!isMobile) breakoutLogoSynchronously(logoArea, splashIntro);
-          else gsap.set(logoArea, { opacity: 1, visibility: 'visible' });
-        }
         tl.play();
       };
       window.addEventListener('preloader-complete', handlePreloaderComplete);
