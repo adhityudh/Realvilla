@@ -87,7 +87,15 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
     <>
       <TranslationSetter translations={data._translations ?? []} />
       <SplashIntro data={data.sections.find((s: any) => s._type === 'splashIntro')} dict={dict} />
-      <SectionRenderer sections={data.sections} dict={dict} filterMeta={filterMeta} contextData={{ whatsappNumber: settingsData?.contactWhatsAppNumber }} />
+      <SectionRenderer 
+        sections={data.sections} 
+        dict={dict} 
+        filterMeta={filterMeta} 
+        contextData={{ 
+          whatsappNumber: settingsData?.contactWhatsAppNumber,
+          mortgageCalculator: settingsData?.mortgageCalculator
+        }} 
+      />
     </>
   );
 }

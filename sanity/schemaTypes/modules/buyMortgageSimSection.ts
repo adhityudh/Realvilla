@@ -7,6 +7,7 @@ export const buyMortgageSimSection = defineType({
   type: 'object',
   icon: ControlsIcon,
   fields: [
+    // ── Section Header ──────────────────────────────────────
     defineField({
       name: 'tagline',
       title: 'Tagline',
@@ -22,50 +23,8 @@ export const buyMortgageSimSection = defineType({
       title: 'Body Text',
       type: 'text',
     }),
-    defineField({
-      name: 'disclaimerText',
-      title: 'Disclaimer Text',
-      type: 'string',
-      description: 'Text shown at the bottom of inputs, e.g., *Calculations are estimates.'
-    }),
-    defineField({
-      name: 'defaultInterestRate',
-      title: 'Default Annual Interest Rate (%)',
-      type: 'number',
-      description: 'Used for background formula. Default is 3.5% if empty.',
-      initialValue: 3.5,
-    }),
-    defineField({
-      name: 'defaultPrice',
-      title: 'Default Property Price (€)',
-      type: 'number',
-      description: 'Initial price preset when first viewing this component (e.g. on the generic Buy page).',
-      initialValue: 500000,
-    }),
-    defineField({
-      name: 'downPaymentMin',
-      title: 'Minimum Down Payment (%)',
-      type: 'number',
-      initialValue: 20,
-    }),
-    defineField({
-      name: 'downPaymentMax',
-      title: 'Maximum Down Payment (%)',
-      type: 'number',
-      initialValue: 100,
-    }),
-    defineField({
-      name: 'loanTermMin',
-      title: 'Minimum Loan Term (Years)',
-      type: 'number',
-      initialValue: 1,
-    }),
-    defineField({
-      name: 'loanTermMax',
-      title: 'Maximum Loan Term (Years)',
-      type: 'number',
-      initialValue: 30,
-    }),
+
+    // ── CTA ──────────────────────────────────────
     defineField({
       name: 'ctaLabel',
       title: 'CTA Label',
@@ -82,7 +41,6 @@ export const buyMortgageSimSection = defineType({
         ],
         layout: 'radio',
       },
-      initialValue: 'internal',
     }),
     defineField({
       name: 'internalLink',
@@ -99,13 +57,21 @@ export const buyMortgageSimSection = defineType({
             params: { language }
           };
         }
-      }
+      },
     }),
     defineField({
       name: 'externalLink',
       title: 'External Link',
       type: 'string',
       hidden: ({ parent }) => parent?.linkType !== 'external',
+    }),
+
+    // ── Bottom Disclaimer ──────────────────────────────────────
+    defineField({
+      name: 'disclaimerText',
+      title: 'Bottom Disclaimer Text',
+      type: 'text',
+      description: 'Disclaimer shown below the calculator.',
     }),
   ],
   preview: {

@@ -59,7 +59,14 @@ export default async function DynamicPage({ params }: { params: Promise<{ locale
     <>
       <FooterPaddingSetter active={data.footerPaddingHigh} />
       <TranslationSetter translations={data._translations ?? []} />
-      <SectionRenderer sections={data.sections} dict={dict} contextData={{ whatsappNumber: settings?.contactWhatsAppNumber }} />
+      <SectionRenderer 
+        sections={data.sections} 
+        dict={dict} 
+        contextData={{ 
+          whatsappNumber: settings?.contactWhatsAppNumber,
+          mortgageCalculator: settings?.mortgageCalculator
+        }} 
+      />
     </>
   );
 }

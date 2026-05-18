@@ -1,473 +1,1129 @@
-        /* =============================================
-           MORTGAGE SIMULATION SECTION
-        ============================================= */
-        /* =============================================
-           MORTGAGE SIMULATION SECTION - ROW LAYOUT
-        ============================================= */
-        .mortgage-sim-section {
-            position: relative;
-            background-color: var(--bg-white);
-            padding: 5rem 0;
-            overflow: hidden;
-        }
+/* =============================================
+   MORTGAGE SIMULATOR — Realvilla Design System
+   Aligned with reference design & MortgageFAQSection
+============================================= */
 
-        .mortgage-sim-container {
-            width: 100%;
-            max-width: var(--container-max-width);
-            margin: 0 auto;
-            padding: 0 3rem;
-            display: flex;
-            flex-direction: column;
-            gap: 4rem;
-        }
+.msim-section {
+  position: relative;
+  background-color: var(--bg-white);
+  padding: 5rem 0;
+  overflow: hidden;
 
-        /* ── Header Row: Left & Right ── */
-        .mortgage-sim-header-row {
-            display: grid;
-            grid-template-columns: 1.15fr 1fr;
-            align-items: flex-end;
-        }
+  /* Custom chart and interface color tokens */
+  --msim-color-savings: #6bbfbf;
+  --msim-color-mortgage: #2d8c8c;
+  --msim-color-interest: #1a5555;
+  --msim-color-gold: #a17e25;
+  --msim-color-brown: #9e472a;
+}
 
-        .mortgage-sim-header-left {
-            width: 100%;
-            padding-right: 4rem;
-            max-width: 600px;
-        }
+.msim-container {
+  width: 100%;
+  max-width: var(--container-max-width);
+  margin: 0 auto;
+  padding: 0 3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 4rem;
+}
 
-        .mortgage-sim-header-right {
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            gap: 2rem;
-            align-items: end;
-        }
+/* ── Header Row ── */
+.msim-header-row {
+  display: grid;
+  grid-template-columns: 1.15fr 1fr;
+  align-items: flex-end;
+  gap: 4rem;
+}
 
-        .mortgage-sim-tagline {
-            font-family: var(--font-manrope), sans-serif;
-            font-size: var(--text-sm);
-            font-weight: var(--fw-bold);
-            letter-spacing: var(--ls-tagline);
-            text-transform: uppercase;
-            color: var(--color-gold-dark);
-            margin-bottom: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
+.msim-header-left {
+  max-width: 600px;
+}
 
-        .mortgage-sim-tagline::before {
-            content: '';
-            width: 30px;
-            height: 1px;
-            background: var(--color-gold-dark);
-        }
+.msim-tagline {
+  font-family: var(--font-manrope), sans-serif;
+  font-size: var(--text-sm);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--ls-tagline);
+  text-transform: uppercase;
+  color: var(--color-gold-dark);
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
 
-        .mortgage-sim-headline {
-            font-family: var(--font-cormorant), serif;
-            font-size: var(--text-display-md);
-            font-weight: var(--fw-light);
-            line-height: var(--lh-tight);
-            letter-spacing: var(--ls-tight);
-            text-transform: uppercase;
-            color: var(--text-black);
-        }
+.msim-tagline::before {
+  content: '';
+  width: 30px;
+  height: 1px;
+  background: var(--color-gold-dark);
+}
 
-        .mortgage-sim-body {
-            font-family: var(--font-manrope), sans-serif;
-            font-size: var(--text-base);
-            line-height: var(--lh-base);
-            color: var(--text-black);
-            margin: 0;
-            max-width: 400px;
-            text-align: end;
-        }
+.msim-headline {
+  font-family: var(--font-cormorant), serif;
+  font-size: var(--text-display-md);
+  font-weight: var(--fw-light);
+  line-height: var(--lh-tight);
+  letter-spacing: var(--ls-tight);
+  text-transform: uppercase;
+  color: var(--text-black);
+}
 
-        /* ── Horizontal Card Setup ── */
-        .mortgage-sim-card-wrapper {
-            width: 100%;
-        }
+.msim-header-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2rem;
+}
 
-        .mortgage-sim-card {
-            background: var(--bg-white);
-            width: 100%;
-            box-shadow: var(--shadow-lg);
-            display: grid;
-            grid-template-columns: 1.15fr 1fr;
-            border-radius: 0;
-            min-height: 450px;
-            /* Thinner horizontal profile */
-            overflow: hidden;
-        }
+.msim-body-text {
+  font-family: var(--font-manrope), sans-serif;
+  font-size: var(--text-base);
+  line-height: var(--lh-relaxed);
+  color: var(--text-black);
+  text-align: right;
+  max-width: 420px;
+}
 
-        .mortgage-sim-inputs-col {
-            padding: 4rem;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
+/* ── Two-Column Body Card ── */
+.msim-body-card {
+  display: grid;
+  grid-template-columns: 1.15fr 1fr;
+  box-shadow: var(--shadow-lg);
+}
 
-        .calc-sliders-row {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 1.5rem;
-            margin-top: 1rem;
-        }
+/* ── Left: Inputs ── */
+.msim-inputs-col {
+  padding: 3.5rem 3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  background: var(--bg-surface);
+  border-right: none;
+}
 
-        /* Right Gold Output Banner */
-        .calc-results-col {
-            background: var(--color-gold-light);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 3rem;
-        }
+.msim-field {
+  margin-bottom: 4.25rem;
+  padding-bottom: 0;
+}
 
-        .calc-results-inner {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            gap: 2.5rem;
-            width: 100%;
-            max-width: 380px;
-            /* Prevent it growing overly wide inside column */
-        }
+.msim-field:last-child {
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
 
-        .results-hero {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 1rem;
-        }
+/* Field header: label left, value-box right (row fields only) */
+.msim-field--row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  border-bottom: 1px solid var(--border-subtle);
+  position: relative;
+  z-index: 10;
+  padding-bottom: 2.25rem;
+  margin-bottom: 2.25rem;
+}
 
-        /* --- Invoice style box matching provided mockup --- */
-        .result-summary-box {
-            background: rgba(255, 255, 255, 0.35);
-            /* Very subtle glossy light lift over gold */
-            border-radius: var(--radius-lg);
-            padding: 2rem 1.5rem;
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            gap: 1.25rem;
-        }
+.msim-field--row:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+  margin-bottom: 0;
+}
 
-        .summary-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            text-align: left;
-        }
+.msim-field--row .msim-label {
+  margin-bottom: 0;
+}
 
-        .summary-label {
-            font-family: var(--font-manrope), sans-serif;
-            font-size: var(--text-sm-plus);
-            color: var(--text-black);
-            font-weight: var(--fw-medium);
-            flex: 1;
-        }
+/* Label above value */
+.msim-label {
+  font-family: var(--font-manrope), sans-serif;
+  font-size: var(--text-sm);
+  font-weight: var(--fw-medium);
+  letter-spacing: var(--ls-wider);
+  text-transform: uppercase;
+  color: var(--text-black);
+  opacity: 0.9;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: 0.5rem;
+}
 
-        .summary-value {
-            font-family: var(--font-manrope), sans-serif;
-            font-size: var(--text-base-sm);
-            color: var(--text-black);
-            font-weight: var(--fw-bold);
-            text-align: right;
-        }
+/* Old-style underline input group (Property Price field) */
+.msim-input-group {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid var(--border-light);
+  padding: 0.25rem 0;
+  transition: border-bottom-color 0.3s var(--ease-smooth);
+  margin-bottom: 0;
+}
 
-        /* Finalize bottom row with border split if needed, or just keep unified spacing */
-        .summary-row.total-row {
-            margin-top: 0.25rem;
-            padding-top: 1.25rem;
-            border-top: 1px solid rgba(0, 0, 0, 0.08);
-        }
+.msim-input-group:focus-within {
+  border-bottom-color: var(--color-gold-hover);
+}
 
-        /* Text Sizes Inside Specific Cell */
-        .result-label {
-            font-family: var(--font-manrope), sans-serif;
-            font-size: var(--text-xs);
-            text-transform: uppercase;
-            font-weight: var(--fw-bold);
-            letter-spacing: var(--ls-widest);
-            color: rgba(0, 0, 0, 0.7);
-        }
+.msim-input-group--no-border {
+  border-bottom: none;
+  transition: none;
+}
 
-        .result-value {
-            font-family: var(--font-manrope), sans-serif;
-            font-size: clamp(2rem, 4vw, 3rem);
-            font-weight: var(--fw-regular);
-            /* Match provided mockup's heavier weight */
-            color: var(--text-black);
-            line-height: 1;
-        }
+.msim-input-group--no-border:focus-within {
+  border-bottom-color: transparent;
+}
 
-        .result-note {
-            font-family: var(--font-manrope), sans-serif;
-            font-size: var(--text-sm);
-            color: var(--text-black);
-        }
+.msim-currency-symbol {
+  font-family: var(--font-manrope), sans-serif;
+  font-size: var(--text-lg);
+  font-weight: var(--fw-semibold);
+  color: var(--color-gold-hover);
+  margin-right: 0.5rem;
+  flex-shrink: 0;
+}
 
-        .result-cta {
-            margin-top: -1.5rem;
-        }
+.msim-text-input {
+  border: none;
+  background: transparent;
+  outline: none;
+  width: 100%;
+  font-family: var(--font-manrope), sans-serif;
+  font-size: 1.5rem;
+  font-weight: var(--fw-semibold);
+  color: var(--text-black);
+  padding: 0.5rem 0;
+}
 
-        .result-cta-link {
-            font-family: var(--font-manrope), sans-serif;
-            font-size: var(--text-xs);
-            font-weight: var(--fw-bold);
-            text-transform: uppercase;
-            letter-spacing: var(--ls-widest);
-            color: var(--text-black);
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            transition: all 0.3s ease;
-        }
+.msim-value-pct {
+  font-family: var(--font-manrope), sans-serif;
+  font-size: var(--text-base);
+  color: var(--text-black);
+  margin-left: auto;
+  align-self: center;
+  flex-shrink: 0;
+}
 
-        .result-cta-link:hover {
-            color: var(--text-black);
-            gap: 0.75rem;
-        }
 
-        .result-cta-link svg {
-            transition: transform 0.3s ease;
-        }
+/* Slider */
+.msim-slider-wrap {
+  position: relative;
+  height: 20px;
+  margin: 0 0;
+}
 
-        .result-cta-link:hover svg {
-            transform: translateX(3px);
-        }
+.msim-track-bg {
+  position: absolute;
+  top: 8px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: var(--border-subtle);
+  border-radius: var(--radius-sm);
+  z-index: 1;
+  pointer-events: none;
+}
 
-        .calc-field {
-            margin-bottom: 2.5rem;
-            display: flex;
-            flex-direction: column;
-        }
+.msim-track-fill {
+  height: 100%;
+  background: var(--color-gold-hover);
+  border-radius: var(--radius-sm);
+}
 
-        .calc-label-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: baseline;
-            margin-bottom: 1rem;
-        }
+.msim-slider {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 100%;
+  height: 20px;
+  background: transparent;
+  outline: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 5;
+  margin: 0;
+  cursor: pointer;
+}
 
-        .calc-label {
-            font-family: var(--font-manrope), sans-serif;
-            font-size: var(--text-sm);
-            font-weight: var(--fw-medium);
-            text-transform: uppercase;
-            letter-spacing: var(--ls-wider);
-            color: var(--text-black);
-            opacity: 0.9;
-        }
+.msim-slider::-webkit-slider-thumb {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: var(--radius-full);
+  background: var(--bg-surface);
+  border: 2px solid var(--color-gold-hover);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+  transition: transform 0.15s var(--ease-smooth);
+}
 
-        .calc-value-display {
-            font-family: var(--font-manrope), sans-serif;
-            font-size: var(--text-sm-plus);
-            font-weight: var(--fw-bold);
-            color: var(--text-black);
-        }
+.msim-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.15);
+}
 
-        .calc-input-group {
-            display: flex;
-            align-items: center;
-            background: transparent;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.08);
-            padding: 0.25rem 0;
-            transition: all 0.3s ease;
-            position: relative;
-        }
+.msim-slider::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: var(--radius-full);
+  background: var(--bg-surface);
+  border: 2px solid var(--color-gold-hover);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+}
 
-        .calc-input-group:focus-within {
-            border-bottom-color: var(--color-gold-hover);
-        }
+.msim-slider-marks {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-manrope), sans-serif;
+  font-size: var(--text-sm);
+  color: var(--text-black);
+  margin-top: 0.5rem;
+  letter-spacing: var(--ls-wide);
+  text-transform: uppercase;
+}
 
-        .calc-currency-symbol {
-            font-family: var(--font-manrope), sans-serif;
-            font-weight: var(--fw-semibold);
-            color: var(--color-gold-hover);
-            margin-right: 0.5rem;
-            font-size: 1.25rem;
-        }
+/* Warning */
+.msim-warning {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  background: var(--color-gold-bg);
+  border: 1px solid var(--border-light);
+  color: var(--text-black);
+  font-family: var(--font-manrope), sans-serif;
+  font-size: var(--text-sm-plus);
+  padding: 0.75rem 1rem;
+  margin-top: 0.75rem;
+  line-height: var(--lh-base);
+}
 
-        .calc-text-input {
-            border: none;
-            background: transparent;
-            outline: none;
-            width: 100%;
-            font-family: var(--font-manrope), sans-serif;
-            font-size: 1.5rem;
-            font-weight: var(--fw-semibold);
-            color: var(--text-black);
-            padding: 0.5rem 0;
-        }
+.msim-warning svg {
+  flex-shrink: 0;
+  margin-top: 2px;
+  fill: var(--color-gold-dark);
+}
 
-        /* Match Sidebar Sliders exactly */
-        .calc-slider-wrapper {
-            position: relative;
-            height: 20px;
-            margin-top: 0.5rem;
-            margin-bottom: 0.5rem;
-        }
+/* Interest type controls */
+.msim-interest-controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
 
-        .calc-slider {
-            appearance: none;
-            -webkit-appearance: none;
-            width: 100%;
-            height: 20px;
-            background: transparent;
-            outline: none;
-            position: absolute;
-            top: 0;
-            left: 0;
-            z-index: 5;
-            margin: 0;
-            touch-action: none;
-            cursor: pointer;
-        }
+.msim-radio-group {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
 
-        /* Consistent Thumb: White fill, Gold Border */
-        .calc-slider::-webkit-slider-thumb {
-            appearance: none;
-            -webkit-appearance: none;
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background: var(--bg-surface);
-            border: 2px solid var(--color-gold-hover);
-            box-shadow: var(--shadow-xs);
-            cursor: pointer;
-            transition: transform 0.2s ease;
-            position: relative;
-            z-index: 6;
-        }
+.msim-radio-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-manrope), sans-serif;
+  font-size: var(--text-sm-plus);
+  color: var(--text-black);
+  cursor: pointer;
+  transition: color 0.2s var(--ease-smooth);
+}
 
-        .calc-slider::-moz-range-thumb {
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background: var(--bg-surface);
-            border: 2px solid var(--color-gold-hover);
-            box-shadow: var(--shadow-xs);
-            cursor: pointer;
-            transition: transform 0.2s ease;
-        }
+.msim-radio-label input[type="radio"] {
+  display: none;
+}
 
-        .calc-slider::-webkit-slider-thumb:hover,
-        .calc-slider::-moz-range-thumb:hover {
-            transform: scale(1.15);
-        }
+.msim-radio-label::before {
+  content: '';
+  width: 15px;
+  height: 15px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-base);
+  background: var(--bg-surface);
+  transition: all 0.2s var(--ease-smooth);
+  flex-shrink: 0;
+}
 
-        /* Pure visual track bars matching FilterSidebar.css exactly */
-        .range-track-bar {
-            position: absolute;
-            top: 8px;
-            left: 0;
-            width: 100%;
-            height: 4px;
-            background: var(--bg-subtle);
-            border-radius: 10px;
-            z-index: 1;
-            pointer-events: none;
-        }
+.msim-radio-label--active {
+  color: var(--text-black);
+  font-weight: var(--fw-semibold);
+}
 
-        .range-active-fill {
-            height: 100%;
-            background: var(--color-gold-hover);
-            border-radius: 10px;
-            position: absolute;
-        }
+.msim-radio-label--active::before {
+  border-color: var(--color-gold-hover);
+  background: radial-gradient(circle at center, var(--color-gold-hover) 40%, transparent 40%);
+}
 
-        .slider-marks {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 0.25rem;
-            font-family: var(--font-manrope), sans-serif;
-            font-size: var(--text-xs);
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: var(--ls-wide);
-        }
+.msim-rate-stepper {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-left: auto;
+  border: 1px solid var(--border-base);
+  padding: 0.3rem 0.5rem;
+}
 
-        /* ── Responsive Adapters ── */
-        @media (max-width: 1024px) {
-            .mortgage-sim-section {
-                padding: 3rem 0;
-            }
+.msim-step-btn {
+  width: 24px;
+  height: 24px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: var(--text-md);
+  font-weight: var(--fw-bold);
+  color: var(--text-black);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s var(--ease-smooth);
+  line-height: 1;
+  padding: 0;
+}
 
-            .mortgage-sim-container {
-                padding: 0 1.5rem;
-                gap: 3rem;
-            }
+.msim-step-btn:hover {
+  color: var(--color-gold-hover);
+}
 
-            .mortgage-sim-header-row {
-                display: flex;
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 1.5rem;
-            }
+.msim-rate-input-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
-            .mortgage-sim-header-left,
-            .mortgage-sim-header-right {
-                max-width: 100%;
-                flex: none;
-                padding-left: 0;
-                padding-right: 0;
-                align-items: start;
-                gap: 1.5rem;
-            }
+.msim-rate-input {
+  font-family: var(--font-manrope), sans-serif;
+  font-size: var(--text-base);
+  font-weight: var(--fw-semibold);
+  color: var(--text-black);
+  width: 46px;
+  text-align: center;
+  border: none;
+  background: transparent;
+  outline: none;
+  -moz-appearance: textfield;
+}
 
-            .mortgage-sim-headline {
-                font-size: var(--text-display-sm);
-            }
+.msim-rate-input::-webkit-inner-spin-button,
+.msim-rate-input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
 
-            .mortgage-sim-card {
-                grid-template-columns: 1fr;
-                /* Stack on top of each other */
-            }
+.msim-rate-unit {
+  font-family: var(--font-manrope), sans-serif;
+  font-size: var(--text-base);
+  font-weight: var(--fw-semibold);
+  color: var(--text-black);
+  margin-left: -4px;
+}
 
-            .mortgage-sim-body {
-                text-align: start;
-            }
-        }
+/* ── Right: Results Panel ── */
+.msim-results-col {
+  background: var(--color-gold);
+  padding: 3.5rem 3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.02);
+}
 
-        @media (max-width: 768px) {
-            .calc-sliders-row {
-                grid-template-columns: 1fr;
-                /* Stack sliders vertically on mobile */
-                gap: 1.5rem;
-            }
+/* Monthly hero */
+.msim-result-hero {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
 
-            .mortgage-sim-tagline {
-                font-size: var(--text-xs);
-            }
+.msim-result-hero-label {
+  font-family: var(--font-manrope), sans-serif;
+  font-size: var(--text-sm);
+  letter-spacing: var(--ls-widest);
+  text-transform: uppercase;
+  color: var(--text-black);
+}
 
-            .result-value {
-                font-size: var(--text-display-md);
-            }
+.msim-result-hero-value {
+  font-family: var(--font-manrope), sans-serif;
+  font-size: var(--text-display-md);
+  font-weight: var(--fw-light);
+  color: var(--text-black);
+  line-height: var(--lh-none);
+  letter-spacing: -0.02em;
+}
 
-            .mortgage-sim-inputs-col {
-                padding: 1.5rem;
-            }
+/* Stats card inside results */
+.msim-result-stats {
+  background: rgba(255, 255, 255, 0.28);
+  padding: 1rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
 
-            .calc-results-col {
-                padding: 2rem 1.5rem;
-            }
+.msim-result-stat-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 0.85rem;
+  border-bottom: 1px solid var(--border-light);
+}
 
-            .calc-field {
-                margin-bottom: 1.5rem;
-            }
+.msim-result-stat-row:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
 
-            .calc-results-inner {
-                gap: 2rem;
-            }
+.msim-stat-label {
+  font-family: var(--font-manrope), sans-serif;
+  font-size: var(--text-sm-plus);
+  color: rgba(17, 17, 17, 0.7);
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
 
-            .result-summary-box {
-                padding: 2rem 1.5rem;
-            }
+.msim-stat-value {
+  font-family: var(--font-manrope), sans-serif;
+  font-size: var(--text-sm-plus);
+  font-weight: var(--fw-bold);
+  color: var(--text-black);
+}
 
-            .mortgage-sim-card {
-                width: calc(100% + 1rem);
-                margin-left: -0.5rem;
-            }
-        }
+/* Breakdown rows */
+.msim-breakdown {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.msim-breakdown-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.msim-breakdown-row--total {
+  border-top: 1px solid var(--border-light);
+  padding-top: 1rem;
+  margin-top: 0.25rem;
+}
+
+.msim-breakdown-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: var(--radius-full);
+  flex-shrink: 0;
+}
+
+.msim-dot--gold {
+  background: var(--msim-color-gold);
+}
+
+.msim-dot--brown {
+  background: var(--msim-color-brown);
+}
+
+.msim-dot--teal-light {
+  background: var(--msim-color-savings);
+}
+
+.msim-dot--teal {
+  background: var(--msim-color-mortgage);
+}
+
+.msim-dot--teal-dark {
+  background: var(--msim-color-interest);
+}
+
+.msim-breakdown-label {
+  font-family: var(--font-manrope), sans-serif;
+  font-size: var(--text-sm-plus);
+  color: var(--text-black);
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.msim-breakdown-label--bold {
+  font-weight: var(--fw-semibold);
+  color: var(--text-black);
+  font-size: var(--text-base-sm);
+}
+
+.msim-breakdown-value {
+  font-family: var(--font-manrope), sans-serif;
+  font-size: var(--text-sm-plus);
+  font-weight: var(--fw-semibold);
+  color: var(--text-black);
+}
+
+.msim-breakdown-value--bold {
+  font-weight: var(--fw-bold);
+  font-size: var(--text-base-sm);
+}
+
+/* Costs trigger button */
+.msim-costs-link {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-black);
+  font-family: var(--font-manrope), sans-serif;
+  font-size: var(--text-sm-plus);
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: color 0.2s var(--ease-smooth);
+  text-align: left;
+}
+
+.msim-costs-link:hover {
+  color: var(--text-black);
+}
+
+.msim-costs-info-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
+  vertical-align: middle;
+}
+
+.msim-costs-info-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: brightness(0);
+  transition: opacity 0.2s var(--ease-smooth);
+}
+
+.msim-costs-link:hover .msim-costs-info-icon img {
+  opacity: 1;
+}
+
+
+/* Combined stacked bar chart */
+.msim-bars-combined {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 0.5rem;
+}
+
+.msim-bar-track {
+  display: flex;
+  overflow: hidden;
+  border-radius: 2px;
+}
+
+.msim-bar-track--top {
+  height: 12px;
+  flex-shrink: 0;
+}
+
+.msim-bar-track--bottom {
+  height: 12px;
+  width: 100%;
+}
+
+.msim-bar-seg {
+  height: 100%;
+  transition: width 0.5s var(--ease-smooth);
+  flex-shrink: 0;
+}
+
+.msim-bar-seg--savings {
+  background: var(--msim-color-savings);
+}
+
+.msim-bar-seg--mortgage {
+  background: var(--msim-color-mortgage);
+}
+
+.msim-bar-seg--interest {
+  background: var(--msim-color-interest);
+}
+
+.msim-bar-seg--gold {
+  background: var(--msim-color-gold);
+}
+
+.msim-bar-seg--brown {
+  background: var(--msim-color-brown);
+}
+
+.msim-bar-divider {
+  position: absolute;
+  top: 0;
+  height: 30px;
+  width: 1px;
+  border-left: 1px dashed var(--border-strong);
+  transform: translateX(-50%);
+  pointer-events: none;
+  z-index: 5;
+}
+
+.msim-bar-labels {
+  display: flex;
+  width: 100%;
+  margin-top: 0.5rem;
+  font-family: var(--font-manrope), sans-serif;
+  font-size: var(--text-xs);
+  color: var(--text-black);
+  letter-spacing: var(--ls-wide);
+  text-transform: uppercase;
+  overflow: hidden;
+}
+
+/* Amortization link */
+.msim-amort-link {
+  --btn-link-color: var(--text-black);
+  --btn-link-border: rgba(17, 17, 17, 0.2);
+  background: transparent;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  align-self: flex-start;
+  margin-top: 0.325rem;
+  width: fit-content;
+  cursor: pointer;
+  display: inline-flex;
+  font-size: var(--text-sm-plus);
+}
+
+.msim-amort-link:hover {
+  opacity: 0.75;
+  transform: translateY(-0.5px);
+}
+
+
+/* Disclaimer */
+.msim-disclaimer {
+  font-family: var(--font-manrope), sans-serif;
+  font-size: var(--text-sm);
+  color: var(--text-black);
+  text-align: center;
+  max-width: 700px;
+  margin: 0 auto;
+  line-height: var(--lh-base);
+}
+
+
+
+
+/* ── Modals (Aligned with Filter Sidebar) ── */
+.msim-modal-overlay-container {
+  position: fixed;
+  inset: 0;
+  z-index: 999999;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 2rem 2rem 0 2rem;
+}
+
+.msim-modal-bg-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+}
+
+.msim-modal-card {
+  position: relative;
+  width: 100%;
+  max-width: 540px;
+  max-height: calc(100vh - 2rem);
+  background: var(--bg-surface);
+  box-shadow: var(--shadow-modal);
+  display: flex;
+  flex-direction: column;
+  z-index: 100;
+  border-radius: var(--radius-3xl) var(--radius-3xl) 0 0;
+  overflow: hidden;
+}
+
+/* On desktop, keep standard rounded corners all around */
+@media (min-width: 769px) {
+  .msim-modal-overlay-container {
+    align-items: center;
+    padding: 2rem;
+  }
+
+  .msim-modal-card {
+    border-radius: var(--radius-3xl);
+  }
+}
+
+.msim-modal-card--amort {
+  max-width: 700px;
+}
+
+/* Modal Header */
+.msim-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 2rem 2rem 1.5rem 2rem;
+  border-bottom: 1px solid var(--border-subtle);
+  background: var(--bg-surface);
+  gap: 2rem;
+}
+
+.msim-modal-header-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.msim-modal-title {
+  font-family: var(--font-cormorant), 'Cormorant Garamond', serif;
+  font-size: var(--text-display-xs);
+  font-weight: var(--fw-bold);
+  color: var(--text-black);
+  margin: 0;
+  letter-spacing: var(--ls-tight);
+  text-transform: uppercase;
+  line-height: var(--lh-tight);
+}
+
+.msim-modal-subtitle {
+  font-family: var(--font-manrope), sans-serif;
+  font-size: var(--text-sm-plus);
+  color: var(--text-black);
+  margin: 0;
+  line-height: var(--lh-base);
+}
+
+.msim-modal-close {
+  background: var(--bg-muted);
+  border: none;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s var(--ease-smooth);
+  color: var(--text-black);
+  flex-shrink: 0;
+}
+
+.msim-modal-close img {
+  filter: brightness(0);
+  transition: filter 0.3s var(--ease-smooth);
+}
+
+.msim-modal-close:hover {
+  background: var(--text-black);
+  color: var(--text-white);
+  transform: rotate(90deg);
+}
+
+.msim-modal-close:hover img {
+  filter: brightness(1);
+}
+
+/* Modal Scrollable Body */
+.msim-modal-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 2rem 2rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.msim-modal-group {
+  margin-bottom: 2rem;
+}
+
+.msim-modal-group-title {
+  font-family: var(--font-manrope), sans-serif;
+  font-size: var(--text-xs);
+  font-weight: var(--fw-bold);
+  color: var(--text-black);
+  margin-bottom: 1rem;
+  letter-spacing: var(--ls-widest);
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--border-subtle);
+  padding-bottom: 0.5rem;
+}
+
+.msim-modal-row {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-manrope), sans-serif;
+  font-size: var(--text-base-sm);
+  color: var(--text-black);
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.msim-modal-row:last-of-type {
+  border-bottom: none;
+}
+
+.msim-modal-note {
+  font-family: var(--font-manrope), sans-serif;
+  font-size: var(--text-sm);
+  color: var(--text-black);
+  margin-top: 0.5rem;
+  line-height: var(--lh-base);
+  font-style: italic;
+}
+
+.msim-modal-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--font-manrope), sans-serif;
+  font-size: var(--text-base);
+  font-weight: var(--fw-bold);
+  color: var(--text-black);
+  padding: 1.25rem 0;
+  border-top: 1px solid var(--border-strong);
+  margin-top: 0.5rem;
+}
+
+.msim-modal-disclaimer {
+  font-family: var(--font-manrope), sans-serif;
+  font-size: var(--text-sm);
+  color: var(--text-black);
+  line-height: var(--lh-base);
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-subtle);
+  font-style: italic;
+}
+
+/* Amortization table */
+.msim-amort-scroll {
+  overflow-x: auto;
+  overflow-y: visible;
+  max-height: none;
+  margin-top: 0;
+  -webkit-overflow-scrolling: touch;
+}
+
+.msim-amort-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-manrope), sans-serif;
+  font-size: var(--text-sm-plus);
+}
+
+.msim-amort-table th {
+  background: var(--bg-cream);
+  padding: 0.75rem 1.25rem;
+  text-align: left;
+  font-weight: var(--fw-bold);
+  color: var(--text-dark);
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  white-space: nowrap;
+  border-bottom: 1px solid var(--border-base);
+  font-size: var(--text-xs);
+  letter-spacing: var(--ls-wide);
+  text-transform: uppercase;
+}
+
+.msim-amort-table td {
+  padding: 0.65rem 1.25rem;
+  border-bottom: 1px solid var(--border-subtle);
+  color: var(--text-black);
+  white-space: nowrap;
+}
+
+.msim-amort-table tr:hover td {
+  background: var(--bg-cream);
+}
+
+/* ── Responsive Overrides (Aligned with Tenerife Elite Design System) ── */
+@media (max-width: 1024px) {
+  .msim-section {
+    padding: 3rem 0;
+  }
+
+  .msim-container {
+    padding: 0 1.5rem;
+    gap: 3rem;
+  }
+
+  .msim-header-row {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .msim-header-right {
+    align-items: flex-start;
+    gap: 1.5rem;
+  }
+
+  .msim-body-text {
+    text-align: left;
+    max-width: 100%;
+  }
+
+  .msim-body-card {
+    grid-template-columns: 1fr;
+    width: calc(100% + 1rem);
+    margin-left: -0.5rem;
+    ;
+  }
+
+  .msim-inputs-col {
+    padding: 3rem 2rem;
+  }
+
+  .msim-results-col {
+    padding: 3rem 2rem;
+    border-top: none;
+  }
+
+  .msim-field {
+    margin-bottom: 3.25rem;
+  }
+
+  .msim-field--row {
+    padding-bottom: 1.75rem;
+    margin-bottom: 1.75rem;
+  }
+
+  .msim-result-stats {
+    width: calc(100% + 1rem);
+    margin-left: -0.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .msim-section {
+    padding: 2.5rem 0;
+  }
+
+  .msim-container {
+    gap: 2rem;
+  }
+
+  .msim-tagline {
+    font-size: var(--text-xs);
+  }
+
+  .msim-headline {
+    font-size: var(--text-display-sm);
+  }
+
+  .msim-body-text {
+    font-size: var(--text-sm-plus);
+    color: var(--text-black);
+  }
+
+  .msim-inputs-col {
+    padding: 3rem 1.5rem;
+  }
+
+  .msim-results-col {
+    padding: 3rem 1.5rem;
+  }
+
+  /* Compacting input gaps to avoid excessive vertical scroll length */
+  .msim-field {
+    margin-bottom: 2.25rem;
+  }
+
+  .msim-field--row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+    padding-bottom: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  /* Responsive inputs font scaling */
+  .msim-label {
+    font-size: var(--text-xs);
+  }
+
+  .msim-text-input {
+    font-size: 1.25rem;
+  }
+
+  .msim-currency-symbol {
+    font-size: var(--text-base);
+  }
+
+  .msim-value-pct {
+    font-size: var(--text-sm-plus);
+  }
+
+  .msim-interest-controls {
+    width: 100%;
+    gap: 1rem;
+  }
+
+  .msim-rate-stepper {
+    margin-left: 0;
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  /* Results Typography scaling */
+  .msim-result-hero .msim-label {
+    font-size: var(--text-xs);
+    justify-content: center;
+    align-items: center;
+  }
+
+  .msim-result-hero-value {
+    font-size: var(--text-display-sm);
+    text-align: center;
+    align-items: center;
+  }
+
+  .msim-stat-label,
+  .msim-breakdown-label,
+  .msim-breakdown-value,
+  .msim-stat-value {
+    font-size: var(--text-sm);
+  }
+
+  .msim-breakdown-label--bold,
+  .msim-breakdown-value--bold {
+    font-size: var(--text-sm-plus);
+  }
+
+  .msim-amort-link {
+    font-size: var(--text-sm);
+    justify-content: flex-start;
+    align-self: center !important;
+  }
+
+  /* Modal responsiveness */
+  .msim-modal-overlay-container {
+    padding: 0;
+  }
+
+  .msim-modal-card {
+    max-width: 100%;
+    height: 100%;
+    max-height: 100vh;
+    border-radius: 0;
+  }
+
+  .msim-modal-header {
+    padding: 1.5rem 1.25rem;
+  }
+
+  .msim-modal-body {
+    padding: 1.5rem 1.25rem;
+    gap: 1.25rem;
+  }
+}

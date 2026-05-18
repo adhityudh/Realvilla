@@ -27,6 +27,7 @@ import { seo } from './objects/seo'
 import { blockContent } from './objects/blockContent'
 import { propertyLocation } from './objects/propertyLocation'
 import { localizedString } from './objects/localizedString'
+import { mortgageCalculator } from './objects/mortgageCalculator'
 
 export const schema: { types: SchemaTypeDefinition[] } = {
   types: [
@@ -40,6 +41,7 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     blockContent,
     propertyLocation,
     localizedString,
+    mortgageCalculator,
     heroSection,
     buyHeroSection,
     buyPropertiesSection,

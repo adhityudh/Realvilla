@@ -81,7 +81,11 @@ export default async function PropertyPage({ params }: { params: Promise<{ local
         <SectionRenderer 
           sections={settings.propertyDetailSections} 
           dict={dict} 
-          contextData={{ propertyPrice: property?.price, whatsappNumber: settings?.contactWhatsAppNumber }}
+          contextData={{ 
+            propertyPrice: property?.price, 
+            whatsappNumber: settings?.contactWhatsAppNumber,
+            mortgageCalculator: settings?.mortgageCalculator
+          }}
         />
       )}
     </main>

@@ -13,6 +13,7 @@ export const settings = defineType({
     { name: 'propertyDetail', title: 'Property Detail Page' },
     { name: 'filters', title: 'Filters' },
     { name: 'contact', title: 'Contact Form' },
+    { name: 'mortgage', title: 'Mortgage Calculator' },
   ],
   fields: [
     defineField({
@@ -561,6 +562,13 @@ export const settings = defineType({
           ],
         }),
       ],
+    }),
+    defineField({
+      name: 'mortgageCalculator',
+      title: 'Mortgage Calculator Settings',
+      description: 'Global settings for the Mortgage Simulator. These values are shared across all pages.',
+      type: 'mortgageCalculator',
+      group: 'mortgage',
     }),
   ],
   preview: {
