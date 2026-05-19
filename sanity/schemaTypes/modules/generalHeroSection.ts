@@ -70,6 +70,42 @@ export const generalHeroSection = defineType({
       ]
     }),
     defineField({
+      name: 'secondaryButton',
+      title: 'Secondary Button',
+      description: 'Alternative call to action button displayed next to the primary button.',
+      type: 'object',
+      fields: [
+        defineField({ name: 'label', title: 'Label', type: 'string' }),
+        defineField({
+          name: 'linkType',
+          title: 'Link Type',
+          type: 'string',
+          options: {
+            list: [
+              { title: 'Internal Page', value: 'internal' },
+              { title: 'External URL / Anchor', value: 'external' },
+            ],
+            layout: 'radio',
+          },
+          initialValue: 'external',
+        }),
+        defineField({
+          name: 'internalLink',
+          title: 'Internal Link',
+          type: 'reference',
+          to: [{ type: 'page' }],
+          hidden: ({ parent }) => parent?.linkType !== 'internal',
+        }),
+        defineField({
+          name: 'externalLink',
+          title: 'External Link / Anchor',
+          type: 'string',
+          description: 'Can be a full URL, relative path, or anchor (#).',
+          hidden: ({ parent }) => parent?.linkType !== 'external',
+        }),
+      ]
+    }),
+    defineField({
       name: 'backgroundImage',
       title: 'Background Image',
       type: 'image',

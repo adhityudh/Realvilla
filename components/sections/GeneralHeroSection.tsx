@@ -21,6 +21,10 @@ interface GeneralHeroSectionProps {
       label: string;
       link: string;
     };
+    secondaryButton?: {
+      label: string;
+      link: string;
+    };
     backgroundImage?: string;
     jumpLinks?: Array<{ label: string; link: string }>;
   };
@@ -65,16 +69,17 @@ export default function GeneralHeroSection({ data, dict }: GeneralHeroSectionPro
       0.3
     );
 
-    // 3. Animate primary CTA (Start at 0.5s)
+    // 3. Animate CTAs (Start at 0.5s)
     // Ghost Blur pattern: keep wrapper opacity at 1 to preserve backdrop-filter in Chrome
     gsap.set('.general-hero-cta-wrapper', { opacity: 1 });
     tl.fromTo(
-      '.general-hero-cta',
+      '.general-hero-cta-primary, .general-hero-cta-secondary',
       { y: 20, opacity: 0 },
       {
         y: 0,
         opacity: 1,
         duration: 1,
+        stagger: 0.1,
         ease: 'expo.out',
       },
       0.5
@@ -151,16 +156,28 @@ export default function GeneralHeroSection({ data, dict }: GeneralHeroSectionPro
         
         <div className="general-hero-body-col">
           {data.subtitle && <p className="general-hero-subtitle">{data.subtitle}</p>}
-          {data.primaryButton?.label && (
+          {(data.primaryButton?.label || data.secondaryButton?.label) && (
             <div className="general-hero-cta-wrapper">
-              <Button
-                href={data.primaryButton.link || '#'}
-                label={data.primaryButton.label}
-                variant="pill"
-                onClick={(e) => handleJumpLinkClick(e, data.primaryButton?.link || '#')}
-                showArrow={true}
-                className="general-hero-cta"
-              />
+              {data.primaryButton?.label && (
+                <Button
+                  href={data.primaryButton.link || '#'}
+                  label={data.primaryButton.label}
+                  variant="pill"
+                  onClick={(e) => handleJumpLinkClick(e, data.primaryButton?.link || '#')}
+                  showArrow={true}
+                  className="general-hero-cta-primary"
+                />
+              )}
+              {data.secondaryButton?.label && (
+                <Button
+                  href={data.secondaryButton.link || '#'}
+                  label={data.secondaryButton.label}
+                  variant="pill"
+                  onClick={(e) => handleJumpLinkClick(e, data.secondaryButton?.link || '#')}
+                  showArrow={true}
+                  className="general-hero-cta-secondary"
+                />
+              )}
             </div>
           )}
         </div>

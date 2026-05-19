@@ -319,6 +319,10 @@ export const SECTION_PROJECTION = groq`
           label,
           "link": ${INTERNAL_LINK_PROJECTION}
         },
+        secondaryButton {
+          label,
+          "link": ${INTERNAL_LINK_PROJECTION}
+        },
         "backgroundImage": backgroundImage.asset->url,
         jumpLinks[] {
           label,

@@ -40,7 +40,34 @@
     margin-top: 3rem;
     display: flex;
     justify-content: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
     isolation: isolate;
+}
+
+.general-hero-cta-secondary {
+    background-color: rgba(255, 255, 255, 0.18) !important;
+    color: var(--text-white) !important;
+    border: 1px solid rgba(255, 255, 255, 0.8) !important;
+    box-shadow: none !important;
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.15) !important;
+    transition: background-color 0.4s ease, border-color 0.4s ease, color 0.4s ease, text-shadow 0.4s ease !important;
+
+    /* Hardware acceleration & Layer optimization */
+    will-change: transform;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+}
+
+.general-hero-cta-secondary:hover {
+    background-color: var(--bg-surface) !important;
+    color: var(--text-black) !important;
+    border-color: var(--bg-surface) !important;
+    text-shadow: none !important;
 }
 
 .general-hero-content {
@@ -169,31 +196,6 @@
     .general-hero.layout-horizontal .general-hero-cta-wrapper {
         margin-top: 2.5rem;
         justify-content: flex-start;
-    }
-
-    .general-hero.layout-horizontal .general-hero-cta {
-        background-color: rgba(255, 255, 255, 0.18) !important;
-        color: var(--text-white) !important;
-        border: 1px solid rgba(255, 255, 255, 0.8) !important;
-        box-shadow: none !important;
-        -webkit-backdrop-filter: blur(10px);
-        backdrop-filter: blur(10px);
-        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.15) !important;
-        transition: background-color 0.4s ease, border-color 0.4s ease, color 0.4s ease, text-shadow 0.4s ease !important;
-
-        /* Hardware acceleration & Layer optimization */
-        will-change: transform;
-        transform: translateZ(0);
-        -webkit-transform: translateZ(0);
-        backface-visibility: hidden;
-        -webkit-backface-visibility: hidden;
-    }
-
-    .general-hero.layout-horizontal .general-hero-cta:hover {
-        background-color: var(--bg-surface) !important;
-        color: var(--text-black) !important;
-        border-color: var(--bg-surface) !important;
-        text-shadow: none !important;
     }
 
     .general-hero.layout-horizontal .general-jump-links {
