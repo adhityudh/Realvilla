@@ -140,6 +140,7 @@ function ContactModalComponentInstance({
         whatsappNumber={whatsappNumber}
         onSubmittingChange={setIsSubmitting}
         onSubmitSuccessChange={setSubmitSuccess}
+        submitSuccess={submitSuccess}
         formIdPrefix={`pc-modal-${componentId}`}
       />
     </ContactModal>

@@ -276,6 +276,7 @@ export default function PropertyDetails({
           isInsideExternalModal={true}
           onSubmittingChange={setIsSubmitting}
           onSubmitSuccessChange={setSubmitSuccess}
+          submitSuccess={submitSuccess}
           presetMessage={requestGuidancePresetMessage ? requestGuidancePresetMessage.replace(/{{property_title}}/g, property.title).replace(/{{property_link}}/g, pageUrl) : ''}
           whatsappNumber={whatsappNumber}
           whatsappMessageTemplate={whatsappMessageTemplate ? whatsappMessageTemplate.replace(/{{property_title}}/g, property.title).replace(/{{property_link}}/g, pageUrl) : undefined}

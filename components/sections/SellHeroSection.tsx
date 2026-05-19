@@ -31,6 +31,33 @@ export default function SellHeroSection({ data, dict }: SellHeroSectionProps) {
   const [suggestions, setSuggestions] = useState<Array<{ place_id: string | number; display_name: string }>>([]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState('');
+  const [isScrollAtEnd, setIsScrollAtEnd] = useState(false);
+  const [isScrollAtStart, setIsScrollAtStart] = useState(true);
+
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const checkScrollLimit = () => {
+    const el = inputRef.current;
+    if (!el) return;
+    setIsScrollAtStart(el.scrollLeft <= 5);
+    setIsScrollAtEnd(el.scrollLeft + el.clientWidth >= el.scrollWidth - 8);
+  };
+
+  useEffect(() => {
+    const timer = setTimeout(checkScrollLimit, 100);
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      window.addEventListener('resize', checkScrollLimit);
+    }
+    return () => {
+      if (typeof window !== 'undefined') {
+        window.removeEventListener('resize', checkScrollLimit);
+      }
+    };
+  }, []);
 
   const dropdownRef = useRef<HTMLDivElement>(null);
   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
@@ -60,6 +87,18 @@ export default function SellHeroSection({ data, dict }: SellHeroSectionProps) {
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+  useEffect(() => {
+    const handleSuccess = () => {
+      setSearchQuery('');
+      setSelectedAddress('');
+    };
+
+    window.addEventListener('sell-form-submitted', handleSuccess);
+    return () => {
+      window.removeEventListener('sell-form-submitted', handleSuccess);
     };
   }, []);
 
@@ -369,6 +408,7 @@ export default function SellHeroSection({ data, dict }: SellHeroSectionProps) {
             style={{ width: '100%' }}
           >
             <input
+              ref={inputRef}
               type="text"
               value={searchQuery}
               onChange={(e) => {
@@ -381,32 +421,27 @@ export default function SellHeroSection({ data, dict }: SellHeroSectionProps) {
                   setIsDropdownOpen(true);
                 }
               }}
+              onScroll={checkScrollLimit}
+              onKeyUp={checkScrollLimit}
               placeholder={placeholderText}
-              className={`sell-search-input-real ${selectedAddress ? 'has-fade' : ''}`}
-              style={{ paddingRight: selectedAddress ? '100px' : '0' }}
+              className={`sell-search-input-real ${
+                selectedAddress
+                  ? `${!isScrollAtStart ? 'has-fade-left' : ''} ${!isScrollAtEnd ? 'has-fade-right' : ''}`.trim()
+                  : ''
+              }`}
+              style={{ paddingRight: '100px' }}
             />
             {isLoading && (
-              <div className="sell-search-spinner" style={{ marginRight: selectedAddress ? '130px' : '0' }} />
+              <div className="sell-search-spinner" style={{ marginRight: '120px' }} />
             )}
-            {!selectedAddress && !isLoading && (
-              <span className="search-icon">
-                <Image
-                  src="/icons/search.svg"
-                  alt="Search"
-                  width={20}
-                  height={20}
-                />
-              </span>
-            )}
-            {selectedAddress && (
-              <Button
-                label={dict?.contact?.sell?.continue || 'Continue'}
-                variant="pill"
-                showArrow={false}
-                onClick={handleContinue}
-                className="sell-continue-btn"
-              />
-            )}
+            <Button
+              label={dict?.contact?.sell?.continue || 'Continue'}
+              variant="pill"
+              showArrow={false}
+              onClick={handleContinue}
+              className="sell-continue-btn"
+              disabled={!selectedAddress}
+            />
           </div>
 
           {isDropdownOpen && suggestions.length > 0 && (

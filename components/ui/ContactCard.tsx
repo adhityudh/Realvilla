@@ -46,6 +46,7 @@ export interface ContactCardProps {
   isInsideExternalModal?: boolean;
   onSubmittingChange?: (isSubmitting: boolean) => void;
   onSubmitSuccessChange?: (success: boolean | null) => void;
+  submitSuccess?: boolean | null;
   /** Optional prefix for form element IDs to avoid conflicts when multiple instances exist */
   formIdPrefix?: string;
 }
@@ -80,6 +81,7 @@ export default function ContactCard({
   isInsideExternalModal = false,
   onSubmittingChange,
   onSubmitSuccessChange,
+  submitSuccess: submitSuccessProp,
   formIdPrefix = 'contact-modal',
 }: ContactCardProps) {
   // Added for displaying next step in sliding sidebar drawer
@@ -191,18 +193,25 @@ export default function ContactCard({
   const cardRef = useRef<HTMLDivElement>(null);
   const [lockedHeight, setLockedHeight] = useState<number | null>(null);
 
-  // Forward states up if inside external containers
-  useEffect(() => {
+  const updateIsSubmitting = (val: boolean) => {
+    setIsSubmitting(val);
     if (onSubmittingChange) {
-      onSubmittingChange(isSubmitting);
+      onSubmittingChange(val);
     }
-  }, [isSubmitting, onSubmittingChange]);
+  };
+
+  const updateSubmitSuccess = (val: boolean | null) => {
+    setSubmitSuccess(val);
+    if (onSubmitSuccessChange) {
+      onSubmitSuccessChange(val);
+    }
+  };
 
   useEffect(() => {
-    if (onSubmitSuccessChange) {
-      onSubmitSuccessChange(submitSuccess);
+    if (submitSuccessProp !== undefined && submitSuccessProp !== submitSuccess) {
+      setSubmitSuccess(submitSuccessProp);
     }
-  }, [submitSuccess, onSubmitSuccessChange]);
+  }, [submitSuccessProp, submitSuccess]);
 
   // Anti-spam stealth trackers
   const [formStartTime] = useState(() => Date.now());
@@ -210,9 +219,9 @@ export default function ContactCard({
 
   const handleSubmit = async (e: React.FormEvent, formType: 'general' | 'sell' | 'mortgage') => {
     e.preventDefault();
-    setIsSubmitting(true);
+    updateIsSubmitting(true);
     setSubmitError(null);
-    setSubmitSuccess(null);
+    updateSubmitSuccess(null);
 
     const currentUrl = typeof window !== 'undefined' ? window.location.href : '';
 
@@ -222,7 +231,7 @@ export default function ContactCard({
         setSubmitError(
           dict?.filter?.no_results ? "Por favor, complete todos los campos obligatorios." : "Please fill out all required fields."
         );
-        setIsSubmitting(false);
+        updateIsSubmitting(false);
         return;
       }
       if (!isAddressSelected) {
@@ -231,7 +240,7 @@ export default function ContactCard({
             ? "Por favor, seleccione una dirección de la lista de sugerencias."
             : "Please select a valid address from the suggestions list."
         );
-        setIsSubmitting(false);
+        updateIsSubmitting(false);
         return;
       }
     }
@@ -282,7 +291,7 @@ export default function ContactCard({
       if (cardRef.current) {
         setLockedHeight(cardRef.current.clientHeight);
       }
-      setSubmitSuccess(true);
+      updateSubmitSuccess(true);
 
       // Clear fields upon successful submission
       if (formType === 'sell') {
@@ -292,6 +301,10 @@ export default function ContactCard({
         setSelectedMunicipality('');
         setSelectedPropertyType('');
         updateAddressSelected(false);
+
+        if (typeof window !== 'undefined') {
+          window.dispatchEvent(new CustomEvent('sell-form-submitted'));
+        }
       } else if (formType === 'mortgage') {
         setMortgageName('');
         setMortgageEmail('');
@@ -306,7 +319,7 @@ export default function ContactCard({
       console.error('Submission error:', err);
       setSubmitError(err.message || 'Failed to submit form');
     } finally {
-      setIsSubmitting(false);
+      updateIsSubmitting(false);
     }
   };
 
@@ -784,7 +797,7 @@ export default function ContactCard({
           variant="dark"
           label={dict?.contact?.success?.close || "Back to start"}
           onClick={() => {
-            setSubmitSuccess(null);
+            updateSubmitSuccess(null);
             setLockedHeight(null); // Reset viewport lock for next session
             setIsModalOpen(false);
             handleStepTransition(initialStep); // Properly maintain user determined initial step
@@ -924,7 +937,21 @@ export default function ContactCard({
 
       {showSellWhatsApp && renderWhatsAppOption(sellWhatsappMessageTemplate)}
 
-      {renderMunicipalitySelector(isInsideModal)}
+      {isInsideModal ? (
+        <div className="form-group">
+          <label htmlFor={isInsideModal ? "modal-sell-address-readonly" : "sell-address-readonly"}>
+            {sellDict.fields.municipality} <span className="form-required">{sellDict.fields.required || "*"}</span>
+          </label>
+          <div
+            id={isInsideModal ? "modal-sell-address-readonly" : "sell-address-readonly"}
+            className="form-readonly-input"
+          >
+            {selectedMunicipality}
+          </div>
+        </div>
+      ) : (
+        renderMunicipalitySelector(isInsideModal)
+      )}
 
       {renderPropertyTypeSelector(isInsideModal)}
 
