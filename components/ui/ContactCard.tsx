@@ -743,7 +743,7 @@ export default function ContactCard({
   };
 
   const renderIntentStep = () => (
-    <div className="contact-form contact-intent">
+    <div className={`contact-form contact-intent ${!showIntentWhatsApp || !whatsappNumber ? 'wa-disabled' : ''}`}>
       <h3 className="form-title">{intentDict.title}</h3>
       <p className="form-subtitle">{intentDict.subtitle}</p>
 
@@ -796,7 +796,7 @@ export default function ContactCard({
 
   const renderGeneralForm = (isInsideModal = false) => (
     <form
-      className="contact-form"
+      className={`contact-form ${!showGeneralWhatsApp || !whatsappNumber ? 'wa-disabled' : ''}`}
       id={isInsideModal ? `${formIdPrefix}-general-form` : undefined}
       onSubmit={(e) => handleSubmit(e, 'general')}
     >
@@ -899,7 +899,7 @@ export default function ContactCard({
 
   const renderSellForm = (isInsideModal = false) => (
     <form
-      className="contact-form"
+      className={`contact-form ${!showSellWhatsApp || !whatsappNumber ? 'wa-disabled' : ''}`}
       id={isInsideModal ? `${formIdPrefix}-sell-form` : undefined}
       onSubmit={(e) => handleSubmit(e, 'sell')}
     >
@@ -1004,7 +1004,7 @@ export default function ContactCard({
 
   const renderMortgageForm = (isInsideModal = false) => (
     <form
-      className="contact-form"
+      className={`contact-form ${!showMortgageWhatsApp || !whatsappNumber ? 'wa-disabled' : ''}`}
       id={isInsideModal ? `${formIdPrefix}-mortgage-form` : undefined}
       onSubmit={(e) => handleSubmit(e, 'mortgage')}
     >

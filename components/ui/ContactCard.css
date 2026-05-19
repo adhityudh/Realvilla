@@ -657,3 +657,14 @@
         opacity: 1;
     }
 }
+
+/* Align text to left when WhatsApp option is disabled */
+.contact-form.wa-disabled .form-title {
+    text-align: left;
+}
+
+.contact-form.wa-disabled .form-subtitle {
+    text-align: left;
+    margin-left: 0;
+    margin-right: 0;
+}
