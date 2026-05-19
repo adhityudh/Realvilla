@@ -34,7 +34,7 @@ const icons = [
   'list_alt_check.svg',
   'account_balance.svg',
   'arrow_upload_ready.svg',
-  'contract_edit.svg',
+  'signature.svg',
   'attach_money.svg',
   'check_circle-filled.svg',
 ];
