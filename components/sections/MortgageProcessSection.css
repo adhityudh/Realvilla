@@ -17,13 +17,10 @@
 .mortgage-header {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  /* 💎 Left-aligned for perfect grid integration */
-  justify-content: flex-start;
-  text-align: left;
-  /* 📐 Anchor text razor-sharp to the left */
-  margin-bottom: 5rem;
-  /* 🧼 Tighter spatial integration gap */
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  margin-bottom: 8rem;
 }
 
 .mortgage-tagline {
@@ -38,9 +35,11 @@
   color: var(--color-gold-dark);
   margin-bottom: 1.5rem;
   opacity: 0.9;
+  transition: color 0.4s ease;
 }
 
-.mortgage-tagline::before {
+.mortgage-tagline::before,
+.mortgage-tagline::after {
   content: '';
   width: 30px;
   height: 1px;
@@ -72,7 +71,8 @@
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   /* 🏆 Horizontal grid for desktop */
-  gap: 3.5rem;
+  --grid-gap: 3.5rem;
+  gap: var(--grid-gap);
 }
 
 .mortgage-step-item {
@@ -203,6 +203,7 @@
   display: flex;
   align-items: center;
   gap: 1rem;
+  transition: color 0.4s ease;
   /* 📐 Harmonious gap to title */
 }
 
@@ -215,6 +216,7 @@
   text-transform: uppercase;
   letter-spacing: var(--ls-tight);
   line-height: var(--lh-snug);
+  transition: color 0.4s ease;
 }
 
 /* Step body text flow underneath image */
@@ -228,6 +230,75 @@
   max-width: 100%;
 }
 
+/* ── 🌟 Timeline Mode Styles (Scroll-Driven Serpentine Timeline) ── */
+.mortgage-timeline-mode .mortgage-step-item {
+  border-top: none;
+  /* Disable static border-top */
+  padding-top: 2.25rem;
+}
+
+.mortgage-timeline-mode .mortgage-step-item::before {
+  display: none !important;
+  /* Disable standard gold hover line */
+}
+
+/* Timeline background track segment */
+.mortgage-timeline-line {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 2px;
+  width: calc(100% + var(--grid-gap, 3.5rem));
+  background-color: var(--border-base);
+  z-index: 10;
+}
+
+/* If last item of a row, stretch the line to the right viewport edge */
+.mortgage-timeline-line.stretch-right {
+  width: calc(100% + (100vw - 100%) / 2);
+}
+
+/* Left entering track segment for first item of subsequent rows */
+.mortgage-timeline-left-line {
+  position: absolute;
+  top: 0;
+  left: calc(-1 * (100vw - 100%) / 2);
+  height: 2px;
+  width: calc((100vw - 100%) / 2);
+  background-color: var(--border-strong);
+  z-index: 10;
+}
+
+/* Animated active gold progress line */
+.mortgage-timeline-progress {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background-color: var(--color-gold-dark);
+  transform-origin: left;
+  transform: scaleX(0);
+  /* Controlled dynamically by GSAP */
+  z-index: 11;
+  box-shadow: 0 0 8px rgba(197, 160, 89, 0.4);
+}
+
+/* Dynamic Timeline Dot Node (Point) */
+.mortgage-timeline-dot {
+  position: absolute;
+  top: -4px;
+  /* Centered perfectly on the 2px height timeline line */
+  left: 0;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: var(--bg-white);
+  border: 2px solid var(--border-strong);
+  z-index: 12;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
 /* ── Responsive Queries ── */
 @media (max-width: 1024px) {
   .mortgage-container {
@@ -237,7 +308,8 @@
   .mortgage-steps-list {
     grid-template-columns: repeat(2, 1fr);
     /* 📐 2x2 Grid for Tablet */
-    gap: 3rem 2rem;
+    --grid-gap: 2rem;
+    gap: 3rem var(--grid-gap);
   }
 
   .mortgage-process-section {
@@ -250,12 +322,11 @@
 }
 
 @media (max-width: 768px) {
-
   .mortgage-steps-list {
     grid-template-columns: repeat(2, 1fr);
     /* 🏆 Transformed to 2-Column Grid on mobile to prevent scrolling fatigue */
-    gap: 2rem 1rem;
-    /* 🧼 Highly optimized gap to conserve horizontal breathing room */
+    --grid-gap: 1rem;
+    gap: 2.5rem var(--grid-gap);
   }
 
   .mortgage-step-item {

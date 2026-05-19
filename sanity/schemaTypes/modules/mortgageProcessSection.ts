@@ -25,6 +25,13 @@ export const mortgageProcessSection = defineType({
       type: 'blockContent',
       description: 'Optional introductory context.',
     }),
+    defineField({
+      name: 'timelineMode',
+      title: 'Timeline Mode',
+      type: 'boolean',
+      description: 'Enable an animated horizontal timeline line that connects steps and moves/fills as the page is scrolled.',
+      initialValue: false,
+    }),
 
     defineField({
       name: 'steps',

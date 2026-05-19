@@ -361,6 +361,7 @@ export const SECTION_PROJECTION = groq`
         tagline,
         headline,
         intro,
+        timelineMode,
         imageOrder,
         steps[] {
           number,
