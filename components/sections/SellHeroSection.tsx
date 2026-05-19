@@ -195,18 +195,13 @@ export default function SellHeroSection({ data, dict }: SellHeroSectionProps) {
   };
 
   // Use user-provided settings or default writing
-  const finalTitle = data?.title || dict?.contact?.sell?.hero_title || 'SELL YOUR PROPERTY WITH ABSOLUTE CONFIDENCE';
-  const fullPlaceholder = data?.searchPlaceholder || dict?.contact?.sell?.fields?.municipality_placeholder || 'Enter your property address...';
+  const finalTitle = data?.title || dict?.contact?.sell?.hero_title;
+  const fullPlaceholder = data?.searchPlaceholder || dict?.contact?.sell?.fields?.municipality_placeholder;
 
   // Use Sell page background image as default fallback if none provided
-  const bgImage = data?.backgroundImage || 'https://cdn.sanity.io/images/c8xelbhk/production/e343bd0f2589944e8c5e19a9b39074580e75c73f-1024x1024.jpg';
+  const bgImage = data?.backgroundImage;
 
-  const defaultJumpLinks = [
-    { label: dict?.contact?.sell?.selling_process || 'selling process', link: '#buying-process' }, // on sell page it is #buying-process
-    { label: dict?.contact?.sell?.value_my_property || 'value my property', link: '#valuation' }
-  ];
-
-  const jumpLinks = data?.jumpLinks && data.jumpLinks.length > 0 ? data.jumpLinks : defaultJumpLinks;
+  const jumpLinks = data?.jumpLinks;
 
   const handleJumpLinkClick = (e: React.MouseEvent<any>, url: string) => {
     smoothScrollToAnchor(e, url);
