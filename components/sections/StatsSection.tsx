@@ -19,6 +19,7 @@ interface StatItem {
 
 interface StatsSectionProps {
   data: {
+    id?: string;
     heading?: string;
     body?: string;
     stats?: StatItem[];
@@ -82,7 +83,7 @@ export default function StatsSection({ data }: StatsSectionProps) {
   if (!data) return null;
 
   return (
-    <section className="stats-section" ref={sectionRef}>
+    <section className="stats-section" ref={sectionRef} id={data?.id || 'stats'}>
       <div className="stats-container">
         <div className="stats-grid" ref={gridRef}>
           {/* Structural Layout Dividers */}

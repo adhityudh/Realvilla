@@ -1,4 +1,5 @@
 import SectionRenderer from '@/components/sections/SectionRenderer';
+import PageComponentsRenderer from '@/components/sections/PageComponentsRenderer';
 import { client, getClient } from '@/sanity/lib/client';
 import { PAGE_QUERY, SETTINGS_QUERY } from '@/sanity/lib/queries';
 import { getGlobalSettings, constructMetadata } from '@/lib/metadata';
@@ -60,6 +61,11 @@ export default async function DynamicPage({ params }: { params: Promise<{ locale
     <>
       <FooterPaddingSetter active={data.footerPaddingHigh} />
       <TranslationSetter translations={data._translations ?? []} />
+      <PageComponentsRenderer
+        pageComponents={data.pageComponents}
+        dict={dict}
+        whatsappNumber={settings?.contactWhatsAppNumber}
+      />
       <SectionRenderer 
         sections={data.sections} 
         dict={dict} 

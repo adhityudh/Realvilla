@@ -68,6 +68,16 @@ export const page = defineType({
       ],
     }),
     defineField({
+      name: 'pageComponents',
+      title: 'Page Components',
+      description: 'Reusable components (like modals) that can be triggered anywhere on this page by referencing their Component ID in any link (e.g., "modal:sell-modal").',
+      type: 'array',
+      of: [
+        { type: 'contactModalComponent' },
+        { type: 'genericModalComponent' },
+      ],
+    }),
+    defineField({
       name: 'footerPaddingHigh',
       title: 'Footer: High Padding Mode',
       description: 'If enabled, the footer will have larger top padding (like the homepage).',

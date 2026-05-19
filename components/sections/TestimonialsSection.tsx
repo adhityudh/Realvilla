@@ -71,7 +71,7 @@ const TestimonialsSection = ({ data, dict }: { data?: any, dict?: any }) => {
   const displayItems = [...testimonials, ...testimonials];
 
   return (
-    <section className="testimonials-section" ref={sectionRef}>
+    <section className="testimonials-section" ref={sectionRef} id={data?.id || 'testimonials'}>
       <div className="testimonials-title-wrapper">
         <h2 className="testimonials-title" ref={titleRef}>{title}</h2>
       </div>

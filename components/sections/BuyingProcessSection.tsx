@@ -22,6 +22,7 @@ interface Step {
 
 interface BuyingProcessSectionProps {
   data?: {
+    id?: string;
     tagline?: string;
     headline?: string;
     intro?: any;
@@ -103,7 +104,7 @@ export default function BuyingProcessSection({ data }: BuyingProcessSectionProps
   });
 
   return (
-    <section className={`buying-process-section order-${imageOrder}`} id="buying-process" ref={sectionRef}>
+    <section className={`buying-process-section order-${imageOrder}`} id={data?.id || 'buying-process'} ref={sectionRef}>
       <div className="process-container">
         {/* Header */}
         {(tagline || headline || intro) && (

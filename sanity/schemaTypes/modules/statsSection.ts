@@ -8,6 +8,13 @@ export const statsSection = defineType({
   icon: ChartUpwardIcon,
   fields: [
     defineField({
+      name: 'id',
+      title: 'Section ID',
+      type: 'string',
+      description: 'Used as an anchor identifier (e.g. for smooth scrolling links like #about).',
+      initialValue: 'stats',
+    }),
+    defineField({
       name: 'heading',
       title: 'Section Heading',
       type: 'string',

@@ -20,6 +20,7 @@ interface LedgerItem {
 
 interface DocumentLedgerSectionProps {
   data?: {
+    id?: string;
     tagline?: string;
     headline?: string;
     intro?: any;
@@ -91,7 +92,7 @@ export default function DocumentLedgerSection({ data }: DocumentLedgerSectionPro
   const { tagline, headline, intro, items, cta } = data;
 
   return (
-    <section className="document-ledger-section" ref={sectionRef}>
+    <section className="document-ledger-section" ref={sectionRef} id={data?.id || 'document-ledger'}>
       <div className="ledger-container">
         {/* 🏛️ Two-Column Split Grid */}
         <div className="ledger-grid">

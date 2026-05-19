@@ -28,6 +28,7 @@ import JsonLd from '@/components/seo/JsonLd';
 import { getDictionary } from '@/lib/get-dictionary';
 import ScrollReleaser from '@/components/ui/ScrollReleaser';
 import { TranslationProvider } from '@/components/providers/TranslationProvider';
+import { ModalRegistryProvider } from '@/components/providers/ModalRegistryContext';
 
 export async function generateMetadata(
   { params }: { params: Promise<{ locale: string }> }
@@ -70,11 +71,13 @@ export default async function RootLayout({
           }}
         />
         <TranslationProvider>
-          <ScrollReleaser />
-          <Header settings={settings} dict={dict} />
-          <MobileNav settings={settings} dict={dict} />
-          {children}
-          <FooterSection data={settings?.footer} />
+          <ModalRegistryProvider>
+            <ScrollReleaser />
+            <Header settings={settings} dict={dict} />
+            <MobileNav settings={settings} dict={dict} />
+            {children}
+            <FooterSection data={settings?.footer} />
+          </ModalRegistryProvider>
         </TranslationProvider>
         <JsonLd data={getSchemaData(settings, `/${locale}`)} />
         {isDraftMode && <VisualEditing />}

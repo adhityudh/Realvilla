@@ -23,6 +23,7 @@ interface Step {
 
 interface MortgageProcessSectionProps {
   data?: {
+    id?: string;
     tagline?: string;
     headline?: string;
     intro?: any;
@@ -254,7 +255,7 @@ export default function MortgageProcessSection({ data }: MortgageProcessSectionP
   return (
     <section
       className={`mortgage-process-section ${timelineMode ? 'mortgage-timeline-mode' : ''}`}
-      id="process"
+      id={data?.id || 'process'}
       ref={sectionRef}
     >
       <div className="mortgage-container">

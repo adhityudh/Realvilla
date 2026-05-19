@@ -318,6 +318,12 @@ html.lenis body {
   border-bottom-color: var(--btn-link-color, #ffffff);
 }
 
+.btn-link-styled.btn-link-sm {
+  font-size: var(--text-sm);
+  padding-bottom: 4px;
+  border-bottom-width: 1px;
+}
+
 .btn-icon {
   width: 1.3rem;
   height: 1.3rem;

@@ -14,6 +14,7 @@ if (typeof window !== 'undefined') {
 
 interface GeneralHeroSectionProps {
   data: {
+    id?: string;
     title?: string;
     subtitle?: string;
     desktopLayout?: 'vertical' | 'horizontal';
@@ -152,6 +153,7 @@ export default function GeneralHeroSection({ data, dict }: GeneralHeroSectionPro
       className={`general-hero layout-${data.desktopLayout || 'vertical'}`} 
       ref={sectionRef}
       data-is-hero="true"
+      id={data?.id || 'general-hero'}
     >
       <div className="general-hero-bg">
         {data.backgroundImage && (

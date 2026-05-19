@@ -171,7 +171,7 @@ export default function HeroSection({ data, dict }: { data?: any; dict?: any }) 
   const currentWebM = device === 'mobile' ? mobileVideoWebM : desktopVideoWebM;
 
   return (
-    <main className="main-hero" data-is-hero="true">
+    <main className="main-hero" data-is-hero="true" id={data?.id || 'hero'}>
       <video 
         ref={videoRef} 
         className={`hero-bg-video ${!device ? 'is-loading' : ''}`} 

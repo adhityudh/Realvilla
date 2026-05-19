@@ -97,8 +97,7 @@ export const settings = defineType({
               type: 'string',
               options: {
                 list: [
-                  { title: 'Internal Page', value: 'internal' },
-                  { title: 'External URL / Anchor Hash', value: 'external' },
+                  { title: 'External URL', value: 'external' },
                 ],
                 layout: 'radio',
               },
@@ -113,10 +112,10 @@ export const settings = defineType({
             }),
             defineField({
               name: 'externalLink',
-              title: 'External Link / Anchor Hash',
+              title: 'External URL',
               type: 'string',
               hidden: ({ parent }) => parent?.linkType !== 'external',
-              description: 'Enter a full URL or a relative hash anchor (e.g., #buying-process)',
+              description: 'Enter a full URL (https://...) or relative path.',
             }),
           ],
           preview: {
@@ -499,6 +498,16 @@ export const settings = defineType({
                   type: 'reference',
                   to: [{ type: 'page' }],
                   hidden: ({ parent }) => parent?.linkType !== 'internal',
+                  options: {
+                    filter: ({ document }) => {
+                      const language = document?.language;
+                      if (!language) return {};
+                      return {
+                        filter: 'language == $language || !defined(language)',
+                        params: { language }
+                      };
+                    }
+                  }
                 }),
                 defineField({
                   name: 'externalLink',
@@ -550,6 +559,16 @@ export const settings = defineType({
                   type: 'reference',
                   to: [{ type: 'page' }],
                   hidden: ({ parent }) => parent?.linkType !== 'internal',
+                  options: {
+                    filter: ({ document }) => {
+                      const language = document?.language;
+                      if (!language) return {};
+                      return {
+                        filter: 'language == $language || !defined(language)',
+                        params: { language }
+                      };
+                    }
+                  }
                 }),
                 defineField({
                   name: 'externalLink',

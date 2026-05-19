@@ -18,6 +18,7 @@ interface FinancingCard {
 
 interface FinancingCardsSectionProps {
   data?: {
+    id?: string;
     mainDescription?: string;
     backgroundImage?: {
       asset?: {
@@ -125,7 +126,7 @@ export default function FinancingCardsSection({ data }: FinancingCardsSectionPro
   const bgUrl = data.backgroundImage?.asset?.url || '/images/financing-bg.png';
 
   return (
-    <section className="financing-cards-section" ref={sectionRef}>
+    <section className="financing-cards-section" ref={sectionRef} id={data?.id || 'financing-cards'}>
       {/* Static luxury interior asset backdrop */}
       <div 
         className="financing-bg-asset" 

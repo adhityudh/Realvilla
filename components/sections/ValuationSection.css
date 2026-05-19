@@ -176,6 +176,21 @@
             display: flex;
         }
 
+        .valuation-ctas {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .valuation-cta-secondary {
+            --btn-link-color: var(--text-black);
+            --btn-link-border: var(--border-strong);
+        }
+
+        .valuation-cta-secondary:hover {
+            --btn-link-color: var(--color-gold-hover);
+        }
+
         .valuation-cta-mobile {
             display: none;
         }
@@ -209,6 +224,10 @@
 
             .valuation-cta-mobile {
                 display: flex;
+                flex-direction: row;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 1.5rem;
                 margin-left: auto;
                 margin-right: auto;
                 margin-bottom: 2rem;

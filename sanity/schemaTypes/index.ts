@@ -28,6 +28,8 @@ import { blockContent } from './objects/blockContent'
 import { propertyLocation } from './objects/propertyLocation'
 import { localizedString } from './objects/localizedString'
 import { mortgageCalculator } from './objects/mortgageCalculator'
+import { contactModalComponent } from './modules/contactModalComponent'
+import { genericModalComponent } from './modules/genericModalComponent'
 
 export const schema: { types: SchemaTypeDefinition[] } = {
   types: [
@@ -42,6 +44,8 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     propertyLocation,
     localizedString,
     mortgageCalculator,
+    contactModalComponent,
+    genericModalComponent,
     heroSection,
     buyHeroSection,
     buyPropertiesSection,

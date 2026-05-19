@@ -342,7 +342,7 @@ export default function BuyPropertiesSection({ data, dict, filterMeta: initialMe
   };
 
   return (
-    <section className="buy-properties-section" id="properties-list" ref={sectionRef}>
+    <section className="buy-properties-section" id={data?.id || 'properties-list'} ref={sectionRef}>
       <div className="buy-properties-wrapper">
 
         {/* Section Header */}

@@ -8,6 +8,13 @@ export const mortgageProcessSection = defineType({
   icon: ClipboardIcon,
   fields: [
     defineField({
+      name: 'id',
+      title: 'Section ID',
+      type: 'string',
+      description: 'Used as an anchor identifier (e.g. for smooth scrolling links like #about).',
+      initialValue: 'process',
+    }),
+    defineField({
       name: 'tagline',
       title: 'Tagline',
       type: 'string',

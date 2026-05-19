@@ -309,7 +309,7 @@ export default function BuyMortgageSimSection({ data, dict, contextData }: { dat
   }, [data]);
 
   return (
-    <section className="msim-section" id="mortgage-simulator" ref={sectionRef}>
+    <section className="msim-section" id={data?.id || 'mortgage-simulator'} ref={sectionRef}>
       <div className="msim-container">
         {/* Header */}
         <div className="msim-header-row">

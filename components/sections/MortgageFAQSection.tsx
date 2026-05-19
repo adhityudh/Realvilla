@@ -24,10 +24,10 @@ const MortgageFAQSection = ({ data, dict }: { data?: any, dict?: any }) => {
   const title = data.title;
   const description = data.description;
   const faqData = data.faqs;
-  const ctaPrimaryLabel = data.ctaPrimaryLabel;
-  const ctaPrimaryLink = data.ctaPrimaryLink;
-  const ctaSecondaryLabel = data.ctaSecondaryLabel;
-  const ctaSecondaryLink = data.ctaSecondaryLink;
+  const ctaLabel = data.ctaLabel;
+  const ctaLink = data.ctaLink;
+  const secondaryCtaLabel = data.secondaryCtaLabel;
+  const secondaryCtaLink = data.secondaryCtaLink;
 
   useEffect(() => {
     if (!sectionRef.current || !headerRef.current || !listRef.current || !ctaRef.current) return;
@@ -115,7 +115,7 @@ const MortgageFAQSection = ({ data, dict }: { data?: any, dict?: any }) => {
   };
 
   return (
-    <section className="mortgage-faq-section" id="mortgage" ref={sectionRef}>
+    <section className="mortgage-faq-section" id={data?.id || 'mortgage'} ref={sectionRef}>
       <div className="mortgage-faq-wrapper">
         <div className="mortgage-faq-header" ref={headerRef}>
           <div className="mortgage-faq-info">
@@ -147,9 +147,9 @@ const MortgageFAQSection = ({ data, dict }: { data?: any, dict?: any }) => {
         </div>
 
         <div className="mortgage-faq-cta" ref={ctaRef}>
-          {ctaPrimaryLabel && <Button label={ctaPrimaryLabel} href={ctaPrimaryLink || '#'} variant="dark" />}
-          {(data.showSecondaryCta !== false && ctaSecondaryLabel) && (
-            <Button label={ctaSecondaryLabel} href={ctaSecondaryLink || '#'} variant="pill" className="service-cta" />
+          {ctaLabel && <Button label={ctaLabel} href={ctaLink || '#'} variant="dark" />}
+          {(data.showSecondaryCta !== false && secondaryCtaLabel) && (
+            <Button label={secondaryCtaLabel} href={secondaryCtaLink || '#'} variant="pill" className="service-cta" />
           )}
         </div>
       </div>

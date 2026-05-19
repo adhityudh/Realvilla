@@ -26,6 +26,9 @@ export default function ValuationSection({ data, dict }: { data?: any, dict?: an
   const ctaLabel = data.ctaLabel;
   const ctaLink = data.ctaLink;
   const finalIframeUrl = data.iframeUrl;
+  const showSecondaryCta = data.showSecondaryCta;
+  const secondaryCtaLabel = data.secondaryCtaLabel;
+  const secondaryCtaLink = data.secondaryCtaLink;
 
   useEffect(() => {
     if (!sectionRef.current) return;
@@ -94,7 +97,7 @@ export default function ValuationSection({ data, dict }: { data?: any, dict?: an
   }, [iframeSrc]);
 
   return (
-    <section className="valuation-section" id="valuation" ref={sectionRef}>
+    <section className="valuation-section" id={data?.id || 'valuation'} ref={sectionRef}>
       <div className="valuation-container">
         <div className="valuation-content">
           <div className="valuation-tagline">{tagline}</div>
@@ -104,7 +107,20 @@ export default function ValuationSection({ data, dict }: { data?: any, dict?: an
             <Image src="/icons/shield.svg" alt="Shield" width={24} height={24} loading="lazy" unoptimized />
             <span>{trustText}</span>
           </div>
-          {ctaLabel && <Button label={ctaLabel} href={ctaLink || '#'} className="service-cta valuation-cta-desktop" />}
+          {(ctaLabel || (showSecondaryCta && secondaryCtaLabel)) && (
+            <div className="valuation-ctas valuation-cta-desktop">
+              {ctaLabel && <Button label={ctaLabel} href={ctaLink || '#'} className="service-cta" />}
+              {showSecondaryCta && secondaryCtaLabel && (
+                <Button
+                  label={secondaryCtaLabel}
+                  href={secondaryCtaLink || '#'}
+                  variant="link"
+                  showArrow={false}
+                  className="btn-link-sm valuation-cta-secondary"
+                />
+              )}
+            </div>
+          )}
         </div>
         <div className="valuation-form-wrapper">
           <div className="valuation-card">
@@ -143,7 +159,20 @@ export default function ValuationSection({ data, dict }: { data?: any, dict?: an
             </div>
           </div>
         </div>
-        {ctaLabel && <Button label={ctaLabel} href={ctaLink || '#'} className="service-cta valuation-cta-mobile" />}
+        {(ctaLabel || (showSecondaryCta && secondaryCtaLabel)) && (
+          <div className="valuation-ctas valuation-cta-mobile">
+            {ctaLabel && <Button label={ctaLabel} href={ctaLink || '#'} className="service-cta" />}
+            {showSecondaryCta && secondaryCtaLabel && (
+              <Button
+                label={secondaryCtaLabel}
+                href={secondaryCtaLink || '#'}
+                variant="link"
+                showArrow={false}
+                className="btn-link-sm valuation-cta-secondary"
+              />
+            )}
+          </div>
+        )}
       </div>
     </section>
   );

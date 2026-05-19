@@ -102,7 +102,7 @@ const AboutSection = ({ data, dict }: { data?: any, dict?: any }) => {
   }, []);
 
   return (
-    <section className="about-section" ref={sectionRef}>
+    <section className="about-section" ref={sectionRef} id={data?.id || 'about'}>
       <div className="about-visual-container">
         <div className="about-bg-layer" ref={bgLayerRef}>
           {bgImage && (

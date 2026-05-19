@@ -14,13 +14,25 @@ export const SEO_FIELDS = groq`
   }
 `
 
-export const INTERNAL_LINK_PROJECTION = `select(
-  linkType == "internal" => select(
-    internalLink->slug.current == "home" => "/" + coalesce(internalLink->language, $language),
-    "/" + coalesce(internalLink->language, $language) + "/" + internalLink->slug.current
+export const getLinkProjection = (
+  linkTypeField = "linkType",
+  internalLinkField = "internalLink",
+  externalLinkField = "externalLink",
+  componentLinkField = "componentLink",
+  sectionLinkField = "sectionLink"
+) => `select(
+  ${linkTypeField} == "internal" => select(
+    ${internalLinkField}->slug.current == "home" => "/" + coalesce(${internalLinkField}->language, $language),
+    "/" + coalesce(${internalLinkField}->language, $language) + "/" + ${internalLinkField}->slug.current
   ),
-  linkType == "external" => externalLink
+  ${linkTypeField} == "external" => ${externalLinkField},
+  ${linkTypeField} == "component" => ${componentLinkField},
+  ${linkTypeField} == "section" => ${sectionLinkField}
 )`
+
+export const INTERNAL_LINK_PROJECTION = getLinkProjection('linkType', 'internalLink', 'externalLink', 'componentLink', 'sectionLink')
+
+export const SECONDARY_INTERNAL_LINK_PROJECTION = getLinkProjection('secondaryLinkType', 'secondaryInternalLink', 'secondaryExternalLink', 'secondaryComponentLink', 'secondarySectionLink')
 
 // Reusable property card projection (for listings, cards, carousels)
 export const PROPERTY_CARD_FIELDS = groq`
@@ -80,6 +92,7 @@ export const PROPERTY_CARD_FIELDS = groq`
 export const SECTION_PROJECTION = groq`
       _type,
       _key,
+      id,
       _type == "heroSection" => {
         title,
         subtitle,
@@ -100,7 +113,10 @@ export const SECTION_PROJECTION = groq`
         trustText,
         ctaLabel,
         iframeUrl,
-        "ctaLink": ${INTERNAL_LINK_PROJECTION}
+        "ctaLink": ${INTERNAL_LINK_PROJECTION},
+        showSecondaryCta,
+        secondaryCtaLabel,
+        "secondaryCtaLink": ${SECONDARY_INTERNAL_LINK_PROJECTION}
       },
       _type == "buyMortgageSimSection" => {
         tagline,
@@ -280,26 +296,14 @@ export const SECTION_PROJECTION = groq`
         title,
         description,
         showSecondaryCta,
-        ctaPrimaryLabel,
-        ctaSecondaryLabel,
+        ctaLabel,
+        secondaryCtaLabel,
         faqs[] {
           question,
           answer
         },
-        "ctaPrimaryLink": select(
-          ctaPrimaryLinkType == "internal" => select(
-            ctaPrimaryInternalLink->slug.current == "home" => "/" + coalesce(ctaPrimaryInternalLink->language, $language),
-            "/" + coalesce(ctaPrimaryInternalLink->language, $language) + "/" + ctaPrimaryInternalLink->slug.current
-          ),
-          ctaPrimaryLinkType == "external" => ctaPrimaryExternalLink
-        ),
-        "ctaSecondaryLink": select(
-          ctaSecondaryLinkType == "internal" => select(
-            ctaSecondaryInternalLink->slug.current == "home" => "/" + coalesce(ctaSecondaryInternalLink->language, $language),
-            "/" + coalesce(ctaSecondaryInternalLink->language, $language) + "/" + ctaSecondaryInternalLink->slug.current
-          ),
-          ctaSecondaryLinkType == "external" => ctaSecondaryExternalLink
-        )
+        "ctaLink": ${INTERNAL_LINK_PROJECTION},
+        "secondaryCtaLink": ${SECONDARY_INTERNAL_LINK_PROJECTION}
       },
       _type == "buyHeroSection" => {
         title,
@@ -424,6 +428,19 @@ export const PAGE_QUERY = groq`
     },
     sections[] {
       ${SECTION_PROJECTION}
+    },
+    pageComponents[] {
+      _key,
+      _type,
+      _type == "contactModalComponent" => {
+        "componentId": componentId.current,
+        formType,
+        title,
+        subtitle,
+        hideWhatsApp,
+        whatsappMessageTemplate,
+        presetMessage
+      }
     }
   }
 `

@@ -110,7 +110,7 @@ export default function ContactSection({ data, dict, contextData }: { data?: any
 
 
   return (
-    <section className="contact-section" id="contact" ref={sectionRef}>
+    <section className="contact-section" id={data?.id || 'contact'} ref={sectionRef}>
       <div className="contact-big-logo-wrapper">
         <div className="contact-single-logo-container">
           <div className="contact-single-logo" />

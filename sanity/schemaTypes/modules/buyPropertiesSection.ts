@@ -8,6 +8,13 @@ export const buyPropertiesSection = defineType({
   icon: HomeIcon,
   fields: [
     defineField({
+      name: 'id',
+      title: 'Section ID',
+      type: 'string',
+      description: 'Used as an anchor identifier (e.g. for smooth scrolling links like #about).',
+      initialValue: 'properties-list',
+    }),
+    defineField({
       name: 'title',
       title: 'Title',
       type: 'string',

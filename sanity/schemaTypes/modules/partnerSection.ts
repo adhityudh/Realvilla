@@ -1,5 +1,7 @@
 import { UsersIcon } from '@sanity/icons'
 import { defineField, defineType } from 'sanity'
+import { SectionSelector } from '../../components/SectionSelector'
+import { ComponentSelector } from '../../components/ComponentSelector'
 
 export const partnerSection = defineType({
   name: 'partnerSection',
@@ -7,6 +9,13 @@ export const partnerSection = defineType({
   type: 'object',
   icon: UsersIcon,
   fields: [
+    defineField({
+      name: 'id',
+      title: 'Section ID',
+      type: 'string',
+      description: 'Used as an anchor identifier (e.g. for smooth scrolling links like #about).',
+      initialValue: 'partners',
+    }),
     defineField({
       name: 'title',
       title: 'Title',
@@ -40,6 +49,8 @@ export const partnerSection = defineType({
                   { title: 'No Link', value: 'none' },
                   { title: 'Internal Page', value: 'internal' },
                   { title: 'External URL', value: 'external' },
+                  { title: 'Section', value: 'section' },
+                  { title: 'Component', value: 'component' },
                 ],
                 layout: 'radio',
               },
@@ -67,6 +78,24 @@ export const partnerSection = defineType({
               title: 'External Link',
               type: 'string',
               hidden: ({ parent }) => parent?.linkType !== 'external',
+            }),
+            defineField({
+              name: 'sectionLink',
+              title: 'Section Link',
+              type: 'string',
+              components: {
+                input: SectionSelector,
+              },
+              hidden: ({ parent }) => parent?.linkType !== 'section',
+            }),
+            defineField({
+              name: 'componentLink',
+              title: 'Component Link',
+              type: 'string',
+              components: {
+                input: ComponentSelector,
+              },
+              hidden: ({ parent }) => parent?.linkType !== 'component',
             }),
           ],
           preview: {

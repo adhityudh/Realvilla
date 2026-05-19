@@ -3,6 +3,8 @@
 import React from 'react';
 import Image from 'next/image';
 import StretchArrow from './StretchArrow';
+import { useModalRegistry } from '@/components/providers/ModalRegistryContext';
+import { smoothScrollToAnchor } from '@/lib/scroll';
 
 interface ButtonProps {
   label: string;
@@ -26,6 +28,9 @@ interface ButtonProps {
  * Supports two main styles:
  * - 'pill': Rounded background button (like 'Speak to an Expert')
  * - 'link': Underlined text with icon/arrow (like Hero CTAs or Service links)
+ *
+ * Modal links: if href starts with "modal:<componentId>", the button will
+ * open the registered page component modal instead of navigating.
  */
 export default function Button({
   label,
@@ -43,19 +48,35 @@ export default function Button({
   target,
   rel,
 }: ButtonProps) {
-  const Component = href ? 'a' : 'button';
-  
+  const { openModal } = useModalRegistry();
+
+  const isModalLink = href?.startsWith('modal:');
+  const modalId = isModalLink ? href!.slice('modal:'.length) : null;
+
+  const handleClick = (e: React.MouseEvent) => {
+    if (modalId) {
+      e.preventDefault();
+      openModal(modalId);
+    } else if (href && (href.startsWith('#') || href.includes('#'))) {
+      smoothScrollToAnchor(e, href);
+    }
+    if (onClick) onClick(e);
+  };
+
+  // If it's a modal link, render as a button (no real navigation)
+  const Component = href && !isModalLink ? 'a' : 'button';
+
   // Base classes for the main styles
   let variantClass = '';
   if (variant === 'pill') variantClass = 'btn-pill';
   else if (variant === 'dark') variantClass = 'btn-pill btn-dark';
   else variantClass = 'btn-link-styled';
-  
+
   return (
     <Component
       id={id}
-      href={href}
-      onClick={onClick}
+      href={(!isModalLink && href) ? href : undefined}
+      onClick={handleClick}
       type={Component === 'button' ? type : undefined}
       form={Component === 'button' ? form : undefined}
       disabled={Component === 'button' ? disabled : undefined}
@@ -64,15 +85,15 @@ export default function Button({
       className={`${variantClass} ${className} ${disabled ? 'btn-disabled' : ''}`}
     >
       {icon && (
-        <Image 
-          src={icon} 
-          alt="" 
-          className="btn-icon" 
-          width={16} 
-          height={16} 
-          unoptimized 
-          priority={priority} 
-          loading={priority ? "eager" : "lazy"} 
+        <Image
+          src={icon}
+          alt=""
+          className="btn-icon"
+          width={16}
+          height={16}
+          unoptimized
+          priority={priority}
+          loading={priority ? 'eager' : 'lazy'}
         />
       )}
       <span>{label}</span>

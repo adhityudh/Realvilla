@@ -2,6 +2,7 @@ import Header from '@/components/layout/Header';
 import MobileNav from '@/components/layout/MobileNav';
 import SplashIntro from '@/components/hero/SplashIntro';
 import SectionRenderer from '@/components/sections/SectionRenderer';
+import PageComponentsRenderer from '@/components/sections/PageComponentsRenderer';
 import FooterSection from '@/components/sections/FooterSection';
 import { draftMode } from 'next/headers';
 import { client, getClient } from '@/sanity/lib/client';
@@ -87,6 +88,11 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
   return (
     <>
       <TranslationSetter translations={data._translations ?? []} />
+      <PageComponentsRenderer
+        pageComponents={data.pageComponents}
+        dict={dict}
+        whatsappNumber={settingsData?.contactWhatsAppNumber}
+      />
       <SplashIntro data={data.sections.find((s: any) => s._type === 'splashIntro')} dict={dict} />
       <SectionRenderer 
         sections={data.sections} 

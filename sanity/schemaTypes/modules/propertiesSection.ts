@@ -1,5 +1,7 @@
 import { ThLargeIcon } from '@sanity/icons'
 import { defineField, defineType } from 'sanity'
+import { SectionSelector } from '../../components/SectionSelector'
+import { ComponentSelector } from '../../components/ComponentSelector'
 
 export const propertiesSection = defineType({
   name: 'propertiesSection',
@@ -7,6 +9,13 @@ export const propertiesSection = defineType({
   type: 'object',
   icon: ThLargeIcon,
   fields: [
+    defineField({
+      name: 'id',
+      title: 'Section ID',
+      type: 'string',
+      description: 'Used as an anchor identifier (e.g. for smooth scrolling links like #about).',
+      initialValue: 'properties',
+    }),
     defineField({
       name: 'tagline',
       title: 'Tagline',
@@ -103,6 +112,8 @@ export const propertiesSection = defineType({
         list: [
           { title: 'Internal Page', value: 'internal' },
           { title: 'External URL', value: 'external' },
+          { title: 'Section', value: 'section' },
+          { title: 'Component', value: 'component' },
         ],
         layout: 'radio',
       },
@@ -131,6 +142,24 @@ export const propertiesSection = defineType({
       type: 'string',
       description: 'Can be a full URL (https://...), a relative path (/buy), or an anchor (#contact).',
       hidden: ({ parent }) => parent?.linkType !== 'external',
+    }),
+    defineField({
+      name: 'sectionLink',
+      title: 'Section Link',
+      type: 'string',
+      components: {
+        input: SectionSelector,
+      },
+      hidden: ({ parent }) => parent?.linkType !== 'section',
+    }),
+    defineField({
+      name: 'componentLink',
+      title: 'Component Link',
+      type: 'string',
+      components: {
+        input: ComponentSelector,
+      },
+      hidden: ({ parent }) => parent?.linkType !== 'component',
     }),
   ],
   preview: {

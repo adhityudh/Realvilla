@@ -41,6 +41,8 @@ export interface ContactCardProps {
   isInsideExternalModal?: boolean;
   onSubmittingChange?: (isSubmitting: boolean) => void;
   onSubmitSuccessChange?: (success: boolean | null) => void;
+  /** Optional prefix for form element IDs to avoid conflicts when multiple instances exist */
+  formIdPrefix?: string;
 }
 
 const intentKeys = ['general', 'sell', 'buy'] as const;
@@ -68,7 +70,8 @@ export default function ContactCard({
   onStepChange,
   isInsideExternalModal = false,
   onSubmittingChange,
-  onSubmitSuccessChange
+  onSubmitSuccessChange,
+  formIdPrefix = 'contact-modal',
 }: ContactCardProps) {
   // Added for displaying next step in sliding sidebar drawer
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -567,7 +570,7 @@ export default function ContactCard({
   const renderGeneralForm = (isInsideModal = false) => (
     <form
       className="contact-form"
-      id={isInsideModal ? "contact-modal-general-form" : undefined}
+      id={isInsideModal ? `${formIdPrefix}-general-form` : undefined}
       onSubmit={(e) => handleSubmit(e, 'general')}
     >
       {/* Stealth anti-spam honeypot trap */}
@@ -670,7 +673,7 @@ export default function ContactCard({
   const renderSellForm = (isInsideModal = false) => (
     <form
       className="contact-form"
-      id={isInsideModal ? "contact-modal-sell-form" : undefined}
+      id={isInsideModal ? `${formIdPrefix}-sell-form` : undefined}
       onSubmit={(e) => handleSubmit(e, 'sell')}
     >
       {/* Stealth anti-spam honeypot trap */}

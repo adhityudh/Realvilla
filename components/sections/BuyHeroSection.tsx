@@ -15,6 +15,7 @@ if (typeof window !== 'undefined') {
 
 interface BuyHeroSectionProps {
   data: {
+    id?: string;
     title?: string;
     backgroundImage?: string;
     searchPlaceholder?: string;
@@ -174,7 +175,7 @@ export default function BuyHeroSection({ data, dict }: BuyHeroSectionProps) {
 
   return (
     <>
-      <section className="buy-hero" ref={sectionRef} data-is-hero="true">
+      <section className="buy-hero" ref={sectionRef} data-is-hero="true" id={data?.id || 'buy-hero'}>
         <div className="buy-hero-bg">
           {data.backgroundImage && (
             <Image

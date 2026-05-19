@@ -14,6 +14,13 @@ export const contactSection = defineType({
   ],
   fields: [
     defineField({
+      name: 'id',
+      title: 'Section ID',
+      type: 'string',
+      description: 'Used as an anchor identifier (e.g. for smooth scrolling links like #about).',
+      initialValue: 'contact',
+    }),
+    defineField({
       name: 'headline',
       title: 'Headline',
       type: 'string',

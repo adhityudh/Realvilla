@@ -54,7 +54,7 @@ const PartnerSection = ({ data, dict }: { data?: any, dict?: any }) => {
   }, []);
 
   return (
-    <section className="partner-section" ref={sectionRef}>
+    <section className="partner-section" ref={sectionRef} id={data?.id || 'partners'}>
       <div className="partner-container">
         <div className="partner-title-wrapper" ref={titleRef}>
           <h2 className="partner-title">{title}</h2>

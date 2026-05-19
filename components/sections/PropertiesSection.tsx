@@ -109,7 +109,7 @@ const PropertiesSection = ({ data, dict }: { data?: any, dict?: any }) => {
   }, []);
 
   return (
-    <section className="properties-intro-section" ref={sectionRef} id="properties">
+    <section className="properties-intro-section" ref={sectionRef} id={data?.id || 'properties'}>
       <div className="properties-main-wrapper">
         <div className="properties-intro-container" ref={containerRef}>
           <div className="properties-tagline">{tagline}</div>
