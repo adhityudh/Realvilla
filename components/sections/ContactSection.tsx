@@ -151,6 +151,10 @@ export default function ContactSection({ data, dict, contextData }: { data?: any
             sellSubtitle={data.sellSubtitle}
             showSellWhatsApp={!data.hideSellWhatsApp}
             sellWhatsappMessageTemplate={data.sellWhatsappMessageTemplate}
+            mortgageTitle={data.mortgageTitle}
+            mortgageSubtitle={data.mortgageSubtitle}
+            showMortgageWhatsApp={!data.hideMortgageWhatsApp}
+            mortgageWhatsappMessageTemplate={data.mortgageWhatsappMessageTemplate}
             presetMessage={data.presetMessage}
             whatsappNumber={contextData?.whatsappNumber}
             whatsappMessageTemplate={data.whatsappMessageTemplate}

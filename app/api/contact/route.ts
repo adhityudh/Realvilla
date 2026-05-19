@@ -56,9 +56,14 @@ export async function POST(request: Request) {
     let htmlContent = '';
     let subject = '';
 
-    const titleLabel = formType === 'sell' ? 'VALUATION REQUEST' : 'GENERAL INQUIRY';
+    let titleLabel = 'GENERAL INQUIRY';
+    if (formType === 'sell') titleLabel = 'VALUATION REQUEST';
+    else if (formType === 'mortgage') titleLabel = 'MORTGAGE STUDY';
+
     subject = formType === 'sell'
       ? `[REALVILLA] Valuation Request: ${name} (${municipality || 'General'})`
+      : formType === 'mortgage'
+      ? `[REALVILLA] Mortgage Study Request: ${name}`
       : `[REALVILLA] Contact Inquiry: ${name}`;
 
     htmlContent = `
@@ -157,7 +162,7 @@ export async function POST(request: Request) {
                       <!-- Row 4: Municipality Context -->
                       <tr>
                         <td style="padding: 20px 0; border-bottom: 1px solid #F4F4F0;">
-                          <div style="font-family: 'Manrope', sans-serif; font-size: 10px; font-weight: 400; color: #111111; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 6px;">TARGET MUNICIPALITY</div>
+                          <div style="font-family: 'Manrope', sans-serif; font-size: 10px; font-weight: 400; color: #111111; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 6px;">PROPERTY ADDRESS (TENERIFE)</div>
                           <div style="font-family: 'Cormorant Garamond', 'Georgia', serif; font-size: 19px; font-weight: 500; color: #111111;">${municipality || 'Not specified'}</div>
                         </td>
                       </tr>
@@ -170,7 +175,7 @@ export async function POST(request: Request) {
                           </div>
                         </td>
                       </tr>
-                      ` : `
+                      ` : formType === 'mortgage' ? '' : `
                       <!-- Quote Message Viewport -->
                       <tr>
                         <td style="padding-top: 30px;">

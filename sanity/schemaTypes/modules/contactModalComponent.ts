@@ -26,6 +26,7 @@ export const contactModalComponent = defineType({
         list: [
           { title: 'General Inquiry', value: 'general' },
           { title: 'Sell Property', value: 'sell' },
+          { title: 'Mortgage Study', value: 'mortgage' },
         ],
         layout: 'radio',
       },

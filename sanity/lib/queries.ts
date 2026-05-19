@@ -274,6 +274,10 @@ export const SECTION_PROJECTION = groq`
         sellSubtitle,
         hideSellWhatsApp,
         sellWhatsappMessageTemplate,
+        mortgageTitle,
+        mortgageSubtitle,
+        hideMortgageWhatsApp,
+        mortgageWhatsappMessageTemplate,
         presetMessage,
         whatsappMessageTemplate,
         marketData[] {

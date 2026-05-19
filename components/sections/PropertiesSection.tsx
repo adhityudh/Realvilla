@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
+import { usePathname } from 'next/navigation';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Button from '../ui/Button';
@@ -19,6 +20,9 @@ const PropertiesSection = ({ data, dict }: { data?: any, dict?: any }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
   const ctaRef = useRef<HTMLDivElement>(null);
+
+  const pathname = usePathname() || '';
+  const isEs = pathname.startsWith('/es');
 
   const [isMobile, setIsMobile] = useState(false);
 
@@ -123,11 +127,30 @@ const PropertiesSection = ({ data, dict }: { data?: any, dict?: any }) => {
         </div>
 
         {data.ctaLabel && data.ctaLink && (
-          <div className="properties-cta-container" ref={ctaRef}>
-            <Button 
-              label={data.ctaLabel} 
-              href={data.ctaLink} 
-            />
+          <div className="properties-cta-outer" ref={ctaRef}>
+            <div className="properties-cta-container">
+              <Button 
+                label={data.ctaLabel} 
+                href={data.ctaLink} 
+                variant="dark"
+              />
+            </div>
+            <div className="properties-mortgage-cta">
+              <span className="cta-question">
+                {isEs 
+                  ? '¿Busca financiar su inversión?' 
+                  : 'Looking to finance your investment?'}
+              </span>{' '}
+              <Button
+                label={isEs 
+                  ? 'Explore nuestras soluciones hipotecarias a medida.' 
+                  : 'Explore our tailored mortgage solutions.'}
+                href={isEs ? '/es/hipoteca' : '/en/mortgage'}
+                variant="link"
+                showArrow={false}
+                className="properties-mortgage-link"
+              />
+            </div>
           </div>
         )}
       </div>

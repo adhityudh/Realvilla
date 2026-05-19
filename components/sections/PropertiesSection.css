@@ -68,11 +68,46 @@
     padding-bottom: 4rem;
 }
 
+.properties-cta-outer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3rem;
+    padding-bottom: 8rem;
+}
+
 .properties-cta-container {
     display: flex;
     justify-content: center;
-    padding-bottom: 8rem;
 }
+
+.properties-mortgage-cta {
+    font-family: var(--font-manrope), 'Manrope', sans-serif;
+    font-size: var(--text-base-sm);
+    color: var(--text-black);
+    text-align: center;
+    line-height: var(--lh-relaxed);
+}
+
+.properties-mortgage-cta .cta-question {
+    opacity: 0.8;
+}
+
+.properties-mortgage-cta .properties-mortgage-link {
+    font-size: var(--text-sm);
+    margin-top: 0.5rem;
+    --btn-link-color: var(--text-black);
+    --btn-link-border: var(--border-strong);
+    border-bottom-width: 1px;
+    padding-bottom: 4px;
+}
+
+.properties-mortgage-cta .properties-mortgage-link:hover {
+    --btn-link-color: var(--color-gold-hover) !important;
+}
+
+
 
 .property-card {
     background: var(--bg-white);
@@ -189,7 +224,7 @@
         padding-bottom: 4rem;
     }
 
-    .properties-cta-container {
+    .properties-cta-outer {
         padding-bottom: 5rem;
     }
 

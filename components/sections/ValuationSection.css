@@ -227,11 +227,12 @@
                 flex-direction: row;
                 flex-wrap: wrap;
                 justify-content: center;
-                gap: 1.5rem;
+                gap: 2.5rem;
                 margin-left: auto;
                 margin-right: auto;
                 margin-bottom: 2rem;
                 width: fit-content;
+                flex-direction: column;
             }
 
             .valuation-form-wrapper {

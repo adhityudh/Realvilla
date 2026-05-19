@@ -13,7 +13,8 @@
         "general": "Consulta General",
         "sell": "Vender una Propiedad",
         "buy": "Comprar una Propiedad",
-        "invest": "Invertir"
+        "invest": "Invertir",
+        "mortgage": "Solicitar Estudio Hipotecario"
       }
     },
     "whatsapp_cta": "Contactar por WhatsApp",
@@ -43,8 +44,8 @@
         "email_placeholder": "Ingrese su correo electrónico",
         "optional": "(Opcional)",
         "required": "*",
-        "municipality": "Municipio (Tenerife)",
-        "municipality_placeholder": "ej. Adeje, Arona, Santa Cruz...",
+        "municipality": "Dirección de la Propiedad (Tenerife)",
+        "municipality_placeholder": "Ingrese la dirección de la propiedad...",
         "property_type": "Tipo de Propiedad",
         "select_type": "Seleccione el tipo de propiedad",
         "types": {
@@ -60,6 +61,25 @@
         "terms": "He leído, entiendo y acepto los Términos y Condiciones y la Política de Privacidad."
       },
       "submit": "EMPEZAR A VENDER"
+    },
+    "mortgage": {
+      "back": "Volver",
+      "fields": {
+        "name": "Nombre Completo",
+        "name_placeholder": "Ingrese su nombre completo",
+        "email": "Correo Electrónico",
+        "email_placeholder": "Ingrese su correo electrónico",
+        "phone": "Número de Teléfono",
+        "phone_placeholder": "Ingrese su número de teléfono",
+        "price": "Precio de la Propiedad",
+        "price_placeholder": "ej. 500.000",
+        "down_payment": "Pago Inicial",
+        "down_payment_placeholder": "ej. 150.000",
+        "message": "Mensaje",
+        "message_placeholder": "Cualquier detalle o pregunta adicional...",
+        "required": "*"
+      },
+      "submit": "SOLICITAR ESTUDIO"
     }
   },
   "filter": {

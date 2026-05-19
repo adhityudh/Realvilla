@@ -11,7 +11,7 @@ export { useModalRegistry, ModalRegistryProvider, ModalRegistryContext };
 // ─── Individual Contact Modal Component ──────────────────────────────────────
 interface ContactModalComponentProps {
   componentId: string;
-  formType: 'general' | 'sell';
+  formType: 'general' | 'sell' | 'mortgage';
   title?: string;
   subtitle?: string;
   hideWhatsApp?: boolean;
@@ -63,6 +63,10 @@ function ContactModalComponentInstance({
     submit: c.general?.submit || 'SEND MESSAGE',
     title: formTitle,
   };
+  const mortgageDict = {
+    submit: c.mortgage?.submit || (dict?.locale === 'es' ? 'SOLICITAR ESTUDIO' : 'REQUEST STUDY'),
+    title: formTitle,
+  };
 
   return (
     <ContactModal
@@ -92,6 +96,16 @@ function ContactModalComponentInstance({
             form={`pc-modal-${componentId}-general-form`}
             disabled={isSubmitting}
           />
+        ) : formType === 'mortgage' ? (
+          <Button
+            type="submit"
+            variant="dark"
+            label={isSubmitting ? (dict?.contact?.sending || 'Sending...') : mortgageDict.submit}
+            className="form-submit-btn"
+            showArrow={!isSubmitting}
+            form={`pc-modal-${componentId}-mortgage-form`}
+            disabled={isSubmitting}
+          />
         ) : (
           <Button
             type="submit"
@@ -114,9 +128,13 @@ function ContactModalComponentInstance({
         generalSubtitle={formType === 'general' ? formSubtitle : undefined}
         sellTitle={formType === 'sell' ? formTitle : undefined}
         sellSubtitle={formType === 'sell' ? formSubtitle : undefined}
+        mortgageTitle={formType === 'mortgage' ? formTitle : undefined}
+        mortgageSubtitle={formType === 'mortgage' ? formSubtitle : undefined}
         showGeneralWhatsApp={formType === 'general' && !hideWhatsApp}
         showSellWhatsApp={formType === 'sell' && !hideWhatsApp}
+        showMortgageWhatsApp={formType === 'mortgage' && !hideWhatsApp}
         sellWhatsappMessageTemplate={formType === 'sell' ? whatsappMessageTemplate : undefined}
+        mortgageWhatsappMessageTemplate={formType === 'mortgage' ? whatsappMessageTemplate : undefined}
         whatsappMessageTemplate={formType === 'general' ? whatsappMessageTemplate : undefined}
         presetMessage={presetMessage}
         whatsappNumber={whatsappNumber}

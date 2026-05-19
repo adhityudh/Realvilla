@@ -5,12 +5,12 @@ import { useRouter, usePathname } from 'next/navigation';
 import Button from '@/components/ui/Button';
 import ContactModal from './ContactModal';
 import { client } from '@/sanity/lib/client';
-import { getMunicipalities } from '@/lib/municipalities';
+
 import PhoneInput from 'react-phone-number-input';
 import 'react-phone-number-input/style.css';
 import './ContactCard.css';
 
-export type ContactFormStep = 'intent' | 'general' | 'sell';
+export type ContactFormStep = 'intent' | 'general' | 'sell' | 'mortgage';
 
 export interface ContactCardProps {
   initialStep?: ContactFormStep;
@@ -32,6 +32,11 @@ export interface ContactCardProps {
   showSellWhatsApp?: boolean;
   sellWhatsappMessageTemplate?: string;
 
+  mortgageTitle?: string;
+  mortgageSubtitle?: string;
+  showMortgageWhatsApp?: boolean;
+  mortgageWhatsappMessageTemplate?: string;
+
   presetMessage?: string;
   whatsappNumber?: string;
   whatsappMessageTemplate?: string;
@@ -45,7 +50,7 @@ export interface ContactCardProps {
   formIdPrefix?: string;
 }
 
-const intentKeys = ['general', 'sell', 'buy'] as const;
+const intentKeys = ['general', 'sell', 'buy', 'mortgage'] as const;
 
 export default function ContactCard({
   initialStep = 'intent',
@@ -63,6 +68,10 @@ export default function ContactCard({
   sellSubtitle,
   showSellWhatsApp = true,
   sellWhatsappMessageTemplate,
+  mortgageTitle,
+  mortgageSubtitle,
+  showMortgageWhatsApp = true,
+  mortgageWhatsappMessageTemplate,
   presetMessage,
   whatsappNumber,
   whatsappMessageTemplate,
@@ -80,7 +89,7 @@ export default function ContactCard({
   const getValidStep = (val: any): ContactFormStep => {
     // Aggressively strip ALL non-word characters (like zero-width spaces, control chars, etc.)
     const clean = val ? String(val).replace(/[^\w]/g, '').trim() : '';
-    if (clean === 'general' || clean === 'sell') return clean as ContactFormStep;
+    if (clean === 'general' || clean === 'sell' || clean === 'mortgage') return clean as ContactFormStep;
     return 'intent';
   };
 
@@ -100,7 +109,7 @@ export default function ContactCard({
   }, [initialStep]);
 
   // DYNAMIC DATA SOURCES & FORM STATES
-  const [municipalities, setMunicipalities] = useState<string[]>([]);
+
   const [propertyTypes, setPropertyTypes] = useState<any[]>([]);
   const [detectedCountry, setDetectedCountry] = useState<any>('ES'); // Fallback to Spain
 
@@ -108,6 +117,7 @@ export default function ContactCard({
   const [selectedPropertyType, setSelectedPropertyType] = useState<string>('');
   const [generalPhone, setGeneralPhone] = useState<any>();
   const [sellPhone, setSellPhone] = useState<any>();
+  const [mortgagePhone, setMortgagePhone] = useState<any>();
 
   // Input binding states
   const [generalName, setGeneralName] = useState('');
@@ -121,6 +131,22 @@ export default function ContactCard({
 
   const [sellName, setSellName] = useState('');
   const [sellEmail, setSellEmail] = useState('');
+  const [addressInput, setAddressInput] = useState('');
+  const [suggestions, setSuggestions] = useState<any[]>([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [isLoadingSuggestions, setIsLoadingSuggestions] = useState(false);
+  const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const addressDropdownRef = useRef<HTMLDivElement>(null);
+  const [isTypingPrefix, setIsTypingPrefix] = useState(false);
+
+  // Sync selectedMunicipality with addressInput (e.g. on clean/submit success)
+  useEffect(() => {
+    setAddressInput(selectedMunicipality);
+  }, [selectedMunicipality]);
+
+  const [mortgageName, setMortgageName] = useState('');
+  const [mortgageEmail, setMortgageEmail] = useState('');
+
 
   // Form Submission states
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -148,7 +174,7 @@ export default function ContactCard({
   const [formStartTime] = useState(() => Date.now());
   const [honeypot, setHoneypot] = useState('');
 
-  const handleSubmit = async (e: React.FormEvent, formType: 'general' | 'sell') => {
+  const handleSubmit = async (e: React.FormEvent, formType: 'general' | 'sell' | 'mortgage') => {
     e.preventDefault();
     setIsSubmitting(true);
     setSubmitError(null);
@@ -173,6 +199,14 @@ export default function ContactCard({
       municipality: selectedMunicipality,
       propertyType: selectedPropertyType,
       fax: honeypot, // Named neutrally to bait automated autofill bots
+      ts: formStartTime,
+      url: currentUrl
+    } : formType === 'mortgage' ? {
+      formType: 'mortgage',
+      name: mortgageName,
+      email: mortgageEmail,
+      phone: mortgagePhone,
+      fax: honeypot,
       ts: formStartTime,
       url: currentUrl
     } : {
@@ -212,6 +246,10 @@ export default function ContactCard({
         setSellEmail('');
         setSelectedMunicipality('');
         setSelectedPropertyType('');
+      } else if (formType === 'mortgage') {
+        setMortgageName('');
+        setMortgageEmail('');
+        setMortgagePhone('');
       } else {
         setGeneralName('');
         setGeneralEmail('');
@@ -226,16 +264,11 @@ export default function ContactCard({
     }
   };
 
-  // Custom Dropdown UI Controls
-  const [munDropdownOpen, setMunDropdownOpen] = useState(false);
-  const [munSearch, setMunSearch] = useState('');
-  const munDropdownRef = useRef<HTMLDivElement>(null);
-
   // Close custom dropdown on clicking outside
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (munDropdownRef.current && !munDropdownRef.current.contains(event.target as Node)) {
-        setMunDropdownOpen(false);
+      if (addressDropdownRef.current && !addressDropdownRef.current.contains(event.target as Node)) {
+        setShowSuggestions(false);
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
@@ -309,10 +342,6 @@ export default function ContactCard({
 
     async function loadSources() {
       try {
-        // A. Fetch dynamic municipalities list
-        const munList = await getMunicipalities();
-        if (isMounted) setMunicipalities(munList);
-
         // B. Fetch dynamic property categories from Sanity
         const query = `*[_type == "propertyCategory"] | order(order asc) {
           _id,
@@ -330,63 +359,144 @@ export default function ContactCard({
     return () => { isMounted = false; };
   }, [locale]);
 
-  // Renderers helpers
-  const filteredMunicipalities = useMemo(() => {
-    return municipalities.filter(m =>
-      m.toLowerCase().includes(munSearch.toLowerCase())
-    );
-  }, [municipalities, munSearch]);
+  // Address Autocomplete Handlers
+  const handleAddressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    setAddressInput(val);
+    setSelectedMunicipality(val); // Keep selectedMunicipality in sync for submitting
+
+    if (debounceTimerRef.current) {
+      clearTimeout(debounceTimerRef.current);
+    }
+
+    const trimmed = val.trim().toLowerCase();
+    const commonPrefixes = ['calle', 'avenida', 'c/', 'av.', 'av', 'street', 'road', 'calle de', 'plaza', 'paseo', 'camino'];
+    const isPrefix = commonPrefixes.includes(trimmed);
+
+    if (!val || val.trim().length < 3) {
+      setSuggestions([]);
+      setIsTypingPrefix(false);
+      setShowSuggestions(false);
+      return;
+    }
+
+    if (isPrefix) {
+      setSuggestions([]);
+      setIsTypingPrefix(true);
+      setShowSuggestions(true);
+      return;
+    }
+
+    setIsTypingPrefix(false);
+    setShowSuggestions(true);
+    debounceTimerRef.current = setTimeout(async () => {
+      setIsLoadingSuggestions(true);
+      try {
+        const url = `https://photon.komoot.io/api/?q=${encodeURIComponent(val)}&limit=10&lat=28.2916&lon=-16.6291&bbox=-16.95,27.98,-16.10,28.59`;
+        const res = await fetch(url, {
+          headers: {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'
+          }
+        });
+        if (res.ok) {
+          const data = await res.json();
+          const mapped = (data.features || []).map((f: any, idx: number) => {
+            const p = f.properties || {};
+            const parts: string[] = [];
+
+            let streetAddress = '';
+            if (p.name) {
+              streetAddress = p.name;
+              if (p.street && p.street !== p.name) {
+                streetAddress += ` (${p.street})`;
+              }
+            } else if (p.street) {
+              streetAddress = p.street;
+            }
+
+            if (p.housenumber && streetAddress) {
+              streetAddress += `, ${p.housenumber}`;
+            }
+
+            if (streetAddress) parts.push(streetAddress);
+            if (p.district) parts.push(p.district);
+            else if (p.locality) parts.push(p.locality);
+            if (p.city) parts.push(p.city);
+            if (p.postcode) parts.push(p.postcode);
+
+            return {
+              place_id: p.osm_id || idx,
+              display_name: parts.join(', ')
+            };
+          });
+          setSuggestions(mapped);
+        }
+      } catch (err) {
+        console.error('Error fetching address suggestions:', err);
+      } finally {
+        setIsLoadingSuggestions(false);
+      }
+    }, 400);
+  };
+
+  const handleSelectSuggestion = (display_name: string) => {
+    setAddressInput(display_name);
+    setSelectedMunicipality(display_name);
+    setSuggestions([]);
+    setShowSuggestions(false);
+  };
 
   const renderMunicipalitySelector = (isInsideModal: boolean) => (
-    <div className="form-group form-custom-select-group" ref={munDropdownRef}>
-      <label>{sellDict.fields.municipality} <span className="form-required">{sellDict.fields.required || "*"}</span></label>
-      <div
-        className={`custom-select-trigger ${selectedMunicipality ? 'has-value' : ''} ${munDropdownOpen ? 'active' : ''}`}
-        onClick={() => setMunDropdownOpen(!munDropdownOpen)}
-      >
-        <span>{selectedMunicipality || sellDict.fields.municipality_placeholder}</span>
-        <svg width="12" height="12" viewBox="0 0 12 12" className="select-arrow-icon">
-          <path fill="currentColor" d="M6 8.825L0.35 3.175l0.7-0.7L6 7.425l4.95-4.95 0.7 0.7z" />
-        </svg>
-      </div>
-
+    <div className="form-group form-custom-select-group" ref={addressDropdownRef}>
+      <label htmlFor={isInsideModal ? "modal-sell-address" : "sell-address"}>
+        {sellDict.fields.municipality} <span className="form-required">{sellDict.fields.required || "*"}</span>
+      </label>
       <input
-        type="hidden"
-        id={isInsideModal ? "modal-sell-municipality" : "sell-municipality"}
-        name="municipality"
-        value={selectedMunicipality}
+        type="text"
+        id={isInsideModal ? "modal-sell-address" : "sell-address"}
+        placeholder={sellDict.fields.municipality_placeholder}
+        required
+        value={addressInput}
+        onChange={handleAddressChange}
+        onFocus={() => {
+          const trimmed = addressInput.trim().toLowerCase();
+          const commonPrefixes = ['calle', 'avenida', 'c/', 'av.', 'av', 'street', 'road', 'calle de', 'plaza', 'paseo', 'camino'];
+          if (addressInput.trim().length >= 3 || commonPrefixes.includes(trimmed)) {
+            setShowSuggestions(true);
+          }
+        }}
+        autoComplete="off"
       />
 
-      {munDropdownOpen && (
-        <div className="custom-select-dropdown" data-lenis-prevent="true">
-          <div className="select-search-box">
-            <input
-              type="text"
-              placeholder={dict?.filter?.search_municipalities || "Search..."}
-              value={munSearch}
-              onChange={(e) => setMunSearch(e.target.value)}
-              autoFocus
-              onClick={(e) => e.stopPropagation()}
-            />
-            {munSearch && (
-              <button type="button" className="clear-btn" onClick={(e) => { e.stopPropagation(); setMunSearch(''); }}>×</button>
-            )}
-          </div>
+      {showSuggestions && (
+        <div className="custom-select-dropdown" data-lenis-prevent="true" style={{ top: '100%' }}>
           <div className="select-options-list">
-            {filteredMunicipalities.length === 0 ? (
-              <div className="select-no-results">{dict?.filter?.no_municipalities || "No results"}</div>
+            {isTypingPrefix ? (
+              <div className="select-no-results" style={{ fontSize: 'var(--text-base-sm)' }}>
+                {locale === 'es' ? 'Siga escribiendo el nombre de la calle...' : 'Continue typing the street name...'}
+              </div>
+            ) : isLoadingSuggestions ? (
+              <div className="select-no-results" style={{ fontSize: 'var(--text-base-sm)' }}>
+                {locale === 'es' ? 'Buscando sugerencias...' : 'Searching suggestions...'}
+              </div>
+            ) : suggestions.length === 0 ? (
+              <div className="select-no-results" style={{ fontSize: 'var(--text-base-sm)' }}>
+                {locale === 'es' ? 'No se encontraron sugerencias' : 'No suggestions found'}
+              </div>
             ) : (
-              filteredMunicipalities.map(mun => (
+              suggestions.map((sug, idx) => (
                 <div
-                  key={mun}
-                  className={`select-option-row ${selectedMunicipality === mun ? 'selected' : ''}`}
-                  onClick={() => {
-                    setSelectedMunicipality(mun);
-                    setMunDropdownOpen(false);
-                    setMunSearch('');
+                  key={sug.place_id || idx}
+                  className="select-option-row"
+                  onClick={() => handleSelectSuggestion(sug.display_name)}
+                  style={{
+                    fontSize: 'var(--text-base-sm)',
+                    lineHeight: 'var(--lh-base)',
+                    padding: '0.85rem 1.1rem',
+                    borderBottom: '1px solid var(--border-subtle)'
                   }}
                 >
-                  {mun}
+                  {sug.display_name}
                 </div>
               ))
             )}
@@ -488,6 +598,22 @@ export default function ContactCard({
     submit: c.sell?.submit || ""
   };
 
+  const mortgageDict = {
+    back: c.mortgage?.back || "",
+    title: mortgageTitle || "",
+    subtitle: mortgageSubtitle || "",
+    fields: c.mortgage?.fields || {
+      name: "", name_placeholder: "",
+      email: "", email_placeholder: "",
+      phone: "", phone_placeholder: "",
+      price: "", price_placeholder: "",
+      down_payment: "", down_payment_placeholder: "",
+      message: "", message_placeholder: "",
+      required: ""
+    },
+    submit: c.mortgage?.submit || ""
+  };
+
   const handleStepTransition = (newStep: ContactFormStep) => {
     setStep(newStep);
     if (onStepChange) onStepChange(newStep);
@@ -510,6 +636,14 @@ export default function ContactCard({
           setIsModalOpen(true);
         } else {
           handleStepTransition('sell');
+        }
+        break;
+      case 'mortgage':
+        if (nextStepAsModal) {
+          setModalStep('mortgage');
+          setIsModalOpen(true);
+        } else {
+          handleStepTransition('mortgage');
         }
         break;
     }
@@ -697,6 +831,10 @@ export default function ContactCard({
 
       {showSellWhatsApp && renderWhatsAppOption(sellWhatsappMessageTemplate)}
 
+      {renderMunicipalitySelector(isInsideModal)}
+
+      {renderPropertyTypeSelector(isInsideModal)}
+
       <div className="form-group">
         <label htmlFor={isInsideModal ? "modal-sell-name" : "sell-name"}>
           {sellDict.fields.name} <span className="form-required">{sellDict.fields.required}</span>
@@ -741,10 +879,6 @@ export default function ContactCard({
         />
       </div>
 
-      {renderMunicipalitySelector(isInsideModal)}
-
-      {renderPropertyTypeSelector(isInsideModal)}
-
       <div className="form-legal-checkboxes">
         <label className="form-checkbox-label">
           <input type="checkbox" className="form-checkbox" required />
@@ -775,15 +909,109 @@ export default function ContactCard({
     </form>
   );
 
+  const renderMortgageForm = (isInsideModal = false) => (
+    <form
+      className="contact-form"
+      id={isInsideModal ? `${formIdPrefix}-mortgage-form` : undefined}
+      onSubmit={(e) => handleSubmit(e, 'mortgage')}
+    >
+      {/* Stealth anti-spam honeypot trap */}
+      <div style={{ display: 'none', opacity: 0, position: 'absolute', width: 0, height: 0, overflow: 'hidden' }} aria-hidden="true">
+        <input
+          type="text"
+          name="fax"
+          value={honeypot}
+          onChange={(e) => setHoneypot(e.target.value)}
+          tabIndex={-1}
+          autoComplete="off"
+        />
+      </div>
+      {!isInsideModal && allowBack && initialStep === 'intent' && (
+        <button type="button" className="form-back-btn" onClick={() => handleStepTransition('intent')}>
+          ← {mortgageDict.back}
+        </button>
+      )}
+      <h3 className="form-title">{mortgageDict.title}</h3>
+      <p className="form-subtitle">{mortgageDict.subtitle}</p>
+
+      {showMortgageWhatsApp && renderWhatsAppOption(mortgageWhatsappMessageTemplate)}
+
+      <div className="form-group">
+        <label htmlFor={isInsideModal ? "modal-mortgage-name" : "mortgage-name"}>
+          {mortgageDict.fields.name} <span className="form-required">{mortgageDict.fields.required}</span>
+        </label>
+        <input
+          type="text"
+          id={isInsideModal ? "modal-mortgage-name" : "mortgage-name"}
+          placeholder={mortgageDict.fields.name_placeholder}
+          required
+          value={mortgageName}
+          onChange={(e) => setMortgageName(e.target.value)}
+        />
+      </div>
+
+      <div className="form-group">
+        <label htmlFor={isInsideModal ? "modal-mortgage-email" : "mortgage-email"}>
+          {mortgageDict.fields.email} <span className="form-required">{mortgageDict.fields.required}</span>
+        </label>
+        <input
+          type="email"
+          id={isInsideModal ? "modal-mortgage-email" : "mortgage-email"}
+          placeholder={mortgageDict.fields.email_placeholder}
+          required
+          value={mortgageEmail}
+          onChange={(e) => setMortgageEmail(e.target.value)}
+        />
+      </div>
+
+      <div className="form-group">
+        <label>
+          {mortgageDict.fields.phone} <span className="form-required">{mortgageDict.fields.required}</span>
+        </label>
+        <PhoneInput
+          placeholder={mortgageDict.fields.phone_placeholder}
+          value={mortgagePhone}
+          onChange={setMortgagePhone}
+          defaultCountry={detectedCountry}
+          required
+          numberInputProps={{
+            id: isInsideModal ? "modal-mortgage-phone" : "mortgage-phone"
+          }}
+        />
+      </div>
+
+
+
+      {submitError && (
+        <div className="form-error-message" style={{ color: '#D32F2F', fontSize: 'var(--text-sm)', marginTop: '0.5rem', fontFamily: 'var(--font-manrope)' }}>
+          ✕ {submitError}
+        </div>
+      )}
+
+      {!isInsideModal && (
+        <Button
+          type="submit"
+          variant="dark"
+          label={isSubmitting ? (dict?.contact?.sending || "Sending...") : mortgageDict.submit}
+          className="form-submit-btn"
+          showArrow={!isSubmitting}
+          disabled={isSubmitting}
+        />
+      )}
+    </form>
+  );
+
   const getModalTitle = () => {
     if (modalStep === 'general') return generalDict.title;
     if (modalStep === 'sell') return sellDict.title;
+    if (modalStep === 'mortgage') return mortgageDict.title;
     return '';
   };
 
   const getModalSubtitle = () => {
     if (modalStep === 'general') return generalDict.subtitle;
     if (modalStep === 'sell') return sellDict.subtitle;
+    if (modalStep === 'mortgage') return mortgageDict.subtitle;
     return '';
   };
 
@@ -797,6 +1025,7 @@ export default function ContactCard({
             {step === 'intent' && renderIntentStep()}
             {step === 'general' && renderGeneralForm(true)}
             {step === 'sell' && renderSellForm(true)}
+            {step === 'mortgage' && renderMortgageForm(true)}
           </>
         )}
       </>
@@ -817,6 +1046,7 @@ export default function ContactCard({
             {step === 'intent' && renderIntentStep()}
             {step === 'general' && renderGeneralForm(false)}
             {step === 'sell' && renderSellForm(false)}
+            {step === 'mortgage' && renderMortgageForm(false)}
           </>
         )}
       </div>
@@ -864,6 +1094,16 @@ export default function ContactCard({
                   form="contact-modal-general-form"
                   disabled={isSubmitting}
                 />
+              ) : modalStep === 'mortgage' ? (
+                <Button
+                  type="submit"
+                  variant="dark"
+                  label={isSubmitting ? (dict?.contact?.sending || "Sending...") : mortgageDict.submit}
+                  className="form-submit-btn"
+                  showArrow={!isSubmitting}
+                  form="contact-modal-mortgage-form"
+                  disabled={isSubmitting}
+                />
               ) : (
                 <Button
                   type="submit"
@@ -884,6 +1124,7 @@ export default function ContactCard({
             <>
               {modalStep === 'general' && renderGeneralForm(true)}
               {modalStep === 'sell' && renderSellForm(true)}
+              {modalStep === 'mortgage' && renderMortgageForm(true)}
             </>
           )}
         </ContactModal>

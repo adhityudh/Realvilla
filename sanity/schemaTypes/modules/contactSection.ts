@@ -11,6 +11,7 @@ export const contactSection = defineType({
     { name: 'intent', title: 'Intent Step' },
     { name: 'general', title: 'General Form' },
     { name: 'sell', title: 'Sell Form' },
+    { name: 'mortgage', title: 'Mortgage Form' },
   ],
   fields: [
     defineField({
@@ -62,6 +63,7 @@ export const contactSection = defineType({
           { title: 'Intent Selector (Initial Multi-Choice)', value: 'intent' },
           { title: 'General Inquiry Form', value: 'general' },
           { title: 'Sell Property Form', value: 'sell' },
+          { title: 'Mortgage Study Form', value: 'mortgage' },
         ],
         layout: 'radio'
       },
@@ -185,6 +187,40 @@ export const contactSection = defineType({
       group: 'sell',
       hidden: ({ parent }) => (parent?.initialStep || 'intent') === 'general' || parent?.hideSellWhatsApp === true,
       description: 'Optional: Provide a default template for the WhatsApp button on the Sell form.'
+    }),
+    defineField({
+      name: 'mortgageTitle',
+      title: 'Mortgage Form Title',
+      type: 'string',
+      group: 'mortgage',
+      hidden: ({ parent }) => (parent?.initialStep || 'intent') === 'general' || (parent?.initialStep || 'intent') === 'sell',
+      description: 'Heading text when viewing the Mortgage Study form.'
+    }),
+    defineField({
+      name: 'mortgageSubtitle',
+      title: 'Mortgage Form Subtitle',
+      type: 'text',
+      rows: 2,
+      group: 'mortgage',
+      hidden: ({ parent }) => (parent?.initialStep || 'intent') === 'general' || (parent?.initialStep || 'intent') === 'sell',
+      description: 'Subtitle text when viewing the Mortgage Study form.'
+    }),
+    defineField({
+      name: 'hideMortgageWhatsApp',
+      title: 'Hide WhatsApp Option (Mortgage Form)',
+      type: 'boolean',
+      initialValue: false,
+      group: 'mortgage',
+      hidden: ({ parent }) => (parent?.initialStep || 'intent') === 'general' || (parent?.initialStep || 'intent') === 'sell',
+    }),
+    defineField({
+      name: 'mortgageWhatsappMessageTemplate',
+      title: 'Mortgage WhatsApp Message Template',
+      type: 'text',
+      rows: 2,
+      group: 'mortgage',
+      hidden: ({ parent }) => (parent?.initialStep || 'intent') === 'general' || (parent?.initialStep || 'intent') === 'sell' || parent?.hideMortgageWhatsApp === true,
+      description: 'Optional: Provide a default template for the WhatsApp button on the Mortgage form.'
     }),
   ],
   preview: {

@@ -13,7 +13,8 @@
         "general": "General Inquiry",
         "sell": "Sell a Property",
         "buy": "Buy a Property",
-        "invest": "Invest"
+        "invest": "Invest",
+        "mortgage": "Request Mortgage Study"
       }
     },
     "whatsapp_cta": "Contact via WhatsApp",
@@ -43,8 +44,8 @@
         "email_placeholder": "Enter your email address",
         "optional": "(Optional)",
         "required": "*",
-        "municipality": "Municipality (Tenerife)",
-        "municipality_placeholder": "e.g. Adeje, Arona, Santa Cruz...",
+        "municipality": "Property Address (Tenerife)",
+        "municipality_placeholder": "Enter property address...",
         "property_type": "Property Type",
         "select_type": "Select property type",
         "types": {
@@ -60,6 +61,25 @@
         "terms": "I have read, understand, and accept the Terms and Conditions and the Privacy Policy."
       },
       "submit": "START SELLING"
+    },
+    "mortgage": {
+      "back": "Go Back",
+      "fields": {
+        "name": "Full Name",
+        "name_placeholder": "Enter your full name",
+        "email": "Email Address",
+        "email_placeholder": "Enter your email address",
+        "phone": "Phone Number",
+        "phone_placeholder": "Enter your phone number",
+        "price": "Property Price",
+        "price_placeholder": "e.g. 500,000",
+        "down_payment": "Down Payment",
+        "down_payment_placeholder": "e.g. 150,000",
+        "message": "Message",
+        "message_placeholder": "Any additional details or questions...",
+        "required": "*"
+      },
+      "submit": "REQUEST STUDY"
     }
   },
   "filter": {
