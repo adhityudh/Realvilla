@@ -373,16 +373,6 @@ export default function SellHeroSection({ data, dict }: SellHeroSectionProps) {
             className="sell-search-trigger"
             style={{ width: '100%' }}
           >
-            {!selectedAddress && (
-              <span className="search-icon">
-                <Image
-                  src="/icons/search.svg"
-                  alt="Search"
-                  width={20}
-                  height={20}
-                />
-              </span>
-            )}
             <input
               type="text"
               value={searchQuery}
@@ -402,6 +392,16 @@ export default function SellHeroSection({ data, dict }: SellHeroSectionProps) {
             />
             {isLoading && (
               <div className="sell-search-spinner" style={{ marginRight: selectedAddress ? '130px' : '0' }} />
+            )}
+            {!selectedAddress && !isLoading && (
+              <span className="search-icon">
+                <Image
+                  src="/icons/search.svg"
+                  alt="Search"
+                  width={20}
+                  height={20}
+                />
+              </span>
             )}
             {selectedAddress && (
               <Button
