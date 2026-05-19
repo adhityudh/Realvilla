@@ -139,7 +139,7 @@
   border-radius: 0;
   /* Luxury sharp edges to match site theme */
   overflow: hidden;
-  aspect-ratio: 4/3;
+  aspect-ratio: 16/9;
   background: var(--bg-muted);
   box-shadow: var(--shadow-md);
 }
@@ -151,6 +151,7 @@
 /* ── Content ── */
 .step-content-col {
   position: relative;
+  margin-bottom: -5rem;
 }
 
 .step-watermark-number.is-desktop {
@@ -178,7 +179,7 @@
 
 .step-title {
   font-family: var(--font-cormorant), serif;
-  font-size: var(--text-display-sm);
+  font-size: var(--text-display-md);
   color: var(--text-black);
   font-weight: var(--fw-regular);
   text-transform: uppercase;
@@ -188,7 +189,7 @@
 
 .step-body {
   font-family: var(--font-manrope), sans-serif;
-  font-size: var(--text-base);
+  font-size: var(--text-md);
   line-height: var(--lh-relaxed);
   color: var(--text-black);
   margin-bottom: 3rem;
@@ -239,7 +240,17 @@
   .step-body {
     margin-bottom: 1.5rem;
     width: 100%;
+    font-size: var(--text-base);
   }
+
+  .step-title {
+    font-size: var(--text-display-sm);
+  }
+
+  .step-content-col {
+    margin-bottom: 0;
+  }
+
 }
 
 @media (max-width: 768px) {

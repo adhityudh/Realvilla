@@ -50,7 +50,7 @@ export default function BuyingProcessSection({ data }: BuyingProcessSectionProps
         ease: 'power3.out',
         scrollTrigger: {
           trigger: sectionRef.current.querySelector('.process-header'),
-          start: 'top 85%',
+          start: 'top 95%',
           toggleActions: 'play none none reverse',
         },
       }
@@ -67,7 +67,7 @@ export default function BuyingProcessSection({ data }: BuyingProcessSectionProps
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: stepEl,
-          start: 'top 80%',
+          start: 'top 95%',
           toggleActions: 'play none none reverse',
         }
       });

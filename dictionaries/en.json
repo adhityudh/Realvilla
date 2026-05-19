@@ -56,8 +56,8 @@
         }
       },
       "legal": {
-        "authorize": "I authorize a REALVILLA associate to contact me for informational purposes",
-        "terms": "I have read, understand, and accept the Terms and Conditions and the Privacy Policy"
+        "authorize": "I authorize a REALVILLA associate to contact me for informational purposes.",
+        "terms": "I have read, understand, and accept the Terms and Conditions and the Privacy Policy."
       },
       "submit": "START SELLING"
     }
