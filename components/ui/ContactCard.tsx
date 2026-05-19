@@ -386,12 +386,7 @@ export default function ContactCard({
         }
       })
       .catch(() => {
-        // Fallback to navigator locale
-        try {
-          const language = navigator.language || 'ES';
-          const country = language.split('-')[1]?.toUpperCase();
-          if (country) setDetectedCountry(country);
-        } catch (e) { }
+        setDetectedCountry('ES');
       });
   }, []);
 
