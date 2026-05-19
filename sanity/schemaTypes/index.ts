@@ -18,6 +18,7 @@ import { buyPropertiesSection } from './modules/buyPropertiesSection'
 import { buyingProcessSection } from './modules/buyingProcessSection'
 import { buyMortgageSimSection } from './modules/buyMortgageSimSection'
 import { generalHeroSection } from './modules/generalHeroSection'
+import { sellHeroSection } from './modules/sellHeroSection'
 import { statsSection } from './modules/statsSection'
 import { mortgageProcessSection } from './modules/mortgageProcessSection'
 import { documentLedgerSection } from './modules/documentLedgerSection'
@@ -48,6 +49,7 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     genericModalComponent,
     heroSection,
     buyHeroSection,
+    sellHeroSection,
     buyPropertiesSection,
     aboutSection,
     propertiesSection,

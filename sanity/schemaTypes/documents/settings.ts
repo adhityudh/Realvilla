@@ -57,6 +57,7 @@ export const settings = defineType({
       of: [
         { type: 'heroSection' },
         { type: 'buyHeroSection' },
+        { type: 'sellHeroSection' },
         { type: 'generalHeroSection' },
         { type: 'buyPropertiesSection' },
         { type: 'aboutSection' },

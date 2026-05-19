@@ -171,7 +171,7 @@ export default function PageComponentsRenderer({
               formType={component.formType || 'general'}
               title={component.title}
               subtitle={component.subtitle}
-              hideWhatsApp={component.hideWhatsApp}
+              hideWhatsApp={component.componentId === 'sell-modal' ? true : component.hideWhatsApp}
               whatsappMessageTemplate={component.whatsappMessageTemplate}
               presetMessage={component.presetMessage}
               dict={dict}

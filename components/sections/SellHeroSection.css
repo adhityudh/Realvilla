@@ -1,0 +1,279 @@
+.sell-hero {
+    position: relative;
+    width: 100%;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: visible;
+    padding-top: 10rem;
+    padding-bottom: 7.5rem;
+    margin-bottom: 5rem;
+}
+
+.sell-hero-bg {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+}
+
+.sell-hero-img {
+    object-fit: cover;
+}
+
+.sell-hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.2) 0%, rgba(45, 35, 15, 0.25) 50%, rgba(0, 0, 0, 0.3) 100%);
+}
+
+.sell-hero-content>.sell-hero-title,
+.sell-jump-links {
+    opacity: 0;
+    /* Hidden initially, shown by GSAP */
+}
+
+.sell-hero-content {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+    width: 100%;
+    max-width: 1024px;
+    padding: 0 3rem;
+    color: var(--text-white);
+}
+
+.sell-hero-title {
+    font-family: var(--font-cormorant), serif;
+    font-size: var(--text-display-lg);
+    font-weight: var(--fw-extrabold);
+    text-transform: uppercase;
+    letter-spacing: var(--ls-tight);
+    margin-bottom: 2rem;
+    line-height: var(--lh-tight);
+}
+
+.sell-hero-subtitle {
+    font-family: var(--font-manrope), sans-serif;
+    font-size: var(--text-md);
+    opacity: 0.8;
+    max-width: 600px;
+    margin: 0 auto 3rem;
+    line-height: var(--lh-base);
+}
+
+.sell-search-trigger-container {
+    position: relative;
+    width: 100%;
+    max-width: 700px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    opacity: 1;
+    isolation: isolate;
+}
+
+.sell-search-trigger {
+    position: relative;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.01);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.01);
+    padding: 1.25rem 2rem;
+    border-radius: 100px;
+    cursor: pointer;
+    transition: background 0.4s ease, border-color 0.4s ease, transform 0.4s ease, box-shadow 0.4s ease;
+
+    will-change: transform;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+}
+
+.sell-search-trigger:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.4);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+.sell-filter-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.01);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.01);
+    cursor: pointer;
+    transition: background 0.4s ease, border-color 0.4s ease, transform 0.4s ease, box-shadow 0.4s ease;
+
+    will-change: transform;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    flex-shrink: 0;
+}
+
+.sell-filter-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.4);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+.sell-search-input-real {
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--text-white);
+    width: 100%;
+    font-size: var(--text-md);
+    cursor: text;
+    font-family: var(--font-manrope), sans-serif;
+}
+
+.sell-search-input-real.has-fade {
+    -webkit-mask-image: linear-gradient(to right, #000 0%, #000 calc(100% - 8.125rem), transparent calc(100% - 6.25rem), transparent 100%);
+    mask-image: linear-gradient(to right, #000 0%, #000 calc(100% - 8.125rem), transparent calc(100% - 6.25rem), transparent 100%);
+}
+
+.sell-search-input-real::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.sell-jump-links {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-top: 4rem;
+    padding: 0 3rem;
+}
+
+.sell-jump-links .btn-link-styled {
+    font-size: var(--text-base);
+}
+
+@media (max-width: 1024px) {
+    .sell-hero {
+        padding-bottom: 5rem;
+        margin-bottom: 3rem;
+    }
+
+    .sell-hero-title {
+        font-size: var(--text-display-xl);
+    }
+
+    .sell-jump-links {
+        flex-direction: column;
+        gap: 1.5rem;
+        margin-top: 3rem;
+        align-items: center;
+        padding: 0 1.5rem;
+    }
+
+    .sell-hero-content {
+        padding: 0 1.5rem;
+    }
+
+    .sell-search-trigger {
+        padding: 1rem 1.5rem;
+    }
+
+    .sell-filter-btn {
+        width: 54px;
+        height: 54px;
+    }
+
+    .sell-search-input-real {
+        font-size: var(--text-base);
+    }
+}
+
+/* Dropdown and Suggestions */
+.sell-suggestions-dropdown {
+    position: absolute;
+    top: calc(100%);
+    left: 0;
+    right: 0;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-lg);
+    z-index: 100;
+    max-height: 320px;
+    overflow-y: auto;
+    margin-top: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+}
+
+.sell-suggestion-item {
+    width: 100%;
+    display: block;
+    padding: 1.15rem 1.25rem;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--text-black);
+    text-align: left;
+    cursor: pointer;
+    font-family: var(--font-manrope), sans-serif;
+    font-size: var(--text-base-sm);
+    transition: all 0.2s ease;
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+.sell-suggestion-item:last-child {
+    border-bottom: none;
+}
+
+.sell-suggestion-item:hover {
+    background: var(--bg-muted);
+    color: var(--color-gold-dark);
+}
+
+/* Loading Spinner */
+.sell-search-spinner {
+    width: 18px;
+    height: 18px;
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    border-top: 2px solid var(--text-white);
+    border-radius: 50%;
+    animation: sell-spin 0.6s linear infinite;
+    flex-shrink: 0;
+    margin-left: auto;
+}
+
+@keyframes sell-spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* Continue Button inside search trigger */
+.sell-continue-btn {
+    position: absolute;
+    right: 0.5rem;
+    top: 0.5rem;
+    bottom: 0.5rem;
+    height: auto !important;
+    padding: 0 1.25rem !important;
+    cursor: pointer;
+    z-index: 10;
+}

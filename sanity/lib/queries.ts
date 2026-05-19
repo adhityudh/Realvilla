@@ -319,6 +319,15 @@ export const SECTION_PROJECTION = groq`
           "link": ${INTERNAL_LINK_PROJECTION}
         }
       },
+      _type == "sellHeroSection" => {
+        title,
+        "backgroundImage": backgroundImage.asset->url,
+        searchPlaceholder,
+        jumpLinks[] {
+          label,
+          "link": ${INTERNAL_LINK_PROJECTION}
+        }
+      },
       _type == "generalHeroSection" => {
         title,
         subtitle,

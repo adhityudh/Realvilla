@@ -150,6 +150,34 @@ export default function ContactCard({
     setAddressInput(selectedMunicipality);
   }, [selectedMunicipality]);
 
+  // Listen for preset address (e.g. from SellHeroSection search modal)
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const win = window as any;
+      if (win.__sellPresetAddress) {
+        const addr = win.__sellPresetAddress;
+        setSelectedMunicipality(addr);
+        setAddressInput(addr);
+        updateAddressSelected(true);
+        delete win.__sellPresetAddress;
+      }
+    }
+
+    const handlePresetEvent = (e: Event) => {
+      const detail = (e as CustomEvent).detail;
+      if (detail) {
+        setSelectedMunicipality(detail);
+        setAddressInput(detail);
+        updateAddressSelected(true);
+      }
+    };
+
+    window.addEventListener('set-sell-address', handlePresetEvent);
+    return () => {
+      window.removeEventListener('set-sell-address', handlePresetEvent);
+    };
+  }, []);
+
   const [mortgageName, setMortgageName] = useState('');
   const [mortgageEmail, setMortgageEmail] = useState('');
 

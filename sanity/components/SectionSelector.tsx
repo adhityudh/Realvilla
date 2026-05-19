@@ -5,6 +5,7 @@ import { Select } from '@sanity/ui'
 const sectionLabels: Record<string, string> = {
   aboutSection: 'About',
   buyHeroSection: 'Buy Hero',
+  sellHeroSection: 'Sell Hero',
   buyMortgageSimSection: 'Mortgage Simulator',
   buyPropertiesSection: 'Properties List',
   buyingProcessSection: 'Buying Process',

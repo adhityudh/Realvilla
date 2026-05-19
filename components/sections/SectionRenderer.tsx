@@ -13,6 +13,7 @@ const BuyPropertiesSection = dynamic(() => import('./BuyPropertiesSection'), { s
 const BuyingProcessSection = dynamic(() => import('./BuyingProcessSection'), { ssr: true })
 const BuyMortgageSimSection = dynamic(() => import('./BuyMortgageSimSection'), { ssr: true })
 const GeneralHeroSection = dynamic(() => import('./GeneralHeroSection'), { ssr: true })
+const SellHeroSection = dynamic(() => import('./SellHeroSection'), { ssr: true })
 const StatsSection = dynamic(() => import('./StatsSection'), { ssr: true })
 const MortgageProcessSection = dynamic(() => import('./MortgageProcessSection'), { ssr: true })
 const DocumentLedgerSection = dynamic(() => import('./DocumentLedgerSection'), { ssr: true })
@@ -28,6 +29,7 @@ const sectionMap: Record<string, any> = {
   contactSection: ContactSection,
   mortgageFAQSection: MortgageFAQSection,
   buyHeroSection: BuyHeroSection,
+  sellHeroSection: SellHeroSection,
   buyPropertiesSection: BuyPropertiesSection,
   buyingProcessSection: BuyingProcessSection,
   buyMortgageSimSection: BuyMortgageSimSection,
