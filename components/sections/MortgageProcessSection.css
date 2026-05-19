@@ -378,3 +378,21 @@
     height: 20px !important;
   }
 }
+
+.mortgage-step-body a {
+  color: var(--color-gold-dark);
+  font-weight: var(--fw-semibold);
+  text-decoration: none;
+  border-bottom: 1px solid var(--color-gold-dark);
+  transition: all 0.3s ease;
+  font-size: var(--text-sm-plus);
+  text-transform: uppercase;
+  display: inline-block;
+  margin-top: 0.5rem;
+  line-height: var(--lh-relaxed);
+}
+
+.mortgage-step-body a:hover {
+  color: var(--text-black);
+  border-bottom-color: var(--text-black);
+}

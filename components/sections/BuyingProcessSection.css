@@ -310,3 +310,21 @@
     text-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
   }
 }
+
+.step-body a {
+  color: var(--color-gold-dark);
+  font-weight: var(--fw-bold);
+  text-decoration: none;
+  border-bottom: 1px solid var(--color-gold-dark);
+  transition: all 0.3s ease;
+  letter-spacing: var(--ls-tagline);
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  display: inline-block;
+  margin-top: 0.5rem;
+}
+
+.step-body a:hover {
+  color: var(--text-black);
+  border-bottom-color: var(--text-black);
+}
