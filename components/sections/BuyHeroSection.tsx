@@ -132,11 +132,15 @@ export default function BuyHeroSection({ data, dict }: BuyHeroSectionProps) {
           document.body.classList.add('header-light-mode');
           document.body.classList.add('header-black-bg');
         } else {
-          document.body.classList.remove('header-light-mode');
-          document.body.classList.remove('header-black-bg');
-          // Only add dark mode if we've scrolled past the hero (self.progress === 1)
           if (self.progress === 1) {
+            document.body.classList.remove('header-light-mode');
+            document.body.classList.remove('header-black-bg');
             document.body.classList.add('header-dark-mode');
+          } else {
+            // We are at the top or overscrolling at the top (progress === 0)
+            document.body.classList.remove('header-dark-mode');
+            document.body.classList.add('header-light-mode');
+            document.body.classList.add('header-black-bg');
           }
         }
       },
@@ -146,6 +150,16 @@ export default function BuyHeroSection({ data, dict }: BuyHeroSectionProps) {
           document.body.classList.remove('header-dark-mode');
           document.body.classList.add('header-light-mode');
           document.body.classList.add('header-black-bg');
+        } else {
+          if (self.progress === 1) {
+            document.body.classList.remove('header-light-mode');
+            document.body.classList.remove('header-black-bg');
+            document.body.classList.add('header-dark-mode');
+          } else {
+            document.body.classList.remove('header-dark-mode');
+            document.body.classList.add('header-light-mode');
+            document.body.classList.add('header-black-bg');
+          }
         }
       }
     });
