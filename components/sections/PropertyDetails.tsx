@@ -47,23 +47,9 @@ export default function PropertyDetails({
   const handleQuickLinkClick = (e: React.MouseEvent<any>, url: string) => {
     if (!url) return;
 
-    // 1. Attempt central smooth scroll first
-    const didScroll = smoothScrollToAnchor(e, url);
-    if (didScroll) return; // Element was present and scrolled perfectly!
-
-    // 2. If target element was NOT found on this details viewport, fallback to cross-page routing
-    const cleanUrl = String(url)
-      .replace(/[\u200B-\u200D\uFEFF]/g, '') 
-      .replace(/[^\x20-\x7E]/g, '')
-      .trim();
-
-    if (cleanUrl.includes('#mortgage-simulator')) {
-      e.preventDefault();
-      window.location.href = locale === 'es' ? '/es/comprar#mortgage-simulator' : '/en/buy#mortgage-simulator';
-    } else if (cleanUrl.includes('#buying-process')) {
-      e.preventDefault();
-      window.location.href = locale === 'es' ? '/es/comprar#buying-process' : '/en/buy#buying-process';
-    }
+    // 1. Attempt central smooth scroll first (intercepts if element is local)
+    // 2. If target is not in local DOM, browser will naturally navigate to dynamic href from Sanity!
+    smoothScrollToAnchor(e, url);
   };
 
   const formatDate = (dateStr: string) => {

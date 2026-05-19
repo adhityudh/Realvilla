@@ -254,7 +254,7 @@ export default function MortgageProcessSection({ data }: MortgageProcessSectionP
   return (
     <section
       className={`mortgage-process-section ${timelineMode ? 'mortgage-timeline-mode' : ''}`}
-      id="mortgage-process"
+      id="process"
       ref={sectionRef}
     >
       <div className="mortgage-container">
