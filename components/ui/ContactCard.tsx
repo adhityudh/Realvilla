@@ -138,6 +138,12 @@ export default function ContactCard({
   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
   const addressDropdownRef = useRef<HTMLDivElement>(null);
   const [isTypingPrefix, setIsTypingPrefix] = useState(false);
+  const [isAddressSelected, setIsAddressSelected] = useState(false);
+  const isAddressSelectedRef = useRef(false);
+  const updateAddressSelected = (val: boolean) => {
+    setIsAddressSelected(val);
+    isAddressSelectedRef.current = val;
+  };
 
   // Sync selectedMunicipality with addressInput (e.g. on clean/submit success)
   useEffect(() => {
@@ -183,12 +189,23 @@ export default function ContactCard({
     const currentUrl = typeof window !== 'undefined' ? window.location.href : '';
 
     // Validate custom dynamic select fields which lack native HTML5 form validation triggers
-    if (formType === 'sell' && (!selectedMunicipality || !selectedPropertyType)) {
-      setSubmitError(
-        dict?.filter?.no_results ? "Por favor, complete todos los campos obligatorios." : "Please fill out all required fields."
-      );
-      setIsSubmitting(false);
-      return;
+    if (formType === 'sell') {
+      if (!selectedMunicipality || !selectedPropertyType) {
+        setSubmitError(
+          dict?.filter?.no_results ? "Por favor, complete todos los campos obligatorios." : "Please fill out all required fields."
+        );
+        setIsSubmitting(false);
+        return;
+      }
+      if (!isAddressSelected) {
+        setSubmitError(
+          locale === 'es'
+            ? "Por favor, seleccione una dirección de la lista de sugerencias."
+            : "Please select a valid address from the suggestions list."
+        );
+        setIsSubmitting(false);
+        return;
+      }
     }
 
     const payload = formType === 'sell' ? {
@@ -246,6 +263,7 @@ export default function ContactCard({
         setSellEmail('');
         setSelectedMunicipality('');
         setSelectedPropertyType('');
+        updateAddressSelected(false);
       } else if (formType === 'mortgage') {
         setMortgageName('');
         setMortgageEmail('');
@@ -364,6 +382,7 @@ export default function ContactCard({
     const val = e.target.value;
     setAddressInput(val);
     setSelectedMunicipality(val); // Keep selectedMunicipality in sync for submitting
+    updateAddressSelected(false);
 
     if (debounceTimerRef.current) {
       clearTimeout(debounceTimerRef.current);
@@ -392,45 +411,81 @@ export default function ContactCard({
     debounceTimerRef.current = setTimeout(async () => {
       setIsLoadingSuggestions(true);
       try {
-        const url = `https://photon.komoot.io/api/?q=${encodeURIComponent(val)}&limit=10&lat=28.2916&lon=-16.6291&bbox=-16.95,27.98,-16.10,28.59`;
-        const res = await fetch(url, {
-          headers: {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'
-          }
-        });
-        if (res.ok) {
-          const data = await res.json();
-          const mapped = (data.features || []).map((f: any, idx: number) => {
-            const p = f.properties || {};
-            const parts: string[] = [];
-
-            let streetAddress = '';
-            if (p.name) {
-              streetAddress = p.name;
-              if (p.street && p.street !== p.name) {
-                streetAddress += ` (${p.street})`;
-              }
-            } else if (p.street) {
-              streetAddress = p.street;
+        const allowedTypes = ['house', 'street', 'poi'];
+        
+        // Fetch helper to hit Photon API
+        const fetchFeatures = async (queryStr: string) => {
+          const url = `https://photon.komoot.io/api/?q=${encodeURIComponent(queryStr)}&limit=30&lat=28.2916&lon=-16.6291&bbox=-16.95,27.98,-16.10,28.59`;
+          const res = await fetch(url, {
+            headers: {
+              'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'
             }
-
-            if (p.housenumber && streetAddress) {
-              streetAddress += `, ${p.housenumber}`;
-            }
-
-            if (streetAddress) parts.push(streetAddress);
-            if (p.district) parts.push(p.district);
-            else if (p.locality) parts.push(p.locality);
-            if (p.city) parts.push(p.city);
-            if (p.postcode) parts.push(p.postcode);
-
-            return {
-              place_id: p.osm_id || idx,
-              display_name: parts.join(', ')
-            };
           });
-          setSuggestions(mapped);
+          if (res.ok) {
+            const data = await res.json();
+            return data.features || [];
+          }
+          return [];
+        };
+
+        // 1. Primary Fetch
+        let features = await fetchFeatures(val);
+
+        // Filter primary features strictly to street-level
+        let filteredFeatures = features.filter((f: any) => allowedTypes.includes(f.properties?.type));
+
+        // 2. Fallback Fetch: if we have few street level results and no street-prefix is present in input
+        const commonPrefixes = ['calle', 'avenida', 'c/', 'av.', 'av', 'street', 'road', 'calle de', 'plaza', 'paseo', 'camino', 'glorieta', 'bulevar'];
+        const hasStreetKeyword = commonPrefixes.some(word => val.toLowerCase().includes(word));
+
+        if (filteredFeatures.length < 5 && !hasStreetKeyword) {
+          const fallbackFeatures = await fetchFeatures('calle ' + val);
+          const filteredFallback = fallbackFeatures.filter((f: any) => allowedTypes.includes(f.properties?.type));
+          
+          // Combine and deduplicate by osm_id
+          const seenIds = new Set(filteredFeatures.map((f: any) => f.properties?.osm_id).filter(Boolean));
+          filteredFallback.forEach((f: any) => {
+            const osmId = f.properties?.osm_id;
+            if (!osmId || !seenIds.has(osmId)) {
+              filteredFeatures.push(f);
+              if (osmId) seenIds.add(osmId);
+            }
+          });
         }
+
+        // Map to suggestions with clean formatting
+        const mapped = filteredFeatures.map((f: any, idx: number) => {
+          const p = f.properties || {};
+          const parts: string[] = [];
+
+          let streetAddress = '';
+          if (p.name) {
+            streetAddress = p.name;
+            if (p.street && p.street !== p.name) {
+              streetAddress += ` (${p.street})`;
+            }
+          } else if (p.street) {
+            streetAddress = p.street;
+          }
+
+          if (p.housenumber && streetAddress) {
+            streetAddress += `, ${p.housenumber}`;
+          }
+
+          if (streetAddress) parts.push(streetAddress);
+          if (p.district) parts.push(p.district);
+          else if (p.locality) parts.push(p.locality);
+          if (p.city) parts.push(p.city);
+          if (p.postcode) parts.push(p.postcode);
+
+          return {
+            place_id: p.osm_id || idx,
+            display_name: parts.join(', ')
+          };
+        });
+
+        // Limit the final suggestion dropdown list to 10 items
+        setSuggestions(mapped.slice(0, 10));
       } catch (err) {
         console.error('Error fetching address suggestions:', err);
       } finally {
@@ -442,6 +497,7 @@ export default function ContactCard({
   const handleSelectSuggestion = (display_name: string) => {
     setAddressInput(display_name);
     setSelectedMunicipality(display_name);
+    updateAddressSelected(true);
     setSuggestions([]);
     setShowSuggestions(false);
   };
@@ -464,6 +520,15 @@ export default function ContactCard({
           if (addressInput.trim().length >= 3 || commonPrefixes.includes(trimmed)) {
             setShowSuggestions(true);
           }
+        }}
+        onBlur={() => {
+          setTimeout(() => {
+            if (!isAddressSelectedRef.current) {
+              setAddressInput('');
+              setSelectedMunicipality('');
+            }
+            setShowSuggestions(false);
+          }, 200);
         }}
         autoComplete="off"
       />
