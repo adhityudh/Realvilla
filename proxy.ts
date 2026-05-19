@@ -5,11 +5,26 @@ import { match } from '@formatjs/intl-localematcher';
 import Negotiator from 'negotiator';
 
 function getLocale(request: NextRequest) {
-  const negotiatorHeaders: Record<string, string> = {};
-  request.headers.forEach((value, key) => (negotiatorHeaders[key] = value));
+  try {
+    const negotiatorHeaders: Record<string, string> = {};
+    request.headers.forEach((value, key) => (negotiatorHeaders[key] = value));
 
-  const languages = new Negotiator({ headers: negotiatorHeaders }).languages();
-  return match(languages, locales as unknown as string[], defaultLocale);
+    const languages = new Negotiator({ headers: negotiatorHeaders }).languages();
+    
+    // Filter out wildcard '*' and invalid values to prevent Intl.getCanonicalLocales from throwing RangeError
+    const validLanguages = Array.isArray(languages)
+      ? languages.filter((lang) => lang && lang !== '*')
+      : [];
+
+    if (validLanguages.length === 0) {
+      return defaultLocale;
+    }
+
+    return match(validLanguages, locales as unknown as string[], defaultLocale);
+  } catch (error) {
+    console.error('Error matching locale, falling back to default:', error);
+    return defaultLocale;
+  }
 }
 
 export function proxy(request: NextRequest) {
