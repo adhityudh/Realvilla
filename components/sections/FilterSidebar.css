@@ -459,22 +459,24 @@
     font-size: var(--text-base-sm);
     margin: 0;
     text-transform: uppercase;
+    text-align: left;
 }
 
 .accordion-trigger {
     background: none;
     border: none;
     width: 100%;
-    height: 56px;
+    height: fit-content;
     /* Lock height to 56px to guarantee zero layout jumps when badge is rendered */
     display: flex;
     align-items: center;
     justify-content: space-between;
     cursor: pointer;
-    padding: 0 1.5rem;
+    padding: 1.25rem 1.5rem;
     /* Horizontal padding only, vertical centering is handled by height + flex */
     border-radius: 20px;
     outline: none;
+    gap: 0.5rem;
 }
 
 .accordion-trigger-left {
@@ -586,14 +588,6 @@
     border-radius: 8px;
     cursor: pointer;
     transition: all 0.2s ease;
-}
-
-.accordion-option-row:hover {
-    background: rgba(0, 0, 0, 0.02);
-}
-
-.accordion-option-row.selected {
-    background: rgba(212, 175, 55, 0.03);
 }
 
 /* Custom premium checkboxes */
