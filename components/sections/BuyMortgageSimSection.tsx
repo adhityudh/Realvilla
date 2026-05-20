@@ -551,18 +551,14 @@ export default function BuyMortgageSimSection({ data, dict, contextData }: { dat
                 </span>
                 <span className="msim-breakdown-value">{fmt(purchaseCosts)}</span>
               </div>
-              <div className="msim-breakdown-row msim-breakdown-row--total">
-                <span className="msim-breakdown-label msim-breakdown-label--bold">{L.labelTotalPropertyCost}</span>
-                <span className="msim-breakdown-value msim-breakdown-value--bold">{fmt(totalPropertyCost)}</span>
-              </div>
             </div>
 
             {/* Combined stacked bar chart */}
             <div className="msim-bars-combined">
-              {/* Top bar: only as wide as savings+mortgage boundary */}
+              {/* Top bar: Property Price (gold) left, then Taxes & Costs (brown) to the right */}
               <div className="msim-bar-track msim-bar-track--top" style={{ width: `${topBarWidthPct}%` }}>
-                <div className="msim-bar-seg msim-bar-seg--brown" style={{ width: `${costsPct}%` }} />
                 <div className="msim-bar-seg msim-bar-seg--gold" style={{ width: `${pricePct}%` }} />
+                <div className="msim-bar-seg msim-bar-seg--brown" style={{ width: `${costsPct}%` }} />
               </div>
 
               {/* Bottom bar: 100% width → savings | mortgage | interest */}
