@@ -2,6 +2,7 @@ import { ControlsIcon } from '@sanity/icons'
 import { ALL_FIELDS_GROUP, defineField, defineType } from 'sanity'
 import { SectionSelector } from '../../components/SectionSelector'
 import { ComponentSelector } from '../../components/ComponentSelector'
+import { InternalSectionSelector } from '../../components/InternalSectionSelector'
 
 export const buyMortgageSimSection = defineType({
   name: 'buyMortgageSimSection',
@@ -43,19 +44,19 @@ export const buyMortgageSimSection = defineType({
       name: 'tagline',
       title: 'Tagline',
       type: 'string',
-    group: 'content',
+      group: 'content',
 }),
     defineField({
       name: 'headline',
       title: 'Headline',
       type: 'string',
-    group: 'content',
+      group: 'content',
 }),
     defineField({
       name: 'body',
       title: 'Body Text',
       type: 'text',
-    group: 'content',
+      group: 'content',
 }),
 
     // ── CTA ──────────────────────────────────────
@@ -63,7 +64,7 @@ export const buyMortgageSimSection = defineType({
       name: 'ctaLabel',
       title: 'CTA Label',
       type: 'string',
-    group: 'content',
+      group: 'content',
 }),
     defineField({
       name: 'linkType',
@@ -78,7 +79,7 @@ export const buyMortgageSimSection = defineType({
         ],
         layout: 'radio',
       },
-    group: 'content',
+      group: 'content',
 }),
     defineField({
       name: 'internalLink',
@@ -96,14 +97,24 @@ export const buyMortgageSimSection = defineType({
           };
         }
       },
-    group: 'content',
+      group: 'content',
 }),
+    defineField({
+      name: 'internalSection',
+      title: 'Internal Page Section',
+      type: 'string',
+      components: {
+        input: InternalSectionSelector,
+      },
+      hidden: ({ parent }) => parent?.linkType !== 'internal' || !parent?.internalLink,
+      group: 'content',
+    }),
     defineField({
       name: 'externalLink',
       title: 'External Link',
       type: 'string',
       hidden: ({ parent }) => parent?.linkType !== 'external',
-    group: 'content',
+      group: 'content',
 }),
     defineField({
       name: 'sectionLink',

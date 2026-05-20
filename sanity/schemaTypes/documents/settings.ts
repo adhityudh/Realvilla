@@ -1,4 +1,5 @@
 import { defineField, defineType } from 'sanity'
+import { InternalSectionSelector } from '../../components/InternalSectionSelector'
 
 export const settings = defineType({
   name: 'settings',
@@ -111,6 +112,15 @@ export const settings = defineType({
               type: 'reference',
               to: [{ type: 'page' }],
               hidden: ({ parent }) => parent?.linkType !== 'internal',
+            }),
+            defineField({
+              name: 'internalSection',
+              title: 'Internal Page Section',
+              type: 'string',
+              components: {
+                input: InternalSectionSelector,
+              },
+              hidden: ({ parent }) => parent?.linkType !== 'internal' || !parent?.internalLink,
             }),
             defineField({
               name: 'externalLink',
@@ -237,6 +247,15 @@ export const settings = defineType({
               }
             }),
             defineField({
+              name: 'internalSection',
+              title: 'Internal Page Section',
+              type: 'string',
+              components: {
+                input: InternalSectionSelector,
+              },
+              hidden: ({ parent }) => parent?.linkType !== 'internal' || !parent?.internalLink,
+            }),
+            defineField({
               name: 'externalLink',
               title: 'External Link',
               type: 'string',
@@ -293,6 +312,15 @@ export const settings = defineType({
               }
             }),
             defineField({
+              name: 'internalSection',
+              title: 'Internal Page Section',
+              type: 'string',
+              components: {
+                input: InternalSectionSelector,
+              },
+              hidden: ({ parent }) => parent?.linkType !== 'internal' || !parent?.internalLink,
+            }),
+            defineField({
               name: 'externalLink',
               title: 'External Link',
               type: 'string',
@@ -344,6 +372,15 @@ export const settings = defineType({
               };
             }
           }
+        }),
+        defineField({
+          name: 'internalSection',
+          title: 'Internal Page Section',
+          type: 'string',
+          components: {
+            input: InternalSectionSelector,
+          },
+          hidden: ({ parent }) => parent?.linkType !== 'internal' || !parent?.internalLink,
         }),
         defineField({
           name: 'externalLink',
@@ -418,6 +455,15 @@ export const settings = defineType({
                                       };
                                     }
                                   }
+                                }),
+                                defineField({
+                                  name: 'internalSection',
+                                  title: 'Internal Page Section',
+                                  type: 'string',
+                                  components: {
+                                    input: InternalSectionSelector,
+                                  },
+                                  hidden: ({ parent }) => parent?.linkType !== 'internal' || !parent?.internalLink,
                                 }),
                                 defineField({
                                   name: 'externalLink',
@@ -512,6 +558,15 @@ export const settings = defineType({
                   }
                 }),
                 defineField({
+                  name: 'internalSection',
+                  title: 'Internal Page Section',
+                  type: 'string',
+                  components: {
+                    input: InternalSectionSelector,
+                  },
+                  hidden: ({ parent }) => parent?.linkType !== 'internal' || !parent?.internalLink,
+                }),
+                defineField({
                   name: 'externalLink',
                   title: 'External Link',
                   type: 'string',
@@ -571,6 +626,15 @@ export const settings = defineType({
                       };
                     }
                   }
+                }),
+                defineField({
+                  name: 'internalSection',
+                  title: 'Internal Page Section',
+                  type: 'string',
+                  components: {
+                    input: InternalSectionSelector,
+                  },
+                  hidden: ({ parent }) => parent?.linkType !== 'internal' || !parent?.internalLink,
                 }),
                 defineField({
                   name: 'externalLink',

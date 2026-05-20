@@ -2,6 +2,7 @@ import { ALL_FIELDS_GROUP, defineField, defineType } from 'sanity'
 import { ThLargeIcon } from '@sanity/icons'
 import { SectionSelector } from '../../components/SectionSelector'
 import { ComponentSelector } from '../../components/ComponentSelector'
+import { InternalSectionSelector } from '../../components/InternalSectionSelector'
 
 export const financingCardsSection = defineType({
   name: 'financingCardsSection',
@@ -43,7 +44,7 @@ export const financingCardsSection = defineType({
       title: 'Main Description (Top-Right Text Block)',
       type: 'text',
       description: 'The contextual copy placed in the top-right of the grid matrix.',
-    group: 'content',
+      group: 'content',
 }),
     defineField({
       name: 'backgroundImage',
@@ -53,7 +54,7 @@ export const financingCardsSection = defineType({
       options: {
         hotspot: true,
       },
-    group: 'content',
+      group: 'content',
 }),
     defineField({
       name: 'cta',
@@ -99,6 +100,15 @@ export const financingCardsSection = defineType({
           }
         }),
         defineField({
+          name: 'internalSection',
+          title: 'Internal Page Section',
+          type: 'string',
+          components: {
+            input: InternalSectionSelector,
+          },
+          hidden: ({ parent }) => parent?.linkType !== 'internal' || !parent?.internalLink,
+        }),
+        defineField({
           name: 'externalLink',
           title: 'External Link',
           type: 'string',
@@ -124,7 +134,7 @@ export const financingCardsSection = defineType({
           hidden: ({ parent }) => parent?.linkType !== 'component',
         }),
       ],
-    group: 'content',
+      group: 'content',
 }),
     defineField({
       name: 'cards',

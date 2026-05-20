@@ -2,6 +2,7 @@ import { UsersIcon } from '@sanity/icons'
 import { ALL_FIELDS_GROUP, defineField, defineType } from 'sanity'
 import { SectionSelector } from '../../components/SectionSelector'
 import { ComponentSelector } from '../../components/ComponentSelector'
+import { InternalSectionSelector } from '../../components/InternalSectionSelector'
 
 export const partnerSection = defineType({
   name: 'partnerSection',
@@ -42,7 +43,7 @@ export const partnerSection = defineType({
       name: 'title',
       title: 'Title',
       type: 'string',
-    group: 'content',
+      group: 'content',
 }),
     defineField({
       name: 'partners',
@@ -97,6 +98,15 @@ export const partnerSection = defineType({
               }
             }),
             defineField({
+              name: 'internalSection',
+              title: 'Internal Page Section',
+              type: 'string',
+              components: {
+                input: InternalSectionSelector,
+              },
+              hidden: ({ parent }) => parent?.linkType !== 'internal' || !parent?.internalLink,
+            }),
+            defineField({
               name: 'externalLink',
               title: 'External Link',
               type: 'string',
@@ -129,7 +139,7 @@ export const partnerSection = defineType({
           },
         },
       ],
-    group: 'content',
+      group: 'content',
 }),
   ],
   preview: {

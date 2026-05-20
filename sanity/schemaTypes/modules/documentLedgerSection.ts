@@ -2,6 +2,7 @@ import { ALL_FIELDS_GROUP, defineField, defineType } from 'sanity'
 import { DocumentTextIcon } from '@sanity/icons'
 import { SectionSelector } from '../../components/SectionSelector'
 import { ComponentSelector } from '../../components/ComponentSelector'
+import { InternalSectionSelector } from '../../components/InternalSectionSelector'
 
 export const documentLedgerSection = defineType({
   name: 'documentLedgerSection',
@@ -43,21 +44,21 @@ export const documentLedgerSection = defineType({
       title: 'Tagline',
       type: 'string',
       description: 'Small caption above the title, e.g., "Essential Documentation"',
-    group: 'content',
+      group: 'content',
 }),
     defineField({
       name: 'headline',
       title: 'Headline',
       type: 'string',
       description: 'The primary heading, e.g., "What You Need to Start"',
-    group: 'content',
+      group: 'content',
 }),
     defineField({
       name: 'intro',
       title: 'Introductory Text',
       type: 'blockContent',
       description: 'Brief contextual description placed below the header.',
-    group: 'content',
+      group: 'content',
 }),
     defineField({
       name: 'cta',
@@ -103,6 +104,15 @@ export const documentLedgerSection = defineType({
           }
         }),
         defineField({
+          name: 'internalSection',
+          title: 'Internal Page Section',
+          type: 'string',
+          components: {
+            input: InternalSectionSelector,
+          },
+          hidden: ({ parent }) => parent?.linkType !== 'internal' || !parent?.internalLink,
+        }),
+        defineField({
           name: 'externalLink',
           title: 'External Link',
           type: 'string',
@@ -128,7 +138,7 @@ export const documentLedgerSection = defineType({
           hidden: ({ parent }) => parent?.linkType !== 'component',
         }),
       ],
-    group: 'content',
+      group: 'content',
 }),
     defineField({
       name: 'items',

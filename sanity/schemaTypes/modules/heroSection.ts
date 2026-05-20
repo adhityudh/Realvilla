@@ -2,6 +2,7 @@ import { PresentationIcon } from '@sanity/icons'
 import { ALL_FIELDS_GROUP, defineField, defineType } from 'sanity'
 import { SectionSelector } from '../../components/SectionSelector'
 import { ComponentSelector } from '../../components/ComponentSelector'
+import { InternalSectionSelector } from '../../components/InternalSectionSelector'
 
 export const heroSection = defineType({
   name: 'heroSection',
@@ -42,41 +43,41 @@ export const heroSection = defineType({
       name: 'title',
       title: 'Title',
       type: 'string',
-    group: 'content',
+      group: 'content',
 }),
     defineField({
       name: 'subtitle',
       title: 'Subtitle',
       type: 'text',
-    group: 'content',
+      group: 'content',
 }),
     defineField({
       name: 'desktopVideoMP4',
       title: 'Desktop Video (MP4 - H.265)',
       type: 'file',
       options: { accept: 'video/mp4' },
-    group: 'content',
+      group: 'content',
 }),
     defineField({
       name: 'desktopVideoWebM',
       title: 'Desktop Video (WebM - VP9)',
       type: 'file',
       options: { accept: 'video/webm' },
-    group: 'content',
+      group: 'content',
 }),
     defineField({
       name: 'mobileVideoMP4',
       title: 'Mobile Video (MP4 - H.265)',
       type: 'file',
       options: { accept: 'video/mp4' },
-    group: 'content',
+      group: 'content',
 }),
     defineField({
       name: 'mobileVideoWebM',
       title: 'Mobile Video (WebM - VP9)',
       type: 'file',
       options: { accept: 'video/webm' },
-    group: 'content',
+      group: 'content',
 }),
     defineField({
       name: 'ctas',
@@ -130,6 +131,15 @@ export const heroSection = defineType({
               }
             }),
             defineField({
+              name: 'internalSection',
+              title: 'Internal Page Section',
+              type: 'string',
+              components: {
+                input: InternalSectionSelector,
+              },
+              hidden: ({ parent }) => parent?.linkType !== 'internal' || !parent?.internalLink,
+            }),
+            defineField({
               name: 'externalLink',
               title: 'External Link',
               type: 'string',
@@ -163,7 +173,7 @@ export const heroSection = defineType({
           }
         }
       ],
-    group: 'content',
+      group: 'content',
 }),
   ],
   preview: {

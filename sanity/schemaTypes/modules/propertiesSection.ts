@@ -2,6 +2,7 @@ import { ThLargeIcon } from '@sanity/icons'
 import { ALL_FIELDS_GROUP, defineField, defineType } from 'sanity'
 import { SectionSelector } from '../../components/SectionSelector'
 import { ComponentSelector } from '../../components/ComponentSelector'
+import { InternalSectionSelector } from '../../components/InternalSectionSelector'
 
 export const propertiesSection = defineType({
   name: 'propertiesSection',
@@ -42,13 +43,13 @@ export const propertiesSection = defineType({
       name: 'tagline',
       title: 'Tagline',
       type: 'string',
-    group: 'content',
+      group: 'content',
 }),
     defineField({
       name: 'headline',
       title: 'Headline',
       type: 'string',
-    group: 'content',
+      group: 'content',
 }),
     defineField({
       name: 'selectionType',
@@ -62,7 +63,7 @@ export const propertiesSection = defineType({
         layout: 'radio',
       },
       initialValue: 'dynamic',
-    group: 'content',
+      group: 'content',
 }),
     // Settings for Dynamic Query
     defineField({
@@ -72,14 +73,14 @@ export const propertiesSection = defineType({
       description: 'How many properties to display.',
       initialValue: 3,
       hidden: ({ parent }) => parent?.selectionType !== 'dynamic',
-    group: 'content',
+      group: 'content',
 }),
     defineField({
       name: 'limitMobile',
       title: 'Number of Properties for Mobile',
       type: 'number',
       description: 'How many properties to display on mobile devices under 768px. (Optional, defaults to same as desktop limit)',
-    group: 'content',
+      group: 'content',
 }),
     defineField({
       name: 'orderBy',
@@ -94,7 +95,7 @@ export const propertiesSection = defineType({
       },
       initialValue: '_createdAt desc',
       hidden: ({ parent }) => parent?.selectionType !== 'dynamic',
-    group: 'content',
+      group: 'content',
 }),
     defineField({
       name: 'showSold',
@@ -102,7 +103,7 @@ export const propertiesSection = defineType({
       type: 'boolean',
       initialValue: false,
       hidden: ({ parent }) => parent?.selectionType !== 'dynamic',
-    group: 'content',
+      group: 'content',
 }),
     // Settings for Manual Selection
     defineField({
@@ -126,14 +127,14 @@ export const propertiesSection = defineType({
         }
       ],
       hidden: ({ parent }) => parent?.selectionType !== 'manual',
-    group: 'content',
+      group: 'content',
 }),
     defineField({
       name: 'ctaLabel',
       title: 'CTA Label',
       type: 'string',
       initialValue: 'View All Properties',
-    group: 'content',
+      group: 'content',
 }),
     defineField({
       name: 'linkType',
@@ -149,7 +150,7 @@ export const propertiesSection = defineType({
         layout: 'radio',
       },
       initialValue: 'internal',
-    group: 'content',
+      group: 'content',
 }),
     defineField({
       name: 'internalLink',
@@ -167,15 +168,25 @@ export const propertiesSection = defineType({
           };
         }
       },
-    group: 'content',
+      group: 'content',
 }),
+    defineField({
+      name: 'internalSection',
+      title: 'Internal Page Section',
+      type: 'string',
+      components: {
+        input: InternalSectionSelector,
+      },
+      hidden: ({ parent }) => parent?.linkType !== 'internal' || !parent?.internalLink,
+      group: 'content',
+    }),
     defineField({
       name: 'externalLink',
       title: 'External Link',
       type: 'string',
       description: 'Can be a full URL (https://...), a relative path (/buy), or an anchor (#contact).',
       hidden: ({ parent }) => parent?.linkType !== 'external',
-    group: 'content',
+      group: 'content',
 }),
     defineField({
       name: 'sectionLink',

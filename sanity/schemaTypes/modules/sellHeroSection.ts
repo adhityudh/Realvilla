@@ -2,6 +2,7 @@ import { DashboardIcon } from '@sanity/icons'
 import { ALL_FIELDS_GROUP, defineField, defineType } from 'sanity'
 import { SectionSelector } from '../../components/SectionSelector'
 import { ComponentSelector } from '../../components/ComponentSelector'
+import { InternalSectionSelector } from '../../components/InternalSectionSelector'
 
 export const sellHeroSection = defineType({
   name: 'sellHeroSection',
@@ -42,28 +43,28 @@ export const sellHeroSection = defineType({
       name: 'title',
       title: 'Title',
       type: 'string',
-    group: 'content',
+      group: 'content',
 }),
     defineField({
       name: 'subtitle',
       title: 'Subtitle',
       type: 'text',
       rows: 3,
-    group: 'content',
+      group: 'content',
 }),
     defineField({
       name: 'backgroundImage',
       title: 'Background Image',
       type: 'image',
       options: { hotspot: true },
-    group: 'content',
+      group: 'content',
 }),
     defineField({
       name: 'searchPlaceholder',
       title: 'Search Placeholder',
       type: 'string',
       initialValue: 'Enter your property address...',
-    group: 'content',
+      group: 'content',
 }),
     defineField({
       name: 'modalTitle',
@@ -125,6 +126,15 @@ export const sellHeroSection = defineType({
                   };
                 }
               }
+            }),
+            defineField({
+              name: 'internalSection',
+              title: 'Internal Page Section',
+              type: 'string',
+              components: {
+                input: InternalSectionSelector,
+              },
+              hidden: ({ parent }) => parent?.linkType !== 'internal' || !parent?.internalLink,
             }),
             defineField({
               name: 'externalLink',

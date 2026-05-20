@@ -2,6 +2,7 @@ import { DashboardIcon } from '@sanity/icons'
 import { ALL_FIELDS_GROUP, defineField, defineType } from 'sanity'
 import { SectionSelector } from '../../components/SectionSelector'
 import { ComponentSelector } from '../../components/ComponentSelector'
+import { InternalSectionSelector } from '../../components/InternalSectionSelector'
 
 export const generalHeroSection = defineType({
   name: 'generalHeroSection',
@@ -42,7 +43,7 @@ export const generalHeroSection = defineType({
       name: 'title',
       title: 'Title',
       type: 'string',
-    group: 'content',
+      group: 'content',
 }),
     defineField({
       name: 'subtitle',
@@ -50,7 +51,7 @@ export const generalHeroSection = defineType({
       description: 'Displays as elegant text replacing the search bar in this hero variant.',
       type: 'text',
       rows: 3,
-    group: 'content',
+      group: 'content',
 }),
     defineField({
       name: 'desktopLayout',
@@ -65,7 +66,7 @@ export const generalHeroSection = defineType({
         layout: 'radio',
       },
       initialValue: 'vertical',
-    group: 'content',
+      group: 'content',
 }),
     defineField({
       name: 'primaryButton',
@@ -107,6 +108,15 @@ export const generalHeroSection = defineType({
           }
         }),
         defineField({
+          name: 'internalSection',
+          title: 'Internal Page Section',
+          type: 'string',
+          components: {
+            input: InternalSectionSelector,
+          },
+          hidden: ({ parent }) => parent?.linkType !== 'internal' || !parent?.internalLink,
+        }),
+        defineField({
           name: 'externalLink',
           title: 'External URL',
           type: 'string',
@@ -132,7 +142,7 @@ export const generalHeroSection = defineType({
           hidden: ({ parent }) => parent?.linkType !== 'component',
         }),
       ],
-    group: 'content',
+      group: 'content',
 }),
     defineField({
       name: 'secondaryButton',
@@ -174,6 +184,15 @@ export const generalHeroSection = defineType({
           }
         }),
         defineField({
+          name: 'internalSection',
+          title: 'Internal Page Section',
+          type: 'string',
+          components: {
+            input: InternalSectionSelector,
+          },
+          hidden: ({ parent }) => parent?.linkType !== 'internal' || !parent?.internalLink,
+        }),
+        defineField({
           name: 'externalLink',
           title: 'External URL',
           type: 'string',
@@ -199,14 +218,14 @@ export const generalHeroSection = defineType({
           hidden: ({ parent }) => parent?.linkType !== 'component',
         }),
       ],
-    group: 'content',
+      group: 'content',
 }),
     defineField({
       name: 'backgroundImage',
       title: 'Background Image',
       type: 'image',
       options: { hotspot: true },
-    group: 'content',
+      group: 'content',
 }),
     defineField({
       name: 'jumpLinks',
@@ -248,6 +267,15 @@ export const generalHeroSection = defineType({
                   };
                 }
               }
+            }),
+            defineField({
+              name: 'internalSection',
+              title: 'Internal Page Section',
+              type: 'string',
+              components: {
+                input: InternalSectionSelector,
+              },
+              hidden: ({ parent }) => parent?.linkType !== 'internal' || !parent?.internalLink,
             }),
             defineField({
               name: 'externalLink',

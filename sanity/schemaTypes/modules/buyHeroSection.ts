@@ -2,6 +2,7 @@ import { DashboardIcon } from '@sanity/icons'
 import { ALL_FIELDS_GROUP, defineField, defineType } from 'sanity'
 import { SectionSelector } from '../../components/SectionSelector'
 import { ComponentSelector } from '../../components/ComponentSelector'
+import { InternalSectionSelector } from '../../components/InternalSectionSelector'
 
 export const buyHeroSection = defineType({
   name: 'buyHeroSection',
@@ -42,21 +43,21 @@ export const buyHeroSection = defineType({
       name: 'title',
       title: 'Title',
       type: 'string',
-    group: 'content',
+      group: 'content',
 }),
     defineField({
       name: 'backgroundImage',
       title: 'Background Image',
       type: 'image',
       options: { hotspot: true },
-    group: 'content',
+      group: 'content',
 }),
     defineField({
       name: 'searchPlaceholder',
       title: 'Search Placeholder',
       type: 'string',
       initialValue: 'Search by Property Name, location, or Municipalities...',
-    group: 'content',
+      group: 'content',
 }),
     defineField({
       name: 'jumpLinks',
@@ -100,6 +101,15 @@ export const buyHeroSection = defineType({
               }
             }),
             defineField({
+              name: 'internalSection',
+              title: 'Internal Page Section',
+              type: 'string',
+              components: {
+                input: InternalSectionSelector,
+              },
+              hidden: ({ parent }) => parent?.linkType !== 'internal' || !parent?.internalLink,
+            }),
+            defineField({
               name: 'externalLink',
               title: 'External URL',
               type: 'string',
@@ -127,7 +137,7 @@ export const buyHeroSection = defineType({
           ]
         }
       ],
-    group: 'content',
+      group: 'content',
 }),
     defineField({
       name: 'trendingSearches',

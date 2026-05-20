@@ -2,6 +2,7 @@ import { InfoOutlineIcon } from '@sanity/icons'
 import { ALL_FIELDS_GROUP, defineField, defineType } from 'sanity'
 import { SectionSelector } from '../../components/SectionSelector'
 import { ComponentSelector } from '../../components/ComponentSelector'
+import { InternalSectionSelector } from '../../components/InternalSectionSelector'
 
 export const aboutSection = defineType({
   name: 'aboutSection',
@@ -42,46 +43,46 @@ export const aboutSection = defineType({
       name: 'tagline',
       title: 'Tagline',
       type: 'string',
-    group: 'content',
+      group: 'content',
 }),
     defineField({
       name: 'headline',
       title: 'Headline',
       type: 'string',
-    group: 'content',
+      group: 'content',
 }),
     defineField({
       name: 'body',
       title: 'Body Text',
       type: 'text',
-    group: 'content',
+      group: 'content',
 }),
     defineField({
       name: 'profileName',
       title: 'Profile Name',
       type: 'string',
-    group: 'content',
+      group: 'content',
 }),
     defineField({
       name: 'bgImage',
       title: 'Background Image',
       type: 'image',
       options: { hotspot: true },
-    group: 'content',
+      group: 'content',
 }),
     defineField({
       name: 'objectImage',
       title: 'Object Image (Floating)',
       type: 'image',
       options: { hotspot: true },
-    group: 'content',
+      group: 'content',
 }),
     defineField({
       name: 'certificates',
       title: 'Certificates',
       type: 'array',
       of: [{ type: 'image', options: { hotspot: true } }],
-    group: 'content',
+      group: 'content',
 }),
     defineField({
       name: 'socialLinks',
@@ -126,6 +127,15 @@ export const aboutSection = defineType({
               }
             }),
             defineField({
+              name: 'internalSection',
+              title: 'Internal Page Section',
+              type: 'string',
+              components: {
+                input: InternalSectionSelector,
+              },
+              hidden: ({ parent }) => parent?.linkType !== 'internal' || !parent?.internalLink,
+            }),
+            defineField({
               name: 'externalLink',
               title: 'External Link',
               type: 'string',
@@ -152,7 +162,7 @@ export const aboutSection = defineType({
           ],
         },
       ],
-    group: 'content',
+      group: 'content',
 }),
   ],
   preview: {

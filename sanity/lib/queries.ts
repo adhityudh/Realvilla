@@ -19,20 +19,21 @@ export const getLinkProjection = (
   internalLinkField = "internalLink",
   externalLinkField = "externalLink",
   componentLinkField = "componentLink",
-  sectionLinkField = "sectionLink"
+  sectionLinkField = "sectionLink",
+  internalSectionField = "internalSection"
 ) => `select(
   ${linkTypeField} == "internal" => select(
-    ${internalLinkField}->slug.current == "home" => "/" + coalesce(${internalLinkField}->language, $language),
-    "/" + coalesce(${internalLinkField}->language, $language) + "/" + ${internalLinkField}->slug.current
+    ${internalLinkField}->slug.current == "home" => "/" + coalesce(${internalLinkField}->language, $language) + coalesce("#" + ${internalSectionField}, ""),
+    "/" + coalesce(${internalLinkField}->language, $language) + "/" + ${internalLinkField}->slug.current + coalesce("#" + ${internalSectionField}, "")
   ),
   ${linkTypeField} == "external" => ${externalLinkField},
   ${linkTypeField} == "component" => ${componentLinkField},
   ${linkTypeField} == "section" => ${sectionLinkField}
 )`
 
-export const INTERNAL_LINK_PROJECTION = getLinkProjection('linkType', 'internalLink', 'externalLink', 'componentLink', 'sectionLink')
+export const INTERNAL_LINK_PROJECTION = getLinkProjection('linkType', 'internalLink', 'externalLink', 'componentLink', 'sectionLink', 'internalSection')
 
-export const SECONDARY_INTERNAL_LINK_PROJECTION = getLinkProjection('secondaryLinkType', 'secondaryInternalLink', 'secondaryExternalLink', 'secondaryComponentLink', 'secondarySectionLink')
+export const SECONDARY_INTERNAL_LINK_PROJECTION = getLinkProjection('secondaryLinkType', 'secondaryInternalLink', 'secondaryExternalLink', 'secondaryComponentLink', 'secondarySectionLink', 'secondaryInternalSection')
 
 // Reusable property card projection (for listings, cards, carousels)
 export const PROPERTY_CARD_FIELDS = groq`
