@@ -694,3 +694,52 @@
 .form-readonly-input:focus {
     border-bottom-color: var(--border-strong) !important;
 }
+
+/* =========================================
+   SELL FORM INTERACTIVE MAP STYLING
+   ========================================= */
+
+.sell-form-map-wrapper {
+    margin-top: -1rem;
+    margin-bottom: 2.5rem;
+    width: 100%;
+    animation: fadeInModal 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.sell-form-map-wrapper .map-outer-wrapper {
+    width: 100%;
+    overflow: hidden;
+}
+
+.sell-form-map-wrapper .map-inner-element {
+    height: 240px;
+    border-radius: var(--radius-md, 8px);
+    border: 1px solid var(--border-light, rgba(0, 0, 0, 0.1));
+    box-shadow: var(--shadow-sm);
+}
+
+.sell-form-map-instructions {
+    font-family: var(--font-manrope), sans-serif;
+    font-size: var(--text-sm);
+    color: var(--text-muted, #7c7c75);
+    margin-top: 0.65rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.45rem;
+    line-height: 1.4;
+}
+
+.sell-form-map-instructions span:first-child {
+    font-size: 0.95rem;
+    line-height: 1;
+}
+
+.apply-map-change-container {
+    margin-top: 1.5rem;
+    display: flex;
+    justify-content: flex-start;
+}
+
+.apply-map-change-btn {
+    padding: 0.8rem 1.8rem !important;
+}

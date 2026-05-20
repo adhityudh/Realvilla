@@ -42,7 +42,7 @@ export default function SellSearchModal({ isOpen, onClose, dict }: SellSearchMod
 
   const placeholderText = dict?.contact?.sell?.fields?.municipality_placeholder || 'Enter your property address...';
 
-  // Photon Address Autocomplete Search logic (similar to ContactCard)
+  // Google Places Address Autocomplete Search logic
   useEffect(() => {
     if (debounceTimerRef.current) {
       clearTimeout(debounceTimerRef.current);
@@ -56,85 +56,14 @@ export default function SellSearchModal({ isOpen, onClose, dict }: SellSearchMod
       return;
     }
 
-    const trimmed = val.toLowerCase();
-    const commonPrefixes = ['calle', 'avenida', 'c/', 'av.', 'av', 'street', 'road', 'calle de', 'plaza', 'paseo', 'camino', 'glorieta', 'bulevar'];
-    const isPrefix = commonPrefixes.includes(trimmed);
-
-    if (isPrefix) {
-      setSuggestions([]);
-      setIsTypingPrefix(true);
-      return;
-    }
-
-    setIsTypingPrefix(false);
+    setIsLoading(true);
     debounceTimerRef.current = setTimeout(async () => {
-      setIsLoading(true);
       try {
-        const allowedTypes = ['house', 'street', 'poi'];
-        
-        const fetchFeatures = async (queryStr: string) => {
-          const url = `https://photon.komoot.io/api/?q=${encodeURIComponent(queryStr)}&limit=30&lat=28.2916&lon=-16.6291&bbox=-16.95,27.98,-16.10,28.59`;
-          const res = await fetch(url, {
-            headers: {
-              'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'
-            }
-          });
-          if (res.ok) {
-            const data = await res.json();
-            return data.features || [];
-          }
-          return [];
-        };
-
-        let features = await fetchFeatures(val);
-        let filteredFeatures = features.filter((f: any) => allowedTypes.includes(f.properties?.type));
-
-        const hasStreetKeyword = commonPrefixes.some(word => val.toLowerCase().includes(word));
-        if (filteredFeatures.length < 5 && !hasStreetKeyword) {
-          const fallbackFeatures = await fetchFeatures('calle ' + val);
-          const filteredFallback = fallbackFeatures.filter((f: any) => allowedTypes.includes(f.properties?.type));
-          
-          const seenIds = new Set(filteredFeatures.map((f: any) => f.properties?.osm_id).filter(Boolean));
-          filteredFallback.forEach((f: any) => {
-            const osmId = f.properties?.osm_id;
-            if (!osmId || !seenIds.has(osmId)) {
-              filteredFeatures.push(f);
-              if (osmId) seenIds.add(osmId);
-            }
-          });
+        const res = await fetch(`/api/places/autocomplete/?q=${encodeURIComponent(val)}`);
+        if (res.ok) {
+          const data = await res.json();
+          setSuggestions(data.predictions || []);
         }
-
-        const mapped = filteredFeatures.map((f: any, idx: number) => {
-          const p = f.properties || {};
-          const parts: string[] = [];
-
-          let streetAddress = '';
-          if (p.name) {
-            streetAddress = p.name;
-            if (p.street && p.street !== p.name) {
-              streetAddress += ` (${p.street})`;
-            }
-          } else if (p.street) {
-            streetAddress = p.street;
-          }
-
-          if (p.housenumber && streetAddress) {
-            streetAddress += `, ${p.housenumber}`;
-          }
-
-          if (streetAddress) parts.push(streetAddress);
-          if (p.district) parts.push(p.district);
-          else if (p.locality) parts.push(p.locality);
-          if (p.city) parts.push(p.city);
-          if (p.postcode) parts.push(p.postcode);
-
-          return {
-            place_id: p.osm_id || idx,
-            display_name: parts.join(', ')
-          };
-        });
-
-        setSuggestions(mapped.slice(0, 10));
       } catch (err) {
         console.error('Error fetching address suggestions:', err);
       } finally {
@@ -161,7 +90,7 @@ export default function SellSearchModal({ isOpen, onClose, dict }: SellSearchMod
       tl.fromTo(
         contentRef.current,
         { y: 50, opacity: 0, scale: 0.95, filter: 'blur(10px)' },
-        { y: 0, opacity: 1, scale: 1, filter: 'blur(0px)', duration: 0.6, ease: 'expo.out' },
+        { y: 0, opacity: 1, scale: 1, filter: 'blur(0px)', clearProps: 'transform,filter', duration: 0.6, ease: 'expo.out' },
         0.1
       );
 
@@ -195,11 +124,18 @@ export default function SellSearchModal({ isOpen, onClose, dict }: SellSearchMod
     }
   };
 
-  const handleSelectAddress = (display_name: string) => {
+  const handleSelectAddress = (display_name: string, place_id?: string | number) => {
     if (typeof window !== 'undefined') {
       const win = window as any;
       win.__sellPresetAddress = display_name;
-      window.dispatchEvent(new CustomEvent('set-sell-address', { detail: display_name }));
+      if (place_id) {
+        win.__sellPresetPlaceId = String(place_id);
+      }
+      window.dispatchEvent(
+        new CustomEvent('set-sell-address', {
+          detail: place_id ? { address: display_name, placeId: String(place_id) } : display_name
+        })
+      );
     }
     onClose();
     setTimeout(() => {
@@ -262,11 +198,11 @@ export default function SellSearchModal({ isOpen, onClose, dict }: SellSearchMod
                 <div className="search-results-list">
                   <div className="result-group">
                     <div className="result-items">
-                      {suggestions.map((sug) => (
+                       {suggestions.map((sug) => (
                         <div 
                           key={sug.place_id} 
                           className="result-item clickable"
-                          onClick={() => handleSelectAddress(sug.display_name)}
+                          onClick={() => handleSelectAddress(sug.display_name, sug.place_id)}
                         >
                           <span className="result-title">{sug.display_name}</span>
                         </div>

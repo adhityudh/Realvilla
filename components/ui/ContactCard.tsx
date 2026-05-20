@@ -9,6 +9,7 @@ import { client } from '@/sanity/lib/client';
 import PhoneInput from 'react-phone-number-input';
 import 'react-phone-number-input/style.css';
 import './ContactCard.css';
+import PropertyMap from './Map';
 
 export type ContactFormStep = 'intent' | 'general' | 'sell' | 'mortgage';
 
@@ -121,6 +122,104 @@ export default function ContactCard({
   const [sellPhone, setSellPhone] = useState<any>();
   const [mortgagePhone, setMortgagePhone] = useState<any>();
 
+  // Interactive Map coordinates and details loader
+  const [coordinates, setCoordinates] = useState<{ lat: number; lng: number } | null>(null);
+  const [tempCoordinates, setTempCoordinates] = useState<{ lat: number; lng: number } | null>(null);
+  const [geocodingError, setGeocodingError] = useState<string | null>(null);
+
+  const fetchCoordinatesForPlace = async (placeId: string) => {
+    try {
+      const res = await fetch(`/api/places/details/?placeId=${encodeURIComponent(placeId)}`);
+      if (res.ok) {
+        const data = await res.json();
+        if (data.location?.latitude && data.location?.longitude) {
+          const pos = {
+            lat: data.location.latitude,
+            lng: data.location.longitude,
+          };
+          setCoordinates(pos);
+          setTempCoordinates(pos);
+        }
+      }
+    } catch (err) {
+      console.error('Error fetching place coordinates:', err);
+    }
+  };
+
+  const reverseGeocode = async (lat: number, lng: number) => {
+    console.log('[reverseGeocode] Starting reverse geocoding via proxy for:', lat, lng);
+    setGeocodingError(null);
+    try {
+      const res = await fetch(`/api/places/reverse-geocode?lat=${lat}&lng=${lng}`);
+      if (res.ok) {
+        const data = await res.json();
+        if (data.address) {
+          console.log('[reverseGeocode] Proxy Success:', data.address);
+          setAddressInput(data.address);
+          setSelectedMunicipality(data.address);
+          updateAddressSelected(true);
+          return;
+        }
+      }
+
+      // If server proxy route returned non-OK or failed, fallback to client-side Geocoder
+      console.warn('[reverseGeocode] Proxy route failed. Falling back to client-side Google Maps Geocoder...');
+      if (typeof window !== 'undefined' && window.google?.maps) {
+        const geocoder = new window.google.maps.Geocoder();
+        const latLng = new window.google.maps.LatLng(lat, lng);
+        geocoder.geocode({ location: latLng }, (results: any, status: any) => {
+          console.log('[reverseGeocode] Fallback Geocoder status:', status);
+          if (status === 'OK' && results && results[0]) {
+            const rawAddress = results[0].formatted_address;
+            const cleanAddress = rawAddress.replace(/,\s*España\s*$/i, '').trim();
+            console.log('[reverseGeocode] Fallback Success:', cleanAddress);
+            setAddressInput(cleanAddress);
+            setSelectedMunicipality(cleanAddress);
+            updateAddressSelected(true);
+          } else {
+            console.error('[reverseGeocode] Fallback Geocoder failed:', status);
+            let errMsg = locale === 'es'
+              ? 'No se pudo encontrar una dirección para este punto. Intente arrastrar el pin más cerca de una calle.'
+              : 'Failed to find an address for this location. Please try dragging the pin closer to a street.';
+            if (status === 'ZERO_RESULTS') {
+              errMsg = locale === 'es'
+                ? 'No se encontró ninguna dirección para el punto seleccionado.'
+                : 'No address found for the selected point.';
+            } else if (status === 'REQUEST_DENIED') {
+              errMsg = locale === 'es'
+                ? 'La API de Geocoding no está habilitada en su Google Cloud Console.'
+                : 'Geocoding API is not enabled in your Google Cloud Console.';
+            }
+            setGeocodingError(errMsg);
+          }
+        });
+      } else {
+        const errData = res.status !== 404 ? await res.json().catch(() => ({})) : {};
+        let errMsg = locale === 'es'
+          ? 'No se pudo encontrar una dirección para este punto.'
+          : 'Failed to find an address for this location.';
+        if (res.status === 404 || errData.status === 'ZERO_RESULTS') {
+          errMsg = locale === 'es'
+            ? 'No se encontró ninguna dirección para el punto seleccionado.'
+            : 'No address found for the selected point.';
+        }
+        setGeocodingError(errMsg);
+      }
+    } catch (err) {
+      console.error('[reverseGeocode] Network/Server error during reverse geocoding:', err);
+      let errMsg = locale === 'es'
+        ? 'Error de red al buscar la dirección.'
+        : 'Network error looking up address.';
+      setGeocodingError(errMsg);
+    }
+  };
+
+  const hasPendingMapChange = useMemo(() => {
+    if (!coordinates || !tempCoordinates) return false;
+    return Math.abs(coordinates.lat - tempCoordinates.lat) > 0.00001 ||
+           Math.abs(coordinates.lng - tempCoordinates.lng) > 0.00001;
+  }, [coordinates, tempCoordinates]);
+
   // Input binding states
   const [generalName, setGeneralName] = useState('');
   const [generalEmail, setGeneralEmail] = useState('');
@@ -158,16 +257,28 @@ export default function ContactCard({
       const win = window as any;
       if (win.__sellPresetAddress) {
         const addr = win.__sellPresetAddress;
+        const placeId = win.__sellPresetPlaceId;
         setSelectedMunicipality(addr);
         setAddressInput(addr);
         updateAddressSelected(true);
+        if (placeId) {
+          fetchCoordinatesForPlace(placeId);
+        }
         delete win.__sellPresetAddress;
+        delete win.__sellPresetPlaceId;
       }
     }
 
     const handlePresetEvent = (e: Event) => {
       const detail = (e as CustomEvent).detail;
-      if (detail) {
+      if (detail && typeof detail === 'object') {
+        setSelectedMunicipality(detail.address);
+        setAddressInput(detail.address);
+        updateAddressSelected(true);
+        if (detail.placeId) {
+          fetchCoordinatesForPlace(detail.placeId);
+        }
+      } else if (detail && typeof detail === 'string') {
         setSelectedMunicipality(detail);
         setAddressInput(detail);
         updateAddressSelected(true);
@@ -252,6 +363,8 @@ export default function ContactCard({
       email: sellEmail,
       municipality: selectedMunicipality,
       propertyType: selectedPropertyType,
+      latitude: coordinates?.lat,
+      longitude: coordinates?.lng,
       fax: honeypot, // Named neutrally to bait automated autofill bots
       ts: formStartTime,
       url: currentUrl
@@ -301,6 +414,8 @@ export default function ContactCard({
         setSelectedMunicipality('');
         setSelectedPropertyType('');
         updateAddressSelected(false);
+        setCoordinates(null);
+        setTempCoordinates(null);
 
         if (typeof window !== 'undefined') {
           window.dispatchEvent(new CustomEvent('sell-form-submitted'));
@@ -419,6 +534,8 @@ export default function ContactCard({
     setAddressInput(val);
     setSelectedMunicipality(val); // Keep selectedMunicipality in sync for submitting
     updateAddressSelected(false);
+    setCoordinates(null); // Clear coordinates if address is typed/changed manually
+    setTempCoordinates(null);
 
     if (debounceTimerRef.current) {
       clearTimeout(debounceTimerRef.current);
@@ -444,84 +561,15 @@ export default function ContactCard({
 
     setIsTypingPrefix(false);
     setShowSuggestions(true);
+    setIsLoadingSuggestions(true);
     debounceTimerRef.current = setTimeout(async () => {
-      setIsLoadingSuggestions(true);
       try {
-        const allowedTypes = ['house', 'street', 'poi'];
-        
-        // Fetch helper to hit Photon API
-        const fetchFeatures = async (queryStr: string) => {
-          const url = `https://photon.komoot.io/api/?q=${encodeURIComponent(queryStr)}&limit=30&lat=28.2916&lon=-16.6291&bbox=-16.95,27.98,-16.10,28.59`;
-          const res = await fetch(url, {
-            headers: {
-              'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'
-            }
-          });
-          if (res.ok) {
-            const data = await res.json();
-            return data.features || [];
-          }
-          return [];
-        };
-
-        // 1. Primary Fetch
-        let features = await fetchFeatures(val);
-
-        // Filter primary features strictly to street-level
-        let filteredFeatures = features.filter((f: any) => allowedTypes.includes(f.properties?.type));
-
-        // 2. Fallback Fetch: if we have few street level results and no street-prefix is present in input
-        const commonPrefixes = ['calle', 'avenida', 'c/', 'av.', 'av', 'street', 'road', 'calle de', 'plaza', 'paseo', 'camino', 'glorieta', 'bulevar'];
-        const hasStreetKeyword = commonPrefixes.some(word => val.toLowerCase().includes(word));
-
-        if (filteredFeatures.length < 5 && !hasStreetKeyword) {
-          const fallbackFeatures = await fetchFeatures('calle ' + val);
-          const filteredFallback = fallbackFeatures.filter((f: any) => allowedTypes.includes(f.properties?.type));
-          
-          // Combine and deduplicate by osm_id
-          const seenIds = new Set(filteredFeatures.map((f: any) => f.properties?.osm_id).filter(Boolean));
-          filteredFallback.forEach((f: any) => {
-            const osmId = f.properties?.osm_id;
-            if (!osmId || !seenIds.has(osmId)) {
-              filteredFeatures.push(f);
-              if (osmId) seenIds.add(osmId);
-            }
-          });
+        // Google Places Autocomplete via server-side proxy
+        const res = await fetch(`/api/places/autocomplete/?q=${encodeURIComponent(val)}`);
+        if (res.ok) {
+          const data = await res.json();
+          setSuggestions(data.predictions || []);
         }
-
-        // Map to suggestions with clean formatting
-        const mapped = filteredFeatures.map((f: any, idx: number) => {
-          const p = f.properties || {};
-          const parts: string[] = [];
-
-          let streetAddress = '';
-          if (p.name) {
-            streetAddress = p.name;
-            if (p.street && p.street !== p.name) {
-              streetAddress += ` (${p.street})`;
-            }
-          } else if (p.street) {
-            streetAddress = p.street;
-          }
-
-          if (p.housenumber && streetAddress) {
-            streetAddress += `, ${p.housenumber}`;
-          }
-
-          if (streetAddress) parts.push(streetAddress);
-          if (p.district) parts.push(p.district);
-          else if (p.locality) parts.push(p.locality);
-          if (p.city) parts.push(p.city);
-          if (p.postcode) parts.push(p.postcode);
-
-          return {
-            place_id: p.osm_id || idx,
-            display_name: parts.join(', ')
-          };
-        });
-
-        // Limit the final suggestion dropdown list to 10 items
-        setSuggestions(mapped.slice(0, 10));
       } catch (err) {
         console.error('Error fetching address suggestions:', err);
       } finally {
@@ -530,12 +578,15 @@ export default function ContactCard({
     }, 400);
   };
 
-  const handleSelectSuggestion = (display_name: string) => {
+  const handleSelectSuggestion = (display_name: string, place_id?: string) => {
     setAddressInput(display_name);
     setSelectedMunicipality(display_name);
     updateAddressSelected(true);
     setSuggestions([]);
     setShowSuggestions(false);
+    if (place_id) {
+      fetchCoordinatesForPlace(place_id);
+    }
   };
 
   const renderMunicipalitySelector = (isInsideModal: boolean) => (
@@ -560,7 +611,7 @@ export default function ContactCard({
         }}
         onBlur={() => {
           setTimeout(() => {
-            if (!isAddressSelectedRef.current) {
+            if (!isAddressSelectedRef.current && !coordinates && !tempCoordinates) {
               setAddressInput('');
               setSelectedMunicipality('');
             }
@@ -590,7 +641,7 @@ export default function ContactCard({
                 <div
                   key={sug.place_id || idx}
                   className="select-option-row"
-                  onClick={() => handleSelectSuggestion(sug.display_name)}
+                  onClick={() => handleSelectSuggestion(sug.display_name, sug.place_id)}
                   style={{
                     fontSize: 'var(--text-base-sm)',
                     lineHeight: 'var(--lh-base)',
@@ -933,20 +984,49 @@ export default function ContactCard({
 
       {showSellWhatsApp && renderWhatsAppOption(sellWhatsappMessageTemplate)}
 
-      {isInsideModal && isAddressSelected ? (
-        <div className="form-group">
-          <label htmlFor={isInsideModal ? "modal-sell-address-readonly" : "sell-address-readonly"}>
-            {sellDict.fields.municipality} <span className="form-required">{sellDict.fields.required || "*"}</span>
-          </label>
-          <div
-            id={isInsideModal ? "modal-sell-address-readonly" : "sell-address-readonly"}
-            className="form-readonly-input"
-          >
-            {selectedMunicipality}
+      {renderMunicipalitySelector(isInsideModal)}
+
+      {coordinates && (
+        <div className="sell-form-map-wrapper">
+          <PropertyMap
+            lat={tempCoordinates ? tempCoordinates.lat : coordinates.lat}
+            lng={tempCoordinates ? tempCoordinates.lng : coordinates.lng}
+            title={selectedMunicipality}
+            draggable={true}
+            onPositionChange={(pos) => setTempCoordinates(pos)}
+          />
+          <div className="sell-form-map-instructions">
+            <span>📍</span>
+            <span>
+              {locale === 'es'
+                ? 'Arrastre el marcador o haga clic en el mapa para ajustar la ubicación exacta.'
+                : 'Drag the marker or click on the map to pinpoint your exact property location.'}
+            </span>
           </div>
+
+          {geocodingError && (
+            <div className="sell-form-map-error" style={{ color: '#D32F2F', fontSize: 'var(--text-sm)', marginTop: '0.5rem', fontFamily: 'var(--font-manrope)', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+              <span style={{ fontSize: '0.95rem' }}>✕</span>
+              <span>{geocodingError}</span>
+            </div>
+          )}
+
+          {hasPendingMapChange && tempCoordinates && (
+            <div className="apply-map-change-container">
+              <Button
+                type="button"
+                variant="dark"
+                label={locale === 'es' ? 'Aplicar cambio de ubicación' : 'Apply location change'}
+                onClick={() => {
+                  setCoordinates(tempCoordinates);
+                  reverseGeocode(tempCoordinates.lat, tempCoordinates.lng);
+                }}
+                className="apply-map-change-btn"
+                showArrow={true}
+              />
+            </div>
+          )}
         </div>
-      ) : (
-        renderMunicipalitySelector(isInsideModal)
       )}
 
       {renderPropertyTypeSelector(isInsideModal)}

@@ -40,6 +40,7 @@ export default function SellHeroSection({ data, dict, contextData }: SellHeroSec
   const [suggestions, setSuggestions] = useState<Array<{ place_id: string | number; display_name: string }>>([]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState('');
+  const [selectedPlaceId, setSelectedPlaceId] = useState('');
   const [isScrollAtEnd, setIsScrollAtEnd] = useState(false);
   const [isScrollAtStart, setIsScrollAtStart] = useState(true);
 
@@ -113,7 +114,7 @@ export default function SellHeroSection({ data, dict, contextData }: SellHeroSec
     };
   }, []);
 
-  // Photon Address Autocomplete Search logic
+  // Google Places Address Autocomplete Search logic
   useEffect(() => {
     if (debounceTimerRef.current) {
       clearTimeout(debounceTimerRef.current);
@@ -130,84 +131,15 @@ export default function SellHeroSection({ data, dict, contextData }: SellHeroSec
       return;
     }
 
-    const trimmed = val.toLowerCase();
-    const commonPrefixes = ['calle', 'avenida', 'c/', 'av.', 'av', 'street', 'road', 'calle de', 'plaza', 'paseo', 'camino', 'glorieta', 'bulevar'];
-    const isPrefix = commonPrefixes.includes(trimmed);
-
-    if (isPrefix) {
-      setSuggestions([]);
-      return;
-    }
-
+    setIsLoading(true);
     debounceTimerRef.current = setTimeout(async () => {
-      setIsLoading(true);
       try {
-        const allowedTypes = ['house', 'street', 'poi'];
-
-        const fetchFeatures = async (queryStr: string) => {
-          const url = `https://photon.komoot.io/api/?q=${encodeURIComponent(queryStr)}&limit=30&lat=28.2916&lon=-16.6291&bbox=-16.95,27.98,-16.10,28.59`;
-          const res = await fetch(url, {
-            headers: {
-              'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'
-            }
-          });
-          if (res.ok) {
-            const data = await res.json();
-            return data.features || [];
-          }
-          return [];
-        };
-
-        let features = await fetchFeatures(val);
-        let filteredFeatures = features.filter((f: any) => allowedTypes.includes(f.properties?.type));
-
-        const hasStreetKeyword = commonPrefixes.some(word => val.toLowerCase().includes(word));
-        if (filteredFeatures.length < 5 && !hasStreetKeyword) {
-          const fallbackFeatures = await fetchFeatures('calle ' + val);
-          const filteredFallback = fallbackFeatures.filter((f: any) => allowedTypes.includes(f.properties?.type));
-
-          const seenIds = new Set(filteredFeatures.map((f: any) => f.properties?.osm_id).filter(Boolean));
-          filteredFallback.forEach((f: any) => {
-            const osmId = f.properties?.osm_id;
-            if (!osmId || !seenIds.has(osmId)) {
-              filteredFeatures.push(f);
-              if (osmId) seenIds.add(osmId);
-            }
-          });
+        const res = await fetch(`/api/places/autocomplete/?q=${encodeURIComponent(val)}`);
+        if (res.ok) {
+          const data = await res.json();
+          setSuggestions(data.predictions || []);
+          setIsDropdownOpen((data.predictions || []).length > 0);
         }
-
-        const mapped = filteredFeatures.map((f: any, idx: number) => {
-          const p = f.properties || {};
-          const parts: string[] = [];
-
-          let streetAddress = '';
-          if (p.name) {
-            streetAddress = p.name;
-            if (p.street && p.street !== p.name) {
-              streetAddress += ` (${p.street})`;
-            }
-          } else if (p.street) {
-            streetAddress = p.street;
-          }
-
-          if (p.housenumber && streetAddress) {
-            streetAddress += `, ${p.housenumber}`;
-          }
-
-          if (streetAddress) parts.push(streetAddress);
-          if (p.district) parts.push(p.district);
-          else if (p.locality) parts.push(p.locality);
-          if (p.city) parts.push(p.city);
-          if (p.postcode) parts.push(p.postcode);
-
-          return {
-            place_id: p.osm_id || idx,
-            display_name: parts.join(', ')
-          };
-        });
-
-        setSuggestions(mapped.slice(0, 10));
-        setIsDropdownOpen(true);
       } catch (err) {
         console.error('Error fetching address suggestions:', err);
       } finally {
@@ -222,9 +154,14 @@ export default function SellHeroSection({ data, dict, contextData }: SellHeroSec
     };
   }, [searchQuery, selectedAddress]);
 
-  const handleSelectAddress = (display_name: string) => {
+  const handleSelectAddress = (display_name: string, place_id?: string) => {
     setSearchQuery(display_name);
     setSelectedAddress(display_name);
+    if (place_id) {
+      setSelectedPlaceId(String(place_id));
+    } else {
+      setSelectedPlaceId('');
+    }
     setIsDropdownOpen(false);
   };
 
@@ -237,7 +174,14 @@ export default function SellHeroSection({ data, dict, contextData }: SellHeroSec
     if (typeof window !== 'undefined') {
       const win = window as any;
       win.__sellPresetAddress = selectedAddress;
-      window.dispatchEvent(new CustomEvent('set-sell-address', { detail: selectedAddress }));
+      if (selectedPlaceId) {
+        win.__sellPresetPlaceId = selectedPlaceId;
+      }
+      window.dispatchEvent(
+        new CustomEvent('set-sell-address', {
+          detail: selectedPlaceId ? { address: selectedAddress, placeId: selectedPlaceId } : selectedAddress
+        })
+      );
     }
 
     openModal('sell-modal');
@@ -334,6 +278,7 @@ export default function SellHeroSection({ data, dict, contextData }: SellHeroSec
           y: 0,
           opacity: 1,
           filter: 'blur(0px)',
+          clearProps: 'transform,filter',
           duration: 1.2,
           ease: 'expo.out'
         }
@@ -347,6 +292,7 @@ export default function SellHeroSection({ data, dict, contextData }: SellHeroSec
           y: 0,
           opacity: 1,
           filter: 'blur(0px)',
+          clearProps: 'transform,filter',
           duration: 1.2,
           ease: 'expo.out',
         },
@@ -363,6 +309,7 @@ export default function SellHeroSection({ data, dict, contextData }: SellHeroSec
           y: 0,
           opacity: 1,
           filter: 'blur(0px)',
+          clearProps: 'transform,filter',
           duration: 1.0,
           ease: 'expo.out',
         },
@@ -401,6 +348,7 @@ export default function SellHeroSection({ data, dict, contextData }: SellHeroSec
           y: 0,
           opacity: 1,
           filter: 'blur(0px)',
+          clearProps: 'transform,filter',
           duration: 1.0,
           ease: 'expo.out'
         },
@@ -506,7 +454,7 @@ export default function SellHeroSection({ data, dict, contextData }: SellHeroSec
                   key={item.place_id}
                   type="button"
                   className="sell-suggestion-item"
-                  onClick={() => handleSelectAddress(item.display_name)}
+                  onClick={() => handleSelectAddress(item.display_name, String(item.place_id))}
                 >
                   {item.display_name}
                 </button>

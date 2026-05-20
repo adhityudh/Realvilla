@@ -7,13 +7,28 @@ interface PropertyMapProps {
   lat: number;
   lng: number;
   title?: string;
+  draggable?: boolean;
+  onPositionChange?: (pos: { lat: number; lng: number }) => void;
 }
 
-export default function PropertyMap({ lat, lng, title }: PropertyMapProps) {
+export default function PropertyMap({ lat, lng, title, draggable, onPositionChange }: PropertyMapProps) {
   const mapRef = useRef<HTMLDivElement>(null);
   const [apiLoaded, setApiLoaded] = useState(false);
+  const mapInstanceRef = useRef<any>(null);
+  const markerInstanceRef = useRef<any>(null);
 
   const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || '';
+
+  const draggableRef = useRef(draggable);
+  useEffect(() => {
+    draggableRef.current = draggable;
+  }, [draggable]);
+
+  useEffect(() => {
+    if (markerInstanceRef.current) {
+      markerInstanceRef.current.setDraggable(!!draggable);
+    }
+  }, [draggable]);
 
   useEffect(() => {
     if (!lat || !lng) return;
@@ -72,34 +87,79 @@ export default function PropertyMap({ lat, lng, title }: PropertyMapProps) {
         { "featureType": "water", "elementType": "labels.text.fill", "stylers": [{ "color": "#4a4c50" }] }
       ];
 
-      const map = new window.google.maps.Map(mapRef.current, {
-        center: position,
-        zoom: 15,
-        styles: mapStyle,
-        disableDefaultUI: false,
-        zoomControl: true,
-        mapTypeControl: false,
-        streetViewControl: false,
-        fullscreenControl: true
-      });
+      if (!mapInstanceRef.current) {
+        const map = new window.google.maps.Map(mapRef.current, {
+          center: position,
+          zoom: 15,
+          styles: mapStyle,
+          disableDefaultUI: false,
+          zoomControl: true,
+          mapTypeControl: false,
+          streetViewControl: false,
+          fullscreenControl: false
+        });
+        mapInstanceRef.current = map;
 
-      // Custom Brand Logo Marker
-      const markerIcon = {
-        url: "/images/logo-mark-raster.png",
-        scaledSize: new window.google.maps.Size(36, 36),
-        origin: new window.google.maps.Point(0, 0),
-        anchor: new window.google.maps.Point(22, 22),
-      };
+        // Custom Brand Logo Marker
+        const markerIcon = {
+          url: "/images/logo-mark-raster.png",
+          scaledSize: new window.google.maps.Size(36, 36),
+          origin: new window.google.maps.Point(0, 0),
+          anchor: new window.google.maps.Point(18, 18),
+        };
 
-      new window.google.maps.Marker({
-        position: position,
-        map: map,
-        title: title || 'Property Location',
-        icon: markerIcon,
-        animation: window.google.maps.Animation.DROP,
-      });
+        const marker = new window.google.maps.Marker({
+          position: position,
+          map: map,
+          title: title || 'Property Location',
+          icon: markerIcon,
+          draggable: draggable || false,
+          animation: window.google.maps.Animation.DROP,
+        });
+        markerInstanceRef.current = marker;
+
+        // Add dragend listener (always add, check state dynamically in callback)
+        marker.addListener('dragend', () => {
+          if (!draggableRef.current) return;
+          const newPos = marker.getPosition();
+          if (newPos && onPositionChange) {
+            onPositionChange({
+              lat: newPos.lat(),
+              lng: newPos.lng(),
+            });
+          }
+        });
+
+        // Add map click listener (always add, check state dynamically in callback)
+        map.addListener('click', (e: any) => {
+          if (!draggableRef.current) return;
+          const clickedPos = e.latLng;
+          if (clickedPos && onPositionChange) {
+            marker.setPosition(clickedPos);
+            onPositionChange({
+              lat: clickedPos.lat(),
+              lng: clickedPos.lng(),
+            });
+          }
+        });
+      } else {
+        // Map and marker already initialized, update marker position smoothly
+        const currentMarkerPos = markerInstanceRef.current?.getPosition();
+        const currentLat = currentMarkerPos?.lat();
+        const currentLng = currentMarkerPos?.lng();
+
+        const hasChanged = !currentMarkerPos || 
+          Math.abs(currentLat - lat) > 0.0001 || 
+          Math.abs(currentLng - lng) > 0.0001;
+
+        if (hasChanged) {
+          const newPos = { lat, lng };
+          markerInstanceRef.current?.setPosition(newPos);
+          mapInstanceRef.current?.panTo(newPos);
+        }
+      }
     }
-  }, [apiLoaded, lat, lng, title]);
+  }, [apiLoaded, lat, lng, title, onPositionChange]);
 
   if (!lat || !lng) return null;
 

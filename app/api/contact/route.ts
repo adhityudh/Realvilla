@@ -7,7 +7,7 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { formType, name, email, phone, message, municipality, propertyType, fax, ts, url } = body;
+    const { formType, name, email, phone, message, municipality, propertyType, fax, ts, url, latitude, longitude } = body;
 
     // Robust Telemetry Captures
     const ua = userAgent(request);
@@ -163,7 +163,20 @@ export async function POST(request: Request) {
                       <tr>
                         <td style="padding: 20px 0; border-bottom: 1px solid #F4F4F0;">
                           <div style="font-family: 'Manrope', sans-serif; font-size: 10px; font-weight: 400; color: #111111; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 6px;">PROPERTY ADDRESS (TENERIFE)</div>
-                          <div style="font-family: 'Cormorant Garamond', 'Georgia', serif; font-size: 19px; font-weight: 500; color: #111111;">${municipality || 'Not specified'}</div>
+                          <div style="font-family: 'Cormorant Garamond', 'Georgia', serif; font-size: 19px; font-weight: 500; line-height: 1.4;">
+                            ${latitude && longitude ? `
+                            <a href="https://www.google.com/maps/search/?api=1&query=${latitude},${longitude}" target="_blank" style="color: #111111; text-decoration: none; border-bottom: 1.5px dotted #D4AF37;" title="Open in Google Maps">
+                              ${municipality || 'Not specified'}
+                            </a>
+                            ` : `
+                            <span style="color: #111111;">${municipality || 'Not specified'}</span>
+                            `}
+                          </div>
+                          ${latitude && longitude ? `
+                          <div style="font-family: 'Manrope', sans-serif; font-size: 12px; margin-top: 12px; color: #8A8A82;">
+                            📍 Exact Pin Coordinates: <a href="https://www.google.com/maps/search/?api=1&query=${latitude},${longitude}" target="_blank" style="color: #D4AF37; text-decoration: underline; font-weight: 600; margin-left: 2px;">${Number(latitude).toFixed(6)}, ${Number(longitude).toFixed(6)}</a> (Open in Google Maps)
+                          </div>
+                          ` : ''}
                         </td>
                       </tr>
                       <!-- Row 5: Property Category Class -->
