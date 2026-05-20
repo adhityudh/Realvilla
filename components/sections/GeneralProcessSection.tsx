@@ -7,7 +7,7 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { PortableText } from 'next-sanity';
 import { urlForImage } from '@/sanity/lib/image';
-import './MortgageProcessSection.css';
+import './GeneralProcessSection.css';
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
@@ -21,7 +21,7 @@ interface Step {
   icon?: { asset: { _id: string; url: string } };
 }
 
-interface MortgageProcessSectionProps {
+interface GeneralProcessSectionProps {
   data?: {
     disableEntranceAnimation?: boolean;
     disableHeaderEntranceAnimation?: boolean;
@@ -34,7 +34,7 @@ interface MortgageProcessSectionProps {
   };
 }
 
-export default function MortgageProcessSection({ data }: MortgageProcessSectionProps) {
+export default function GeneralProcessSection({ data }: GeneralProcessSectionProps) {
   const sectionRef = useRef<HTMLElement>(null);
   const stepRefs = useRef<(HTMLDivElement | null)[]>([]);
   const [colsCount, setColsCount] = useState(4);
@@ -47,8 +47,8 @@ export default function MortgageProcessSection({ data }: MortgageProcessSectionP
  
       // 1. Reset heights to auto first to calculate original scroll heights correctly
       steps.forEach(step => {
-        const header = step.querySelector('.mortgage-content-col') as HTMLElement;
-        const body = step.querySelector('.mortgage-step-body') as HTMLElement;
+        const header = step.querySelector('.general-content-col') as HTMLElement;
+        const body = step.querySelector('.general-step-body') as HTMLElement;
         if (header) header.style.height = 'auto';
         if (body) body.style.height = 'auto';
       });
@@ -65,8 +65,8 @@ export default function MortgageProcessSection({ data }: MortgageProcessSectionP
  
         // Find max heights inside this row
         rowSteps.forEach(step => {
-          const header = step.querySelector('.mortgage-content-col') as HTMLElement;
-          const body = step.querySelector('.mortgage-step-body') as HTMLElement;
+          const header = step.querySelector('.general-content-col') as HTMLElement;
+          const body = step.querySelector('.general-step-body') as HTMLElement;
           
           if (header) {
             const h = header.getBoundingClientRect().height;
@@ -80,8 +80,8 @@ export default function MortgageProcessSection({ data }: MortgageProcessSectionP
  
         // Apply max heights to all items in this specific row
         rowSteps.forEach(step => {
-          const header = step.querySelector('.mortgage-content-col') as HTMLElement;
-          const body = step.querySelector('.mortgage-step-body') as HTMLElement;
+          const header = step.querySelector('.general-content-col') as HTMLElement;
+          const body = step.querySelector('.general-step-body') as HTMLElement;
           
           if (header && maxHeaderH > 0) {
             header.style.height = `${maxHeaderH}px`;
@@ -124,7 +124,7 @@ export default function MortgageProcessSection({ data }: MortgageProcessSectionP
       // 1. Animate Section Header
       if (!data?.disableHeaderEntranceAnimation) {
         gsap.fromTo(
-          '.mortgage-tagline, .mortgage-headline, .mortgage-intro',
+          '.general-tagline, .general-headline, .general-intro',
           { y: 35, opacity: 0, filter: 'blur(10px)' },
           {
             y: 0,
@@ -134,7 +134,7 @@ export default function MortgageProcessSection({ data }: MortgageProcessSectionP
             stagger: 0.15,
             ease: 'expo.out',
             scrollTrigger: {
-              trigger: '.mortgage-header',
+              trigger: '.general-header',
               start: 'top 80%',
               toggleActions: 'play none none reverse',
             },
@@ -157,7 +157,7 @@ export default function MortgageProcessSection({ data }: MortgageProcessSectionP
               ease: 'power3.out',
               stagger: 0.1,
               scrollTrigger: {
-                trigger: '.mortgage-steps-list',
+                trigger: '.general-steps-list',
                 start: 'top 80%',
                 toggleActions: 'play none none reverse',
               }
@@ -166,92 +166,92 @@ export default function MortgageProcessSection({ data }: MortgageProcessSectionP
 
           // 3. Ultra-Snappy, Row-Based Sequential Scroll-Driven Serpentine Timeline Animation
           if (data.timelineMode) {
-          const totalRows = Math.ceil(steps.length / colsCount);
+            const totalRows = Math.ceil(steps.length / colsCount);
 
-          for (let r = 0; r < totalRows; r++) {
-            const startIndex = r * colsCount;
-            const endIndex = Math.min(startIndex + colsCount, steps.length);
-            const triggerEl = steps[startIndex];
+            for (let r = 0; r < totalRows; r++) {
+              const startIndex = r * colsCount;
+              const endIndex = Math.min(startIndex + colsCount, steps.length);
+              const triggerEl = steps[startIndex];
 
-            if (!triggerEl) continue;
+              if (!triggerEl) continue;
 
-            // Create a dedicated timeline for this specific horizontal row!
-            const rowTl = gsap.timeline({
-              scrollTrigger: {
-                trigger: triggerEl,
-                start: 'top 80%', // Starts flowing as soon as the row enters the lower viewport
-                end: 'top 30%',   // Completes 100% of row flow when row reaches upper viewport (extremely snappy!)
-                scrub: 1,
-              }
-            });
+              // Create a dedicated timeline for this specific horizontal row!
+              const rowTl = gsap.timeline({
+                scrollTrigger: {
+                  trigger: triggerEl,
+                  start: 'top 80%', // Starts flowing as soon as the row enters the lower viewport
+                  end: 'top 30%',   // Completes 100% of row flow when row reaches upper viewport (extremely snappy!)
+                  scrub: 1,
+                }
+              });
 
-            // Animate steps sequentially inside this specific row
-            for (let i = startIndex; i < endIndex; i++) {
-              const isFirstInRow = i % colsCount === 0 && i > 0;
-              const isLastStep = i === steps.length - 1;
+              // Animate steps sequentially inside this specific row
+              for (let i = startIndex; i < endIndex; i++) {
+                const isFirstInRow = i % colsCount === 0 && i > 0;
+                const isLastStep = i === steps.length - 1;
 
-              // A. If first in row, fill the left off-screen entering line first
-              if (isFirstInRow) {
-                rowTl.fromTo(
-                  `.step-left-progress-${i}`,
-                  { scaleX: 0 },
-                  { scaleX: 1, ease: 'none', duration: 0.2 }
+                // A. If first in row, fill the left off-screen entering line first
+                if (isFirstInRow) {
+                  rowTl.fromTo(
+                    `.step-left-progress-${i}`,
+                    { scaleX: 0 },
+                    { scaleX: 1, ease: 'none', duration: 0.2 }
+                  );
+                }
+
+                // B. Spotlight highlight for the timeline dot node
+                rowTl.to(
+                  `.step-dot-${i}`,
+                  {
+                    backgroundColor: 'var(--color-gold-dark)',
+                    borderColor: 'var(--color-gold-dark)',
+                    boxShadow: '0 0 12px rgba(197, 160, 89, 0.8)',
+                    scale: 1.3,
+                    duration: 0.15,
+                    ease: 'power2.out',
+                  },
+                  isFirstInRow ? '+=0' : '-=0.05'
                 );
-              }
 
-              // B. Spotlight highlight for the timeline dot node
-              rowTl.to(
-                `.step-dot-${i}`,
-                {
-                  backgroundColor: 'var(--color-gold-dark)',
-                  borderColor: 'var(--color-gold-dark)',
-                  boxShadow: '0 0 12px rgba(197, 160, 89, 0.8)',
-                  scale: 1.3,
-                  duration: 0.15,
-                  ease: 'power2.out',
-                },
-                isFirstInRow ? '+=0' : '-=0.05'
-              );
-
-              // C. Spotlight highlight for the step number prefix (leaving title untouched)
-              rowTl.to(
-                `.step-item-${i} .mortgage-inline-number`,
-                {
-                  color: 'var(--color-gold-dark)',
-                  duration: 0.15,
-                  ease: 'power2.out',
-                },
-                '-=0.15'
-              );
-
-              // D. Main horizontal segment connecting line to the next step
-              if (!isLastStep && i < endIndex - 1) {
-                rowTl.fromTo(
-                  `.step-main-progress-${i}`,
-                  { scaleX: 0 },
-                  { scaleX: 1, ease: 'none', duration: 0.4 }
+                // C. Spotlight highlight for the step number prefix (leaving title untouched)
+                rowTl.to(
+                  `.step-item-${i} .general-inline-number`,
+                  {
+                    color: 'var(--color-gold-dark)',
+                    duration: 0.15,
+                    ease: 'power2.out',
+                  },
+                  '-=0.15'
                 );
-              }
 
-              // E. If last item of the row and NOT the last step overall, animate the stretch-right line
-              if (i === endIndex - 1 && i % colsCount === colsCount - 1 && i < steps.length - 1) {
-                rowTl.fromTo(
-                  `.step-main-progress-${i}`,
-                  { scaleX: 0 },
-                  { scaleX: 1, ease: 'none', duration: 0.3 }
-                );
+                // D. Main horizontal segment connecting line to the next step
+                if (!isLastStep && i < endIndex - 1) {
+                  rowTl.fromTo(
+                    `.step-main-progress-${i}`,
+                    { scaleX: 0 },
+                    { scaleX: 1, ease: 'none', duration: 0.4 }
+                  );
+                }
+
+                // E. If last item of the row and NOT the last step overall, animate the stretch-right line
+                if (i === endIndex - 1 && i % colsCount === colsCount - 1 && i < steps.length - 1) {
+                  rowTl.fromTo(
+                    `.step-main-progress-${i}`,
+                    { scaleX: 0 },
+                    { scaleX: 1, ease: 'none', duration: 0.3 }
+                  );
+                }
               }
             }
           }
         }
       }
-    }
-  }, sectionRef);
+    }, sectionRef);
 
-  return () => {
-    ctx.revert();
-  };
-}, [data, colsCount]);
+    return () => {
+      ctx.revert();
+    };
+  }, [data, colsCount]);
 
   if (!data) return null;
 
@@ -262,18 +262,18 @@ export default function MortgageProcessSection({ data }: MortgageProcessSectionP
 
   return (
     <section
-      className={`mortgage-process-section ${timelineMode ? 'mortgage-timeline-mode' : ''}`}
+      className={`general-process-section ${timelineMode ? 'general-timeline-mode' : ''}`}
       id={data?.id || 'process'}
       ref={sectionRef}
     >
-      <div className="mortgage-container">
+      <div className="general-container">
         {/* Header */}
         {(tagline || headline || intro) && (
-          <header className="mortgage-header">
-            {tagline && <span className="mortgage-tagline">{tagline}</span>}
-            {headline && <h2 className="mortgage-headline">{headline}</h2>}
+          <header className="general-header">
+            {tagline && <span className="general-tagline">{tagline}</span>}
+            {headline && <h2 className="general-headline">{headline}</h2>}
             {intro && (
-              <div className="mortgage-intro">
+              <div className="general-intro">
                 {typeof intro === 'string' ? (
                   <p>{intro}</p>
                 ) : (
@@ -285,7 +285,7 @@ export default function MortgageProcessSection({ data }: MortgageProcessSectionP
         )}
 
         {/* Steps */}
-        <div className="mortgage-steps-list">
+        <div className="general-steps-list">
           {steps?.map((step, index) => {
             const isLastInRow = index % colsCount === colsCount - 1;
             const isFirstInRow = index % colsCount === 0 && index > 0;
@@ -297,7 +297,7 @@ export default function MortgageProcessSection({ data }: MortgageProcessSectionP
             return (
               <div
                 key={index}
-                className={`mortgage-step-item step-item-${index}`}
+                className={`general-step-item step-item-${index}`}
                 ref={(el) => { stepRefs.current[index] = el; }}
               >
                 {/* 🌟 Dynamic Serpentine Timeline Lines & Dots */}
@@ -305,40 +305,40 @@ export default function MortgageProcessSection({ data }: MortgageProcessSectionP
                   <>
                     {/* Left entering off-screen line (First item of subsequent rows) */}
                     {isLeftEdge && (
-                      <div className="mortgage-timeline-left-line">
-                        <div className={`mortgage-timeline-progress step-left-progress-${index}`} />
+                      <div className="general-timeline-left-line">
+                        <div className={`general-timeline-progress step-left-progress-${index}`} />
                       </div>
                     )}
 
                     {/* Main connecting line segment */}
                     {(index < steps.length - 1) && (
-                      <div className={`mortgage-timeline-line ${isRightEdge ? 'stretch-right' : ''}`}>
-                        <div className={`mortgage-timeline-progress step-main-progress-${index}`} />
+                      <div className={`general-timeline-line ${isRightEdge ? 'stretch-right' : ''}`}>
+                        <div className={`general-timeline-progress step-main-progress-${index}`} />
                       </div>
                     )}
 
-                    {/* Dynamic Timeline Dot Node */}
-                    <div className={`mortgage-timeline-dot step-dot-${index}`} />
+                    {/* Dynamic Timeline Dot Node Node */}
+                    <div className={`general-timeline-dot step-dot-${index}`} />
                   </>
                 )}
 
                 {/* 1. Content Side (Number & Title) */}
-                <div className="mortgage-content-col">
-                  <div className="mortgage-header-row">
+                <div className="general-content-col">
+                  <div className="general-header-row">
                     {step.number && (
-                      <span className="mortgage-inline-number">
+                      <span className="general-inline-number">
                         {isMortgagePage
                           ? (step.number.toUpperCase().startsWith('STEP') ? step.number : `STEP ${step.number}`)
                           : step.number}
                       </span>
                     )}
-                    <h3 className="mortgage-step-title">{step.title}</h3>
+                    <h3 className="general-step-title">{step.title}</h3>
                   </div>
                 </div>
 
                 {/* 2. Media Side (Photo with Centered Icon) */}
-                <div className="mortgage-media-col">
-                  <div className="mortgage-image-inner">
+                <div className="general-media-col">
+                  <div className="general-image-inner">
                     {step.image ? (
                       <Image
                         src={urlForImage(step.image).width(400).height(400).url()}
@@ -349,19 +349,19 @@ export default function MortgageProcessSection({ data }: MortgageProcessSectionP
                         blurDataURL={step.image?.asset?.metadata?.lqip}
                       />
                     ) : (
-                      <div className="mortgage-placeholder" />
+                      <div className="general-placeholder" />
                     )}
 
                     {/* Icon Overlay in Center of Photo */}
                     {step.icon?.asset?.url && (
-                      <div className="mortgage-overlay-icon-wrapper">
-                        <div className="mortgage-overlay-icon">
+                      <div className="general-overlay-icon-wrapper">
+                        <div className="general-overlay-icon">
                           <Image
                             src={step.icon.asset.url}
                             alt="Icon Overlay"
                             width={32}
                             height={32}
-                            className="mortgage-center-icon"
+                            className="general-center-icon"
                           />
                         </div>
                       </div>
@@ -371,7 +371,7 @@ export default function MortgageProcessSection({ data }: MortgageProcessSectionP
 
                 {/* 3. Text Description */}
                 {step.description && (
-                  <div className="mortgage-step-body">
+                  <div className="general-step-body">
                     {typeof step.description === 'string' ? (
                       <p>{step.description}</p>
                     ) : (

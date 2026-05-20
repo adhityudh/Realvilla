@@ -56,6 +56,11 @@ export default async function RootLayout({
   return (
     <html lang={locale} className={`${cormorant.variable} ${manrope.variable}`}>
       <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `document.documentElement.classList.add('js-enabled')`
+          }}
+        />
       </head>
       <body>
         <Script

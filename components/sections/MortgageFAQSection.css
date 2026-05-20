@@ -205,7 +205,6 @@
         text-align: left;
         max-width: 100%;
         font-size: var(--text-base);
-        margin-top: 0;
         color: var(--text-muted);
         line-height: var(--lh-relaxed);
         margin-top: 1.5rem;

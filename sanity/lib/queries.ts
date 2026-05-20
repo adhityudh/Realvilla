@@ -384,7 +384,7 @@ export const SECTION_PROJECTION = groq`
           }
         }
       },
-      _type == "mortgageProcessSection" => {
+      _type == "generalProcessSection" => {
         tagline,
         headline,
         intro,

@@ -6,6 +6,7 @@ import Link from 'next/link';
 import gsap from 'gsap';
 import { urlForImage } from '@/sanity/lib/image';
 import { useParams } from 'next/navigation';
+import './PropertyCard.css';
 
 export interface PropertyCardProps {
   prop: any;

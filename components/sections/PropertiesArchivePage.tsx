@@ -13,8 +13,6 @@ import FilterSidebar from './FilterSidebar';
 import { fetchMunicipalities } from '@/lib/geonames';
 import './SearchModal.css';
 import './BuyPropertiesSection.css';
-import './PropertiesSection.css';
-
 import './PropertiesArchivePage.css';
 
 if (typeof window !== 'undefined') {

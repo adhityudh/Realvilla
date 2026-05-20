@@ -419,39 +419,7 @@ html.lenis body {
   pointer-events: none !important;
 }
 
-/* Utility Badge for Property States (Luxury Glassmorphic Pill) */
-.property-status-badge {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-  left: auto;
-  z-index: 20;
-  background: rgba(0, 0, 0, 0.4);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  color: var(--text-white);
-  padding: 0.5rem 1.1rem;
-  font-family: var(--font-manrope), sans-serif;
-  font-size: 0.65rem;
-  font-weight: 800;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  border-radius: 50px;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  pointer-events: none;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
 
-.property-status-badge::before {
-  content: "";
-  display: block;
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--color-gold-dark);
-}
 
 @media (max-width: 1024px) {
   .btn-pill {
@@ -483,4 +451,101 @@ html.lenis body {
   opacity: 1 !important;
   transform: none !important;
   filter: none !important;
+}
+
+/* Prevent GSAP Flash of Unstyled Content (FOUC) across all sections */
+.js-enabled section:not(.no-header-entrance-anim) .about-tagline,
+.js-enabled section:not(.no-header-entrance-anim) .about-headline,
+.js-enabled section:not(.no-header-entrance-anim) .about-intro-text,
+.js-enabled section:not(.no-header-entrance-anim) .about-ctas,
+.js-enabled section:not(.no-entrance-anim) .about-right-wrapper,
+
+.js-enabled section:not(.no-header-entrance-anim) .buying-process-tagline,
+.js-enabled section:not(.no-header-entrance-anim) .buying-process-headline,
+.js-enabled section:not(.no-header-entrance-anim) .buying-process-intro,
+.js-enabled section:not(.no-entrance-anim) .buying-step-item,
+
+.js-enabled section:not(.no-header-entrance-anim) .mortgage-process-tagline,
+.js-enabled section:not(.no-header-entrance-anim) .mortgage-process-headline,
+.js-enabled section:not(.no-header-entrance-anim) .mortgage-process-intro,
+.js-enabled section:not(.no-entrance-anim) .mortgage-step-item,
+
+.js-enabled section:not(.no-header-entrance-anim) .sell-process-tagline,
+.js-enabled section:not(.no-header-entrance-anim) .sell-process-headline,
+.js-enabled section:not(.no-header-entrance-anim) .sell-process-intro,
+.js-enabled section:not(.no-entrance-anim) .sell-step-item,
+
+.js-enabled section:not(.no-header-entrance-anim) .financing-tagline,
+.js-enabled section:not(.no-header-entrance-anim) .financing-headline,
+.js-enabled section:not(.no-header-entrance-anim) .financing-intro,
+.js-enabled section:not(.no-entrance-anim) .financing-card-col,
+
+.js-enabled section:not(.no-header-entrance-anim) .mortgage-faq-tagline,
+.js-enabled section:not(.no-header-entrance-anim) .mortgage-faq-headline,
+.js-enabled section:not(.no-header-entrance-anim) .mortgage-faq-intro,
+.js-enabled section:not(.no-entrance-anim) .faq-accordion-item,
+
+.js-enabled section:not(.no-header-entrance-anim) .properties-tagline,
+.js-enabled section:not(.no-header-entrance-anim) .properties-headline,
+.js-enabled section:not(.no-header-entrance-anim) .properties-intro-text,
+.js-enabled section:not(.no-entrance-anim) .properties-grid-col,
+.js-enabled section:not(.no-entrance-anim) .properties-cta-row,
+
+.js-enabled section:not(.no-header-entrance-anim) .buy-properties-tagline,
+.js-enabled section:not(.no-header-entrance-anim) .buy-properties-headline,
+.js-enabled section:not(.no-header-entrance-anim) .buy-properties-intro,
+.js-enabled section:not(.no-entrance-anim) .property-card-wrapper,
+
+.js-enabled section:not(.no-header-entrance-anim) .stats-tagline,
+.js-enabled section:not(.no-header-entrance-anim) .stats-headline,
+.js-enabled section:not(.no-header-entrance-anim) .stats-intro,
+.js-enabled section:not(.no-entrance-anim) .stats-grid-col,
+
+.js-enabled section:not(.no-header-entrance-anim) .testimonials-tagline,
+.js-enabled section:not(.no-header-entrance-anim) .testimonials-headline,
+.js-enabled section:not(.no-header-entrance-anim) .testimonials-intro,
+.js-enabled section:not(.no-entrance-anim) .testimonials-grid-col,
+.js-enabled section:not(.no-entrance-anim) .testimonials-cta-row,
+
+.js-enabled section:not(.no-header-entrance-anim) .valuation-tagline,
+.js-enabled section:not(.no-header-entrance-anim) .valuation-headline,
+.js-enabled section:not(.no-header-entrance-anim) .valuation-body,
+.js-enabled section:not(.no-header-entrance-anim) .valuation-trust,
+.js-enabled section:not(.no-header-entrance-anim) .valuation-cta-desktop,
+.js-enabled section:not(.no-header-entrance-anim) .valuation-cta-mobile,
+.js-enabled section:not(.no-entrance-anim) .valuation-card,
+
+.js-enabled section:not(.no-header-entrance-anim) .partner-tagline,
+.js-enabled section:not(.no-header-entrance-anim) .partner-headline,
+.js-enabled section:not(.no-header-entrance-anim) .partner-intro,
+.js-enabled section:not(.no-entrance-anim) .partner-logo-item,
+
+.js-enabled section:not(.no-header-entrance-anim) .document-ledger-tagline,
+.js-enabled section:not(.no-header-entrance-anim) .document-ledger-headline,
+.js-enabled section:not(.no-header-entrance-anim) .document-ledger-intro,
+.js-enabled section:not(.no-entrance-anim) .document-card-wrapper,
+
+.js-enabled section:not(.no-header-entrance-anim) .contact-headline,
+.js-enabled section:not(.no-header-entrance-anim) .contact-subtitle,
+.js-enabled section:not(.no-header-entrance-anim) .contact-market-item,
+.js-enabled section:not(.no-entrance-anim) .contact-card-wrapper,
+
+.js-enabled section:not(.no-header-entrance-anim) .sell-hero-title,
+.js-enabled section:not(.no-header-entrance-anim) .sell-hero-subtitle,
+.js-enabled section:not(.no-entrance-anim) .sell-search-trigger,
+.js-enabled section:not(.no-entrance-anim) .sell-search-trigger > *,
+.js-enabled section:not(.no-entrance-anim) .sell-jump-links,
+
+.js-enabled section:not(.no-header-entrance-anim) .buy-hero-title,
+.js-enabled section:not(.no-header-entrance-anim) .buy-hero-subtitle,
+.js-enabled section:not(.no-entrance-anim) .buy-search-trigger,
+.js-enabled section:not(.no-entrance-anim) .buy-search-trigger > *,
+.js-enabled section:not(.no-entrance-anim) .buy-filter-btn,
+.js-enabled section:not(.no-entrance-anim) .buy-filter-btn > *,
+.js-enabled section:not(.no-entrance-anim) .buy-jump-links,
+
+.js-enabled section:not(.no-header-entrance-anim) .general-hero-title,
+.js-enabled section:not(.no-header-entrance-anim) .general-hero-subtitle,
+.js-enabled section:not(.no-entrance-anim) .general-hero-cta-wrapper {
+  opacity: 0;
 }

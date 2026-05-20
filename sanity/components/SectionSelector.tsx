@@ -15,7 +15,7 @@ const sectionLabels: Record<string, string> = {
   generalHeroSection: 'General Hero',
   heroSection: 'Hero',
   mortgageFAQSection: 'Mortgage FAQ',
-  mortgageProcessSection: 'Mortgage Process',
+  generalProcessSection: 'General Process',
   partnerSection: 'Partners',
   propertiesSection: 'Properties',
   statsSection: 'Stats',

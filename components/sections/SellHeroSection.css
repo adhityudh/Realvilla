@@ -28,13 +28,6 @@
     background: linear-gradient(to bottom, rgba(0, 0, 0, 0.2) 0%, rgba(45, 35, 15, 0.25) 50%, rgba(0, 0, 0, 0.3) 100%);
 }
 
-.sell-hero-content>.sell-hero-title,
-.sell-hero-content>.sell-hero-subtitle,
-.sell-jump-links {
-    opacity: 0;
-    /* Hidden initially, shown by GSAP */
-}
-
 .sell-hero-content {
     position: relative;
     z-index: 10;
@@ -86,7 +79,7 @@
     padding: 1.25rem 2rem;
     border-radius: var(--radius-full);
     cursor: pointer;
-    transition: background 0.4s ease, border-color 0.4s ease, transform 0.4s ease, box-shadow 0.4s ease;
+    transition: background 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
 
     will-change: transform;
     transform: translateZ(0);
@@ -100,6 +93,7 @@
     border-color: var(--white-40);
     transform: translateY(-0.125rem);
     box-shadow: var(--shadow-lg);
+    transition: background 0.4s ease, border-color 0.4s ease, transform 0.2s ease, box-shadow 0.4s ease;
 }
 
 .sell-filter-btn {

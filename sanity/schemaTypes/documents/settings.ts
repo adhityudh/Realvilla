@@ -70,7 +70,7 @@ export const settings = defineType({
         { type: 'buyingProcessSection' },
         { type: 'buyMortgageSimSection' },
         { type: 'statsSection' },
-        { type: 'mortgageProcessSection' },
+        { type: 'generalProcessSection' },
         { type: 'sellProcessSection' },
       ],
     }),

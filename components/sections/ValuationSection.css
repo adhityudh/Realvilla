@@ -224,15 +224,13 @@
 
             .valuation-cta-mobile {
                 display: flex;
-                flex-direction: row;
-                flex-wrap: wrap;
+                flex-direction: column;
                 justify-content: center;
                 gap: 2.5rem;
                 margin-left: auto;
                 margin-right: auto;
                 margin-bottom: 2rem;
                 width: fit-content;
-                flex-direction: column;
             }
 
             .valuation-form-wrapper {

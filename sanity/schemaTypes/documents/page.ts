@@ -71,7 +71,7 @@ export const page = defineType({
         { type: 'buyingProcessSection' },
         { type: 'buyMortgageSimSection' },
         { type: 'statsSection' },
-        { type: 'mortgageProcessSection' },
+        { type: 'generalProcessSection' },
         { type: 'sellProcessSection' },
         { type: 'documentLedgerSection' },
         { type: 'financingCardsSection' },

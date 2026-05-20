@@ -28,13 +28,7 @@
     background: linear-gradient(to bottom, rgba(0, 0, 0, 0.2) 0%, rgba(45, 35, 15, 0.25) 50%, rgba(0, 0, 0, 0.3) 100%);
 }
 
-.general-hero-content>.general-hero-title,
-.general-hero-content>.general-hero-subtitle,
-.general-hero-cta-wrapper,
-.general-jump-links {
-    opacity: 0;
-    /* Handled by GSAP entry timelines */
-}
+
 
 .general-hero-cta-wrapper {
     margin-top: 3rem;

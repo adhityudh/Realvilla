@@ -1,9 +1,9 @@
 import { ALL_FIELDS_GROUP, defineField, defineType } from 'sanity'
 import { ClipboardIcon } from '@sanity/icons'
 
-export const mortgageProcessSection = defineType({
-  name: 'mortgageProcessSection',
-  title: 'Mortgage Process Section',
+export const generalProcessSection = defineType({
+  name: 'generalProcessSection',
+  title: 'General Process Section',
   type: 'object',
   icon: ClipboardIcon,
   groups: [
@@ -18,8 +18,8 @@ export const mortgageProcessSection = defineType({
       type: 'string',
       description: 'Used as an anchor identifier (e.g. for smooth scrolling links like #about).',
       initialValue: 'process',
-    group: 'advanced',
-}),
+      group: 'advanced',
+    }),
     defineField({
       name: 'disableEntranceAnimation',
       title: 'Disable Entrance Animation',
@@ -41,36 +41,36 @@ export const mortgageProcessSection = defineType({
       title: 'Tagline',
       type: 'string',
       description: 'Small subtitle above the headline. E.g. "Step-by-Step"',
-    group: 'content',
-}),
+      group: 'content',
+    }),
     defineField({
       name: 'headline',
       title: 'Headline',
       type: 'string',
       description: 'Main section heading.',
-    group: 'content',
-}),
+      group: 'content',
+    }),
     defineField({
       name: 'intro',
       title: 'Intro Text',
       type: 'blockContent',
       description: 'Optional introductory context.',
-    group: 'content',
-}),
+      group: 'content',
+    }),
     defineField({
       name: 'timelineMode',
       title: 'Timeline Mode',
       type: 'boolean',
       description: 'Enable an animated horizontal timeline line that connects steps and moves/fills as the page is scrolled.',
       initialValue: false,
-    group: 'content',
-}),
+      group: 'content',
+    }),
 
     defineField({
       name: 'steps',
       title: 'Process Steps',
       type: 'array',
-      description: 'Steps explaining the financing & mortgage phases.',
+      description: 'Steps explaining the process phases.',
       of: [
         {
           type: 'object',
@@ -121,8 +121,8 @@ export const mortgageProcessSection = defineType({
           },
         },
       ],
-    group: 'content',
-}),
+      group: 'content',
+    }),
   ],
   preview: {
     select: {
@@ -131,7 +131,7 @@ export const mortgageProcessSection = defineType({
     prepare({ title }) {
       return {
         title: title || 'No Headline',
-        subtitle: 'Mortgage Process Section',
+        subtitle: 'General Process Section',
       }
     },
   },

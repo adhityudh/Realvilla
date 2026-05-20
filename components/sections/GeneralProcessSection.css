@@ -1,4 +1,4 @@
-.mortgage-process-section {
+.general-process-section {
   padding: 5rem 0;
   /* 💎 Generous elite luxury padding */
   background-color: var(--bg-white);
@@ -6,7 +6,7 @@
   position: relative;
 }
 
-.mortgage-container {
+.general-container {
   width: 100%;
   max-width: var(--container-max-width);
   margin: 0 auto;
@@ -14,7 +14,7 @@
 }
 
 /* ── Header ── */
-.mortgage-header {
+.general-header {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -23,7 +23,7 @@
   margin-bottom: 8rem;
 }
 
-.mortgage-tagline {
+.general-tagline {
   display: flex;
   align-items: center;
   gap: 1.25rem;
@@ -38,15 +38,15 @@
   transition: color 0.4s ease;
 }
 
-.mortgage-tagline::before,
-.mortgage-tagline::after {
+.general-tagline::before,
+.general-tagline::after {
   content: '';
   width: 30px;
   height: 1px;
   background: var(--border-strong);
 }
 
-.mortgage-headline {
+.general-headline {
   font-family: var(--font-cormorant), serif;
   font-size: var(--text-display-lg);
   font-weight: var(--fw-light);
@@ -57,7 +57,7 @@
   max-width: 800px;
 }
 
-.mortgage-intro {
+.general-intro {
   font-family: var(--font-manrope), sans-serif;
   font-size: var(--text-base);
   line-height: var(--lh-relaxed);
@@ -67,7 +67,7 @@
 }
 
 /* ── 🏛️ Editorial Horizon Row (4-Column Luxury Grid) ── */
-.mortgage-steps-list {
+.general-steps-list {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   /* 🏆 Horizontal grid for desktop */
@@ -75,7 +75,7 @@
   gap: var(--grid-gap);
 }
 
-.mortgage-step-item {
+.general-step-item {
   display: flex;
   flex-direction: column;
   /* 💎 Column stack within step */
@@ -88,7 +88,7 @@
 }
 
 /* Subtle luxurious golden highlight on the horizon line when active/hover */
-.mortgage-step-item::before {
+.general-step-item::before {
   content: '';
   position: absolute;
   top: -1px;
@@ -100,12 +100,12 @@
   z-index: 2;
 }
 
-.mortgage-step-item:hover::before {
+.general-step-item:hover::before {
   width: 100%;
 }
 
 /* ── Media Column ── */
-.mortgage-media-col {
+.general-media-col {
   width: 100%;
   order: 2;
   /* 📐 Place image below number/title */
@@ -113,7 +113,7 @@
   margin-bottom: 2rem;
 }
 
-.mortgage-image-inner {
+.general-image-inner {
   position: relative;
   width: 100%;
   max-width: 100%;
@@ -125,7 +125,7 @@
 }
 
 /* Subtle sophisticated image dim overlay for absolute contrast */
-.mortgage-image-inner::after {
+.general-image-inner::after {
   content: '';
   position: absolute;
   inset: 0;
@@ -133,28 +133,28 @@
   transition: background 0.4s ease;
 }
 
-.mortgage-step-item:hover .mortgage-image-inner::after {
+.general-step-item:hover .general-image-inner::after {
   background: rgba(0, 0, 0, 0);
 }
 
-.mortgage-image-inner img {
+.general-image-inner img {
   object-fit: cover;
   transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.mortgage-step-item:hover .mortgage-image-inner img {
+.general-step-item:hover .general-image-inner img {
   transform: scale(1.05);
   /* Very restrained elite zoom */
 }
 
-.mortgage-placeholder {
+.general-placeholder {
   width: 100%;
   height: 100%;
   background: var(--bg-muted);
 }
 
 /* ── Luxurious Floating Centered Icon Overlay ── */
-.mortgage-overlay-icon-wrapper {
+.general-overlay-icon-wrapper {
   position: absolute;
   bottom: 1.25rem;
   /* 📐 Positioned beautifully at the bottom left as an elite insignia */
@@ -163,7 +163,7 @@
   pointer-events: none;
 }
 
-.mortgage-overlay-icon {
+.general-overlay-icon {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -172,28 +172,27 @@
   height: 48px;
 }
 
-.mortgage-center-icon {
+.general-center-icon {
   object-fit: contain;
   /* 💡 Supreme contrast drop shadow for legibility on photography */
   filter: brightness(0) invert(1) drop-shadow(0px 3px 12px rgba(0, 0, 0, 0.35));
 }
 
 /* ── Content Column ── */
-.mortgage-content-col {
+.general-content-col {
   width: 100%;
   order: 1;
   /* 📐 Number/Title sits right at the top under the border */
 }
 
-.mortgage-header-row {
+.general-header-row {
   display: flex;
   flex-direction: column;
   gap: 1rem;
   margin-bottom: 0;
 }
 
-/* 🏷️ Reconfigured to match official 'mortgage-sim-tagline' brand styling */
-.mortgage-inline-number {
+.general-inline-number {
   font-family: var(--font-manrope), sans-serif;
   font-size: var(--text-sm);
   font-weight: var(--fw-bold);
@@ -207,7 +206,7 @@
   /* 📐 Harmonious gap to title */
 }
 
-.mortgage-step-title {
+.general-step-title {
   font-family: var(--font-cormorant), serif;
   font-size: var(--text-display-xs);
   /* 💎 Replaced tag styling with official Luxury Display Heading Token */
@@ -220,7 +219,7 @@
 }
 
 /* Step body text flow underneath image */
-.mortgage-step-body {
+.general-step-body {
   order: 3;
   font-family: var(--font-manrope), sans-serif;
   font-size: var(--text-base);
@@ -231,19 +230,19 @@
 }
 
 /* ── 🌟 Timeline Mode Styles (Scroll-Driven Serpentine Timeline) ── */
-.mortgage-timeline-mode .mortgage-step-item {
+.general-timeline-mode .general-step-item {
   border-top: none;
   /* Disable static border-top */
   padding-top: 2.25rem;
 }
 
-.mortgage-timeline-mode .mortgage-step-item::before {
+.general-timeline-mode .general-step-item::before {
   display: none !important;
   /* Disable standard gold hover line */
 }
 
 /* Timeline background track segment */
-.mortgage-timeline-line {
+.general-timeline-line {
   position: absolute;
   top: 0;
   left: 0;
@@ -254,12 +253,12 @@
 }
 
 /* If last item of a row, stretch the line to the right viewport edge */
-.mortgage-timeline-line.stretch-right {
+.general-timeline-line.stretch-right {
   width: calc(100% + (100vw - 100%) / 2);
 }
 
 /* Left entering track segment for first item of subsequent rows */
-.mortgage-timeline-left-line {
+.general-timeline-left-line {
   position: absolute;
   top: 0;
   left: calc(-1 * (100vw - 100%) / 2);
@@ -270,7 +269,7 @@
 }
 
 /* Animated active gold progress line */
-.mortgage-timeline-progress {
+.general-timeline-progress {
   position: absolute;
   top: 0;
   left: 0;
@@ -285,7 +284,7 @@
 }
 
 /* Dynamic Timeline Dot Node (Point) */
-.mortgage-timeline-dot {
+.general-timeline-dot {
   position: absolute;
   top: -4px;
   /* Centered perfectly on the 2px height timeline line */
@@ -301,85 +300,85 @@
 
 /* ── Responsive Queries ── */
 @media (max-width: 1024px) {
-  .mortgage-container {
+  .general-container {
     padding: 0 1.5rem;
   }
 
-  .mortgage-steps-list {
+  .general-steps-list {
     grid-template-columns: repeat(2, 1fr);
     /* 📐 2x2 Grid for Tablet */
     --grid-gap: 2rem;
     gap: 3rem var(--grid-gap);
   }
 
-  .mortgage-process-section {
+  .general-process-section {
     padding: 3rem 0;
   }
 
-  .mortgage-header {
+  .general-header {
     margin-bottom: 3rem;
   }
 }
 
 @media (max-width: 768px) {
-  .mortgage-steps-list {
+  .general-steps-list {
     grid-template-columns: repeat(2, 1fr);
     /* 🏆 Transformed to 2-Column Grid on mobile to prevent scrolling fatigue */
     --grid-gap: 1rem;
     gap: 2.5rem var(--grid-gap);
   }
 
-  .mortgage-step-item {
+  .general-step-item {
     padding-top: 1.5rem;
   }
 
   /* Shrink typography for optimal vertical fit in narrower mobile columns */
-  .mortgage-inline-number {
+  .general-inline-number {
     font-size: var(--text-xs);
   }
 
-  .mortgage-step-title {
+  .general-step-title {
     font-size: var(--text-md);
   }
 
-  .mortgage-step-body {
+  .general-step-body {
     font-size: var(--text-sm);
     /* 💎 Crisp dense reading for small viewports */
   }
 
-  .mortgage-media-col {
+  .general-media-col {
     margin-top: 1rem;
     margin-bottom: 1rem;
   }
 
-  .mortgage-header-row {
+  .general-header-row {
     gap: 0.75rem;
   }
 
-  .mortgage-image-inner {
+  .general-image-inner {
     max-width: 100%;
     /* 📐 Shrink the bevel clip cut so it maintains absolute geometric proportion on tiny screens */
     clip-path: polygon(0 0, 100% 0, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0 100%);
   }
 
   /* Downscale floating insignia signature for compact mobile photos */
-  .mortgage-overlay-icon-wrapper {
+  .general-overlay-icon-wrapper {
     bottom: 0.65rem;
     left: 0.65rem;
   }
 
-  .mortgage-overlay-icon {
+  .general-overlay-icon {
     width: 36px;
     height: 36px;
   }
 
-  .mortgage-overlay-icon img {
+  .general-overlay-icon img {
     width: 20px !important;
     height: 20px !important;
   }
 }
 
-.mortgage-step-body a {
+.general-step-body a {
   color: var(--color-gold-dark);
   font-weight: var(--fw-semibold);
   text-decoration: none;
@@ -392,7 +391,7 @@
   line-height: var(--lh-relaxed);
 }
 
-.mortgage-step-body a:hover {
+.general-step-body a:hover {
   color: var(--text-black);
   border-bottom-color: var(--text-black);
 }
