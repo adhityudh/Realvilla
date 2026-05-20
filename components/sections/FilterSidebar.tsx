@@ -380,6 +380,55 @@ export default function FilterSidebar({
       return (
         <div className="filter-group" key={filterId} style={hideLabel ? { paddingTop: '0.5rem' } : undefined}>
           {!hideLabel && <p className="filter-group-label" style={{ marginBottom: '1rem', marginTop: '0.5rem' }}>{label}</p>}
+          {isDouble && (
+            <div className="price-inputs-row" style={{ marginBottom: '1.25rem' }}>
+              <div className="price-input-box">
+                {def.filter?.rangePrefix && (
+                  <span className="price-currency">{def.filter.rangePrefix}</span>
+                )}
+                <input
+                  type="text"
+                  value={formatNumberWithCommas(currentMin)}
+                  onChange={(e) => {
+                    const parsed = parseCommasToNumber(e.target.value);
+                    setFilterValues(prev => ({
+                      ...prev,
+                      [filterId]: { min: parsed, max: currentMax }
+                    }));
+                  }}
+                  placeholder={dict?.archive?.min || 'Min'}
+                />
+                {(unit || def.filter?.rangeSuffix) && (
+                  <span className="price-currency" style={{ marginLeft: '0.25rem', marginRight: 0 }}>
+                    {unit || def.filter.rangeSuffix}
+                  </span>
+                )}
+              </div>
+              <div className="price-divider">—</div>
+              <div className="price-input-box">
+                {def.filter?.rangePrefix && (
+                  <span className="price-currency">{def.filter.rangePrefix}</span>
+                )}
+                <input
+                  type="text"
+                  value={formatNumberWithCommas(currentMax)}
+                  onChange={(e) => {
+                    const parsed = parseCommasToNumber(e.target.value);
+                    setFilterValues(prev => ({
+                      ...prev,
+                      [filterId]: { min: currentMin, max: parsed }
+                    }));
+                  }}
+                  placeholder={dict?.archive?.max || 'Max'}
+                />
+                {(unit || def.filter?.rangeSuffix) && (
+                  <span className="price-currency" style={{ marginLeft: '0.25rem', marginRight: 0 }}>
+                    {unit || def.filter.rangeSuffix}
+                  </span>
+                )}
+              </div>
+            </div>
+          )}
           <div className="range-slider-wrapper">
             {isDouble && (
               <input

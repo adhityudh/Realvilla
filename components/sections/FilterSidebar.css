@@ -154,10 +154,9 @@
 
 .price-currency {
     font-family: var(--font-manrope), sans-serif;
-    font-weight: var(--fw-semibold);
-    color: var(--color-gold-hover);
+    font-weight: var(--fw-light);
     margin-right: 0.5rem;
-    font-size: var(--text-base);
+    font-size: var(--text-base-sm);
 }
 
 .price-input-box input {
