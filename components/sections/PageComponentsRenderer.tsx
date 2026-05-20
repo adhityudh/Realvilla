@@ -21,7 +21,7 @@ interface ContactModalComponentProps {
   whatsappNumber?: string;
 }
 
-function ContactModalComponentInstance({
+export function ContactModalComponentInstance({
   componentId,
   formType,
   title,

@@ -19,11 +19,12 @@
   grid-template-columns: 1.15fr 1fr;
   align-items: flex-end;
   gap: 4rem;
-  margin-bottom: 8rem;
+  margin-bottom: 5rem;
 }
 
 .sell-header-left {
-  max-width: 37.5rem; /* 600px */
+  max-width: 37.5rem;
+  /* 600px */
 }
 
 .sell-tagline {
@@ -41,8 +42,10 @@
 
 .sell-tagline::before {
   content: '';
-  width: 1.875rem; /* 30px */
-  height: 0.0625rem; /* 1px */
+  width: 1.875rem;
+  /* 30px */
+  height: 0.0625rem;
+  /* 1px */
   background: var(--color-gold-dark);
 }
 
@@ -69,7 +72,8 @@
   line-height: var(--lh-relaxed);
   color: var(--text-black);
   text-align: right;
-  max-width: 26.25rem; /* 420px */
+  max-width: 26.25rem;
+  /* 420px */
 }
 
 /* ── 🏛️ Editorial Horizon Row (2-Column Luxury Grid for Sell Page) ── */
@@ -77,7 +81,7 @@
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   /* 🏆 Horizontal grid with 2 columns on desktop */
-  --grid-gap: 3.5rem;
+  --grid-gap: 4.5rem;
   gap: var(--grid-gap);
 }
 
@@ -87,42 +91,20 @@
   /* 💎 Column stack within step */
   align-items: flex-start;
   position: relative;
-  padding-top: 2rem;
-  /* 📐 Space below continuous horizon line */
-  border-top: 0.0625rem solid var(--border-strong); /* 1px border */
-}
-
-/* Subtle luxurious golden highlight on the horizon line when active/hover */
-.sell-step-item::before {
-  content: '';
-  position: absolute;
-  top: -0.0625rem; /* -1px */
-  left: 0;
-  width: 0%;
-  height: 0.0625rem; /* 1px */
-  background: var(--color-gold-dark);
-  transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-  z-index: 2;
-}
-
-.sell-step-item:hover::before {
-  width: 100%;
 }
 
 /* ── Media Column ── */
 .sell-media-col {
   width: 100%;
-  order: 2;
-  /* 📐 Place image below number/title */
-  margin-top: 2.5rem;
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
 }
 
 .sell-image-inner {
   position: relative;
   width: 100%;
   max-width: 100%;
-  aspect-ratio: 16/10; /* Wider aspect ratio looks premium in a 2-col layout */
+  aspect-ratio: 16/10;
+  /* Wider aspect ratio looks premium in a 2-col layout */
   overflow: hidden;
   background: var(--bg-muted);
   clip-path: polygon(0 0, 100% 0, 100% calc(100% - 2rem), calc(100% - 2rem) 100%, 0 100%);
@@ -134,12 +116,13 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, 0.05);
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0) 40%, rgba(0, 0, 0, 0) 60%, rgba(0, 0, 0, 0.55) 100%);
   transition: background 0.4s ease;
+  z-index: 3;
 }
 
 .sell-step-item:hover .sell-image-inner::after {
-  background: rgba(0, 0, 0, 0);
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.25) 0%, rgba(0, 0, 0, 0) 40%, rgba(0, 0, 0, 0) 60%, rgba(0, 0, 0, 0.65) 100%);
 }
 
 .sell-image-inner img {
@@ -158,67 +141,44 @@
   background: var(--bg-muted);
 }
 
-/* ── Luxurious Floating Centered Icon Overlay ── */
-.sell-overlay-icon-wrapper {
+
+
+/* ── Step Title Overlay ── */
+.sell-image-title-overlay {
   position: absolute;
-  bottom: 1.25rem;
-  /* 📐 Positioned beautifully at the bottom left as an elite insignia */
-  left: 1.25rem;
-  z-index: 5;
+  bottom: 2rem;
+  left: 2rem;
+  right: 2rem;
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
   pointer-events: none;
 }
 
-.sell-overlay-icon {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 3rem; /* 48px */
-  height: 3rem; /* 48px */
-}
-
-.sell-center-icon {
-  object-fit: contain;
-  /* 💡 Supreme contrast drop shadow for legibility on photography */
-  filter: brightness(0) invert(1) drop-shadow(0px 3px 12px rgba(0, 0, 0, 0.35));
-}
-
-/* ── Content Column ── */
-.sell-content-col {
-  width: 100%;
-  order: 1;
-  /* 📐 Number/Title sits right at the top under the border */
-}
-
-.sell-header-row-step {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  margin-bottom: 0;
-}
-
-.sell-inline-number {
-  font-family: var(--font-manrope), sans-serif;
-  font-size: var(--text-sm);
-  font-weight: var(--fw-bold);
-  letter-spacing: var(--ls-tagline);
-  text-transform: uppercase;
-  color: var(--color-gold-dark);
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  transition: color 0.4s ease;
-}
-
-.sell-step-title {
+.sell-image-number-badge {
+  position: absolute;
+  top: -2.5rem;
+  left: -1rem;
   font-family: var(--font-cormorant), serif;
-  font-size: var(--text-display-xs);
-  /* 💎 Replaced tag styling with official Luxury Display Heading Token */
-  color: var(--text-black);
-  font-weight: var(--fw-regular);
+  font-size: clamp(6.5rem, 15vw, 11rem);
+  font-weight: var(--fw-light);
+  color: var(--text-white);
+  opacity: 0.25;
+  line-height: var(--lh-ultra);
+  pointer-events: none;
+  z-index: 4;
+}
+
+.sell-overlay-title {
+  font-family: var(--font-cormorant), serif;
+  font-size: var(--text-display-sm);
+  color: var(--text-white);
+  font-weight: var(--fw-bold);
   text-transform: uppercase;
   letter-spacing: var(--ls-tight);
   line-height: var(--lh-snug);
-  transition: color 0.4s ease;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
 }
 
 /* Step body text flow underneath image */
@@ -232,73 +192,6 @@
   max-width: 100%;
 }
 
-/* ── 🌟 Timeline Mode Styles (Scroll-Driven Serpentine Timeline) ── */
-.sell-timeline-mode .sell-step-item {
-  border-top: none;
-  /* Disable static border-top */
-  padding-top: 2.25rem;
-}
-
-.sell-timeline-mode .sell-step-item::before {
-  display: none !important;
-  /* Disable standard gold hover line */
-}
-
-/* Timeline background track segment */
-.sell-timeline-line {
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 0.125rem; /* 2px */
-  width: calc(100% + var(--grid-gap, 3.5rem));
-  background-color: var(--border-base);
-  z-index: 10;
-}
-
-/* If last item of a row, stretch the line to the right viewport edge */
-.sell-timeline-line.stretch-right {
-  width: calc(100% + (100vw - 100%) / 2);
-}
-
-/* Left entering track segment for first item of subsequent rows */
-.sell-timeline-left-line {
-  position: absolute;
-  top: 0;
-  left: calc(-1 * (100vw - 100%) / 2);
-  height: 0.125rem; /* 2px */
-  width: calc((100vw - 100%) / 2);
-  background-color: var(--border-strong);
-  z-index: 10;
-}
-
-/* Animated active gold progress line */
-.sell-timeline-progress {
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 100%;
-  width: 100%;
-  background-color: var(--color-gold-dark);
-  transform-origin: left;
-  transform: scaleX(0);
-  /* Controlled dynamically by GSAP */
-  z-index: 11;
-  box-shadow: 0 0 8px rgba(197, 160, 89, 0.4);
-}
-
-/* Dynamic Timeline Dot Node (Point) */
-.sell-timeline-dot {
-  position: absolute;
-  top: -0.25rem; /* Centered perfectly on the 2px height timeline line */
-  left: 0;
-  width: 0.625rem; /* 10px */
-  height: 0.625rem; /* 10px */
-  border-radius: 50%;
-  background-color: var(--bg-white);
-  border: 0.125rem solid var(--border-strong); /* 2px border */
-  z-index: 12;
-  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-}
 
 /* ── Responsive Queries ── */
 @media (max-width: 1024px) {
@@ -334,37 +227,33 @@
 }
 
 @media (max-width: 768px) {
+  .sell-header-right {
+    display: none;
+  }
+
   .sell-steps-list {
-    grid-template-columns: 1fr; /* On mobile/portrait, fall back to 1-column stack */
+    grid-template-columns: 1fr;
+    /* On mobile/portrait, fall back to 1-column stack */
     --grid-gap: 1.5rem;
-    gap: 2.5rem var(--grid-gap);
+    gap: 3rem var(--grid-gap);
   }
 
-  .sell-step-item {
-    padding-top: 1.5rem;
-    border-top: 0.0625rem solid var(--border-strong);
+  .sell-image-title-overlay {
+    top: auto;
+    bottom: 1rem;
+    left: 1rem;
+    right: 1rem;
+    gap: 0.5rem;
   }
 
-  /* Shrink typography for optimal vertical fit in narrower mobile columns */
-  .sell-inline-number {
-    font-size: var(--text-xs);
-  }
-
-  .sell-step-title {
-    font-size: var(--text-md);
-  }
-
-  .sell-step-body {
-    font-size: var(--text-sm);
+  .sell-image-number-badge {
+    top: -2rem;
+    left: -0.75rem;
   }
 
   .sell-media-col {
-    margin-top: 1rem;
+    margin-top: 0;
     margin-bottom: 1rem;
-  }
-
-  .sell-header-row-step {
-    gap: 0.75rem;
   }
 
   .sell-image-inner {
@@ -373,28 +262,15 @@
     clip-path: polygon(0 0, 100% 0, 100% calc(100% - 1rem), calc(100% - 1rem) 100%, 0 100%);
   }
 
-  /* Downscale floating insignia signature for compact mobile photos */
-  .sell-overlay-icon-wrapper {
-    bottom: 0.65rem;
-    left: 0.65rem;
-  }
 
-  .sell-overlay-icon {
-    width: 2.25rem; /* 36px */
-    height: 2.25rem; /* 36px */
-  }
-
-  .sell-overlay-icon img {
-    width: 1.25rem !important; /* 20px */
-    height: 1.25rem !important; /* 20px */
-  }
 }
 
 .sell-step-body a {
   color: var(--color-gold-dark);
   font-weight: var(--fw-semibold);
   text-decoration: none;
-  border-bottom: 0.0625rem solid var(--color-gold-dark); /* 1px border */
+  border-bottom: 0.0625rem solid var(--color-gold-dark);
+  /* 1px border */
   transition: all 0.3s ease;
   font-size: var(--text-sm-plus);
   text-transform: uppercase;

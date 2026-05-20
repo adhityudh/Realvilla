@@ -57,14 +57,7 @@ export const sellProcessSection = defineType({
       description: 'Optional introductory context.',
     group: 'content',
 }),
-    defineField({
-      name: 'timelineMode',
-      title: 'Timeline Mode',
-      type: 'boolean',
-      description: 'Enable an animated horizontal timeline line that connects steps and moves/fills as the page is scrolled.',
-      initialValue: false,
-    group: 'content',
-}),
+
     defineField({
       name: 'steps',
       title: 'Process Steps',
@@ -92,17 +85,11 @@ export const sellProcessSection = defineType({
               title: 'Step Description',
               type: 'blockContent',
             }),
-            defineField({
+                        defineField({
               name: 'image',
               title: 'Visual Aid (Background)',
               type: 'image',
               options: { hotspot: true },
-            }),
-            defineField({
-              name: 'icon',
-              title: 'Overlay Icon',
-              description: 'Upload a clean, transparent SVG/PNG icon to overlay in the center of the image.',
-              type: 'image',
             }),
           ],
           preview: {

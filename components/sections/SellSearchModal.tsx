@@ -67,9 +67,8 @@ export default function SellSearchModal({ isOpen, onClose, dict }: SellSearchMod
     }
 
     setIsTypingPrefix(false);
-    setIsLoading(true);
-
     debounceTimerRef.current = setTimeout(async () => {
+      setIsLoading(true);
       try {
         const allowedTypes = ['house', 'street', 'poi'];
         

@@ -14,6 +14,8 @@ if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
 }
 
+import { ContactModalComponentInstance } from './PageComponentsRenderer';
+
 interface SellHeroSectionProps {
   data: {
     disableEntranceAnimation?: boolean;
@@ -26,9 +28,10 @@ interface SellHeroSectionProps {
     jumpLinks?: Array<{ label: string; link: string }>;
   };
   dict?: any;
+  contextData?: any;
 }
 
-export default function SellHeroSection({ data, dict }: SellHeroSectionProps) {
+export default function SellHeroSection({ data, dict, contextData }: SellHeroSectionProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [suggestions, setSuggestions] = useState<Array<{ place_id: string | number; display_name: string }>>([]);
@@ -75,6 +78,8 @@ export default function SellHeroSection({ data, dict }: SellHeroSectionProps) {
     const segments = pathname.split('/');
     return segments[1] || 'en';
   }, [pathname]);
+
+  const isEs = useMemo(() => locale === 'es', [locale]);
 
   // Click outside to close dropdown
   useEffect(() => {
@@ -131,9 +136,8 @@ export default function SellHeroSection({ data, dict }: SellHeroSectionProps) {
       return;
     }
 
-    setIsLoading(true);
-
     debounceTimerRef.current = setTimeout(async () => {
+      setIsLoading(true);
       try {
         const allowedTypes = ['house', 'street', 'poi'];
 
@@ -524,6 +528,19 @@ export default function SellHeroSection({ data, dict }: SellHeroSectionProps) {
           ))}
         </div>
       )}
+
+      {/* Fallback Sell Modal when not rendered in PageComponentsRenderer */}
+      <ContactModalComponentInstance
+        componentId="sell-modal"
+        formType="sell"
+        title={isEs ? 'INICIA TU VENTA' : 'INITIATE YOUR SALE'}
+        subtitle={isEs
+          ? 'Comparte los detalles de tu propiedad con nosotros. Nuestros expertos en el mercado se pondrán en contacto en breve para preparar una estrategia de posicionamiento de alto impacto.'
+          : 'Share your property details with us. Our market experts will reach out shortly to prepare a high-impact positioning strategy to sell your home.'}
+        hideWhatsApp={true}
+        dict={dict}
+        whatsappNumber={contextData?.whatsappNumber}
+      />
     </section>
   );
 }

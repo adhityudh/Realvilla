@@ -399,14 +399,12 @@ export const SECTION_PROJECTION = groq`
         tagline,
         headline,
         intro,
-        timelineMode,
         imageOrder,
         steps[] {
           number,
           title,
           description,
-          image { asset->{ _id, url, metadata { lqip, dimensions } } },
-          icon { asset->{ _id, url } }
+          image { asset->{ _id, url, metadata { lqip, dimensions } } }
         }
       },
       _type == "documentLedgerSection" => {
