@@ -85,6 +85,57 @@ export default function SmoothScroller({ children }: { children: React.ReactNode
     return () => clearTimeout(timer);
   }, [pathname, lenis]);
 
+  // Scroll to hash target once preloading is released or hash changes
+  useEffect(() => {
+    if (!lenis) return;
+
+    const handleScrollToHash = () => {
+      const hash = window.location.hash;
+      if (!hash) return;
+
+      const targetId = hash.substring(1);
+      const element = document.getElementById(targetId);
+      if (element) {
+        // Wait a tiny fraction of a second to ensure DOM renders fully
+        setTimeout(() => {
+          lenis.scrollTo(element, { offset: -80, duration: 1.2 });
+        }, 100);
+      }
+    };
+
+    let observer: MutationObserver | null = null;
+
+    // If the page is already fully loaded and not preloading, check the hash immediately
+    if (!document.body.classList.contains('preloading')) {
+      handleScrollToHash();
+    } else {
+      // Set up MutationObserver to detect when the 'preloading' class is removed, then disconnect
+      observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+          if (mutation.attributeName === 'class') {
+            const isPreloading = document.body.classList.contains('preloading');
+            if (!isPreloading) {
+              handleScrollToHash();
+              observer?.disconnect();
+              observer = null;
+            }
+          }
+        });
+      });
+      observer.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+    }
+
+    // Also listen for manual hash changes (e.g. same page link click)
+    window.addEventListener('hashchange', handleScrollToHash);
+
+    return () => {
+      if (observer) {
+        observer.disconnect();
+      }
+      window.removeEventListener('hashchange', handleScrollToHash);
+    };
+  }, [lenis, pathname]);
+
   return (
     <LenisContext.Provider value={lenis}>
       {children}
