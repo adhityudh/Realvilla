@@ -66,6 +66,26 @@ export const sellHeroSection = defineType({
     group: 'content',
 }),
     defineField({
+      name: 'modalTitle',
+      title: 'Modal Form Title',
+      type: 'string',
+      group: 'content',
+    }),
+    defineField({
+      name: 'modalSubtitle',
+      title: 'Modal Form Subtitle',
+      type: 'text',
+      rows: 3,
+      group: 'content',
+    }),
+    defineField({
+      name: 'hideWhatsApp',
+      title: 'Hide WhatsApp Option',
+      type: 'boolean',
+      initialValue: true,
+      group: 'content',
+    }),
+    defineField({
       name: 'jumpLinks',
       title: 'Jump Links',
       type: 'array',

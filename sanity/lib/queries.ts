@@ -326,6 +326,9 @@ export const SECTION_PROJECTION = groq`
         subtitle,
         "backgroundImage": backgroundImage.asset->url,
         searchPlaceholder,
+        modalTitle,
+        modalSubtitle,
+        hideWhatsApp,
         jumpLinks[] {
           label,
           "link": ${INTERNAL_LINK_PROJECTION}

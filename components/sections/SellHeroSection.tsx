@@ -25,6 +25,9 @@ interface SellHeroSectionProps {
     subtitle?: string;
     backgroundImage?: string;
     searchPlaceholder?: string;
+    modalTitle?: string;
+    modalSubtitle?: string;
+    hideWhatsApp?: boolean;
     jumpLinks?: Array<{ label: string; link: string }>;
   };
   dict?: any;
@@ -529,15 +532,12 @@ export default function SellHeroSection({ data, dict, contextData }: SellHeroSec
         </div>
       )}
 
-      {/* Fallback Sell Modal when not rendered in PageComponentsRenderer */}
       <ContactModalComponentInstance
         componentId="sell-modal"
         formType="sell"
-        title={isEs ? 'INICIA TU VENTA' : 'INITIATE YOUR SALE'}
-        subtitle={isEs
-          ? 'Comparte los detalles de tu propiedad con nosotros. Nuestros expertos en el mercado se pondrán en contacto en breve para preparar una estrategia de posicionamiento de alto impacto.'
-          : 'Share your property details with us. Our market experts will reach out shortly to prepare a high-impact positioning strategy to sell your home.'}
-        hideWhatsApp={true}
+        title={data?.modalTitle}
+        subtitle={data?.modalSubtitle}
+        hideWhatsApp={data?.hideWhatsApp}
         dict={dict}
         whatsappNumber={contextData?.whatsappNumber}
       />
