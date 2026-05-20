@@ -135,7 +135,10 @@ export const contactSection = defineType({
       title: 'General Form Title',
       type: 'string',
       group: 'general',
-      hidden: ({ parent }) => (parent?.initialStep || 'intent') === 'sell',
+      hidden: ({ parent }) => {
+        const step = parent?.initialStep || 'intent';
+        return step === 'sell' || step === 'mortgage';
+      },
       description: 'Heading text when viewing the General Inquiry form.'
     }),
     defineField({
@@ -144,7 +147,10 @@ export const contactSection = defineType({
       type: 'text',
       rows: 2,
       group: 'general',
-      hidden: ({ parent }) => (parent?.initialStep || 'intent') === 'sell',
+      hidden: ({ parent }) => {
+        const step = parent?.initialStep || 'intent';
+        return step === 'sell' || step === 'mortgage';
+      },
       description: 'Subtitle text when viewing the General Inquiry form.'
     }),
     defineField({
@@ -153,7 +159,10 @@ export const contactSection = defineType({
       type: 'text',
       rows: 3,
       group: 'general',
-      hidden: ({ parent }) => (parent?.initialStep || 'intent') === 'sell',
+      hidden: ({ parent }) => {
+        const step = parent?.initialStep || 'intent';
+        return step === 'sell' || step === 'mortgage';
+      },
       description: 'Optional: Provide a default message. If set, this exact text will be pre-filled and the message input field will be hidden from the user.'
     }),
     defineField({
@@ -162,7 +171,10 @@ export const contactSection = defineType({
       type: 'boolean',
       initialValue: false,
       group: 'general',
-      hidden: ({ parent }) => (parent?.initialStep || 'intent') === 'sell',
+      hidden: ({ parent }) => {
+        const step = parent?.initialStep || 'intent';
+        return step === 'sell' || step === 'mortgage';
+      },
     }),
     defineField({
       name: 'whatsappMessageTemplate',
@@ -170,7 +182,10 @@ export const contactSection = defineType({
       type: 'text',
       rows: 2,
       group: 'general',
-      hidden: ({ parent }) => (parent?.initialStep || 'intent') === 'sell' || parent?.hideGeneralWhatsApp === true,
+      hidden: ({ parent }) => {
+        const step = parent?.initialStep || 'intent';
+        return step === 'sell' || step === 'mortgage' || parent?.hideGeneralWhatsApp === true;
+      },
       description: 'Optional: Provide a default template for the WhatsApp button on the General form.'
     }),
     defineField({
@@ -178,7 +193,10 @@ export const contactSection = defineType({
       title: 'Sell Form Title',
       type: 'string',
       group: 'sell',
-      hidden: ({ parent }) => (parent?.initialStep || 'intent') === 'general',
+      hidden: ({ parent }) => {
+        const step = parent?.initialStep || 'intent';
+        return step === 'general' || step === 'mortgage';
+      },
       description: 'Heading text when viewing the Sell Property form.'
     }),
     defineField({
@@ -187,7 +205,10 @@ export const contactSection = defineType({
       type: 'text',
       rows: 2,
       group: 'sell',
-      hidden: ({ parent }) => (parent?.initialStep || 'intent') === 'general',
+      hidden: ({ parent }) => {
+        const step = parent?.initialStep || 'intent';
+        return step === 'general' || step === 'mortgage';
+      },
       description: 'Subtitle text when viewing the Sell Property form.'
     }),
     defineField({
@@ -196,7 +217,10 @@ export const contactSection = defineType({
       type: 'boolean',
       initialValue: false,
       group: 'sell',
-      hidden: ({ parent }) => (parent?.initialStep || 'intent') === 'general',
+      hidden: ({ parent }) => {
+        const step = parent?.initialStep || 'intent';
+        return step === 'general' || step === 'mortgage';
+      },
     }),
     defineField({
       name: 'sellWhatsappMessageTemplate',
@@ -204,7 +228,10 @@ export const contactSection = defineType({
       type: 'text',
       rows: 2,
       group: 'sell',
-      hidden: ({ parent }) => (parent?.initialStep || 'intent') === 'general' || parent?.hideSellWhatsApp === true,
+      hidden: ({ parent }) => {
+        const step = parent?.initialStep || 'intent';
+        return step === 'general' || step === 'mortgage' || parent?.hideSellWhatsApp === true;
+      },
       description: 'Optional: Provide a default template for the WhatsApp button on the Sell form.'
     }),
     defineField({
