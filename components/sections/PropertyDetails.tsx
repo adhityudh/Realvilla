@@ -127,7 +127,7 @@ export default function PropertyDetails({
           {property.description && (
             <div className="details-block description-block">
               <h2 className="details-heading">
-                {dict?.property?.description_title || (locale === 'es' ? 'Descripción' : 'Description')}
+                {dict?.property?.description_title || 'Description'}
               </h2>
               <div className="portable-text-wrapper">
                 <PortableText value={property.description} />
@@ -149,7 +149,7 @@ export default function PropertyDetails({
                   {/* Fixed optional guidance direct modal trigger */}
                   {useRequestGuidance && (
                     <Button
-                      label={locale === 'es' ? 'SOLICITAR ASESORAMIENTO' : 'REQUEST GUIDANCE'}
+                      label={(dict?.contact?.request_guidance || 'Request Guidance').toUpperCase()}
                       href="#"
                       onClick={(e) => {
                         e.preventDefault();
@@ -166,23 +166,23 @@ export default function PropertyDetails({
           {/* 2. Basic Meta */}
           <div className="details-block basic-meta-block">
             <h2 className="details-heading">
-              {dict?.property?.basics_title || (locale === 'es' ? 'Resumen de la propiedad' : 'Property Overview')}
+              {dict?.property?.basics_title || 'Property Overview'}
             </h2>
             <div className="meta-grid-container">
               <div className="meta-info-item info-price">
-                <span className="meta-info-label">{dict?.property?.price_label || (locale === 'es' ? 'Precio' : 'Price')}</span>
+                <span className="meta-info-label">{dict?.property?.price_label || 'Price'}</span>
                 <span className="meta-info-value">{price}</span>
               </div>
               <div className="meta-info-item info-type">
-                <span className="meta-info-label">{locale === 'es' ? 'Tipo de propiedad' : 'Property Type'}</span>
+                <span className="meta-info-label">{dict?.property?.type_label || 'Property Type'}</span>
                 <span className="meta-info-value">{property.category?.title || '—'}</span>
               </div>
               <div className="meta-info-item info-address">
-                <span className="meta-info-label">{dict?.property?.address_label || (locale === 'es' ? 'Dirección' : 'Address')}</span>
+                <span className="meta-info-label">{dict?.property?.address_label || 'Address'}</span>
                 <span className="meta-info-value">{property.address || '—'}</span>
               </div>
               <div className="meta-info-item info-updated">
-                <span className="meta-info-label">{dict?.property?.status_label || (locale === 'es' ? 'Estado' : 'Status')}</span>
+                <span className="meta-info-label">{dict?.property?.status_label || 'Status'}</span>
                 <span className="meta-info-value">{statusLabel}</span>
                 <div className="meta-info-subtext">
                   {dict?.property?.updated_label || 'Last Updated'}: {formatDate(property._updatedAt)}
@@ -245,14 +245,14 @@ export default function PropertyDetails({
           <ContactModal
             isOpen={isContactModalOpen}
             onClose={handleCloseModal}
-            title={submitSuccess ? "" : (locale === 'es' ? 'Solicitar Asesoramiento' : 'Request Guidance')}
+            title={submitSuccess ? "" : (dict?.contact?.request_guidance || 'Request Guidance')}
             subtitle={submitSuccess ? "" : property.title}
             footer={
               submitSuccess ? (
                 <Button 
                   type="button" 
                   variant="dark" 
-                  label={dict?.contact?.success?.close || (locale === 'es' ? 'Volver al inicio' : 'Back to start')} 
+                  label={dict?.contact?.success?.close || 'Back to start'} 
                   className="form-submit-btn"
                   onClick={handleCloseModal}
                 />
@@ -261,7 +261,7 @@ export default function PropertyDetails({
                   type="submit" 
                   form="contact-modal-general-form"
                   variant="dark" 
-                  label={isSubmitting ? (dict?.contact?.sending || (locale === 'es' ? 'Enviando...' : 'Sending...')) : (dict?.contact?.general?.submit || (locale === 'es' ? 'ENVIAR MENSAJE' : 'SEND MESSAGE'))} 
+                  label={isSubmitting ? (dict?.contact?.sending || 'Sending...') : (dict?.contact?.general?.submit || 'SEND MESSAGE')} 
                   className="form-submit-btn" 
                   showArrow={!isSubmitting}
                   disabled={isSubmitting}

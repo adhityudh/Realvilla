@@ -80,7 +80,34 @@
         "required": "*"
       },
       "submit": "SOLICITAR ESTUDIO"
-    }
+    },
+    "success": {
+      "title": "¡Mensaje Enviado!",
+      "subtitle": "Gracias por contactarnos. Nuestros especialistas le responderán a la brevedad.",
+      "close": "Volver al inicio"
+    },
+    "sending": "Enviando...",
+    "validation": {
+      "required_fields": "Por favor, complete todos los campos obligatorios.",
+      "select_address": "Por favor, seleccione una dirección de la lista de sugerencias."
+    },
+    "suggestions": {
+      "typing": "Siga escribiendo el nombre de la calle...",
+      "searching": "Buscando sugerencias...",
+      "no_results": "No se encontraron sugerencias"
+    },
+    "map": {
+      "instructions": "Arrastre el marcador o haga clic en el mapa para ajustar la ubicación exacta.",
+      "apply_change": "Aplicar cambio de ubicación"
+    },
+    "geocode_error": {
+      "fallback_drag": "No se pudo encontrar una dirección para este punto. Intente arrastrar el pin más cerca de una calle.",
+      "fallback_general": "No se pudo encontrar una dirección para este punto.",
+      "no_address_found": "No se encontró ninguna dirección para el punto seleccionado.",
+      "api_not_enabled": "La API de Geocoding no está habilitada en su Google Cloud Console.",
+      "network_error": "Error de red al buscar la dirección."
+    },
+    "request_guidance": "Solicitar Asesoramiento"
   },
   "filter": {
     "title": "Filtros de Búsqueda",
@@ -149,6 +176,7 @@
     "basics_title": "Resumen de la propiedad",
     "price_label": "Precio",
     "address_label": "Dirección",
+    "type_label": "Tipo de propiedad",
     "updated_label": "Última actualización",
     "location_title": "Ubicación",
     "status_sold": "Vendido",

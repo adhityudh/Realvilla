@@ -742,4 +742,6 @@
 
 .apply-map-change-btn {
     padding: 0.8rem 1.8rem !important;
+    width: 100%;
+    justify-content: center;
 }

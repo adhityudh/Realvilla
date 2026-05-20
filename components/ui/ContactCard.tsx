@@ -178,38 +178,26 @@ export default function ContactCard({
             updateAddressSelected(true);
           } else {
             console.error('[reverseGeocode] Fallback Geocoder failed:', status);
-            let errMsg = locale === 'es'
-              ? 'No se pudo encontrar una dirección para este punto. Intente arrastrar el pin más cerca de una calle.'
-              : 'Failed to find an address for this location. Please try dragging the pin closer to a street.';
+            let errMsg = dict?.contact?.geocode_error?.fallback_drag || 'Failed to find an address for this location. Please try dragging the pin closer to a street.';
             if (status === 'ZERO_RESULTS') {
-              errMsg = locale === 'es'
-                ? 'No se encontró ninguna dirección para el punto seleccionado.'
-                : 'No address found for the selected point.';
+              errMsg = dict?.contact?.geocode_error?.no_address_found || 'No address found for the selected point.';
             } else if (status === 'REQUEST_DENIED') {
-              errMsg = locale === 'es'
-                ? 'La API de Geocoding no está habilitada en su Google Cloud Console.'
-                : 'Geocoding API is not enabled in your Google Cloud Console.';
+              errMsg = dict?.contact?.geocode_error?.api_not_enabled || 'Geocoding API is not enabled in your Google Cloud Console.';
             }
             setGeocodingError(errMsg);
           }
         });
       } else {
         const errData = res.status !== 404 ? await res.json().catch(() => ({})) : {};
-        let errMsg = locale === 'es'
-          ? 'No se pudo encontrar una dirección para este punto.'
-          : 'Failed to find an address for this location.';
+        let errMsg = dict?.contact?.geocode_error?.fallback_general || 'Failed to find an address for this location.';
         if (res.status === 404 || errData.status === 'ZERO_RESULTS') {
-          errMsg = locale === 'es'
-            ? 'No se encontró ninguna dirección para el punto seleccionado.'
-            : 'No address found for the selected point.';
+          errMsg = dict?.contact?.geocode_error?.no_address_found || 'No address found for the selected point.';
         }
         setGeocodingError(errMsg);
       }
     } catch (err) {
       console.error('[reverseGeocode] Network/Server error during reverse geocoding:', err);
-      let errMsg = locale === 'es'
-        ? 'Error de red al buscar la dirección.'
-        : 'Network error looking up address.';
+      let errMsg = dict?.contact?.geocode_error?.network_error || 'Network error looking up address.';
       setGeocodingError(errMsg);
     }
   };
@@ -217,7 +205,7 @@ export default function ContactCard({
   const hasPendingMapChange = useMemo(() => {
     if (!coordinates || !tempCoordinates) return false;
     return Math.abs(coordinates.lat - tempCoordinates.lat) > 0.00001 ||
-           Math.abs(coordinates.lng - tempCoordinates.lng) > 0.00001;
+      Math.abs(coordinates.lng - tempCoordinates.lng) > 0.00001;
   }, [coordinates, tempCoordinates]);
 
   // Input binding states
@@ -340,16 +328,14 @@ export default function ContactCard({
     if (formType === 'sell') {
       if (!selectedMunicipality || !selectedPropertyType) {
         setSubmitError(
-          dict?.filter?.no_results ? "Por favor, complete todos los campos obligatorios." : "Please fill out all required fields."
+          dict?.contact?.validation?.required_fields || "Please fill out all required fields."
         );
         updateIsSubmitting(false);
         return;
       }
       if (!isAddressSelected) {
         setSubmitError(
-          locale === 'es'
-            ? "Por favor, seleccione una dirección de la lista de sugerencias."
-            : "Please select a valid address from the suggestions list."
+          dict?.contact?.validation?.select_address || "Please select a valid address from the suggestions list."
         );
         updateIsSubmitting(false);
         return;
@@ -626,15 +612,15 @@ export default function ContactCard({
           <div className="select-options-list">
             {isTypingPrefix ? (
               <div className="select-no-results" style={{ fontSize: 'var(--text-base-sm)' }}>
-                {locale === 'es' ? 'Siga escribiendo el nombre de la calle...' : 'Continue typing the street name...'}
+                {dict?.contact?.suggestions?.typing || 'Continue typing the street name...'}
               </div>
             ) : isLoadingSuggestions ? (
               <div className="select-no-results" style={{ fontSize: 'var(--text-base-sm)' }}>
-                {locale === 'es' ? 'Buscando sugerencias...' : 'Searching suggestions...'}
+                {dict?.contact?.suggestions?.searching || 'Searching suggestions...'}
               </div>
             ) : suggestions.length === 0 ? (
               <div className="select-no-results" style={{ fontSize: 'var(--text-base-sm)' }}>
-                {locale === 'es' ? 'No se encontraron sugerencias' : 'No suggestions found'}
+                {dict?.contact?.suggestions?.no_results || 'No suggestions found'}
               </div>
             ) : (
               suggestions.map((sug, idx) => (
@@ -998,9 +984,7 @@ export default function ContactCard({
           <div className="sell-form-map-instructions">
             <span>📍</span>
             <span>
-              {locale === 'es'
-                ? 'Arrastre el marcador o haga clic en el mapa para ajustar la ubicación exacta.'
-                : 'Drag the marker or click on the map to pinpoint your exact property location.'}
+              {dict?.contact?.map?.instructions || 'Drag the marker or click on the map to pinpoint your exact property location.'}
             </span>
           </div>
 
@@ -1015,8 +999,8 @@ export default function ContactCard({
             <div className="apply-map-change-container">
               <Button
                 type="button"
-                variant="dark"
-                label={locale === 'es' ? 'Aplicar cambio de ubicación' : 'Apply location change'}
+                variant="pill"
+                label={dict?.contact?.map?.apply_change || 'Apply location change'}
                 onClick={() => {
                   setCoordinates(tempCoordinates);
                   reverseGeocode(tempCoordinates.lat, tempCoordinates.lng);

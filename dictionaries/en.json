@@ -80,7 +80,34 @@
         "required": "*"
       },
       "submit": "REQUEST STUDY"
-    }
+    },
+    "success": {
+      "title": "Message Sent!",
+      "subtitle": "Thank you for contacting us. Our specialists will respond shortly.",
+      "close": "Back to start"
+    },
+    "sending": "Sending...",
+    "validation": {
+      "required_fields": "Please fill out all required fields.",
+      "select_address": "Please select a valid address from the suggestions list."
+    },
+    "suggestions": {
+      "typing": "Continue typing the street name...",
+      "searching": "Searching suggestions...",
+      "no_results": "No suggestions found"
+    },
+    "map": {
+      "instructions": "Drag the marker or click on the map to pinpoint your exact property location.",
+      "apply_change": "Apply location change"
+    },
+    "geocode_error": {
+      "fallback_drag": "Failed to find an address for this location. Please try dragging the pin closer to a street.",
+      "fallback_general": "Failed to find an address for this location.",
+      "no_address_found": "No address found for the selected point.",
+      "api_not_enabled": "Geocoding API is not enabled in your Google Cloud Console.",
+      "network_error": "Network error looking up address."
+    },
+    "request_guidance": "Request Guidance"
   },
   "filter": {
     "title": "Search Filters",
@@ -149,6 +176,7 @@
     "basics_title": "Property Overview",
     "price_label": "Price",
     "address_label": "Address",
+    "type_label": "Property Type",
     "updated_label": "Last Updated",
     "location_title": "Location",
     "status_sold": "Sold",
