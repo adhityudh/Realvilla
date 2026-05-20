@@ -185,6 +185,7 @@
         .valuation-cta-secondary {
             --btn-link-color: var(--text-black);
             --btn-link-border: var(--border-strong);
+            margin-top: 0.5rem;
         }
 
         .valuation-cta-secondary:hover {
