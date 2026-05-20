@@ -122,13 +122,13 @@ function TaxModal({ data, condition, price, isEs, onClose }: { data: any; condit
 }
 
 // ─── Amortization Modal ───────────────────────────────────────
-function AmortModal({ data, principal, rate, term, onClose }: { data: any; principal: number; rate: number; term: number; onClose: () => void }) {
+function AmortModal({ dict, principal, rate, term, onClose }: { dict: any; principal: number; rate: number; term: number; onClose: () => void }) {
   useEffect(() => {
     document.body.style.overflow = 'hidden';
     return () => {
       document.body.style.overflow = '';
     };
-  }, [data]);
+  }, [dict]);
 
   const monthlyRate = rate / 100 / 12;
   const n = term * 12;
@@ -152,6 +152,15 @@ function AmortModal({ data, principal, rate, term, onClose }: { data: any; princ
     return res;
   }, [principal, rate, term]);
 
+  const labels = dict?.mortgage || {};
+  const amortTableTitle = labels.amortTableTitle ?? 'Amortization Table';
+  const amortTableSubtitle = labels.amortTableSubtitle ?? 'Yearly payment breakdown';
+  const amortLabelYear = labels.amortLabelYear ?? 'Year';
+  const amortLabelInstallment = labels.amortLabelInstallment ?? 'Annual Payment';
+  const amortLabelCapital = labels.amortLabelCapital ?? 'Capital';
+  const amortLabelInterest = labels.amortLabelInterest ?? 'Interest';
+  const amortLabelBalance = labels.amortLabelBalance ?? 'Balance';
+
   return (
     <div className="msim-modal-overlay-container">
       <div className="msim-modal-bg-overlay" onClick={onClose} />
@@ -159,8 +168,8 @@ function AmortModal({ data, principal, rate, term, onClose }: { data: any; princ
         {/* Header */}
         <div className="msim-modal-header">
           <div className="msim-modal-header-text">
-            <h3 className="msim-modal-title">{data.amortTableTitle}</h3>
-            <p className="msim-modal-subtitle">{data.amortTableSubtitle}</p>
+            <h3 className="msim-modal-title">{amortTableTitle}</h3>
+            <p className="msim-modal-subtitle">{amortTableSubtitle}</p>
           </div>
           <button className="msim-modal-close" onClick={onClose} aria-label="Close">
             <img src="/icons/close.svg" alt="Close" width="22" height="22" />
@@ -173,11 +182,11 @@ function AmortModal({ data, principal, rate, term, onClose }: { data: any; princ
             <table className="msim-amort-table">
               <thead>
                 <tr>
-                  <th>{data.amortLabelYear}</th>
-                  <th>{data.amortLabelInstallment}</th>
-                  <th>{data.amortLabelCapital}</th>
-                  <th>{data.amortLabelInterest}</th>
-                  <th>{data.amortLabelBalance}</th>
+                  <th>{amortLabelYear}</th>
+                  <th>{amortLabelInstallment}</th>
+                  <th>{amortLabelCapital}</th>
+                  <th>{amortLabelInterest}</th>
+                  <th>{amortLabelBalance}</th>
                 </tr>
               </thead>
               <tbody>
@@ -212,6 +221,33 @@ export default function BuyMortgageSimSection({ data, dict, contextData }: { dat
 
   // Merge global calculator settings if available, otherwise fallback to local data fields
   const L = { ...data, ...(contextData?.mortgageCalculator || {}) };
+
+  // Resolve standard labels from the dynamic translation dictionary
+  const labels = dict?.mortgage || {};
+  const labelPrice = labels.labelPrice ?? 'Property Price';
+  const labelSavings = labels.labelSavings ?? 'Your Savings';
+  const labelTerm = labels.labelTerm ?? 'Loan Term';
+  const unitYears = labels.unitYears ?? 'years';
+  const labelInterestType = labels.labelInterestType ?? 'Interest Type';
+  const labelFixed = labels.labelFixed ?? 'Fixed';
+  const labelVariable = labels.labelVariable ?? 'Variable';
+  const labelCondition = labels.labelCondition ?? 'Property Condition';
+  const labelNew = labels.labelNew ?? 'New Build';
+  const labelResale = labels.labelResale ?? 'Resale';
+  const labelMonthlyInstallment = labels.labelMonthlyInstallment ?? 'Your Monthly Payment';
+  const labelMortgageAmount = labels.labelMortgageAmount ?? 'Mortgage amount';
+  const labelFinancingPercent = labels.labelFinancingPercent ?? 'Financing percentage';
+  const labelPropertyPrice = labels.labelPropertyPrice ?? 'Property price';
+  const labelPurchaseCosts = labels.labelPurchaseCosts ?? 'Taxes & purchase costs';
+  const labelSavingsResult = labels.labelSavingsResult ?? 'Your savings';
+  const labelMortgageResult = labels.labelMortgageResult ?? 'Mortgage amount';
+  const labelInterestResult = labels.labelInterestResult ?? 'Mortgage interest';
+  const labelTotalWithMortgage = labels.labelTotalWithMortgage ?? 'Property total cost with mortgage';
+  const labelViewAmortization = labels.labelViewAmortization ?? 'View amortization table';
+
+  const chartLabelSavings = labels.chartLabelSavings ?? 'Your savings';
+  const chartLabelMortgage = labels.chartLabelMortgage ?? 'Mortgage';
+  const chartLabelInterest = labels.chartLabelInterest ?? 'Interest';
 
   // Strict retrieval without hardcoded fallbacks
   const priceMin = L.priceMin;
@@ -386,7 +422,7 @@ export default function BuyMortgageSimSection({ data, dict, contextData }: { dat
 
             {/* Price */}
             <div className="msim-field">
-              <label className="msim-label">{L.labelPrice}</label>
+              <label className="msim-label">{labelPrice}</label>
               <div className="msim-input-group">
                 <span className="msim-currency-symbol">€</span>
                 <input className="msim-text-input" value={priceInput}
@@ -406,7 +442,7 @@ export default function BuyMortgageSimSection({ data, dict, contextData }: { dat
 
             {/* Savings */}
             <div className="msim-field">
-              <label className="msim-label">{L.labelSavings}</label>
+              <label className="msim-label">{labelSavings}</label>
               <div className="msim-input-group msim-input-group--no-border">
                 <span className="msim-currency-symbol">€</span>
                 <input className="msim-text-input" value={savingsInput}
@@ -433,7 +469,7 @@ export default function BuyMortgageSimSection({ data, dict, contextData }: { dat
 
             {/* Loan Term */}
             <div className="msim-field">
-              <label className="msim-label">{L.labelTerm}</label>
+              <label className="msim-label">{labelTerm}</label>
               <div className="msim-input-group msim-input-group--no-border">
                 <input className="msim-text-input" value={termInput}
                   onChange={e => {
@@ -444,7 +480,7 @@ export default function BuyMortgageSimSection({ data, dict, contextData }: { dat
                   }}
                   onBlur={handleTermBlur}
                   onKeyDown={e => e.key === 'Enter' && handleTermBlur()} />
-                <span className="msim-value-pct">{L.unitYears}</span>
+                <span className="msim-value-pct">{unitYears}</span>
               </div>
               <Slider value={term} min={loanTermMin} max={loanTermMax} step={1}
                 onChange={v => { setTerm(v); setTermInput(String(v)); }} />
@@ -454,17 +490,17 @@ export default function BuyMortgageSimSection({ data, dict, contextData }: { dat
             {/* Interest Type */}
             <div className="msim-field msim-field--row">
               <label className="msim-label">
-                {L.labelInterestType}
+                {labelInterestType}
                 {L.interestTooltip && <Tooltip content={L.interestTooltip} />}
               </label>
               <div className="msim-interest-controls">
                 <label className={`msim-radio-label ${rateType === 'fixed' ? 'msim-radio-label--active' : ''}`}>
                   <input type="radio" name="rateType" value="fixed" checked={rateType === 'fixed'} onChange={() => setRateType('fixed')} />
-                  {L.labelFixed}
+                  {labelFixed}
                 </label>
                 <label className={`msim-radio-label ${rateType === 'variable' ? 'msim-radio-label--active' : ''}`}>
                   <input type="radio" name="rateType" value="variable" checked={rateType === 'variable'} onChange={() => setRateType('variable')} />
-                  {L.labelVariable}
+                  {labelVariable}
                 </label>
                 <div className="msim-rate-stepper">
                   <button className="msim-step-btn" onClick={() => setActiveRate(r => Math.max(rateMin, parseFloat((r - rateStep).toFixed(2))))}>−</button>
@@ -491,15 +527,15 @@ export default function BuyMortgageSimSection({ data, dict, contextData }: { dat
             {/* Property Condition */}
             {L.enablePropertyCondition && (
               <div className="msim-field msim-field--row">
-                <label className="msim-label">{L.labelCondition}</label>
+                <label className="msim-label">{labelCondition}</label>
                 <div className="msim-radio-group">
                   <label className={`msim-radio-label ${condition === 'new' ? 'msim-radio-label--active' : ''}`}>
                     <input type="radio" name="condition" value="new" checked={condition === 'new'} onChange={() => setCondition('new')} />
-                    {L.labelNew}
+                    {labelNew}
                   </label>
                   <label className={`msim-radio-label ${condition === 'resale' ? 'msim-radio-label--active' : ''}`}>
                     <input type="radio" name="condition" value="resale" checked={condition === 'resale'} onChange={() => setCondition('resale')} />
-                    {L.labelResale}
+                    {labelResale}
                   </label>
                 </div>
               </div>
@@ -510,7 +546,7 @@ export default function BuyMortgageSimSection({ data, dict, contextData }: { dat
           <div className="msim-results-col">
             {/* Monthly Payment Hero */}
             <div className="msim-result-hero">
-              <div className="msim-label">{L.labelMonthlyInstallment}</div>
+              <div className="msim-label">{labelMonthlyInstallment}</div>
               <div className="msim-result-hero-value">{fmtDec(monthlyPayment)}</div>
             </div>
 
@@ -518,14 +554,14 @@ export default function BuyMortgageSimSection({ data, dict, contextData }: { dat
             <div className="msim-result-stats">
               <div className="msim-result-stat-row">
                 <span className="msim-stat-label">
-                  {L.labelMortgageAmount}
+                  {labelMortgageAmount}
                   {L.tooltipMortgageAmount && <Tooltip content={L.tooltipMortgageAmount} />}
                 </span>
                 <span className="msim-stat-value">{fmt(principal)}</span>
               </div>
               <div className="msim-result-stat-row">
                 <span className="msim-stat-label">
-                  {L.labelFinancingPercent}
+                  {labelFinancingPercent}
                   {L.tooltipFinancingPercent && <Tooltip content={L.tooltipFinancingPercent} />}
                 </span>
                 <span className="msim-stat-value">{ltvPct}%</span>
@@ -536,7 +572,7 @@ export default function BuyMortgageSimSection({ data, dict, contextData }: { dat
             <div className="msim-breakdown">
               <div className="msim-breakdown-row">
                 <span className="msim-breakdown-dot msim-dot--gold" />
-                <span className="msim-breakdown-label">{L.labelPropertyPrice}</span>
+                <span className="msim-breakdown-label">{labelPropertyPrice}</span>
                 <span className="msim-breakdown-value">{fmt(price)}</span>
               </div>
             </div>
@@ -560,9 +596,9 @@ export default function BuyMortgageSimSection({ data, dict, contextData }: { dat
 
               {/* Labels below bottom bar */}
               <div className="msim-bar-labels">
-                <span style={{ width: `${savingsPct}%`, minWidth: 0 }}>{L.chartLabelSavings}</span>
-                <span style={{ width: `${principalPct}%`, minWidth: 0, textAlign: 'center' }}>{L.chartLabelMortgage}</span>
-                <span style={{ width: `${interestPct}%`, minWidth: 0, textAlign: 'right' }}>{L.chartLabelInterest}</span>
+                <span style={{ width: `${savingsPct}%`, minWidth: 0 }}>{chartLabelSavings}</span>
+                <span style={{ width: `${principalPct}%`, minWidth: 0, textAlign: 'center' }}>{chartLabelMortgage}</span>
+                <span style={{ width: `${interestPct}%`, minWidth: 0, textAlign: 'right' }}>{chartLabelInterest}</span>
               </div>
             </div>
 
@@ -570,27 +606,27 @@ export default function BuyMortgageSimSection({ data, dict, contextData }: { dat
             <div className="msim-breakdown">
               <div className="msim-breakdown-row">
                 <span className="msim-breakdown-dot msim-dot--teal-light" />
-                <span className="msim-breakdown-label">{L.labelSavingsResult}</span>
+                <span className="msim-breakdown-label">{labelSavingsResult}</span>
                 <span className="msim-breakdown-value">{fmt(clampedSavings)}</span>
               </div>
               <div className="msim-breakdown-row">
                 <span className="msim-breakdown-dot msim-dot--teal" />
-                <span className="msim-breakdown-label">{L.labelMortgageResult}</span>
+                <span className="msim-breakdown-label">{labelMortgageResult}</span>
                 <span className="msim-breakdown-value">{fmt(principal)}</span>
               </div>
               <div className="msim-breakdown-row">
                 <span className="msim-breakdown-dot msim-dot--teal-dark" />
-                <span className="msim-breakdown-label">{L.labelInterestResult}</span>
+                <span className="msim-breakdown-label">{labelInterestResult}</span>
                 <span className="msim-breakdown-value">{fmt(totalInterest)}</span>
               </div>
               <div className="msim-breakdown-row msim-breakdown-row--total">
-                <span className="msim-breakdown-label msim-breakdown-label--bold">{L.labelTotalWithMortgage}</span>
+                <span className="msim-breakdown-label msim-breakdown-label--bold">{labelTotalWithMortgage}</span>
                 <span className="msim-breakdown-value msim-breakdown-value--bold">{fmt(totalWithMortgage)}</span>
               </div>
               <div className="msim-breakdown-row">
                 <span className="msim-breakdown-label msim-breakdown-label--bold">
                   <button className="msim-costs-link msim-costs-link--bold" onClick={() => setTaxModalOpen(true)}>
-                    {L.labelPurchaseCosts}
+                    {labelPurchaseCosts}
                     <span className="msim-costs-info-icon">
                       <img src="/icons/info.svg" alt="Info" />
                     </span>
@@ -602,7 +638,7 @@ export default function BuyMortgageSimSection({ data, dict, contextData }: { dat
 
             {/* Amortization link */}
             <button className="btn-link-styled msim-amort-link" onClick={() => setAmortModalOpen(true)}>
-              {L.labelViewAmortization}
+              {labelViewAmortization}
               <StretchArrow className="btn-stretch-arrow" />
             </button>
           </div>
@@ -614,7 +650,7 @@ export default function BuyMortgageSimSection({ data, dict, contextData }: { dat
 
       {/* Modals */}
       {taxModalOpen && <TaxModal data={L} condition={condition} price={price} isEs={locale === 'es'} onClose={() => setTaxModalOpen(false)} />}
-      {amortModalOpen && <AmortModal data={L} principal={principal} rate={activeRate} term={term} onClose={() => setAmortModalOpen(false)} />}
+      {amortModalOpen && <AmortModal dict={dict} principal={principal} rate={activeRate} term={term} onClose={() => setAmortModalOpen(false)} />}
     </section>
   );
 }
