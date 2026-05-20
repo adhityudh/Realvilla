@@ -234,10 +234,21 @@ export default function FilterSidebar({
 
     sortedCategories.forEach((cat: any) => {
       if (groups[cat.title]) {
+        const sortOrder: string = cat.filterSortOrder || 'default';
+        const defs = [...groups[cat.title]].sort((a: any, b: any) => {
+          if (sortOrder === 'alphabetical') {
+            const aLabel = (a.shortLabel || a.longLabel || '').toLowerCase();
+            const bLabel = (b.shortLabel || b.longLabel || '').toLowerCase();
+            return aLabel.localeCompare(bLabel);
+          }
+          // Default: sort by filterOrder
+          return (a?.filter?.filterOrder || 0) - (b?.filter?.filterOrder || 0);
+        });
+
         if (cat.ungroupFilters) {
-          blocks.push({ type: 'ungrouped', defs: groups[cat.title], title: cat.title });
+          blocks.push({ type: 'ungrouped', defs, title: cat.title });
         } else {
-          blocks.push({ type: 'group', title: cat.title, defs: groups[cat.title] });
+          blocks.push({ type: 'group', title: cat.title, defs });
         }
         delete groups[cat.title]; // Mark as processed
       }
@@ -550,6 +561,36 @@ export default function FilterSidebar({
       );
     }
 
+    if (type === 'checkbox') {
+      const currentValue = !!filterValues[filterId];
+
+      return (
+        <div className="filter-group" key={filterId} style={{ marginTop: '0.25rem' }}>
+          <div
+            className={`accordion-option-row ${currentValue ? 'selected' : ''}`}
+            onClick={() => setFilterValues(prev => ({ ...prev, [filterId]: !currentValue }))}
+          >
+            <div className="custom-checkbox-wrapper">
+              <input
+                type="checkbox"
+                checked={currentValue}
+                onChange={() => { }}
+                className="accordion-checkbox-hidden"
+              />
+              <span className="custom-checkbox-box">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+              </span>
+            </div>
+            <span className="accordion-option-label" style={{ fontWeight: 500 }}>
+              {label}
+            </span>
+          </div>
+        </div>
+      );
+    }
+
     if (type === 'select' || type === 'multiSelect') {
       const options = def.filter?.selectOptions || [];
       const selected = filterValues[filterId] || (type === 'multiSelect' ? [] : '');
@@ -628,7 +669,7 @@ export default function FilterSidebar({
       const defaultVal = options[0]?.value ?? '';
       return val !== defaultVal;
     }
-    if (type === 'boolean') {
+    if (type === 'boolean' || type === 'checkbox') {
       return !!val;
     }
     if (type === 'select') {
@@ -655,7 +696,7 @@ export default function FilterSidebar({
       const defaultVal = options[0]?.value ?? '';
       return val !== defaultVal ? 1 : 0;
     }
-    if (type === 'boolean') {
+    if (type === 'boolean' || type === 'checkbox') {
       return val ? 1 : 0;
     }
     if (type === 'select') {

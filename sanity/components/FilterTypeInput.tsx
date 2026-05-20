@@ -20,8 +20,8 @@ export function FilterTypeInput(props: StringInputProps) {
     }
     
     if (valueType === 'boolean') {
-      // Boolean fields only get boolean toggle
-      return val === 'boolean'
+      // Boolean fields get boolean toggle or checkbox
+      return val === 'boolean' || val === 'checkbox'
     }
     
     if (valueType === 'select') {

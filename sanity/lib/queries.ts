@@ -743,6 +743,7 @@ export const PROPERTY_META_QUERY = groq`
       _id,
       "title": coalesce(title[$language], title.en),
       filterGroupDisplayOrder,
+      filterSortOrder,
       ungroupFilters
     },
     "standaloneCategories": *[_type == "propertyCategory"] | order(order asc) {

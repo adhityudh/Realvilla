@@ -153,6 +153,7 @@ export const propertyMeta = defineType({
               { title: 'Range Slider', value: 'rangeSlider' },
               { title: 'Prefix Range (Any, 1+, 2+...)', value: 'prefixRange' },
               { title: 'Boolean Toggle', value: 'boolean' },
+              { title: 'Checkbox', value: 'checkbox' },
               { title: 'Single Select', value: 'select' },
               { title: 'Multi Select', value: 'multiSelect' },
             ],
@@ -310,9 +311,10 @@ export const propertyMeta = defineType({
       longLabel: 'longLabel.en',
       valueType: 'valueType',
       isHighlighted: 'isHighlighted',
+      categoryTitle: 'category.title.en',
     },
-    prepare({ shortLabel, longLabel, valueType, isHighlighted }) {
-      const badges = [valueType, isHighlighted ? '⭐ highlighted' : ''].filter(Boolean).join(' · ')
+    prepare({ shortLabel, longLabel, valueType, isHighlighted, categoryTitle }) {
+      const badges = [categoryTitle, valueType, isHighlighted ? '⭐ highlighted' : ''].filter(Boolean).join(' · ')
       return {
         title: `${shortLabel || 'Untitled'} — ${longLabel || ''}`,
         subtitle: badges,

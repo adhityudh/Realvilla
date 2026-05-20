@@ -202,7 +202,7 @@ export default function BuyPropertiesSection({ data, dict, filterMeta: initialMe
           if (!def) return;
 
           const type = def.filter?.filterType;
-          if (type === 'boolean' && val === true) {
+          if ((type === 'boolean' || type === 'checkbox') && val === true) {
             baseFilter += ` && count(meta[(metaKey._ref == "${cleanMetaId}" || metaKey._ref == "drafts.${cleanMetaId}") && booleanValue == true]) > 0`;
           } else if (type === 'rangeSlider') {
             const isDouble = def.filter?.isDoubleSlider === true;

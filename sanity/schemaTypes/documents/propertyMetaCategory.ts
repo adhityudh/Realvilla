@@ -19,6 +19,21 @@ export const propertyMetaCategory = defineType({
       initialValue: 0,
     }),
     defineField({
+      name: 'filterSortOrder',
+      title: 'Filter Items Sort Order',
+      type: 'string',
+      description: 'How the filters inside this category group are sorted.',
+      options: {
+        list: [
+          { title: 'Default (Meta Property Filter Order)', value: 'default' },
+          { title: 'Alphabetical', value: 'alphabetical' },
+        ],
+        layout: 'radio',
+        direction: 'horizontal',
+      },
+      initialValue: 'default',
+    }),
+    defineField({
       name: 'ungroupFilters',
       title: 'Ungroup Filters',
       type: 'boolean',
@@ -27,12 +42,14 @@ export const propertyMetaCategory = defineType({
     }),
   ],
   preview: {
-    select: { title: 'title.en', order: 'filterGroupDisplayOrder' },
-    prepare({ title, order }) {
+    select: { title: 'title.en', order: 'filterGroupDisplayOrder', sort: 'filterSortOrder' },
+    prepare({ title, order, sort }) {
+      const sortLabel = sort === 'alphabetical' ? 'A–Z' : 'Default';
       return {
         title: title || 'Untitled Category',
-        subtitle: `Filter Order: ${order ?? 0}`
+        subtitle: `Filter Order: ${order ?? 0} · Sort: ${sortLabel}`
       }
     },
   },
 })
+
