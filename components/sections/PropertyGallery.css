@@ -71,7 +71,7 @@
 
 .breadcrumb-logo {
   display: block;
-  opacity: 0.85;
+  opacity: 0.8;
   transition: opacity 0.3s var(--ease-smooth);
   /* Force crisp rendering for raster content inside SVG */
   image-rendering: -webkit-optimize-contrast;
@@ -495,7 +495,6 @@
   font-weight: var(--fw-extrabold);
   letter-spacing: var(--ls-wider);
   color: var(--text-black);
-  opacity: 0.85;
 }
 
 .summary-meta-dot {

@@ -1,5 +1,5 @@
 import { PresentationIcon } from '@sanity/icons'
-import { defineField, defineType } from 'sanity'
+import { ALL_FIELDS_GROUP, defineField, defineType } from 'sanity'
 import { SectionSelector } from '../../components/SectionSelector'
 import { ComponentSelector } from '../../components/ComponentSelector'
 
@@ -8,6 +8,11 @@ export const heroSection = defineType({
   title: 'Hero Section',
   type: 'object',
   icon: PresentationIcon,
+  groups: [
+    { name: 'content', title: 'Content', default: true },
+    { name: 'advanced', title: 'Advanced' },
+    { ...ALL_FIELDS_GROUP, hidden: true },
+  ],
   fields: [
     defineField({
       name: 'id',
@@ -15,41 +20,64 @@ export const heroSection = defineType({
       type: 'string',
       description: 'Used as an anchor identifier (e.g. for smooth scrolling links like #about).',
       initialValue: 'hero',
+    group: 'advanced',
+}),
+    defineField({
+      name: 'disableEntranceAnimation',
+      title: 'Disable Entrance Animation',
+      description: 'If checked, the section will load immediately without fade-in/slide-up animations.',
+      type: 'boolean',
+      initialValue: false,
+      group: 'advanced',
+    }),
+    defineField({
+      name: 'disableHeaderEntranceAnimation',
+      title: 'Disable Header Entrance Animation',
+      description: 'If checked, the section header (tagline, headline, intro) will load immediately without entrance animations.',
+      type: 'boolean',
+      initialValue: false,
+      group: 'advanced',
     }),
     defineField({
       name: 'title',
       title: 'Title',
       type: 'string',
-    }),
+    group: 'content',
+}),
     defineField({
       name: 'subtitle',
       title: 'Subtitle',
       type: 'text',
-    }),
+    group: 'content',
+}),
     defineField({
       name: 'desktopVideoMP4',
       title: 'Desktop Video (MP4 - H.265)',
       type: 'file',
-      options: { accept: 'video/mp4' }
-    }),
+      options: { accept: 'video/mp4' },
+    group: 'content',
+}),
     defineField({
       name: 'desktopVideoWebM',
       title: 'Desktop Video (WebM - VP9)',
       type: 'file',
-      options: { accept: 'video/webm' }
-    }),
+      options: { accept: 'video/webm' },
+    group: 'content',
+}),
     defineField({
       name: 'mobileVideoMP4',
       title: 'Mobile Video (MP4 - H.265)',
       type: 'file',
-      options: { accept: 'video/mp4' }
-    }),
+      options: { accept: 'video/mp4' },
+    group: 'content',
+}),
     defineField({
       name: 'mobileVideoWebM',
       title: 'Mobile Video (WebM - VP9)',
       type: 'file',
-      options: { accept: 'video/webm' }
-    }),
+      options: { accept: 'video/webm' },
+    group: 'content',
+}),
     defineField({
       name: 'ctas',
       title: 'Call to Actions',
@@ -134,8 +162,9 @@ export const heroSection = defineType({
             }
           }
         }
-      ]
-    }),
+      ],
+    group: 'content',
+}),
   ],
   preview: {
     select: {

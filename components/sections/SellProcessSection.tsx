@@ -7,7 +7,7 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { PortableText } from 'next-sanity';
 import { urlForImage } from '@/sanity/lib/image';
-import './MortgageProcessSection.css';
+import './SellProcessSection.css';
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
@@ -21,7 +21,7 @@ interface Step {
   icon?: { asset: { _id: string; url: string } };
 }
 
-interface MortgageProcessSectionProps {
+interface SellProcessSectionProps {
   data?: {
     disableEntranceAnimation?: boolean;
     disableHeaderEntranceAnimation?: boolean;
@@ -34,40 +34,40 @@ interface MortgageProcessSectionProps {
   };
 }
 
-export default function MortgageProcessSection({ data }: MortgageProcessSectionProps) {
+export default function SellProcessSection({ data }: SellProcessSectionProps) {
   const sectionRef = useRef<HTMLElement>(null);
   const stepRefs = useRef<(HTMLDivElement | null)[]>([]);
-  const [colsCount, setColsCount] = useState(4);
+  const [colsCount, setColsCount] = useState(2);
 
   // 📐 Sync Column Heights Dynamically for Perfect Baseline Symmetry (Per Row)
   useEffect(() => {
     const syncLayoutHeights = () => {
       const steps = stepRefs.current.filter(Boolean) as HTMLDivElement[];
       if (steps.length === 0) return;
- 
+
       // 1. Reset heights to auto first to calculate original scroll heights correctly
       steps.forEach(step => {
-        const header = step.querySelector('.mortgage-content-col') as HTMLElement;
-        const body = step.querySelector('.mortgage-step-body') as HTMLElement;
+        const header = step.querySelector('.sell-content-col') as HTMLElement;
+        const body = step.querySelector('.sell-step-body') as HTMLElement;
         if (header) header.style.height = 'auto';
         if (body) body.style.height = 'auto';
       });
- 
+
       // 2. Synchronize heights PER ROW
       const totalRows = Math.ceil(steps.length / colsCount);
       for (let r = 0; r < totalRows; r++) {
         const startIndex = r * colsCount;
         const endIndex = Math.min(startIndex + colsCount, steps.length);
         const rowSteps = steps.slice(startIndex, endIndex);
- 
+
         let maxHeaderH = 0;
         let maxBodyH = 0;
- 
+
         // Find max heights inside this row
         rowSteps.forEach(step => {
-          const header = step.querySelector('.mortgage-content-col') as HTMLElement;
-          const body = step.querySelector('.mortgage-step-body') as HTMLElement;
-          
+          const header = step.querySelector('.sell-content-col') as HTMLElement;
+          const body = step.querySelector('.sell-step-body') as HTMLElement;
+
           if (header) {
             const h = header.getBoundingClientRect().height;
             if (h > maxHeaderH) maxHeaderH = h;
@@ -77,12 +77,12 @@ export default function MortgageProcessSection({ data }: MortgageProcessSectionP
             if (h > maxBodyH) maxBodyH = h;
           }
         });
- 
+
         // Apply max heights to all items in this specific row
         rowSteps.forEach(step => {
-          const header = step.querySelector('.mortgage-content-col') as HTMLElement;
-          const body = step.querySelector('.mortgage-step-body') as HTMLElement;
-          
+          const header = step.querySelector('.sell-content-col') as HTMLElement;
+          const body = step.querySelector('.sell-step-body') as HTMLElement;
+
           if (header && maxHeaderH > 0) {
             header.style.height = `${maxHeaderH}px`;
           }
@@ -92,21 +92,21 @@ export default function MortgageProcessSection({ data }: MortgageProcessSectionP
         });
       }
     };
- 
+
     const handleSync = () => requestAnimationFrame(syncLayoutHeights);
     handleSync();
- 
+
     window.addEventListener('resize', handleSync);
     return () => window.removeEventListener('resize', handleSync);
   }, [data, colsCount]);
 
-  // 📱 Detect Active Grid Columns Responsively
+  // 📱 Detect Active Grid Columns Responsively (2 Cols on Desktop/Tablet, 1 Col on Mobile)
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth <= 1024) {
-        setColsCount(2); // Tablet & Mobile
+      if (window.innerWidth <= 768) {
+        setColsCount(1); // Mobile
       } else {
-        setColsCount(4); // Desktop
+        setColsCount(2); // Desktop & Tablet (User requested 2 columns on desktop)
       }
     };
     handleResize();
@@ -124,7 +124,7 @@ export default function MortgageProcessSection({ data }: MortgageProcessSectionP
       // 1. Animate Section Header
       if (!data?.disableHeaderEntranceAnimation) {
         gsap.fromTo(
-          '.mortgage-tagline, .mortgage-headline, .mortgage-intro',
+          '.sell-tagline, .sell-headline, .sell-body-text',
           { y: 35, opacity: 0, filter: 'blur(10px)' },
           {
             y: 0,
@@ -134,7 +134,7 @@ export default function MortgageProcessSection({ data }: MortgageProcessSectionP
             stagger: 0.15,
             ease: 'expo.out',
             scrollTrigger: {
-              trigger: '.mortgage-header',
+              trigger: '.sell-header-row',
               start: 'top 80%',
               toggleActions: 'play none none reverse',
             },
@@ -157,7 +157,7 @@ export default function MortgageProcessSection({ data }: MortgageProcessSectionP
               ease: 'power3.out',
               stagger: 0.1,
               scrollTrigger: {
-                trigger: '.mortgage-steps-list',
+                trigger: '.sell-steps-list',
                 start: 'top 80%',
                 toggleActions: 'play none none reverse',
               }
@@ -180,7 +180,7 @@ export default function MortgageProcessSection({ data }: MortgageProcessSectionP
               scrollTrigger: {
                 trigger: triggerEl,
                 start: 'top 80%', // Starts flowing as soon as the row enters the lower viewport
-                end: 'top 30%',   // Completes 100% of row flow when row reaches upper viewport (extremely snappy!)
+                end: 'top 30%',   // Completes 100% of row flow when row reaches upper viewport (snappy!)
                 scrub: 1,
               }
             });
@@ -190,10 +190,10 @@ export default function MortgageProcessSection({ data }: MortgageProcessSectionP
               const isFirstInRow = i % colsCount === 0 && i > 0;
               const isLastStep = i === steps.length - 1;
 
-              // A. If first in row, fill the left off-screen entering line first
-              if (isFirstInRow) {
+              // A. If first in row, fill the left off-screen entering line first (only if colsCount > 1)
+              if (isFirstInRow && colsCount > 1) {
                 rowTl.fromTo(
-                  `.step-left-progress-${i}`,
+                  `.sell-left-progress-${i}`,
                   { scaleX: 0 },
                   { scaleX: 1, ease: 'none', duration: 0.2 }
                 );
@@ -201,7 +201,7 @@ export default function MortgageProcessSection({ data }: MortgageProcessSectionP
 
               // B. Spotlight highlight for the timeline dot node
               rowTl.to(
-                `.step-dot-${i}`,
+                `.sell-dot-${i}`,
                 {
                   backgroundColor: 'var(--color-gold-dark)',
                   borderColor: 'var(--color-gold-dark)',
@@ -213,9 +213,9 @@ export default function MortgageProcessSection({ data }: MortgageProcessSectionP
                 isFirstInRow ? '+=0' : '-=0.05'
               );
 
-              // C. Spotlight highlight for the step number prefix (leaving title untouched)
+              // C. Spotlight highlight for the step number prefix
               rowTl.to(
-                `.step-item-${i} .mortgage-inline-number`,
+                `.sell-step-item-${i} .sell-inline-number`,
                 {
                   color: 'var(--color-gold-dark)',
                   duration: 0.15,
@@ -225,18 +225,18 @@ export default function MortgageProcessSection({ data }: MortgageProcessSectionP
               );
 
               // D. Main horizontal segment connecting line to the next step
-              if (!isLastStep && i < endIndex - 1) {
+              if (!isLastStep && i < endIndex - 1 && colsCount > 1) {
                 rowTl.fromTo(
-                  `.step-main-progress-${i}`,
+                  `.sell-main-progress-${i}`,
                   { scaleX: 0 },
                   { scaleX: 1, ease: 'none', duration: 0.4 }
                 );
               }
 
               // E. If last item of the row and NOT the last step overall, animate the stretch-right line
-              if (i === endIndex - 1 && i % colsCount === colsCount - 1 && i < steps.length - 1) {
+              if (i === endIndex - 1 && i % colsCount === colsCount - 1 && i < steps.length - 1 && colsCount > 1) {
                 rowTl.fromTo(
-                  `.step-main-progress-${i}`,
+                  `.sell-main-progress-${i}`,
                   { scaleX: 0 },
                   { scaleX: 1, ease: 'none', duration: 0.3 }
                 );
@@ -257,35 +257,34 @@ export default function MortgageProcessSection({ data }: MortgageProcessSectionP
 
   const { tagline, headline, intro, timelineMode, steps } = data;
 
-  const pathname = usePathname() || '';
-  const isMortgagePage = pathname.includes('/mortgage') || pathname.includes('/hipoteca');
-
   return (
     <section
-      className={`mortgage-process-section ${timelineMode ? 'mortgage-timeline-mode' : ''}`}
-      id={data?.id || 'process'}
+      className={`sell-process-section ${timelineMode ? 'sell-timeline-mode' : ''}`}
+      id={data?.id || 'sell-process'}
       ref={sectionRef}
     >
-      <div className="mortgage-container">
+      <div className="sell-container">
         {/* Header */}
-        {(tagline || headline || intro) && (
-          <header className="mortgage-header">
-            {tagline && <span className="mortgage-tagline">{tagline}</span>}
-            {headline && <h2 className="mortgage-headline">{headline}</h2>}
-            {intro && (
-              <div className="mortgage-intro">
+        <div className="sell-header-row">
+          <div className="sell-header-left">
+            {tagline && <span className="sell-tagline">{tagline}</span>}
+            {headline && <h2 className="sell-headline">{headline}</h2>}
+          </div>
+          {intro && (
+            <div className="sell-header-right">
+              <div className="sell-body-text">
                 {typeof intro === 'string' ? (
                   <p>{intro}</p>
                 ) : (
                   <PortableText value={intro} />
                 )}
               </div>
-            )}
-          </header>
-        )}
+            </div>
+          )}
+        </div>
 
         {/* Steps */}
-        <div className="mortgage-steps-list">
+        <div className="sell-steps-list">
           {steps?.map((step, index) => {
             const isLastInRow = index % colsCount === colsCount - 1;
             const isFirstInRow = index % colsCount === 0 && index > 0;
@@ -297,71 +296,69 @@ export default function MortgageProcessSection({ data }: MortgageProcessSectionP
             return (
               <div
                 key={index}
-                className={`mortgage-step-item step-item-${index}`}
+                className={`sell-step-item sell-step-item-${index}`}
                 ref={(el) => { stepRefs.current[index] = el; }}
               >
                 {/* 🌟 Dynamic Serpentine Timeline Lines & Dots */}
-                {timelineMode && (
+                {timelineMode && colsCount > 1 && (
                   <>
                     {/* Left entering off-screen line (First item of subsequent rows) */}
                     {isLeftEdge && (
-                      <div className="mortgage-timeline-left-line">
-                        <div className={`mortgage-timeline-progress step-left-progress-${index}`} />
+                      <div className="sell-timeline-left-line">
+                        <div className={`sell-timeline-progress sell-left-progress-${index}`} />
                       </div>
                     )}
 
                     {/* Main connecting line segment */}
                     {(index < steps.length - 1) && (
-                      <div className={`mortgage-timeline-line ${isRightEdge ? 'stretch-right' : ''}`}>
-                        <div className={`mortgage-timeline-progress step-main-progress-${index}`} />
+                      <div className={`sell-timeline-line ${isRightEdge ? 'stretch-right' : ''}`}>
+                        <div className={`sell-timeline-progress sell-main-progress-${index}`} />
                       </div>
                     )}
 
                     {/* Dynamic Timeline Dot Node */}
-                    <div className={`mortgage-timeline-dot step-dot-${index}`} />
+                    <div className={`sell-timeline-dot sell-dot-${index}`} />
                   </>
                 )}
 
                 {/* 1. Content Side (Number & Title) */}
-                <div className="mortgage-content-col">
-                  <div className="mortgage-header-row">
+                <div className="sell-content-col">
+                  <div className="sell-header-row-step">
                     {step.number && (
-                      <span className="mortgage-inline-number">
-                        {isMortgagePage
-                          ? (step.number.toUpperCase().startsWith('STEP') ? step.number : `STEP ${step.number}`)
-                          : step.number}
+                      <span className="sell-inline-number">
+                        {step.number}
                       </span>
                     )}
-                    <h3 className="mortgage-step-title">{step.title}</h3>
+                    <h3 className="sell-step-title">{step.title}</h3>
                   </div>
                 </div>
 
-                {/* 2. Media Side (Photo with Centered Icon) */}
-                <div className="mortgage-media-col">
-                  <div className="mortgage-image-inner">
+                {/* 2. Media Side (Placeholder/Empty as requested) */}
+                <div className="sell-media-col">
+                  <div className="sell-image-inner">
                     {step.image ? (
                       <Image
-                        src={urlForImage(step.image).width(400).height(400).url()}
+                        src={urlForImage(step.image).width(600).height(400).url()}
                         alt={step.title || 'Step Background Image'}
                         fill
-                        sizes="(max-width: 768px) 100vw, 25vw"
+                        sizes="(max-width: 768px) 100vw, 50vw"
                         placeholder={step.image?.asset?.metadata?.lqip ? 'blur' : 'empty'}
                         blurDataURL={step.image?.asset?.metadata?.lqip}
                       />
                     ) : (
-                      <div className="mortgage-placeholder" />
+                      <div className="sell-placeholder" />
                     )}
 
-                    {/* Icon Overlay in Center of Photo */}
+                    {/* Icon Overlay (Optional) */}
                     {step.icon?.asset?.url && (
-                      <div className="mortgage-overlay-icon-wrapper">
-                        <div className="mortgage-overlay-icon">
+                      <div className="sell-overlay-icon-wrapper">
+                        <div className="sell-overlay-icon">
                           <Image
                             src={step.icon.asset.url}
                             alt="Icon Overlay"
                             width={32}
                             height={32}
-                            className="mortgage-center-icon"
+                            className="sell-center-icon"
                           />
                         </div>
                       </div>
@@ -371,7 +368,7 @@ export default function MortgageProcessSection({ data }: MortgageProcessSectionP
 
                 {/* 3. Text Description */}
                 {step.description && (
-                  <div className="mortgage-step-body">
+                  <div className="sell-step-body">
                     {typeof step.description === 'string' ? (
                       <p>{step.description}</p>
                     ) : (

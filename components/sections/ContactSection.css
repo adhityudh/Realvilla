@@ -52,7 +52,6 @@
     mask-repeat: no-repeat;
     -webkit-mask-position: bottom center;
     mask-position: bottom center;
-    opacity: 0.85;
     filter: sepia(0.4) saturate(1.5) contrast(1.25) brightness(0.88);
 }
 
@@ -189,7 +188,6 @@
     font-family: var(--font-cormorant), serif;
     font-size: clamp(0.65rem, 0.8vw, 0.8rem);
     font-style: italic;
-    opacity: 0.8;
     margin-left: 0.2em;
     font-weight: var(--fw-light);
 }

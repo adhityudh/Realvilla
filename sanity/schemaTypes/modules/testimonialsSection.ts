@@ -1,11 +1,16 @@
 import { HeartIcon } from '@sanity/icons'
-import { defineField, defineType } from 'sanity'
+import { ALL_FIELDS_GROUP, defineField, defineType } from 'sanity'
 
 export const testimonialsSection = defineType({
   name: 'testimonialsSection',
   title: 'Testimonials Section',
   type: 'object',
   icon: HeartIcon,
+  groups: [
+    { name: 'content', title: 'Content', default: true },
+    { name: 'advanced', title: 'Advanced' },
+    { ...ALL_FIELDS_GROUP, hidden: true },
+  ],
   fields: [
     defineField({
       name: 'id',
@@ -13,12 +18,30 @@ export const testimonialsSection = defineType({
       type: 'string',
       description: 'Used as an anchor identifier (e.g. for smooth scrolling links like #about).',
       initialValue: 'testimonials',
+    group: 'advanced',
+}),
+    defineField({
+      name: 'disableEntranceAnimation',
+      title: 'Disable Entrance Animation',
+      description: 'If checked, the section will load immediately without fade-in/slide-up animations.',
+      type: 'boolean',
+      initialValue: false,
+      group: 'advanced',
+    }),
+    defineField({
+      name: 'disableHeaderEntranceAnimation',
+      title: 'Disable Header Entrance Animation',
+      description: 'If checked, the section header (tagline, headline, intro) will load immediately without entrance animations.',
+      type: 'boolean',
+      initialValue: false,
+      group: 'advanced',
     }),
     defineField({
       name: 'title',
       title: 'Title',
       type: 'string',
-    }),
+    group: 'content',
+}),
     defineField({
       name: 'testimonials',
       title: 'Testimonials',
@@ -47,13 +70,15 @@ export const testimonialsSection = defineType({
           }
         },
       ],
-    }),
+    group: 'content',
+}),
     defineField({
       name: 'overlapImage',
       title: 'Overlap Image (Bottom)',
       type: 'image',
       options: { hotspot: true },
-    }),
+    group: 'content',
+}),
   ],
   preview: {
     select: {

@@ -93,6 +93,8 @@ export const SECTION_PROJECTION = groq`
       _type,
       _key,
       id,
+      disableEntranceAnimation,
+      disableHeaderEntranceAnimation,
       _type == "heroSection" => {
         title,
         subtitle,
@@ -321,6 +323,7 @@ export const SECTION_PROJECTION = groq`
       },
       _type == "sellHeroSection" => {
         title,
+        subtitle,
         "backgroundImage": backgroundImage.asset->url,
         searchPlaceholder,
         jumpLinks[] {
@@ -379,6 +382,20 @@ export const SECTION_PROJECTION = groq`
         }
       },
       _type == "mortgageProcessSection" => {
+        tagline,
+        headline,
+        intro,
+        timelineMode,
+        imageOrder,
+        steps[] {
+          number,
+          title,
+          description,
+          image { asset->{ _id, url, metadata { lqip, dimensions } } },
+          icon { asset->{ _id, url } }
+        }
+      },
+      _type == "sellProcessSection" => {
         tagline,
         headline,
         intro,

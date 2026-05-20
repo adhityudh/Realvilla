@@ -25,64 +25,6 @@ export default function ContactSection({ data, dict, contextData }: { data?: any
     const isMobile = window.innerWidth <= 1024;
 
     if (!isMobile) {
-      gsap.to(section.querySelector('.contact-content'), {
-        y: -50, ease: "none",
-        scrollTrigger: { trigger: section, start: "top bottom", end: "bottom top", scrub: true }
-      });
-    }
-
-    const splitText = (selector: string) => {
-      section.querySelectorAll(selector).forEach((el) => {
-        const words = (el as HTMLElement).innerText.split(' ');
-        el.innerHTML = words.map((w) => `<span class="word-mask"><span class="word-inner">${w}</span></span>`).join(' ');
-      });
-    };
-    splitText('.contact-headline');
-    gsap.set('.contact-headline', { opacity: 1 });
-
-    const card = section.querySelector('.contact-card');
-    gsap.set(card, { opacity: 0, y: isMobile ? 120 : 200, filter: 'blur(10px)' });
-
-    const tl = gsap.timeline({
-      scrollTrigger: { trigger: section, start: 'top 90%', toggleActions: 'play none none reverse' }
-    });
-
-    tl.fromTo(section.querySelectorAll('.contact-headline .word-inner'),
-      { yPercent: 100, rotate: 5, filter: 'blur(10px)', opacity: 0 },
-      { yPercent: 0, rotate: 0, filter: 'blur(0px)', opacity: 1, duration: 1.2, stagger: 0.08, ease: 'expo.out' },
-      '-=0.6'
-    );
-
-    // Gracefully chain subtitle animation conditionally without triggering GSAP selector warnings
-    const subtitleEl = section.querySelector('.contact-subtitle');
-    if (subtitleEl) {
-      tl.fromTo(subtitleEl,
-        { y: 20, opacity: 0, filter: 'blur(4px)' },
-        { y: 0, opacity: 0.7, filter: 'blur(0px)', duration: 1, ease: 'expo.out' },
-        '-=0.8'
-      );
-    }
-
-    // Gracefully chain market items animation conditionally
-    const marketItems = section.querySelectorAll('.contact-market-item');
-    if (marketItems.length > 0) {
-      tl.fromTo(marketItems,
-        { y: 30, opacity: 0 },
-        { y: 0, opacity: 1, duration: 1, stagger: 0.1, ease: 'expo.out' },
-        '-=0.8'
-      );
-    }
-
-    // ALWAYS animate the card safely
-    if (card) {
-      tl.fromTo(card,
-        { y: isMobile ? 120 : 200, opacity: 0, filter: 'blur(10px)' },
-        { y: isMobile ? 180 : 80, opacity: 1, filter: 'blur(0px)', duration: 1.5, ease: 'expo.out' },
-        '-=1.2'
-      );
-    }
-
-    if (!isMobile) {
       ScrollTrigger.create({
         trigger: section,
         start: 'top 50px',
@@ -92,6 +34,92 @@ export default function ContactSection({ data, dict, contextData }: { data?: any
         onEnterBack: () => document.body.classList.add('header-light-mode'),
         onLeaveBack: () => document.body.classList.remove('header-light-mode'),
       });
+    }
+
+    if (data?.disableEntranceAnimation && data?.disableHeaderEntranceAnimation) {
+      const card = section.querySelector('.contact-card');
+      if (card) {
+        gsap.set(card, { y: isMobile ? 180 : 80, opacity: 1, filter: 'none' });
+      }
+      gsap.set('.contact-headline', { opacity: 1 });
+      const subtitle = section.querySelector('.contact-subtitle');
+      if (subtitle) gsap.set(subtitle, { opacity: 0.7 });
+      const marketItems = section.querySelectorAll('.contact-market-item');
+      if (marketItems.length > 0) gsap.set(marketItems, { opacity: 1 });
+      return () => {
+        ScrollTrigger.getAll().filter(st => st.trigger === section).forEach(st => st.kill());
+      };
+    }
+
+    if (data?.disableEntranceAnimation) {
+      const card = section.querySelector('.contact-card');
+      if (card) {
+        gsap.set(card, { y: isMobile ? 180 : 80, opacity: 1, filter: 'none' });
+      }
+    }
+
+    if (data?.disableHeaderEntranceAnimation) {
+      gsap.set('.contact-headline', { opacity: 1 });
+      const subtitle = section.querySelector('.contact-subtitle');
+      if (subtitle) gsap.set(subtitle, { opacity: 0.7 });
+      const marketItems = section.querySelectorAll('.contact-market-item');
+      if (marketItems.length > 0) gsap.set(marketItems, { opacity: 1 });
+    } else {
+      const splitText = (selector: string) => {
+        section.querySelectorAll(selector).forEach((el) => {
+          const words = (el as HTMLElement).innerText.split(' ');
+          el.innerHTML = words.map((w) => `<span class="word-mask"><span class="word-inner">${w}</span></span>`).join(' ');
+        });
+      };
+      splitText('.contact-headline');
+      gsap.set('.contact-headline', { opacity: 1 });
+    }
+
+    const card = section.querySelector('.contact-card');
+    if (!data?.disableEntranceAnimation && card) {
+      gsap.set(card, { opacity: 0, y: isMobile ? 120 : 200, filter: 'blur(10px)' });
+    }
+
+    const tl = gsap.timeline({
+      scrollTrigger: { trigger: section, start: 'top 80%', toggleActions: 'play none none reverse' }
+    });
+
+    if (!data?.disableHeaderEntranceAnimation) {
+      tl.fromTo(section.querySelectorAll('.contact-headline .word-inner'),
+        { yPercent: 100, rotate: 5, filter: 'blur(10px)', opacity: 0 },
+        { yPercent: 0, rotate: 0, filter: 'blur(0px)', opacity: 1, duration: 1.2, stagger: 0.08, ease: 'expo.out' },
+        '-=0.6'
+      );
+
+      // Gracefully chain subtitle animation conditionally without triggering GSAP selector warnings
+      const subtitleEl = section.querySelector('.contact-subtitle');
+      if (subtitleEl) {
+        tl.fromTo(subtitleEl,
+          { y: 20, opacity: 0, filter: 'blur(4px)' },
+          { y: 0, opacity: 0.7, filter: 'blur(0px)', duration: 1, ease: 'expo.out' },
+          '-=0.8'
+        );
+      }
+
+      // Gracefully chain market items animation conditionally
+      const marketItems = section.querySelectorAll('.contact-market-item');
+      if (marketItems.length > 0) {
+        tl.fromTo(marketItems,
+          { y: 30, opacity: 0 },
+          { y: 0, opacity: 1, duration: 1, stagger: 0.1, ease: 'expo.out' },
+          '-=0.8'
+        );
+      }
+    }
+
+    // ALWAYS animate the card safely
+    if (!data?.disableEntranceAnimation && card) {
+      const position = !data?.disableHeaderEntranceAnimation ? '-=1.2' : 0;
+      tl.fromTo(card,
+        { y: isMobile ? 120 : 200, opacity: 0, filter: 'blur(10px)' },
+        { y: isMobile ? 180 : 80, opacity: 1, filter: 'blur(0px)', duration: 1.5, ease: 'expo.out' },
+        position
+      );
     }
 
     // Recalculate trigger coordinates following potential sibling layout shifts
@@ -105,12 +133,12 @@ export default function ContactSection({ data, dict, contextData }: { data?: any
       clearTimeout(t2);
       ScrollTrigger.getAll().filter(st => st.trigger === section).forEach(st => st.kill());
     };
-  }, [headline, subtitle]);
+  }, [headline, subtitle, data]);
 
 
 
   return (
-    <section className="contact-section" id={data?.id || 'contact'} ref={sectionRef}>
+    <section className={`contact-section ${data?.disableEntranceAnimation ? 'no-entrance-anim' : ''} ${data?.disableHeaderEntranceAnimation ? 'no-header-entrance-anim' : ''}`} id={data?.id || 'contact'} ref={sectionRef}>
       <div className="contact-big-logo-wrapper">
         <div className="contact-single-logo-container">
           <div className="contact-single-logo" />

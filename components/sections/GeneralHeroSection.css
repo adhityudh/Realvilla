@@ -96,7 +96,6 @@
     font-weight: var(--fw-light);
     line-height: var(--lh-base);
     color: var(--text-white);
-    opacity: 0.8;
     max-width: 600px;
     margin: 0 auto;
     letter-spacing: var(--ls-normal);

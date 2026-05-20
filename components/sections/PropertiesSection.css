@@ -35,7 +35,6 @@
     letter-spacing: var(--ls-tagline);
     text-transform: uppercase;
     color: var(--text-black);
-    opacity: 0.8;
     margin-bottom: 1.5rem;
     display: flex;
     align-items: center;
@@ -88,10 +87,6 @@
     color: var(--text-black);
     text-align: center;
     line-height: var(--lh-relaxed);
-}
-
-.properties-mortgage-cta .cta-question {
-    opacity: 0.8;
 }
 
 .properties-mortgage-cta .properties-mortgage-link {
@@ -175,7 +170,6 @@
     line-height: var(--lh-snug);
     color: var(--text-black);
     text-transform: uppercase;
-    opacity: 0.8;
     letter-spacing: var(--ls-tight);
 }
 
@@ -192,7 +186,6 @@
     font-weight: var(--fw-extrabold);
     letter-spacing: var(--ls-wider);
     color: var(--text-black);
-    opacity: 0.8;
 }
 
 .detail-dot {

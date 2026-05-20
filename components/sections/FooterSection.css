@@ -189,9 +189,6 @@
     transition: opacity 0.3s ease;
 }
 
-.footer-legal-links a:hover {
-    opacity: 0.8;
-}
 
 .footer-copyright {
     font-family: var(--font-manrope), sans-serif;
@@ -382,12 +379,14 @@ body.footer-force-high-padding .footer-section {
 
 @media (max-width: 1024px) {
     body.footer-force-high-padding .footer-section {
-        padding-top: 6rem !important; /* Safe tablet middle-ground padding */
+        padding-top: 6rem !important;
+        /* Safe tablet middle-ground padding */
     }
 }
 
 @media (max-width: 768px) {
     body.footer-force-high-padding .footer-section {
-        padding-top: 10rem !important; /* Exact homepage mobile padding */
+        padding-top: 10rem !important;
+        /* Exact homepage mobile padding */
     }
 }

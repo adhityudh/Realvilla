@@ -1,4 +1,4 @@
-import { defineField, defineType } from 'sanity'
+import { ALL_FIELDS_GROUP, defineField, defineType } from 'sanity'
 import { ThLargeIcon } from '@sanity/icons'
 import { SectionSelector } from '../../components/SectionSelector'
 import { ComponentSelector } from '../../components/ComponentSelector'
@@ -8,6 +8,11 @@ export const financingCardsSection = defineType({
   title: 'Financing Cards Section',
   type: 'object',
   icon: ThLargeIcon,
+  groups: [
+    { name: 'content', title: 'Content', default: true },
+    { name: 'advanced', title: 'Advanced' },
+    { ...ALL_FIELDS_GROUP, hidden: true },
+  ],
   fields: [
     defineField({
       name: 'id',
@@ -15,13 +20,31 @@ export const financingCardsSection = defineType({
       type: 'string',
       description: 'Used as an anchor identifier (e.g. for smooth scrolling links like #about).',
       initialValue: 'financing-cards',
+    group: 'advanced',
+}),
+    defineField({
+      name: 'disableEntranceAnimation',
+      title: 'Disable Entrance Animation',
+      description: 'If checked, the section will load immediately without fade-in/slide-up animations.',
+      type: 'boolean',
+      initialValue: false,
+      group: 'advanced',
+    }),
+    defineField({
+      name: 'disableHeaderEntranceAnimation',
+      title: 'Disable Header Entrance Animation',
+      description: 'If checked, the section header (tagline, headline, intro) will load immediately without entrance animations.',
+      type: 'boolean',
+      initialValue: false,
+      group: 'advanced',
     }),
     defineField({
       name: 'mainDescription',
       title: 'Main Description (Top-Right Text Block)',
       type: 'text',
       description: 'The contextual copy placed in the top-right of the grid matrix.',
-    }),
+    group: 'content',
+}),
     defineField({
       name: 'backgroundImage',
       title: 'Background Image',
@@ -30,7 +53,8 @@ export const financingCardsSection = defineType({
       options: {
         hotspot: true,
       },
-    }),
+    group: 'content',
+}),
     defineField({
       name: 'cta',
       title: 'Call to Action',
@@ -99,8 +123,9 @@ export const financingCardsSection = defineType({
           },
           hidden: ({ parent }) => parent?.linkType !== 'component',
         }),
-      ]
-    }),
+      ],
+    group: 'content',
+}),
     defineField({
       name: 'cards',
       title: 'Financing Option Cards',
@@ -125,7 +150,8 @@ export const financingCardsSection = defineType({
           ],
         },
       ],
-    }),
+    group: 'content',
+}),
   ],
   preview: {
     select: {

@@ -1,5 +1,5 @@
 import { TrendUpwardIcon } from '@sanity/icons'
-import { defineField, defineType } from 'sanity'
+import { ALL_FIELDS_GROUP, defineField, defineType } from 'sanity'
 import { SectionSelector } from '../../components/SectionSelector'
 import { ComponentSelector } from '../../components/ComponentSelector'
 
@@ -8,6 +8,11 @@ export const valuationSection = defineType({
   title: 'Valuation Section',
   type: 'object',
   icon: TrendUpwardIcon,
+  groups: [
+    { name: 'content', title: 'Content', default: true },
+    { name: 'advanced', title: 'Advanced' },
+    { ...ALL_FIELDS_GROUP, hidden: true },
+  ],
   fields: [
     defineField({
       name: 'id',
@@ -15,32 +20,54 @@ export const valuationSection = defineType({
       type: 'string',
       description: 'Used as an anchor identifier (e.g. for smooth scrolling links like #about).',
       initialValue: 'valuation',
+    group: 'advanced',
+}),
+    defineField({
+      name: 'disableEntranceAnimation',
+      title: 'Disable Entrance Animation',
+      description: 'If checked, the section will load immediately without fade-in/slide-up animations.',
+      type: 'boolean',
+      initialValue: false,
+      group: 'advanced',
+    }),
+    defineField({
+      name: 'disableHeaderEntranceAnimation',
+      title: 'Disable Header Entrance Animation',
+      description: 'If checked, the section header (tagline, headline, intro) will load immediately without entrance animations.',
+      type: 'boolean',
+      initialValue: false,
+      group: 'advanced',
     }),
     defineField({
       name: 'tagline',
       title: 'Tagline',
       type: 'string',
-    }),
+    group: 'content',
+}),
     defineField({
       name: 'headline',
       title: 'Headline',
       type: 'string',
-    }),
+    group: 'content',
+}),
     defineField({
       name: 'body',
       title: 'Body Text',
       type: 'text',
-    }),
+    group: 'content',
+}),
     defineField({
       name: 'trustText',
       title: 'Trust Text',
       type: 'string',
-    }),
+    group: 'content',
+}),
     defineField({
       name: 'ctaLabel',
       title: 'CTA Label',
       type: 'string',
-    }),
+    group: 'content',
+}),
     defineField({
       name: 'linkType',
       title: 'Link Type',
@@ -55,7 +82,8 @@ export const valuationSection = defineType({
         layout: 'radio',
       },
       initialValue: 'internal',
-    }),
+    group: 'content',
+}),
     defineField({
       name: 'internalLink',
       title: 'Internal Link',
@@ -71,15 +99,17 @@ export const valuationSection = defineType({
             params: { language }
           };
         }
-      }
-    }),
+      },
+    group: 'content',
+}),
     defineField({
       name: 'externalLink',
       title: 'External Link',
       type: 'string',
       description: 'Can be a full URL (https://...), a relative path (/buy), or an anchor (#contact).',
       hidden: ({ parent }) => parent?.linkType !== 'external',
-    }),
+    group: 'content',
+}),
     defineField({
       name: 'sectionLink',
       title: 'Section Link',
@@ -88,7 +118,8 @@ export const valuationSection = defineType({
         input: SectionSelector,
       },
       hidden: ({ parent }) => parent?.linkType !== 'section',
-    }),
+    group: 'content',
+}),
     defineField({
       name: 'componentLink',
       title: 'Component Link',
@@ -97,24 +128,28 @@ export const valuationSection = defineType({
         input: ComponentSelector,
       },
       hidden: ({ parent }) => parent?.linkType !== 'component',
-    }),
+    group: 'content',
+}),
     defineField({
       name: 'iframeUrl',
       title: 'Iframe URL',
       type: 'url',
-    }),
+    group: 'content',
+}),
     defineField({
       name: 'showSecondaryCta',
       title: 'Show Secondary CTA',
       type: 'boolean',
       initialValue: false,
-    }),
+    group: 'content',
+}),
     defineField({
       name: 'secondaryCtaLabel',
       title: 'Secondary CTA Label',
       type: 'string',
       hidden: ({ parent }) => !parent?.showSecondaryCta,
-    }),
+    group: 'content',
+}),
     defineField({
       name: 'secondaryLinkType',
       title: 'Secondary Link Type',
@@ -130,7 +165,8 @@ export const valuationSection = defineType({
       },
       initialValue: 'internal',
       hidden: ({ parent }) => !parent?.showSecondaryCta,
-    }),
+    group: 'content',
+}),
     defineField({
       name: 'secondaryInternalLink',
       title: 'Secondary Internal Link',
@@ -146,15 +182,17 @@ export const valuationSection = defineType({
             params: { language }
           };
         }
-      }
-    }),
+      },
+    group: 'content',
+}),
     defineField({
       name: 'secondaryExternalLink',
       title: 'Secondary External Link',
       type: 'string',
       description: 'Can be a full URL (https://...), a relative path (/buy), or an anchor (#contact).',
       hidden: ({ parent }) => !parent?.showSecondaryCta || parent?.secondaryLinkType !== 'external',
-    }),
+    group: 'content',
+}),
     defineField({
       name: 'secondarySectionLink',
       title: 'Secondary Section Link',
@@ -163,7 +201,8 @@ export const valuationSection = defineType({
         input: SectionSelector,
       },
       hidden: ({ parent }) => !parent?.showSecondaryCta || parent?.secondaryLinkType !== 'section',
-    }),
+    group: 'content',
+}),
     defineField({
       name: 'secondaryComponentLink',
       title: 'Secondary Component Link',
@@ -172,7 +211,8 @@ export const valuationSection = defineType({
         input: ComponentSelector,
       },
       hidden: ({ parent }) => !parent?.showSecondaryCta || parent?.secondaryLinkType !== 'component',
-    }),
+    group: 'content',
+}),
   ],
   preview: {
     select: {

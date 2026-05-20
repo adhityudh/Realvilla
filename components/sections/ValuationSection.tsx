@@ -33,37 +33,46 @@ export default function ValuationSection({ data, dict }: { data?: any, dict?: an
   useEffect(() => {
     if (!sectionRef.current) return;
 
+    if (data?.disableEntranceAnimation && data?.disableHeaderEntranceAnimation) return;
+
     const section = sectionRef.current;
     const isMobile = window.innerWidth <= 1024;
     const elements = section.querySelectorAll('.valuation-tagline, .valuation-headline, .valuation-body, .valuation-trust, .valuation-cta-desktop, .valuation-cta-mobile');
     const card = section.querySelector('.valuation-card');
 
-    gsap.set(elements, { opacity: 0, y: 40, filter: 'blur(10px)' });
+    if (!data?.disableHeaderEntranceAnimation) {
+      gsap.set(elements, { opacity: 0, y: 35, filter: 'blur(10px)' });
+    }
     
-    if (isMobile) {
-      gsap.set(card, { opacity: 0, y: 40, filter: 'blur(10px)' });
-    } else {
-      gsap.set(card, { opacity: 1, y: 0, filter: 'blur(0px)' });
+    if (!data?.disableEntranceAnimation) {
+      if (isMobile) {
+        gsap.set(card, { opacity: 0, y: 40, filter: 'blur(8px)' });
+      } else {
+        gsap.set(card, { opacity: 1, y: 0, filter: 'blur(0px)' });
+      }
     }
 
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: section,
         start: 'top 80%',
-        toggleActions: 'restart none none reverse'
+        toggleActions: 'play none none reverse'
       }
     });
 
-    tl.fromTo(elements,
-      { y: 40, opacity: 0, filter: 'blur(10px)' },
-      { y: 0, opacity: 1, filter: 'blur(0px)', duration: 1.2, stagger: 0.2, ease: 'expo.out' }
-    );
+    if (!data?.disableHeaderEntranceAnimation) {
+      tl.fromTo(elements,
+        { y: 35, opacity: 0, filter: 'blur(10px)' },
+        { y: 0, opacity: 1, filter: 'blur(0px)', duration: 1.2, stagger: 0.15, ease: 'expo.out' }
+      );
+    }
 
-    if (isMobile) {
+    if (!data?.disableEntranceAnimation && isMobile) {
+      const position = !data?.disableHeaderEntranceAnimation ? '-=0.8' : 0;
       tl.fromTo(card,
-        { y: 40, opacity: 0, filter: 'blur(10px)' },
-        { y: 0, opacity: 1, filter: 'blur(0px)', duration: 1.5, ease: 'expo.out' },
-        '-=1.2'
+        { y: 40, opacity: 0, filter: 'blur(8px)' },
+        { y: 0, opacity: 1, filter: 'blur(0px)', duration: 1.0, ease: 'power3.out' },
+        position
       );
     }
 
@@ -71,7 +80,7 @@ export default function ValuationSection({ data, dict }: { data?: any, dict?: an
       tl.kill();
       ScrollTrigger.getAll().filter(st => st.trigger === section).forEach(st => st.kill());
     };
-  }, []);
+  }, [data]);
 
   useEffect(() => {
     if (!finalIframeUrl) return;
@@ -97,7 +106,7 @@ export default function ValuationSection({ data, dict }: { data?: any, dict?: an
   }, [iframeSrc]);
 
   return (
-    <section className="valuation-section" id={data?.id || 'valuation'} ref={sectionRef}>
+    <section className={`valuation-section ${data?.disableEntranceAnimation ? 'no-entrance-anim' : ''} ${data?.disableHeaderEntranceAnimation ? 'no-header-entrance-anim' : ''}`} id={data?.id || 'valuation'} ref={sectionRef}>
       <div className="valuation-container">
         <div className="valuation-content">
           <div className="valuation-tagline">{tagline}</div>

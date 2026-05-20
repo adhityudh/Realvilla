@@ -459,3 +459,28 @@ html.lenis body {
     font-size: var(--text-sm);
   }
 }
+
+/* Disable Entrance Animations Helper */
+.no-entrance-anim .sell-hero-title,
+.no-entrance-anim .sell-hero-subtitle,
+.no-entrance-anim .sell-jump-links,
+.no-entrance-anim .general-hero-title,
+.no-entrance-anim .general-hero-subtitle,
+.no-entrance-anim .general-hero-cta-wrapper,
+.no-entrance-anim .general-jump-links,
+.no-entrance-anim .buy-hero-title,
+.no-entrance-anim .buy-jump-links,
+.no-entrance-anim .contact-headline {
+  opacity: 1 !important;
+  transform: none !important;
+  filter: none !important;
+}
+
+/* Disable Header Entrance Animations Helper */
+.no-header-entrance-anim .contact-headline,
+.no-header-entrance-anim .buy-properties-header,
+.no-header-entrance-anim .buy-properties-quick-filters-wrapper {
+  opacity: 1 !important;
+  transform: none !important;
+  filter: none !important;
+}

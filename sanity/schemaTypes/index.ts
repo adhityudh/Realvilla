@@ -21,6 +21,7 @@ import { generalHeroSection } from './modules/generalHeroSection'
 import { sellHeroSection } from './modules/sellHeroSection'
 import { statsSection } from './modules/statsSection'
 import { mortgageProcessSection } from './modules/mortgageProcessSection'
+import { sellProcessSection } from './modules/sellProcessSection'
 import { documentLedgerSection } from './modules/documentLedgerSection'
 import { financingCardsSection } from './modules/financingCardsSection'
 import { settings } from './documents/settings'
@@ -63,6 +64,7 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     generalHeroSection,
     statsSection,
     mortgageProcessSection,
+    sellProcessSection,
     documentLedgerSection,
     financingCardsSection
   ],

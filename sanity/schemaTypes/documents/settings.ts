@@ -71,6 +71,7 @@ export const settings = defineType({
         { type: 'buyMortgageSimSection' },
         { type: 'statsSection' },
         { type: 'mortgageProcessSection' },
+        { type: 'sellProcessSection' },
       ],
     }),
     defineField({

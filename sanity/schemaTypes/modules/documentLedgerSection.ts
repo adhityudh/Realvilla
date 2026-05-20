@@ -1,4 +1,4 @@
-import { defineField, defineType } from 'sanity'
+import { ALL_FIELDS_GROUP, defineField, defineType } from 'sanity'
 import { DocumentTextIcon } from '@sanity/icons'
 import { SectionSelector } from '../../components/SectionSelector'
 import { ComponentSelector } from '../../components/ComponentSelector'
@@ -8,6 +8,11 @@ export const documentLedgerSection = defineType({
   title: 'Document Ledger Section',
   type: 'object',
   icon: DocumentTextIcon,
+  groups: [
+    { name: 'content', title: 'Content', default: true },
+    { name: 'advanced', title: 'Advanced' },
+    { ...ALL_FIELDS_GROUP, hidden: true },
+  ],
   fields: [
     defineField({
       name: 'id',
@@ -15,25 +20,45 @@ export const documentLedgerSection = defineType({
       type: 'string',
       description: 'Used as an anchor identifier (e.g. for smooth scrolling links like #about).',
       initialValue: 'document-ledger',
+    group: 'advanced',
+}),
+    defineField({
+      name: 'disableEntranceAnimation',
+      title: 'Disable Entrance Animation',
+      description: 'If checked, the section will load immediately without fade-in/slide-up animations.',
+      type: 'boolean',
+      initialValue: false,
+      group: 'advanced',
+    }),
+    defineField({
+      name: 'disableHeaderEntranceAnimation',
+      title: 'Disable Header Entrance Animation',
+      description: 'If checked, the section header (tagline, headline, intro) will load immediately without entrance animations.',
+      type: 'boolean',
+      initialValue: false,
+      group: 'advanced',
     }),
     defineField({
       name: 'tagline',
       title: 'Tagline',
       type: 'string',
       description: 'Small caption above the title, e.g., "Essential Documentation"',
-    }),
+    group: 'content',
+}),
     defineField({
       name: 'headline',
       title: 'Headline',
       type: 'string',
       description: 'The primary heading, e.g., "What You Need to Start"',
-    }),
+    group: 'content',
+}),
     defineField({
       name: 'intro',
       title: 'Introductory Text',
       type: 'blockContent',
       description: 'Brief contextual description placed below the header.',
-    }),
+    group: 'content',
+}),
     defineField({
       name: 'cta',
       title: 'Call to Action',
@@ -102,8 +127,9 @@ export const documentLedgerSection = defineType({
           },
           hidden: ({ parent }) => parent?.linkType !== 'component',
         }),
-      ]
-    }),
+      ],
+    group: 'content',
+}),
     defineField({
       name: 'items',
       title: 'Document Checklist Items',
@@ -147,7 +173,8 @@ export const documentLedgerSection = defineType({
           },
         },
       ],
-    }),
+    group: 'content',
+}),
   ],
   preview: {
     select: {

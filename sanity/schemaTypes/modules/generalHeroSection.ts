@@ -1,5 +1,5 @@
 import { DashboardIcon } from '@sanity/icons'
-import { defineField, defineType } from 'sanity'
+import { ALL_FIELDS_GROUP, defineField, defineType } from 'sanity'
 import { SectionSelector } from '../../components/SectionSelector'
 import { ComponentSelector } from '../../components/ComponentSelector'
 
@@ -8,6 +8,11 @@ export const generalHeroSection = defineType({
   title: 'General Hero Section',
   type: 'object',
   icon: DashboardIcon,
+  groups: [
+    { name: 'content', title: 'Content', default: true },
+    { name: 'advanced', title: 'Advanced' },
+    { ...ALL_FIELDS_GROUP, hidden: true },
+  ],
   fields: [
     defineField({
       name: 'id',
@@ -15,19 +20,38 @@ export const generalHeroSection = defineType({
       type: 'string',
       description: 'Used as an anchor identifier (e.g. for smooth scrolling links like #about).',
       initialValue: 'general-hero',
+    group: 'advanced',
+}),
+    defineField({
+      name: 'disableEntranceAnimation',
+      title: 'Disable Entrance Animation',
+      description: 'If checked, the section will load immediately without fade-in/slide-up animations.',
+      type: 'boolean',
+      initialValue: false,
+      group: 'advanced',
+    }),
+    defineField({
+      name: 'disableHeaderEntranceAnimation',
+      title: 'Disable Header Entrance Animation',
+      description: 'If checked, the section header (tagline, headline, intro) will load immediately without entrance animations.',
+      type: 'boolean',
+      initialValue: false,
+      group: 'advanced',
     }),
     defineField({
       name: 'title',
       title: 'Title',
       type: 'string',
-    }),
+    group: 'content',
+}),
     defineField({
       name: 'subtitle',
       title: 'Subtitle',
       description: 'Displays as elegant text replacing the search bar in this hero variant.',
       type: 'text',
       rows: 3,
-    }),
+    group: 'content',
+}),
     defineField({
       name: 'desktopLayout',
       title: 'Desktop Layout Variant',
@@ -41,7 +65,8 @@ export const generalHeroSection = defineType({
         layout: 'radio',
       },
       initialValue: 'vertical',
-    }),
+    group: 'content',
+}),
     defineField({
       name: 'primaryButton',
       title: 'Primary Button',
@@ -106,8 +131,9 @@ export const generalHeroSection = defineType({
           },
           hidden: ({ parent }) => parent?.linkType !== 'component',
         }),
-      ]
-    }),
+      ],
+    group: 'content',
+}),
     defineField({
       name: 'secondaryButton',
       title: 'Secondary Button',
@@ -172,14 +198,16 @@ export const generalHeroSection = defineType({
           },
           hidden: ({ parent }) => parent?.linkType !== 'component',
         }),
-      ]
-    }),
+      ],
+    group: 'content',
+}),
     defineField({
       name: 'backgroundImage',
       title: 'Background Image',
       type: 'image',
-      options: { hotspot: true }
-    }),
+      options: { hotspot: true },
+    group: 'content',
+}),
     defineField({
       name: 'jumpLinks',
       title: 'Jump Links',
@@ -248,8 +276,9 @@ export const generalHeroSection = defineType({
             }),
           ]
         }
-      ]
-    }),
+      ],
+    group: 'content',
+}),
   ],
   preview: {
     select: {

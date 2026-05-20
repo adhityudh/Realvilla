@@ -18,6 +18,8 @@ interface FinancingCard {
 
 interface FinancingCardsSectionProps {
   data?: {
+    disableEntranceAnimation?: boolean;
+    disableHeaderEntranceAnimation?: boolean;
     id?: string;
     mainDescription?: string;
     backgroundImage?: {
@@ -40,6 +42,8 @@ export default function FinancingCardsSection({ data }: FinancingCardsSectionPro
   useEffect(() => {
     if (!sectionRef.current) return;
 
+    if (data?.disableEntranceAnimation && data?.disableHeaderEntranceAnimation) return;
+
     // 📐 Advanced Dynamic Sorting: Aggregates and sequences cards by numerical class suffixes!
     const mainDesc = sectionRef.current.querySelector('.financing-main-content');
     const ctaBox = sectionRef.current.querySelector('.financing-cta-box');
@@ -54,29 +58,31 @@ export default function FinancingCardsSection({ data }: FinancingCardsSectionPro
       return numA - numB;
     });
 
-    // All elements animate together — y, opacity, filter as a single unified entrance.
-    // Chrome backdrop-filter fix is handled by CSS hardware acceleration (will-change, translateZ)
-    // on .glass-card-item. Animating opacity on the element itself is fine — the Chrome bug
-    // only occurs when a PARENT has opacity < 1.
-    const elements = [mainDesc, ...cardElements, ctaBox].filter(Boolean);
+    const headerEls = [mainDesc].filter(Boolean);
+    const contentEls = [...cardElements, ctaBox].filter(Boolean);
 
-    gsap.fromTo(
-      elements,
-      { y: 40, opacity: 0, filter: 'blur(15px)' },
-      {
-        y: 0,
-        opacity: 1,
-        filter: 'blur(0px)',
-        duration: 1.2,
-        stagger: 0.12,
-        ease: 'power3.out',
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: 'top 78%',
-          toggleActions: 'play none none reverse',
-        },
-      }
-    );
+    if (!data?.disableHeaderEntranceAnimation) {
+      gsap.set(headerEls, { opacity: 0, y: 35, filter: 'blur(10px)' });
+    }
+    if (!data?.disableEntranceAnimation) {
+      gsap.set(contentEls, { opacity: 0, y: 40, filter: 'blur(8px)' });
+    }
+
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: sectionRef.current,
+        start: 'top 80%',
+        toggleActions: 'play none none reverse',
+      },
+    });
+
+    if (!data?.disableHeaderEntranceAnimation) {
+      tl.to(headerEls, { y: 0, opacity: 1, filter: 'blur(0px)', duration: 1.2, ease: 'expo.out' });
+    }
+    if (!data?.disableEntranceAnimation) {
+      const position = !data?.disableHeaderEntranceAnimation ? '-=0.8' : 0;
+      tl.to(contentEls, { y: 0, opacity: 1, filter: 'blur(0px)', duration: 1.0, stagger: 0.1, ease: 'power3.out' }, position);
+    }
 
     // 🌌 Pure Luxury: Soft GSAP Scrubber for Subdued Background Motion
     const bgAsset = sectionRef.current.querySelector('.financing-bg-asset');
@@ -126,7 +132,7 @@ export default function FinancingCardsSection({ data }: FinancingCardsSectionPro
   const bgUrl = data.backgroundImage?.asset?.url || '/images/financing-bg.png';
 
   return (
-    <section className="financing-cards-section" ref={sectionRef} id={data?.id || 'financing-cards'}>
+    <section className={`financing-cards-section ${data?.disableEntranceAnimation ? 'no-entrance-anim' : ''} ${data?.disableHeaderEntranceAnimation ? 'no-header-entrance-anim' : ''}`} ref={sectionRef} id={data?.id || 'financing-cards'}>
       {/* Static luxury interior asset backdrop */}
       <div 
         className="financing-bg-asset" 

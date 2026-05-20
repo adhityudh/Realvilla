@@ -1,11 +1,16 @@
 import { HomeIcon } from '@sanity/icons'
-import { defineField, defineType } from 'sanity'
+import { ALL_FIELDS_GROUP, defineField, defineType } from 'sanity'
 
 export const buyPropertiesSection = defineType({
   name: 'buyPropertiesSection',
   title: 'Buy Properties Section',
   type: 'object',
   icon: HomeIcon,
+  groups: [
+    { name: 'content', title: 'Content', default: true },
+    { name: 'advanced', title: 'Advanced' },
+    { ...ALL_FIELDS_GROUP, hidden: true },
+  ],
   fields: [
     defineField({
       name: 'id',
@@ -13,12 +18,30 @@ export const buyPropertiesSection = defineType({
       type: 'string',
       description: 'Used as an anchor identifier (e.g. for smooth scrolling links like #about).',
       initialValue: 'properties-list',
+    group: 'advanced',
+}),
+    defineField({
+      name: 'disableEntranceAnimation',
+      title: 'Disable Entrance Animation',
+      description: 'If checked, the section will load immediately without fade-in/slide-up animations.',
+      type: 'boolean',
+      initialValue: false,
+      group: 'advanced',
+    }),
+    defineField({
+      name: 'disableHeaderEntranceAnimation',
+      title: 'Disable Header Entrance Animation',
+      description: 'If checked, the section header (tagline, headline, intro) will load immediately without entrance animations.',
+      type: 'boolean',
+      initialValue: false,
+      group: 'advanced',
     }),
     defineField({
       name: 'title',
       title: 'Title',
       type: 'string',
-    }),
+    group: 'content',
+}),
     defineField({
       name: 'selectionType',
       title: 'Selection Type',
@@ -31,7 +54,8 @@ export const buyPropertiesSection = defineType({
         layout: 'radio',
       },
       initialValue: 'dynamic',
-    }),
+    group: 'content',
+}),
     defineField({
       name: 'manualProperties',
       title: 'Select Properties',
@@ -53,27 +77,31 @@ export const buyPropertiesSection = defineType({
         }
       ],
       hidden: ({ parent }) => parent?.selectionType !== 'manual',
-    }),
+    group: 'content',
+}),
     defineField({
       name: 'itemsPerPage',
       title: 'Items per Page (Desktop)',
       type: 'number',
       description: 'How many properties to display per page on desktop. (Default: 6)',
       initialValue: 6,
-    }),
+    group: 'content',
+}),
     defineField({
       name: 'itemsPerPageMobile',
       title: 'Items per Page (Mobile)',
       type: 'number',
       description: 'How many properties to display per page on mobile devices under 768px. (Optional, defaults to same as desktop limit)',
-    }),
+    group: 'content',
+}),
     defineField({
       name: 'showQuickFilters',
       title: 'Show Quick Filter Chips',
       description: 'Whether to display horizontal quick-filter category chips beneath the section header.',
       type: 'boolean',
       initialValue: true,
-    }),
+    group: 'content',
+}),
     defineField({
       name: 'quickFilterSelection',
       title: 'Quick Filter Mode',
@@ -88,7 +116,8 @@ export const buyPropertiesSection = defineType({
       },
       initialValue: 'all',
       hidden: ({ parent }) => parent?.showQuickFilters !== true,
-    }),
+    group: 'content',
+}),
     defineField({
       name: 'quickFilterCategories',
       title: 'Select Specific Categories',
@@ -96,7 +125,8 @@ export const buyPropertiesSection = defineType({
       type: 'array',
       of: [{ type: 'reference', to: [{ type: 'propertyCategory' }] }],
       hidden: ({ parent }) => parent?.showQuickFilters !== true || parent?.quickFilterSelection !== 'custom',
-    }),
+    group: 'content',
+}),
     defineField({
       name: 'orderBy',
       title: 'Order By',
@@ -109,13 +139,15 @@ export const buyPropertiesSection = defineType({
         ],
       },
       initialValue: "_createdAt desc",
-    }),
+    group: 'content',
+}),
     defineField({
       name: 'showSold',
       title: 'Show Sold Properties',
       type: 'boolean',
       initialValue: false,
-    }),
+    group: 'content',
+}),
   ],
   preview: {
     select: {

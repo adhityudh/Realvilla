@@ -14,6 +14,8 @@ if (typeof window !== 'undefined') {
 
 interface GeneralHeroSectionProps {
   data: {
+    disableEntranceAnimation?: boolean;
+    disableHeaderEntranceAnimation?: boolean;
     id?: string;
     title?: string;
     subtitle?: string;
@@ -42,62 +44,6 @@ export default function GeneralHeroSection({ data, dict }: GeneralHeroSectionPro
 
   useEffect(() => {
     if (!contentRef.current || !sectionRef.current) return;
-
-    const tl = gsap.timeline();
-
-    // 1. Animate title first
-    tl.fromTo(
-      '.general-hero-title',
-      { y: 30, opacity: 0 },
-      {
-        y: 0,
-        opacity: 1,
-        duration: 1.2,
-        ease: 'expo.out'
-      }
-    );
-
-    // 2. Animate subtitle next (Start at 0.3s)
-    tl.fromTo(
-      '.general-hero-subtitle',
-      { y: 20, opacity: 0 },
-      {
-        y: 0,
-        opacity: 1,
-        duration: 1,
-        ease: 'expo.out',
-      },
-      0.3
-    );
-
-    // 3. Animate CTAs (Start at 0.5s)
-    // Ghost Blur pattern: keep wrapper opacity at 1 to preserve backdrop-filter in Chrome
-    gsap.set('.general-hero-cta-wrapper', { opacity: 1 });
-    tl.fromTo(
-      '.general-hero-cta-primary, .general-hero-cta-secondary',
-      { y: 20, opacity: 0 },
-      {
-        y: 0,
-        opacity: 1,
-        duration: 1,
-        stagger: 0.1,
-        ease: 'expo.out',
-      },
-      0.5
-    );
-
-    // 4. Animate jump links last (Start at 0.8s)
-    tl.fromTo(
-      '.general-jump-links',
-      { y: 20, opacity: 0 },
-      {
-        y: 0,
-        opacity: 1,
-        duration: 1,
-        ease: 'expo.out'
-      },
-      0.8
-    );
 
     // Smart ScrollTrigger behavior to manage light/dark system header transitions
     const st = ScrollTrigger.create({
@@ -141,16 +87,89 @@ export default function GeneralHeroSection({ data, dict }: GeneralHeroSectionPro
       }
     });
 
+    if (data?.disableEntranceAnimation && data?.disableHeaderEntranceAnimation) {
+      return () => {
+        st.kill();
+        document.body.classList.remove('header-light-mode');
+        document.body.classList.remove('header-black-bg');
+      };
+    }
+
+    const tl = gsap.timeline();
+
+    // 1. Animate title first
+    if (!data?.disableHeaderEntranceAnimation) {
+      tl.fromTo(
+        '.general-hero-title',
+        { y: 35, opacity: 0, filter: 'blur(10px)' },
+        {
+          y: 0,
+          opacity: 1,
+          filter: 'blur(0px)',
+          duration: 1.2,
+          ease: 'expo.out'
+        }
+      );
+
+      // 2. Animate subtitle next (Start at 0.3s)
+      tl.fromTo(
+        '.general-hero-subtitle',
+        { y: 35, opacity: 0, filter: 'blur(10px)' },
+        {
+          y: 0,
+          opacity: 1,
+          filter: 'blur(0px)',
+          duration: 1.2,
+          ease: 'expo.out',
+        },
+        0.3
+      );
+    }
+
+    if (!data?.disableEntranceAnimation) {
+      const positionOffset = !data?.disableHeaderEntranceAnimation ? 0.5 : 0;
+      // 3. Animate CTAs
+      // Ghost Blur pattern: keep wrapper opacity at 1 to preserve backdrop-filter in Chrome
+      gsap.set('.general-hero-cta-wrapper', { opacity: 1 });
+      tl.fromTo(
+        '.general-hero-cta-primary, .general-hero-cta-secondary',
+        { y: 20, opacity: 0, filter: 'blur(5px)' },
+        {
+          y: 0,
+          opacity: 1,
+          filter: 'blur(0px)',
+          duration: 1.0,
+          stagger: 0.1,
+          ease: 'expo.out',
+        },
+        positionOffset
+      );
+
+      // 4. Animate jump links last
+      tl.fromTo(
+        '.general-jump-links',
+        { y: 20, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 1,
+          ease: 'expo.out'
+        },
+        positionOffset + 0.3
+      );
+    }
+
     return () => {
       st.kill();
+      tl.kill();
       document.body.classList.remove('header-light-mode');
       document.body.classList.remove('header-black-bg');
     };
-  }, []);
+  }, [data]);
 
   return (
     <section 
-      className={`general-hero layout-${data.desktopLayout || 'vertical'}`} 
+      className={`general-hero layout-${data.desktopLayout || 'vertical'} ${data?.disableEntranceAnimation ? 'no-entrance-anim' : ''}`} 
       ref={sectionRef}
       data-is-hero="true"
       id={data?.id || 'general-hero'}

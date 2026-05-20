@@ -20,6 +20,8 @@ interface LedgerItem {
 
 interface DocumentLedgerSectionProps {
   data?: {
+    disableEntranceAnimation?: boolean;
+    disableHeaderEntranceAnimation?: boolean;
     id?: string;
     tagline?: string;
     headline?: string;
@@ -40,46 +42,52 @@ export default function DocumentLedgerSection({ data }: DocumentLedgerSectionPro
   useEffect(() => {
     if (!sectionRef.current) return;
 
-    // 1. Left Column Content Entrance
-    gsap.fromTo(
-      sectionRef.current.querySelectorAll('.ledger-tagline, .ledger-headline, .ledger-intro, .ledger-cta-box'),
-      { y: 30, opacity: 0, filter: 'blur(10px)' },
-      {
-        y: 0,
-        opacity: 1,
-        filter: 'blur(0px)',
-        duration: 1.2,
-        stagger: 0.2,
-        ease: 'power3.out',
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: 'top 85%',
-          toggleActions: 'play none none reverse',
-        },
-      }
-    );
+    if (data?.disableEntranceAnimation && data?.disableHeaderEntranceAnimation) return;
 
-    // 2. Right Column Ledger Items Entrance
-    const activeItems = itemRefs.current.filter(Boolean);
-    const ledgerListEl = sectionRef.current.querySelector('.ledger-list');
-    if (activeItems.length > 0 && ledgerListEl) {
+    // 1. Left Column Content Entrance
+    if (!data?.disableHeaderEntranceAnimation) {
       gsap.fromTo(
-        activeItems,
-        { y: 30, opacity: 0, filter: 'blur(8px)' },
+        sectionRef.current.querySelectorAll('.ledger-tagline, .ledger-headline, .ledger-intro, .ledger-cta-box'),
+        { y: 35, opacity: 0, filter: 'blur(10px)' },
         {
           y: 0,
           opacity: 1,
           filter: 'blur(0px)',
           duration: 1.2,
-          stagger: 0.12,
-          ease: 'power3.out',
+          stagger: 0.15,
+          ease: 'expo.out',
           scrollTrigger: {
-            trigger: ledgerListEl,
-            start: 'top 85%',
+            trigger: sectionRef.current,
+            start: 'top 80%',
             toggleActions: 'play none none reverse',
           },
         }
       );
+    }
+
+    // 2. Right Column Ledger Items Entrance
+    if (!data?.disableEntranceAnimation) {
+      const activeItems = itemRefs.current.filter(Boolean);
+      const ledgerListEl = sectionRef.current.querySelector('.ledger-list');
+      if (activeItems.length > 0 && ledgerListEl) {
+        gsap.fromTo(
+          activeItems,
+          { y: 40, opacity: 0, filter: 'blur(8px)' },
+          {
+            y: 0,
+            opacity: 1,
+            filter: 'blur(0px)',
+            duration: 1.0,
+            stagger: 0.1,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: ledgerListEl,
+              start: 'top 80%',
+              toggleActions: 'play none none reverse',
+            },
+          }
+        );
+      }
     }
 
     return () => {
@@ -92,7 +100,7 @@ export default function DocumentLedgerSection({ data }: DocumentLedgerSectionPro
   const { tagline, headline, intro, items, cta } = data;
 
   return (
-    <section className="document-ledger-section" ref={sectionRef} id={data?.id || 'document-ledger'}>
+    <section className={`document-ledger-section ${data?.disableEntranceAnimation ? 'no-entrance-anim' : ''} ${data?.disableHeaderEntranceAnimation ? 'no-header-entrance-anim' : ''}`} ref={sectionRef} id={data?.id || 'document-ledger'}>
       <div className="ledger-container">
         {/* 🏛️ Two-Column Split Grid */}
         <div className="ledger-grid">

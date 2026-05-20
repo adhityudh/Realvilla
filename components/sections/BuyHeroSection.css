@@ -59,7 +59,6 @@
 .buy-hero-subtitle {
     font-family: var(--font-manrope), sans-serif;
     font-size: var(--text-md);
-    opacity: 0.8;
     max-width: 600px;
     margin: 0 auto 3rem;
     line-height: var(--lh-base);

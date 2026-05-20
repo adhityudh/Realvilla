@@ -46,7 +46,7 @@ function TaxModal({ data, condition, price, onClose }: { data: any; condition: s
     return () => {
       document.body.style.overflow = '';
     };
-  }, []);
+  }, [data]);
 
   const taxRate = condition === 'new' ? (data.newBuildTaxRate ?? 7) / 100 : (data.resaleTaxRate ?? 6.5) / 100;
   const taxAmount = price * taxRate;
@@ -107,7 +107,7 @@ function AmortModal({ data, principal, rate, term, onClose }: { data: any; princ
     return () => {
       document.body.style.overflow = '';
     };
-  }, []);
+  }, [data]);
 
   const monthlyRate = rate / 100 / 12;
   const n = term * 12;
@@ -300,16 +300,35 @@ export default function BuyMortgageSimSection({ data, dict, contextData }: { dat
   // GSAP entry
   useEffect(() => {
     if (!sectionRef.current) return;
-    const els = sectionRef.current.querySelectorAll('.msim-header-left, .msim-header-right, .msim-body-card');
-    gsap.set(els, { opacity: 0, y: 25, filter: 'blur(6px)' });
-    const tl = gsap.timeline({ scrollTrigger: { trigger: sectionRef.current, start: 'top 80%', toggleActions: 'restart none none reverse' } });
-    tl.fromTo(els, { y: 25, opacity: 0, filter: 'blur(6px)' }, { y: 0, opacity: 1, filter: 'blur(0px)', duration: 1.2, stagger: 0.2, ease: 'power3.out' });
+
+    if (data?.disableEntranceAnimation && data?.disableHeaderEntranceAnimation) return;
+
+    const headerEls = sectionRef.current.querySelectorAll('.msim-header-left, .msim-header-right');
+    const contentEls = sectionRef.current.querySelectorAll('.msim-body-card');
+
+    if (!data?.disableHeaderEntranceAnimation) {
+      gsap.set(headerEls, { opacity: 0, y: 35, filter: 'blur(10px)' });
+    }
+    if (!data?.disableEntranceAnimation) {
+      gsap.set(contentEls, { opacity: 0, y: 40, filter: 'blur(8px)' });
+    }
+
+    const tl = gsap.timeline({ scrollTrigger: { trigger: sectionRef.current, start: 'top 80%', toggleActions: 'play none none reverse' } });
+
+    if (!data?.disableHeaderEntranceAnimation) {
+      tl.fromTo(headerEls, { y: 35, opacity: 0, filter: 'blur(10px)' }, { y: 0, opacity: 1, filter: 'blur(0px)', duration: 1.2, stagger: 0.15, ease: 'expo.out' });
+    }
+    if (!data?.disableEntranceAnimation) {
+      const position = !data?.disableHeaderEntranceAnimation ? '-=0.8' : 0;
+      tl.fromTo(contentEls, { y: 40, opacity: 0, filter: 'blur(8px)' }, { y: 0, opacity: 1, filter: 'blur(0px)', duration: 1.0, ease: 'power3.out' }, position);
+    }
+
     ScrollTrigger.refresh();
     return () => { tl.kill(); };
   }, [data]);
 
   return (
-    <section className="msim-section" id={data?.id || 'mortgage-simulator'} ref={sectionRef}>
+    <section className={`msim-section ${data?.disableEntranceAnimation ? 'no-entrance-anim' : ''} ${data?.disableHeaderEntranceAnimation ? 'no-header-entrance-anim' : ''}`} id={data?.id || 'mortgage-simulator'} ref={sectionRef}>
       <div className="msim-container">
         {/* Header */}
         <div className="msim-header-row">

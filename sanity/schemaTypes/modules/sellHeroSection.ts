@@ -1,5 +1,5 @@
 import { DashboardIcon } from '@sanity/icons'
-import { defineField, defineType } from 'sanity'
+import { ALL_FIELDS_GROUP, defineField, defineType } from 'sanity'
 import { SectionSelector } from '../../components/SectionSelector'
 import { ComponentSelector } from '../../components/ComponentSelector'
 
@@ -8,6 +8,11 @@ export const sellHeroSection = defineType({
   title: 'Sell Hero Section',
   type: 'object',
   icon: DashboardIcon,
+  groups: [
+    { name: 'content', title: 'Content', default: true },
+    { name: 'advanced', title: 'Advanced' },
+    { ...ALL_FIELDS_GROUP, hidden: true },
+  ],
   fields: [
     defineField({
       name: 'id',
@@ -15,24 +20,44 @@ export const sellHeroSection = defineType({
       type: 'string',
       description: 'Used as an anchor identifier (e.g. for smooth scrolling links like #about).',
       initialValue: 'sell-hero',
+    group: 'advanced',
+}),
+    defineField({
+      name: 'disableEntranceAnimation',
+      title: 'Disable Entrance Animation',
+      description: 'If checked, the section will load immediately without fade-in/slide-up animations.',
+      type: 'boolean',
+      initialValue: false,
+      group: 'advanced',
+    }),
+    defineField({
+      name: 'disableHeaderEntranceAnimation',
+      title: 'Disable Header Entrance Animation',
+      description: 'If checked, the section header (tagline, headline, intro) will load immediately without entrance animations.',
+      type: 'boolean',
+      initialValue: false,
+      group: 'advanced',
     }),
     defineField({
       name: 'title',
       title: 'Title',
       type: 'string',
-    }),
+    group: 'content',
+}),
     defineField({
       name: 'backgroundImage',
       title: 'Background Image',
       type: 'image',
-      options: { hotspot: true }
-    }),
+      options: { hotspot: true },
+    group: 'content',
+}),
     defineField({
       name: 'searchPlaceholder',
       title: 'Search Placeholder',
       type: 'string',
-      initialValue: 'Enter your property address...'
-    }),
+      initialValue: 'Enter your property address...',
+    group: 'content',
+}),
     defineField({
       name: 'jumpLinks',
       title: 'Jump Links',
@@ -101,8 +126,9 @@ export const sellHeroSection = defineType({
             }),
           ]
         }
-      ]
-    }),
+      ],
+    group: 'content',
+}),
   ],
   preview: {
     select: {

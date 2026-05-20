@@ -24,25 +24,33 @@ const PartnerSection = ({ data, dict }: { data?: any, dict?: any }) => {
   useEffect(() => {
     if (!sectionRef.current || !titleRef.current || !logosRef.current) return;
 
+    if (data?.disableEntranceAnimation && data?.disableHeaderEntranceAnimation) return;
+
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: sectionRef.current,
-        start: 'top 85%',
+        start: 'top 80%',
         toggleActions: 'play none none reverse',
       }
     });
 
-    tl.fromTo(
-      titleRef.current,
-      { y: 30, opacity: 0, filter: 'blur(10px)' },
-      { y: 0, opacity: 1, filter: 'blur(0px)', duration: 1, ease: 'power3.out' }
-    )
-    .fromTo(
-      logosRef.current.children,
-      { y: 30, opacity: 0, filter: 'blur(10px)' },
-      { y: 0, opacity: 1, filter: 'blur(0px)', duration: 0.8, stagger: 0.1, ease: 'power3.out' },
-      '-=0.6'
-    );
+    if (!data?.disableHeaderEntranceAnimation) {
+      tl.fromTo(
+        titleRef.current,
+        { y: 35, opacity: 0, filter: 'blur(10px)' },
+        { y: 0, opacity: 1, filter: 'blur(0px)', duration: 1.2, ease: 'expo.out' }
+      );
+    }
+
+    if (!data?.disableEntranceAnimation) {
+      const position = !data?.disableHeaderEntranceAnimation ? '-=0.8' : 0;
+      tl.fromTo(
+        logosRef.current.children,
+        { y: 40, opacity: 0, filter: 'blur(8px)' },
+        { y: 0, opacity: 1, filter: 'blur(0px)', duration: 1.0, stagger: 0.1, ease: 'power3.out' },
+        position
+      );
+    }
 
     return () => {
       ScrollTrigger.getAll().forEach(st => {
@@ -51,10 +59,10 @@ const PartnerSection = ({ data, dict }: { data?: any, dict?: any }) => {
         }
       });
     };
-  }, []);
+  }, [data]);
 
   return (
-    <section className="partner-section" ref={sectionRef} id={data?.id || 'partners'}>
+    <section className={`partner-section ${data?.disableEntranceAnimation ? 'no-entrance-anim' : ''} ${data?.disableHeaderEntranceAnimation ? 'no-header-entrance-anim' : ''}`} ref={sectionRef} id={data?.id || 'partners'}>
       <div className="partner-container">
         <div className="partner-title-wrapper" ref={titleRef}>
           <h2 className="partner-title">{title}</h2>

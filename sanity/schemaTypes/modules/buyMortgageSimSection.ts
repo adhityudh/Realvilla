@@ -1,5 +1,5 @@
 import { ControlsIcon } from '@sanity/icons'
-import { defineField, defineType } from 'sanity'
+import { ALL_FIELDS_GROUP, defineField, defineType } from 'sanity'
 import { SectionSelector } from '../../components/SectionSelector'
 import { ComponentSelector } from '../../components/ComponentSelector'
 
@@ -8,6 +8,11 @@ export const buyMortgageSimSection = defineType({
   title: 'Buy Mortgage Sim Section',
   type: 'object',
   icon: ControlsIcon,
+  groups: [
+    { name: 'content', title: 'Content', default: true },
+    { name: 'advanced', title: 'Advanced' },
+    { ...ALL_FIELDS_GROUP, hidden: true },
+  ],
   fields: [
     defineField({
       name: 'id',
@@ -15,30 +20,51 @@ export const buyMortgageSimSection = defineType({
       type: 'string',
       description: 'Used as an anchor identifier (e.g. for smooth scrolling links like #about).',
       initialValue: 'mortgage-simulator',
+    group: 'advanced',
+}),
+    defineField({
+      name: 'disableEntranceAnimation',
+      title: 'Disable Entrance Animation',
+      description: 'If checked, the section will load immediately without fade-in/slide-up animations.',
+      type: 'boolean',
+      initialValue: false,
+      group: 'advanced',
+    }),
+    defineField({
+      name: 'disableHeaderEntranceAnimation',
+      title: 'Disable Header Entrance Animation',
+      description: 'If checked, the section header (tagline, headline, intro) will load immediately without entrance animations.',
+      type: 'boolean',
+      initialValue: false,
+      group: 'advanced',
     }),
     // ── Section Header ──────────────────────────────────────
     defineField({
       name: 'tagline',
       title: 'Tagline',
       type: 'string',
-    }),
+    group: 'content',
+}),
     defineField({
       name: 'headline',
       title: 'Headline',
       type: 'string',
-    }),
+    group: 'content',
+}),
     defineField({
       name: 'body',
       title: 'Body Text',
       type: 'text',
-    }),
+    group: 'content',
+}),
 
     // ── CTA ──────────────────────────────────────
     defineField({
       name: 'ctaLabel',
       title: 'CTA Label',
       type: 'string',
-    }),
+    group: 'content',
+}),
     defineField({
       name: 'linkType',
       title: 'Link Type',
@@ -52,7 +78,8 @@ export const buyMortgageSimSection = defineType({
         ],
         layout: 'radio',
       },
-    }),
+    group: 'content',
+}),
     defineField({
       name: 'internalLink',
       title: 'Internal Link',
@@ -69,13 +96,15 @@ export const buyMortgageSimSection = defineType({
           };
         }
       },
-    }),
+    group: 'content',
+}),
     defineField({
       name: 'externalLink',
       title: 'External Link',
       type: 'string',
       hidden: ({ parent }) => parent?.linkType !== 'external',
-    }),
+    group: 'content',
+}),
     defineField({
       name: 'sectionLink',
       title: 'Section Link',
@@ -84,7 +113,8 @@ export const buyMortgageSimSection = defineType({
         input: SectionSelector,
       },
       hidden: ({ parent }) => parent?.linkType !== 'section',
-    }),
+    group: 'content',
+}),
     defineField({
       name: 'componentLink',
       title: 'Component Link',
@@ -93,7 +123,8 @@ export const buyMortgageSimSection = defineType({
         input: ComponentSelector,
       },
       hidden: ({ parent }) => parent?.linkType !== 'component',
-    }),
+    group: 'content',
+}),
 
     // ── Bottom Disclaimer ──────────────────────────────────────
     defineField({
@@ -101,7 +132,8 @@ export const buyMortgageSimSection = defineType({
       title: 'Bottom Disclaimer Text',
       type: 'text',
       description: 'Disclaimer shown below the calculator.',
-    }),
+    group: 'content',
+}),
   ],
   preview: {
     select: {

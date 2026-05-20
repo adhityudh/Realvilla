@@ -1,4 +1,4 @@
-import { defineField, defineType } from 'sanity'
+import { ALL_FIELDS_GROUP, defineField, defineType } from 'sanity'
 import { BookIcon } from '@sanity/icons'
 
 export const buyingProcessSection = defineType({
@@ -6,6 +6,11 @@ export const buyingProcessSection = defineType({
   title: 'Buying Process Section',
   type: 'object',
   icon: BookIcon,
+  groups: [
+    { name: 'content', title: 'Content', default: true },
+    { name: 'advanced', title: 'Advanced' },
+    { ...ALL_FIELDS_GROUP, hidden: true },
+  ],
   fields: [
     defineField({
       name: 'id',
@@ -13,25 +18,45 @@ export const buyingProcessSection = defineType({
       type: 'string',
       description: 'Used as an anchor identifier (e.g. for smooth scrolling links like #about).',
       initialValue: 'buying-process',
+    group: 'advanced',
+}),
+    defineField({
+      name: 'disableEntranceAnimation',
+      title: 'Disable Entrance Animation',
+      description: 'If checked, the section will load immediately without fade-in/slide-up animations.',
+      type: 'boolean',
+      initialValue: false,
+      group: 'advanced',
+    }),
+    defineField({
+      name: 'disableHeaderEntranceAnimation',
+      title: 'Disable Header Entrance Animation',
+      description: 'If checked, the section header (tagline, headline, intro) will load immediately without entrance animations.',
+      type: 'boolean',
+      initialValue: false,
+      group: 'advanced',
     }),
     defineField({
       name: 'tagline',
       title: 'Tagline',
       type: 'string',
       description: 'Small subtitle above the headline. E.g. "Comprehensive Guide"',
-    }),
+    group: 'content',
+}),
     defineField({
       name: 'headline',
       title: 'Headline',
       type: 'string',
       description: 'Main section heading.',
-    }),
+    group: 'content',
+}),
     defineField({
       name: 'intro',
       title: 'Intro Text',
       type: 'blockContent',
       description: 'Optional introductory context.',
-    }),
+    group: 'content',
+}),
     defineField({
       name: 'imageOrder',
       title: 'First Item Image Side',
@@ -45,7 +70,8 @@ export const buyingProcessSection = defineType({
         layout: 'radio',
       },
       initialValue: 'left-first',
-    }),
+    group: 'content',
+}),
     defineField({
       name: 'steps',
       title: 'Process Steps',
@@ -110,7 +136,8 @@ export const buyingProcessSection = defineType({
           },
         },
       ],
-    }),
+    group: 'content',
+}),
   ],
   preview: {
     select: {

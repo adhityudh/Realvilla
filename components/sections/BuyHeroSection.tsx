@@ -15,6 +15,8 @@ if (typeof window !== 'undefined') {
 
 interface BuyHeroSectionProps {
   data: {
+    disableEntranceAnimation?: boolean;
+    disableHeaderEntranceAnimation?: boolean;
     id?: string;
     title?: string;
     backgroundImage?: string;
@@ -37,91 +39,6 @@ export default function BuyHeroSection({ data, dict }: BuyHeroSectionProps) {
 
   useEffect(() => {
     if (!contentRef.current || !sectionRef.current) return;
-
-    const tl = gsap.timeline();
-
-    // Set initial states for elements to avoid flash
-    gsap.set(['.buy-search-trigger', '.buy-filter-btn'], { 
-      backgroundColor: 'rgba(255, 255, 255, 0)',
-      borderColor: 'rgba(255, 255, 255, 0)',
-      y: 20,
-      opacity: 0
-    });
-    gsap.set(['.buy-search-trigger > *', '.buy-filter-btn > *'], { opacity: 0 });
-
-    // 1. Animate title first
-    tl.fromTo(
-      '.buy-hero-title',
-      { y: 30, opacity: 0 },
-      {
-        y: 0,
-        opacity: 1,
-        duration: 1.2,
-        ease: 'expo.out'
-      }
-    );
-
-    // 2. Animate search trigger container (y and opacity) - Start at 0.4s
-    tl.to(
-      ['.buy-search-trigger', '.buy-filter-btn'],
-      {
-        y: 0,
-        opacity: 1,
-        duration: 1,
-        ease: 'expo.out',
-      },
-      0.4
-    );
-
-    // 3. Animate the 'Glass' appearance (bg/border) - Start at 0.6s
-    tl.to(
-      ['.buy-search-trigger', '.buy-filter-btn'],
-      {
-        backgroundColor: 'rgba(255, 255, 255, 0.12)',
-        borderColor: 'rgba(255, 255, 255, 0.2)',
-        duration: 1.5,
-        ease: 'power2.out'
-      },
-      0.6
-    );
-
-    // 4. Animate trigger content (icon and text) - Start at 0.8s
-    tl.to(
-      ['.buy-search-trigger > *', '.buy-filter-btn > *'],
-      {
-        opacity: 1,
-        duration: 0.8,
-        stagger: 0.1,
-        ease: 'power2.out'
-      },
-      0.8
-    );
-
-    // 5. Animate jump links - Start at 1.0s
-    tl.fromTo(
-      '.buy-jump-links',
-      { y: 20, opacity: 0 },
-      {
-        y: 0,
-        opacity: 1,
-        duration: 1,
-        ease: 'expo.out'
-      },
-      1.0
-    );
-
-    // Typing animation for placeholder
-    const startTyping = () => {
-      let i = 0;
-      const timer = setInterval(() => {
-        setPlaceholderText(fullPlaceholder.slice(0, i));
-        i++;
-        if (i > fullPlaceholder.length) clearInterval(timer);
-      }, 30);
-      return timer;
-    };
-
-    const typingTimeout = setTimeout(startTyping, 600); // Start sooner
 
     const st = ScrollTrigger.create({
       trigger: sectionRef.current,
@@ -165,17 +82,131 @@ export default function BuyHeroSection({ data, dict }: BuyHeroSectionProps) {
       }
     });
 
+    if (data?.disableEntranceAnimation && data?.disableHeaderEntranceAnimation) {
+      setPlaceholderText(fullPlaceholder);
+      return () => {
+        st.kill();
+        document.body.classList.remove('header-light-mode');
+        document.body.classList.remove('header-black-bg');
+      };
+    }
+
+    const tl = gsap.timeline();
+
+    if (!data?.disableEntranceAnimation) {
+      // Set initial states for elements to avoid flash
+      gsap.set(['.buy-search-trigger', '.buy-filter-btn'], { 
+        backgroundColor: 'rgba(255, 255, 255, 0)',
+        borderColor: 'rgba(255, 255, 255, 0)',
+        y: 20,
+        opacity: 0,
+        filter: 'blur(5px)'
+      });
+      gsap.set(['.buy-search-trigger > *', '.buy-filter-btn > *'], { opacity: 0 });
+    }
+
+    // 1. Animate title first
+    if (!data?.disableHeaderEntranceAnimation) {
+      tl.fromTo(
+        '.buy-hero-title',
+        { y: 35, opacity: 0, filter: 'blur(10px)' },
+        {
+          y: 0,
+          opacity: 1,
+          filter: 'blur(0px)',
+          duration: 1.2,
+          ease: 'expo.out'
+        }
+      );
+    }
+
+    if (!data?.disableEntranceAnimation) {
+      const positionOffset = !data?.disableHeaderEntranceAnimation ? 0.4 : 0;
+      // 2. Animate search trigger container (y, opacity, blur)
+      tl.to(
+        ['.buy-search-trigger', '.buy-filter-btn'],
+        {
+          y: 0,
+          opacity: 1,
+          filter: 'blur(0px)',
+          duration: 1.0,
+          ease: 'expo.out',
+        },
+        positionOffset
+      );
+
+      // 3. Animate the 'Glass' appearance (bg/border)
+      tl.to(
+        ['.buy-search-trigger', '.buy-filter-btn'],
+        {
+          backgroundColor: 'rgba(255, 255, 255, 0.12)',
+          borderColor: 'rgba(255, 255, 255, 0.2)',
+          duration: 1.5,
+          ease: 'power2.out'
+        },
+        positionOffset + 0.2
+      );
+
+      // 4. Animate trigger content (icon and text)
+      tl.to(
+        ['.buy-search-trigger > *', '.buy-filter-btn > *'],
+        {
+          opacity: 1,
+          duration: 0.8,
+          stagger: 0.1,
+          ease: 'power2.out'
+        },
+        positionOffset + 0.4
+      );
+
+      // 5. Animate jump links
+      tl.fromTo(
+        '.buy-jump-links',
+        { y: 20, opacity: 0, filter: 'blur(5px)' },
+        {
+          y: 0,
+          opacity: 1,
+          filter: 'blur(0px)',
+          duration: 1.0,
+          ease: 'expo.out'
+        },
+        positionOffset + 0.6
+      );
+    }
+
+    // Typing animation for placeholder
+    let typingTimer: any;
+    let typingTimeout: any;
+    if (!data?.disableEntranceAnimation) {
+      const startTyping = () => {
+        let i = 0;
+        const timer = setInterval(() => {
+          setPlaceholderText(fullPlaceholder.slice(0, i));
+          i++;
+          if (i > fullPlaceholder.length) clearInterval(timer);
+        }, 30);
+        return timer;
+      };
+      typingTimeout = setTimeout(() => {
+        typingTimer = startTyping();
+      }, 600); // Start sooner
+    } else {
+      setPlaceholderText(fullPlaceholder);
+    }
+
     return () => {
       st.kill();
-      clearTimeout(typingTimeout);
+      tl.kill();
+      if (typingTimeout) clearTimeout(typingTimeout);
+      if (typingTimer) clearInterval(typingTimer);
       document.body.classList.remove('header-light-mode');
       document.body.classList.remove('header-black-bg');
     };
-  }, [fullPlaceholder]);
+  }, [fullPlaceholder, data]);
 
   return (
     <>
-      <section className="buy-hero" ref={sectionRef} data-is-hero="true" id={data?.id || 'buy-hero'}>
+      <section className={`buy-hero ${data?.disableEntranceAnimation ? 'no-entrance-anim' : ''}`} ref={sectionRef} data-is-hero="true" id={data?.id || 'buy-hero'}>
         <div className="buy-hero-bg">
           {data.backgroundImage && (
             <Image

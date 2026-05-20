@@ -16,8 +16,11 @@ if (typeof window !== 'undefined') {
 
 interface SellHeroSectionProps {
   data: {
+    disableEntranceAnimation?: boolean;
+    disableHeaderEntranceAnimation?: boolean;
     id?: string;
     title?: string;
+    subtitle?: string;
     backgroundImage?: string;
     searchPlaceholder?: string;
     jumpLinks?: Array<{ label: string; link: string }>;
@@ -235,6 +238,7 @@ export default function SellHeroSection({ data, dict }: SellHeroSectionProps) {
 
   // Use user-provided settings or default writing
   const finalTitle = data?.title || dict?.contact?.sell?.hero_title;
+  const finalSubtitle = data?.subtitle || dict?.contact?.sell?.hero_subtitle;
   const fullPlaceholder = data?.searchPlaceholder || dict?.contact?.sell?.fields?.municipality_placeholder;
 
   // Use Sell page background image as default fallback if none provided
@@ -248,91 +252,6 @@ export default function SellHeroSection({ data, dict }: SellHeroSectionProps) {
 
   useEffect(() => {
     if (!contentRef.current || !sectionRef.current) return;
-
-    const tl = gsap.timeline();
-
-    // Set initial states for elements to avoid flash
-    gsap.set('.sell-search-trigger', {
-      backgroundColor: 'rgba(255, 255, 255, 0)',
-      borderColor: 'rgba(255, 255, 255, 0)',
-      y: 20,
-      opacity: 0
-    });
-    gsap.set('.sell-search-trigger > *', { opacity: 0 });
-
-    // 1. Animate title first
-    tl.fromTo(
-      '.sell-hero-title',
-      { y: 30, opacity: 0 },
-      {
-        y: 0,
-        opacity: 1,
-        duration: 1.2,
-        ease: 'expo.out'
-      }
-    );
-
-    // 2. Animate search trigger container (y and opacity) - Start at 0.4s
-    tl.to(
-      '.sell-search-trigger',
-      {
-        y: 0,
-        opacity: 1,
-        duration: 1,
-        ease: 'expo.out',
-      },
-      0.4
-    );
-
-    // 3. Animate the 'Glass' appearance (bg/border) - Start at 0.6s
-    tl.to(
-      '.sell-search-trigger',
-      {
-        backgroundColor: 'rgba(255, 255, 255, 0.12)',
-        borderColor: 'rgba(255, 255, 255, 0.2)',
-        duration: 1.5,
-        ease: 'power2.out'
-      },
-      0.6
-    );
-
-    // 4. Animate trigger content (icon and text) - Start at 0.8s
-    tl.to(
-      '.sell-search-trigger > *',
-      {
-        opacity: 1,
-        duration: 0.8,
-        stagger: 0.1,
-        ease: 'power2.out'
-      },
-      0.8
-    );
-
-    // 5. Animate jump links - Start at 1.0s
-    tl.fromTo(
-      '.sell-jump-links',
-      { y: 20, opacity: 0 },
-      {
-        y: 0,
-        opacity: 1,
-        duration: 1,
-        ease: 'expo.out'
-      },
-      1.0
-    );
-
-    // Typing animation for placeholder
-    const startTyping = () => {
-      let i = 0;
-      const timer = setInterval(() => {
-        setPlaceholderText(fullPlaceholder.slice(0, i));
-        i++;
-        if (i > fullPlaceholder.length) clearInterval(timer);
-      }, 30);
-      return timer;
-    };
-
-    const typingTimeout = setTimeout(startTyping, 600); // Start sooner
 
     const st = ScrollTrigger.create({
       trigger: sectionRef.current,
@@ -376,16 +295,144 @@ export default function SellHeroSection({ data, dict }: SellHeroSectionProps) {
       }
     });
 
+    if (data?.disableEntranceAnimation && data?.disableHeaderEntranceAnimation) {
+      setPlaceholderText(fullPlaceholder);
+      return () => {
+        st.kill();
+        document.body.classList.remove('header-light-mode');
+        document.body.classList.remove('header-black-bg');
+      };
+    }
+
+    const tl = gsap.timeline();
+
+    if (!data?.disableEntranceAnimation) {
+      // Set initial states for elements to avoid flash
+      gsap.set('.sell-search-trigger', {
+        backgroundColor: 'rgba(255, 255, 255, 0)',
+        borderColor: 'rgba(255, 255, 255, 0)',
+        y: 20,
+        opacity: 0,
+        filter: 'blur(5px)'
+      });
+      gsap.set('.sell-search-trigger > *', { opacity: 0 });
+    }
+
+    // 1. Animate title first
+    if (!data?.disableHeaderEntranceAnimation) {
+      tl.fromTo(
+        '.sell-hero-title',
+        { y: 35, opacity: 0, filter: 'blur(10px)' },
+        {
+          y: 0,
+          opacity: 1,
+          filter: 'blur(0px)',
+          duration: 1.2,
+          ease: 'expo.out'
+        }
+      );
+
+      // 1.5. Animate subtitle (Start at 0.3s)
+      tl.fromTo(
+        '.sell-hero-subtitle',
+        { y: 35, opacity: 0, filter: 'blur(10px)' },
+        {
+          y: 0,
+          opacity: 1,
+          filter: 'blur(0px)',
+          duration: 1.2,
+          ease: 'expo.out',
+        },
+        0.3
+      );
+    }
+
+    if (!data?.disableEntranceAnimation) {
+      const positionOffset = !data?.disableHeaderEntranceAnimation ? 0.5 : 0;
+      // 2. Animate search trigger container (y, opacity, blur)
+      tl.to(
+        '.sell-search-trigger',
+        {
+          y: 0,
+          opacity: 1,
+          filter: 'blur(0px)',
+          duration: 1.0,
+          ease: 'expo.out',
+        },
+        positionOffset
+      );
+
+      // 3. Animate the 'Glass' appearance (bg/border)
+      tl.to(
+        '.sell-search-trigger',
+        {
+          backgroundColor: 'rgba(255, 255, 255, 0.12)',
+          borderColor: 'rgba(255, 255, 255, 0.2)',
+          duration: 1.5,
+          ease: 'power2.out'
+        },
+        positionOffset + 0.2
+      );
+
+      // 4. Animate trigger content (icon and text)
+      tl.to(
+        '.sell-search-trigger > *',
+        {
+          opacity: 1,
+          duration: 0.8,
+          stagger: 0.1,
+          ease: 'power2.out'
+        },
+        positionOffset + 0.4
+      );
+
+      // 5. Animate jump links
+      tl.fromTo(
+        '.sell-jump-links',
+        { y: 20, opacity: 0, filter: 'blur(5px)' },
+        {
+          y: 0,
+          opacity: 1,
+          filter: 'blur(0px)',
+          duration: 1.0,
+          ease: 'expo.out'
+        },
+        positionOffset + 0.6
+      );
+    }
+
+    // Typing animation for placeholder
+    let typingTimer: any;
+    let typingTimeout: any;
+    if (!data?.disableEntranceAnimation) {
+      const startTyping = () => {
+        let i = 0;
+        const timer = setInterval(() => {
+          setPlaceholderText(fullPlaceholder.slice(0, i));
+          i++;
+          if (i > fullPlaceholder.length) clearInterval(timer);
+        }, 30);
+        return timer;
+      };
+      typingTimeout = setTimeout(() => {
+        typingTimer = startTyping();
+      }, 600); // Start sooner
+    } else {
+      setPlaceholderText(fullPlaceholder);
+    }
+
     return () => {
       st.kill();
-      clearTimeout(typingTimeout);
+      tl.kill();
+      if (typingTimeout) clearTimeout(typingTimeout);
+      if (typingTimer) clearInterval(typingTimer);
       document.body.classList.remove('header-light-mode');
       document.body.classList.remove('header-black-bg');
     };
-  }, [fullPlaceholder]);
+  }, [fullPlaceholder, data]);
 
   return (
-    <section className="sell-hero" ref={sectionRef} data-is-hero="true" id={data?.id || 'sell-hero'}>
+    <section className={`sell-hero ${data?.disableEntranceAnimation ? 'no-entrance-anim' : ''} ${data?.disableHeaderEntranceAnimation ? 'no-header-entrance-anim' : ''}`} ref={sectionRef} data-is-hero="true" id={data?.id || 'sell-hero'}>
       <div className="sell-hero-bg">
         {bgImage && (
           <Image
@@ -401,6 +448,7 @@ export default function SellHeroSection({ data, dict }: SellHeroSectionProps) {
 
       <div className="sell-hero-content" ref={contentRef}>
         <h1 className="sell-hero-title">{finalTitle}</h1>
+        {finalSubtitle && <p className="sell-hero-subtitle">{finalSubtitle}</p>}
 
         <div className="sell-search-trigger-container" style={{ maxWidth: '624px' }} ref={dropdownRef}>
           <div
@@ -424,11 +472,10 @@ export default function SellHeroSection({ data, dict }: SellHeroSectionProps) {
               onScroll={checkScrollLimit}
               onKeyUp={checkScrollLimit}
               placeholder={placeholderText}
-              className={`sell-search-input-real ${
-                selectedAddress
-                  ? `${!isScrollAtStart ? 'has-fade-left' : ''} ${!isScrollAtEnd ? 'has-fade-right' : ''}`.trim()
-                  : ''
-              }`}
+              className={`sell-search-input-real ${selectedAddress
+                ? `${!isScrollAtStart ? 'has-fade-left' : ''} ${!isScrollAtEnd ? 'has-fade-right' : ''}`.trim()
+                : ''
+                }`}
               style={{ paddingRight: '100px' }}
             />
             {isLoading && (

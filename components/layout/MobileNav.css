@@ -87,7 +87,6 @@
         }
 
         .mobile-nav-overlay.active .nav-link-mobile {
-            opacity: 0.8;
             transform: translateY(0);
         }
 
@@ -154,6 +153,7 @@
            RESPONSIVE — MOBILE (≤1024px)
         ============================================= */
         @media (max-width: 1024px) {
+
             body:not(.preloading) .hamburger,
             body.intro-active .hamburger {
                 display: flex;

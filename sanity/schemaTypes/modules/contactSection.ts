@@ -1,5 +1,5 @@
 import { EnvelopeIcon } from '@sanity/icons'
-import { defineField, defineType } from 'sanity'
+import { ALL_FIELDS_GROUP, defineField, defineType } from 'sanity'
 
 export const contactSection = defineType({
   name: 'contactSection',
@@ -7,11 +7,13 @@ export const contactSection = defineType({
   type: 'object',
   icon: EnvelopeIcon,
   groups: [
-    { name: 'header', title: 'Header & Layout' },
+    { name: 'header', title: 'Header & Layout', default: true },
     { name: 'intent', title: 'Intent Step' },
     { name: 'general', title: 'General Form' },
     { name: 'sell', title: 'Sell Form' },
     { name: 'mortgage', title: 'Mortgage Form' },
+    { name: 'advanced', title: 'Advanced' },
+    { ...ALL_FIELDS_GROUP, hidden: true },
   ],
   fields: [
     defineField({
@@ -20,6 +22,23 @@ export const contactSection = defineType({
       type: 'string',
       description: 'Used as an anchor identifier (e.g. for smooth scrolling links like #about).',
       initialValue: 'contact',
+    group: 'advanced',
+}),
+    defineField({
+      name: 'disableEntranceAnimation',
+      title: 'Disable Entrance Animation',
+      description: 'If checked, the section will load immediately without fade-in/slide-up animations.',
+      type: 'boolean',
+      initialValue: false,
+      group: 'advanced',
+    }),
+    defineField({
+      name: 'disableHeaderEntranceAnimation',
+      title: 'Disable Header Entrance Animation',
+      description: 'If checked, the section header (tagline, headline, intro) will load immediately without entrance animations.',
+      type: 'boolean',
+      initialValue: false,
+      group: 'advanced',
     }),
     defineField({
       name: 'headline',

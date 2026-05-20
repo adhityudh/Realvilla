@@ -32,60 +32,73 @@ const MortgageFAQSection = ({ data, dict }: { data?: any, dict?: any }) => {
   useEffect(() => {
     if (!sectionRef.current || !headerRef.current || !listRef.current || !ctaRef.current) return;
 
-    gsap.fromTo(
-      headerRef.current.querySelectorAll('.mortgage-faq-tagline, .mortgage-faq-title, .mortgage-faq-description'),
-      { y: 60, opacity: 0, filter: 'blur(15px)' },
-      {
-        y: 0,
-        opacity: 1,
-        filter: 'blur(0px)',
-        duration: 1.2,
-        stagger: 0.2,
-        ease: 'expo.out',
-        scrollTrigger: {
-          trigger: headerRef.current,
-          start: 'top 85%',
-          toggleActions: 'play none none reverse'
-        }
+    if (data?.disableEntranceAnimation && data?.disableHeaderEntranceAnimation) {
+      if (window.innerWidth <= 1024) {
+        setActiveIndex(0);
+        gsap.set(answerRefs.current[0], { height: 'auto', opacity: 1 });
       }
-    );
+      return;
+    }
 
-    const faqItems = listRef.current.querySelectorAll('.faq-item');
-    gsap.fromTo(
-      faqItems,
-      { y: 40, opacity: 0 },
-      {
-        y: 0,
-        opacity: 1,
-        duration: 0.8,
-        stagger: 0.15,
-        ease: 'power3.out',
-        scrollTrigger: {
-          trigger: listRef.current,
-          start: 'top 85%',
-          toggleActions: 'play none none reverse'
+    if (!data?.disableHeaderEntranceAnimation) {
+      gsap.fromTo(
+        headerRef.current.querySelectorAll('.mortgage-faq-tagline, .mortgage-faq-title, .mortgage-faq-description'),
+        { y: 35, opacity: 0, filter: 'blur(10px)' },
+        {
+          y: 0,
+          opacity: 1,
+          filter: 'blur(0px)',
+          duration: 1.2,
+          stagger: 0.15,
+          ease: 'expo.out',
+          scrollTrigger: {
+            trigger: headerRef.current,
+            start: 'top 80%',
+            toggleActions: 'play none none reverse'
+          }
         }
-      }
-    );
+      );
+    }
 
-    const ctaButtons = ctaRef.current.children;
-    gsap.fromTo(
-      ctaButtons,
-      { y: 30, opacity: 0, filter: 'blur(5px)' },
-      {
-        y: 0,
-        opacity: 1,
-        filter: 'blur(0px)',
-        duration: 1,
-        stagger: 0.2,
-        ease: 'power2.out',
-        scrollTrigger: {
-          trigger: ctaRef.current,
-          start: 'top 90%',
-          toggleActions: 'play none none reverse'
+    if (!data?.disableEntranceAnimation) {
+      const faqItems = listRef.current.querySelectorAll('.faq-item');
+      gsap.fromTo(
+        faqItems,
+        { y: 40, opacity: 0, filter: 'blur(8px)' },
+        {
+          y: 0,
+          opacity: 1,
+          filter: 'blur(0px)',
+          duration: 1.0,
+          stagger: 0.1,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: listRef.current,
+            start: 'top 80%',
+            toggleActions: 'play none none reverse'
+          }
         }
-      }
-    );
+      );
+
+      const ctaButtons = ctaRef.current.children;
+      gsap.fromTo(
+        ctaButtons,
+        { y: 40, opacity: 0, filter: 'blur(8px)' },
+        {
+          y: 0,
+          opacity: 1,
+          filter: 'blur(0px)',
+          duration: 1.0,
+          stagger: 0.1,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: ctaRef.current,
+            start: 'top 80%',
+            toggleActions: 'play none none reverse'
+          }
+        }
+      );
+    }
 
     if (window.innerWidth <= 1024) {
       setActiveIndex(0);
@@ -99,7 +112,7 @@ const MortgageFAQSection = ({ data, dict }: { data?: any, dict?: any }) => {
         }
       });
     };
-  }, []);
+  }, [data]);
 
   const toggleFAQ = (index: number) => {
     if (window.innerWidth > 1024) return;
@@ -115,7 +128,7 @@ const MortgageFAQSection = ({ data, dict }: { data?: any, dict?: any }) => {
   };
 
   return (
-    <section className="mortgage-faq-section" id={data?.id || 'mortgage'} ref={sectionRef}>
+    <section className={`mortgage-faq-section ${data?.disableEntranceAnimation ? 'no-entrance-anim' : ''} ${data?.disableHeaderEntranceAnimation ? 'no-header-entrance-anim' : ''}`} id={data?.id || 'mortgage'} ref={sectionRef}>
       <div className="mortgage-faq-wrapper">
         <div className="mortgage-faq-header" ref={headerRef}>
           <div className="mortgage-faq-info">

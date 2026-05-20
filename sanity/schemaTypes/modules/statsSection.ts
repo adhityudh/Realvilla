@@ -1,11 +1,16 @@
 import { ChartUpwardIcon } from '@sanity/icons'
-import { defineField, defineType } from 'sanity'
+import { ALL_FIELDS_GROUP, defineField, defineType } from 'sanity'
 
 export const statsSection = defineType({
   name: 'statsSection',
   title: 'Stats Section',
   type: 'object',
   icon: ChartUpwardIcon,
+  groups: [
+    { name: 'content', title: 'Content', default: true },
+    { name: 'advanced', title: 'Advanced' },
+    { ...ALL_FIELDS_GROUP, hidden: true },
+  ],
   fields: [
     defineField({
       name: 'id',
@@ -13,17 +18,36 @@ export const statsSection = defineType({
       type: 'string',
       description: 'Used as an anchor identifier (e.g. for smooth scrolling links like #about).',
       initialValue: 'stats',
+    group: 'advanced',
+}),
+    defineField({
+      name: 'disableEntranceAnimation',
+      title: 'Disable Entrance Animation',
+      description: 'If checked, the section will load immediately without fade-in/slide-up animations.',
+      type: 'boolean',
+      initialValue: false,
+      group: 'advanced',
+    }),
+    defineField({
+      name: 'disableHeaderEntranceAnimation',
+      title: 'Disable Header Entrance Animation',
+      description: 'If checked, the section header (tagline, headline, intro) will load immediately without entrance animations.',
+      type: 'boolean',
+      initialValue: false,
+      group: 'advanced',
     }),
     defineField({
       name: 'heading',
       title: 'Section Heading',
       type: 'string',
-    }),
+    group: 'content',
+}),
     defineField({
       name: 'body',
       title: 'Body / Copy Text',
       type: 'text',
-    }),
+    group: 'content',
+}),
     defineField({
       name: 'stats',
       title: 'Stats Items',
@@ -73,8 +97,9 @@ export const statsSection = defineType({
             }
           }
         }
-      ]
-    }),
+      ],
+    group: 'content',
+}),
   ],
   preview: {
     select: {

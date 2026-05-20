@@ -1,21 +1,28 @@
-import { defineField, defineType } from 'sanity'
+import { defineField, defineType, ALL_FIELDS_GROUP } from 'sanity'
 
 export const page = defineType({
   name: 'page',
   title: 'Page',
   type: 'document',
+  groups: [
+    { name: 'content', title: 'Content', default: true },
+    { name: 'seo', title: 'SEO' },
+    { ...ALL_FIELDS_GROUP, hidden: true },
+  ],
   fields: [
     defineField({
       name: 'language',
       type: 'string',
       readOnly: true,
       hidden: true,
+      group: 'content',
     }),
     defineField({
       name: 'title',
       title: 'Title',
       type: 'string',
       validation: (Rule) => Rule.required(),
+      group: 'content',
     }),
     defineField({
       name: 'slug',
@@ -42,6 +49,7 @@ export const page = defineType({
         }
       },
       validation: (Rule) => Rule.required(),
+      group: 'content',
     }),
     defineField({
       name: 'sections',
@@ -64,9 +72,11 @@ export const page = defineType({
         { type: 'buyMortgageSimSection' },
         { type: 'statsSection' },
         { type: 'mortgageProcessSection' },
+        { type: 'sellProcessSection' },
         { type: 'documentLedgerSection' },
         { type: 'financingCardsSection' },
       ],
+      group: 'content',
     }),
     defineField({
       name: 'pageComponents',
@@ -77,6 +87,7 @@ export const page = defineType({
         { type: 'contactModalComponent' },
         { type: 'genericModalComponent' },
       ],
+      group: 'content',
     }),
     defineField({
       name: 'footerPaddingHigh',
@@ -84,6 +95,7 @@ export const page = defineType({
       description: 'If enabled, the footer will have larger top padding (like the homepage).',
       type: 'boolean',
       initialValue: false,
+      group: 'content',
     }),
     defineField({
       name: 'seo',
@@ -91,9 +103,6 @@ export const page = defineType({
       type: 'seo',
       group: 'seo',
     }),
-  ],
-  groups: [
-    { name: 'seo', title: 'SEO' },
   ],
   preview: {
     select: {

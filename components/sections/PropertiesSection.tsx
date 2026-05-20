@@ -33,7 +33,7 @@ const PropertiesSection = ({ data, dict }: { data?: any, dict?: any }) => {
     handleResize();
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
-  }, []);
+  }, [data]);
 
   if (!data) return null;
 
@@ -46,60 +46,66 @@ const PropertiesSection = ({ data, dict }: { data?: any, dict?: any }) => {
   useEffect(() => {
     if (!sectionRef.current || !containerRef.current || !gridRef.current || !ctaRef.current) return;
 
-    const headerElements = containerRef.current.children;
-    gsap.fromTo(
-      headerElements,
-      { y: 100, opacity: 0, filter: 'blur(20px)' },
-      {
-        y: 0,
-        opacity: 1,
-        filter: 'blur(0px)',
-        duration: 1.5,
-        stagger: 0.3,
-        ease: 'expo.out',
-        scrollTrigger: {
-          trigger: containerRef.current,
-          start: 'center 95%',
-          toggleActions: 'play none none reverse',
-        }
-      }
-    );
+    if (data?.disableEntranceAnimation && data?.disableHeaderEntranceAnimation) return;
 
-    const cards = gridRef.current.querySelectorAll('.property-card');
-    gsap.fromTo(
-      cards,
-      { y: 60, opacity: 0, filter: 'blur(15px)' },
-      {
-        y: 0,
-        opacity: 1,
-        filter: 'blur(0px)',
-        duration: 1,
-        stagger: 0.15,
-        ease: 'power3.out',
-        scrollTrigger: {
-          trigger: gridRef.current,
-          start: 'top 85%',
-          toggleActions: 'play none none reverse',
+    if (!data?.disableHeaderEntranceAnimation) {
+      const headerElements = containerRef.current.children;
+      gsap.fromTo(
+        headerElements,
+        { y: 35, opacity: 0, filter: 'blur(10px)' },
+        {
+          y: 0,
+          opacity: 1,
+          filter: 'blur(0px)',
+          duration: 1.2,
+          stagger: 0.15,
+          ease: 'expo.out',
+          scrollTrigger: {
+            trigger: containerRef.current,
+            start: 'top 80%',
+            toggleActions: 'play none none reverse',
+          }
         }
-      }
-    );
+      );
+    }
 
-    gsap.fromTo(
-      ctaRef.current,
-      { y: 30, opacity: 0, filter: 'blur(5px)' },
-      {
-        y: 0,
-        opacity: 1,
-        filter: 'blur(0px)',
-        duration: 0.8,
-        ease: 'power2.out',
-        scrollTrigger: {
-          trigger: ctaRef.current,
-          start: 'top 90%',
-          toggleActions: 'play none none reverse',
+    if (!data?.disableEntranceAnimation) {
+      const cards = gridRef.current.querySelectorAll('.property-card');
+      gsap.fromTo(
+        cards,
+        { y: 40, opacity: 0, filter: 'blur(8px)' },
+        {
+          y: 0,
+          opacity: 1,
+          filter: 'blur(0px)',
+          duration: 1.0,
+          stagger: 0.1,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: gridRef.current,
+            start: 'top 80%',
+            toggleActions: 'play none none reverse',
+          }
         }
-      }
-    );
+      );
+
+      gsap.fromTo(
+        ctaRef.current,
+        { y: 40, opacity: 0, filter: 'blur(8px)' },
+        {
+          y: 0,
+          opacity: 1,
+          filter: 'blur(0px)',
+          duration: 1.0,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: ctaRef.current,
+            start: 'top 80%',
+            toggleActions: 'play none none reverse',
+          }
+        }
+      );
+    }
 
     // Header color mode override removed for light theme
 
@@ -110,10 +116,10 @@ const PropertiesSection = ({ data, dict }: { data?: any, dict?: any }) => {
         }
       });
     };
-  }, []);
+  }, [data]);
 
   return (
-    <section className="properties-intro-section" ref={sectionRef} id={data?.id || 'properties'}>
+    <section className={`properties-intro-section ${data?.disableEntranceAnimation ? 'no-entrance-anim' : ''} ${data?.disableHeaderEntranceAnimation ? 'no-header-entrance-anim' : ''}`} ref={sectionRef} id={data?.id || 'properties'}>
       <div className="properties-main-wrapper">
         <div className="properties-intro-container" ref={containerRef}>
           <div className="properties-tagline">{tagline}</div>

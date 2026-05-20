@@ -38,6 +38,8 @@ const AboutSection = ({ data, dict }: { data?: any, dict?: any }) => {
   useEffect(() => {
     if (!sectionRef.current) return;
 
+    if (data?.disableEntranceAnimation && data?.disableHeaderEntranceAnimation) return;
+
     const mm = gsap.matchMedia();
 
     mm.add({
@@ -52,57 +54,65 @@ const AboutSection = ({ data, dict }: { data?: any, dict?: any }) => {
         }
       });
 
-      if (bgLayerRef.current && objectLayerRef.current) {
-        tl.fromTo(
-          [bgLayerRef.current, objectLayerRef.current],
-          { y: 40, opacity: 0, filter: 'blur(10px)' },
-          { y: 0, opacity: 1, filter: 'blur(0px)', duration: 1.2, stagger: 0.1, ease: 'expo.out' }
-        );
+      if (!data?.disableEntranceAnimation) {
+        if (bgLayerRef.current && objectLayerRef.current) {
+          tl.fromTo(
+            [bgLayerRef.current, objectLayerRef.current],
+            { y: 40, opacity: 0, filter: 'blur(8px)' },
+            { y: 0, opacity: 1, filter: 'blur(0px)', duration: 1.0, stagger: 0.1, ease: 'power3.out' }
+          );
+        }
+
+        if (profileRef.current) {
+          const position = bgLayerRef.current && objectLayerRef.current ? '-=0.8' : 0;
+          tl.fromTo(
+            profileRef.current,
+            { y: 40, opacity: 0, xPercent: -50, filter: 'blur(8px)' },
+            { y: 0, opacity: 1, xPercent: -50, filter: 'blur(0px)', duration: 1.0, ease: 'power3.out' },
+            position
+          );
+        }
       }
 
-      if (profileRef.current) {
-        tl.fromTo(
-          profileRef.current,
-          { y: 30, opacity: 0, xPercent: -50 },
-          { y: 0, opacity: 1, xPercent: -50, duration: 1, ease: 'power3.out' },
-          '-=0.8'
-        );
+      if (!data?.disableHeaderEntranceAnimation) {
+        if (taglineRef.current) {
+          const position = !data?.disableEntranceAnimation ? '-=1' : 0;
+          tl.fromTo(
+            taglineRef.current,
+            { y: 35, opacity: 0, filter: 'blur(10px)' },
+            { y: 0, opacity: 1, filter: 'blur(0px)', duration: 1.2, ease: 'expo.out' },
+            position
+          );
+        }
+
+        if (headlineRef.current) {
+          const position = !data?.disableEntranceAnimation || taglineRef.current ? '-=0.8' : 0;
+          tl.fromTo(
+            headlineRef.current,
+            { y: 35, opacity: 0, filter: 'blur(10px)' },
+            { y: 0, opacity: 1, filter: 'blur(0px)', duration: 1.2, ease: 'expo.out' },
+            position
+          );
+        }
       }
 
-      if (taglineRef.current) {
-        tl.fromTo(
-          taglineRef.current,
-          { y: 20, opacity: 0 },
-          { y: 0, opacity: 1, duration: 1, ease: 'power3.out' },
-          '-=1'
-        );
-      }
-
-      if (headlineRef.current) {
-        tl.fromTo(
-          headlineRef.current,
-          { y: 40, opacity: 0, filter: 'blur(10px)' },
-          { y: 0, opacity: 1, filter: 'blur(0px)', duration: 1.2, ease: 'expo.out' },
-          '-=0.8'
-        );
-      }
-
-      if (contentRef.current) {
+      if (!data?.disableEntranceAnimation && contentRef.current) {
         const paragraphs = contentRef.current.querySelectorAll('.about-paragraph');
+        const position = !data?.disableHeaderEntranceAnimation || !data?.disableEntranceAnimation ? '-=0.8' : 0;
         tl.fromTo(
           paragraphs,
-          { y: 30, opacity: 0 },
-          { y: 0, opacity: 1, duration: 1, stagger: 0.2, ease: 'power3.out' },
-          '-=0.8'
+          { y: 40, opacity: 0, filter: 'blur(8px)' },
+          { y: 0, opacity: 1, filter: 'blur(0px)', duration: 1.0, stagger: 0.1, ease: 'power3.out' },
+          position
         );
       }
     });
 
     return () => mm.revert();
-  }, []);
+  }, [data]);
 
   return (
-    <section className="about-section" ref={sectionRef} id={data?.id || 'about'}>
+    <section className={`about-section ${data?.disableEntranceAnimation ? 'no-entrance-anim' : ''} ${data?.disableHeaderEntranceAnimation ? 'no-header-entrance-anim' : ''}`} ref={sectionRef} id={data?.id || 'about'}>
       <div className="about-visual-container">
         <div className="about-bg-layer" ref={bgLayerRef}>
           {bgImage && (

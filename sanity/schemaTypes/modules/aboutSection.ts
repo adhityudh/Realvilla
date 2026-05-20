@@ -1,5 +1,5 @@
 import { InfoOutlineIcon } from '@sanity/icons'
-import { defineField, defineType } from 'sanity'
+import { ALL_FIELDS_GROUP, defineField, defineType } from 'sanity'
 import { SectionSelector } from '../../components/SectionSelector'
 import { ComponentSelector } from '../../components/ComponentSelector'
 
@@ -8,6 +8,11 @@ export const aboutSection = defineType({
   title: 'About Section',
   type: 'object',
   icon: InfoOutlineIcon,
+  groups: [
+    { name: 'content', title: 'Content', default: true },
+    { name: 'advanced', title: 'Advanced' },
+    { ...ALL_FIELDS_GROUP, hidden: true },
+  ],
   fields: [
     defineField({
       name: 'id',
@@ -15,45 +20,69 @@ export const aboutSection = defineType({
       type: 'string',
       description: 'Used as an anchor identifier (e.g. for smooth scrolling links like #about).',
       initialValue: 'about',
+    group: 'advanced',
+}),
+    defineField({
+      name: 'disableEntranceAnimation',
+      title: 'Disable Entrance Animation',
+      description: 'If checked, the section will load immediately without fade-in/slide-up animations.',
+      type: 'boolean',
+      initialValue: false,
+      group: 'advanced',
+    }),
+    defineField({
+      name: 'disableHeaderEntranceAnimation',
+      title: 'Disable Header Entrance Animation',
+      description: 'If checked, the section header (tagline, headline, intro) will load immediately without entrance animations.',
+      type: 'boolean',
+      initialValue: false,
+      group: 'advanced',
     }),
     defineField({
       name: 'tagline',
       title: 'Tagline',
       type: 'string',
-    }),
+    group: 'content',
+}),
     defineField({
       name: 'headline',
       title: 'Headline',
       type: 'string',
-    }),
+    group: 'content',
+}),
     defineField({
       name: 'body',
       title: 'Body Text',
       type: 'text',
-    }),
+    group: 'content',
+}),
     defineField({
       name: 'profileName',
       title: 'Profile Name',
       type: 'string',
-    }),
+    group: 'content',
+}),
     defineField({
       name: 'bgImage',
       title: 'Background Image',
       type: 'image',
       options: { hotspot: true },
-    }),
+    group: 'content',
+}),
     defineField({
       name: 'objectImage',
       title: 'Object Image (Floating)',
       type: 'image',
       options: { hotspot: true },
-    }),
+    group: 'content',
+}),
     defineField({
       name: 'certificates',
       title: 'Certificates',
       type: 'array',
       of: [{ type: 'image', options: { hotspot: true } }],
-    }),
+    group: 'content',
+}),
     defineField({
       name: 'socialLinks',
       title: 'Social Links',
@@ -123,7 +152,8 @@ export const aboutSection = defineType({
           ],
         },
       ],
-    }),
+    group: 'content',
+}),
   ],
   preview: {
     select: {

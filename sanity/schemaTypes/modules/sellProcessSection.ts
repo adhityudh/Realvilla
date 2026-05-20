@@ -1,9 +1,9 @@
 import { ALL_FIELDS_GROUP, defineField, defineType } from 'sanity'
 import { ClipboardIcon } from '@sanity/icons'
 
-export const mortgageProcessSection = defineType({
-  name: 'mortgageProcessSection',
-  title: 'Mortgage Process Section',
+export const sellProcessSection = defineType({
+  name: 'sellProcessSection',
+  title: 'Sell Process Section',
   type: 'object',
   icon: ClipboardIcon,
   groups: [
@@ -17,7 +17,7 @@ export const mortgageProcessSection = defineType({
       title: 'Section ID',
       type: 'string',
       description: 'Used as an anchor identifier (e.g. for smooth scrolling links like #about).',
-      initialValue: 'process',
+      initialValue: 'sell-process',
     group: 'advanced',
 }),
     defineField({
@@ -40,7 +40,7 @@ export const mortgageProcessSection = defineType({
       name: 'tagline',
       title: 'Tagline',
       type: 'string',
-      description: 'Small subtitle above the headline. E.g. "Step-by-Step"',
+      description: 'Small subtitle above the headline. E.g. "HOW WE SELL"',
     group: 'content',
 }),
     defineField({
@@ -65,12 +65,11 @@ export const mortgageProcessSection = defineType({
       initialValue: false,
     group: 'content',
 }),
-
     defineField({
       name: 'steps',
       title: 'Process Steps',
       type: 'array',
-      description: 'Steps explaining the financing & mortgage phases.',
+      description: 'Steps explaining the property selling phases.',
       of: [
         {
           type: 'object',
@@ -131,7 +130,7 @@ export const mortgageProcessSection = defineType({
     prepare({ title }) {
       return {
         title: title || 'No Headline',
-        subtitle: 'Mortgage Process Section',
+        subtitle: 'Sell Process Section',
       }
     },
   },

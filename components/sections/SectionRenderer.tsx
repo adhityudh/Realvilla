@@ -16,6 +16,7 @@ const GeneralHeroSection = dynamic(() => import('./GeneralHeroSection'), { ssr: 
 const SellHeroSection = dynamic(() => import('./SellHeroSection'), { ssr: true })
 const StatsSection = dynamic(() => import('./StatsSection'), { ssr: true })
 const MortgageProcessSection = dynamic(() => import('./MortgageProcessSection'), { ssr: true })
+const SellProcessSection = dynamic(() => import('./SellProcessSection'), { ssr: true })
 const DocumentLedgerSection = dynamic(() => import('./DocumentLedgerSection'), { ssr: true })
 const FinancingCardsSection = dynamic(() => import('./FinancingCardsSection'), { ssr: true })
 
@@ -36,6 +37,7 @@ const sectionMap: Record<string, any> = {
   generalHeroSection: GeneralHeroSection,
   statsSection: StatsSection,
   mortgageProcessSection: MortgageProcessSection,
+  sellProcessSection: SellProcessSection,
   documentLedgerSection: DocumentLedgerSection,
   financingCardsSection: FinancingCardsSection,
 }

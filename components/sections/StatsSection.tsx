@@ -19,6 +19,8 @@ interface StatItem {
 
 interface StatsSectionProps {
   data: {
+    disableEntranceAnimation?: boolean;
+    disableHeaderEntranceAnimation?: boolean;
     id?: string;
     heading?: string;
     body?: string;
@@ -33,10 +35,12 @@ export default function StatsSection({ data }: StatsSectionProps) {
   useEffect(() => {
     if (!sectionRef.current || !gridRef.current) return;
 
+    if (data?.disableEntranceAnimation && data?.disableHeaderEntranceAnimation) return;
+
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: sectionRef.current,
-        start: 'top 78%', // 📐 Perfect golden ratio to witness the luxury reveal!
+        start: 'top 80%',
         toggleActions: 'play none none reverse',
       }
     });
@@ -45,29 +49,35 @@ export default function StatsSection({ data }: StatsSectionProps) {
     const copy = gridRef.current.querySelector('.stats-copy');
     const items = gridRef.current.querySelectorAll('.stats-item');
 
-    if (heading) {
-      tl.fromTo(
-        heading,
-        { opacity: 0, filter: 'blur(10px)' },
-        { opacity: 1, filter: 'blur(0px)', duration: 0.9, ease: 'power3.out' }
-      );
+    if (!data?.disableHeaderEntranceAnimation) {
+      if (heading) {
+        tl.fromTo(
+          heading,
+          { y: 35, opacity: 0, filter: 'blur(10px)' },
+          { y: 0, opacity: 1, filter: 'blur(0px)', duration: 1.2, ease: 'expo.out' }
+        );
+      }
+
+      if (copy) {
+        const position = heading ? '-=0.9' : '0';
+        tl.fromTo(
+          copy,
+          { y: 35, opacity: 0, filter: 'blur(10px)' },
+          { y: 0, opacity: 1, filter: 'blur(0px)', duration: 1.2, ease: 'expo.out' },
+          position // ⚡ Animates immediately after heading!
+        );
+      }
     }
 
-    if (copy) {
-      tl.fromTo(
-        copy,
-        { opacity: 0, filter: 'blur(8px)' },
-        { opacity: 1, filter: 'blur(0px)', duration: 0.8, ease: 'power3.out' },
-        heading ? '-=0.6' : '0' // ⚡ Animates immediately after heading!
-      );
-    }
-
-    if (items.length > 0) {
+    if (!data?.disableEntranceAnimation && items.length > 0) {
+      const position = !data?.disableHeaderEntranceAnimation
+        ? (copy ? '-=0.8' : (heading ? '-=0.8' : '0'))
+        : '0';
       tl.fromTo(
         items,
-        { opacity: 0, filter: 'blur(10px)' },
-        { opacity: 1, filter: 'blur(0px)', duration: 0.8, stagger: 0.1, ease: 'power3.out' },
-        copy ? '-=0.5' : (heading ? '-=0.5' : '0') // 📊 Numbers roll in last!
+        { y: 40, opacity: 0, filter: 'blur(8px)' },
+        { y: 0, opacity: 1, filter: 'blur(0px)', duration: 1.0, stagger: 0.1, ease: 'power3.out' },
+        position // 📊 Numbers roll in last!
       );
     }
 
@@ -78,12 +88,12 @@ export default function StatsSection({ data }: StatsSectionProps) {
         }
       });
     };
-  }, []);
+  }, [data]);
 
   if (!data) return null;
 
   return (
-    <section className="stats-section" ref={sectionRef} id={data?.id || 'stats'}>
+    <section className={`stats-section ${data?.disableEntranceAnimation ? 'no-entrance-anim' : ''} ${data?.disableHeaderEntranceAnimation ? 'no-header-entrance-anim' : ''}`} ref={sectionRef} id={data?.id || 'stats'}>
       <div className="stats-container">
         <div className="stats-grid" ref={gridRef}>
           {/* Structural Layout Dividers */}

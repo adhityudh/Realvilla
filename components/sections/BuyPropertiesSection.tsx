@@ -130,6 +130,40 @@ export default function BuyPropertiesSection({ data, dict, filterMeta: initialMe
     return () => window.removeEventListener('open-filter-sidebar', handleOpenSidebar);
   }, []);
 
+  useEffect(() => {
+    if (!sectionRef.current) return;
+
+    if (data?.disableHeaderEntranceAnimation) return;
+
+    const header = sectionRef.current.querySelector('.buy-properties-header');
+    const quickFilters = sectionRef.current.querySelector('.buy-properties-quick-filters-wrapper');
+    const elementsToAnimate = [header, quickFilters].filter(Boolean);
+
+    if (elementsToAnimate.length > 0) {
+      gsap.fromTo(
+        elementsToAnimate,
+        { y: 35, opacity: 0, filter: 'blur(10px)' },
+        {
+          y: 0,
+          opacity: 1,
+          filter: 'blur(0px)',
+          duration: 1.2,
+          stagger: 0.15,
+          ease: 'expo.out',
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: 'top 80%',
+            toggleActions: 'play none none reverse',
+          }
+        }
+      );
+    }
+
+    return () => {
+      ScrollTrigger.getAll().filter(st => st.trigger === sectionRef.current).forEach(st => st.kill());
+    };
+  }, [data, filterMeta]);
+
   const itemsPerPage = useMemo(() => {
     if (isMobile && data?.itemsPerPageMobile) {
       return data.itemsPerPageMobile;
@@ -247,7 +281,7 @@ export default function BuyPropertiesSection({ data, dict, filterMeta: initialMe
           setTimeout(() => ScrollTrigger.refresh(), 1000); // Safety check
 
           // Trigger grid animation on load
-          if (gridRef.current) {
+          if (gridRef.current && !data?.disableEntranceAnimation) {
             const cards = gridRef.current.querySelectorAll('.property-card');
             gsap.fromTo(
               cards,
@@ -342,7 +376,7 @@ export default function BuyPropertiesSection({ data, dict, filterMeta: initialMe
   };
 
   return (
-    <section className="buy-properties-section" id={data?.id || 'properties-list'} ref={sectionRef}>
+    <section className={`buy-properties-section ${data?.disableEntranceAnimation ? 'no-entrance-anim' : ''} ${data?.disableHeaderEntranceAnimation ? 'no-header-entrance-anim' : ''}`} id={data?.id || 'properties-list'} ref={sectionRef}>
       <div className="buy-properties-wrapper">
 
         {/* Section Header */}

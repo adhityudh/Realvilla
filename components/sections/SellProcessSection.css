@@ -1,0 +1,409 @@
+.sell-process-section {
+  padding: 5rem 0;
+  /* 💎 Generous elite luxury padding */
+  background-color: var(--bg-white);
+  overflow: hidden;
+  position: relative;
+}
+
+.sell-container {
+  width: 100%;
+  max-width: var(--container-max-width);
+  margin: 0 auto;
+  padding: 0 3rem;
+}
+
+/* ── Header Row (2-Column Premium Layout) ── */
+.sell-header-row {
+  display: grid;
+  grid-template-columns: 1.15fr 1fr;
+  align-items: flex-end;
+  gap: 4rem;
+  margin-bottom: 8rem;
+}
+
+.sell-header-left {
+  max-width: 37.5rem; /* 600px */
+}
+
+.sell-tagline {
+  font-family: var(--font-manrope), sans-serif;
+  font-size: var(--text-sm);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--ls-tagline);
+  text-transform: uppercase;
+  color: var(--color-gold-dark);
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.sell-tagline::before {
+  content: '';
+  width: 1.875rem; /* 30px */
+  height: 0.0625rem; /* 1px */
+  background: var(--color-gold-dark);
+}
+
+.sell-headline {
+  font-family: var(--font-cormorant), serif;
+  font-size: var(--text-display-md);
+  font-weight: var(--fw-light);
+  line-height: var(--lh-tight);
+  letter-spacing: var(--ls-tight);
+  text-transform: uppercase;
+  color: var(--text-black);
+}
+
+.sell-header-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2rem;
+}
+
+.sell-body-text {
+  font-family: var(--font-manrope), sans-serif;
+  font-size: var(--text-base);
+  line-height: var(--lh-relaxed);
+  color: var(--text-black);
+  text-align: right;
+  max-width: 26.25rem; /* 420px */
+}
+
+/* ── 🏛️ Editorial Horizon Row (2-Column Luxury Grid for Sell Page) ── */
+.sell-steps-list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  /* 🏆 Horizontal grid with 2 columns on desktop */
+  --grid-gap: 3.5rem;
+  gap: var(--grid-gap);
+}
+
+.sell-step-item {
+  display: flex;
+  flex-direction: column;
+  /* 💎 Column stack within step */
+  align-items: flex-start;
+  position: relative;
+  padding-top: 2rem;
+  /* 📐 Space below continuous horizon line */
+  border-top: 0.0625rem solid var(--border-strong); /* 1px border */
+}
+
+/* Subtle luxurious golden highlight on the horizon line when active/hover */
+.sell-step-item::before {
+  content: '';
+  position: absolute;
+  top: -0.0625rem; /* -1px */
+  left: 0;
+  width: 0%;
+  height: 0.0625rem; /* 1px */
+  background: var(--color-gold-dark);
+  transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 2;
+}
+
+.sell-step-item:hover::before {
+  width: 100%;
+}
+
+/* ── Media Column ── */
+.sell-media-col {
+  width: 100%;
+  order: 2;
+  /* 📐 Place image below number/title */
+  margin-top: 2.5rem;
+  margin-bottom: 2rem;
+}
+
+.sell-image-inner {
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+  aspect-ratio: 16/10; /* Wider aspect ratio looks premium in a 2-col layout */
+  overflow: hidden;
+  background: var(--bg-muted);
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 2rem), calc(100% - 2rem) 100%, 0 100%);
+  transition: filter 0.6s ease;
+}
+
+/* Subtle sophisticated image dim overlay for absolute contrast */
+.sell-image-inner::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.05);
+  transition: background 0.4s ease;
+}
+
+.sell-step-item:hover .sell-image-inner::after {
+  background: rgba(0, 0, 0, 0);
+}
+
+.sell-image-inner img {
+  object-fit: cover;
+  transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.sell-step-item:hover .sell-image-inner img {
+  transform: scale(1.05);
+  /* Very restrained elite zoom */
+}
+
+.sell-placeholder {
+  width: 100%;
+  height: 100%;
+  background: var(--bg-muted);
+}
+
+/* ── Luxurious Floating Centered Icon Overlay ── */
+.sell-overlay-icon-wrapper {
+  position: absolute;
+  bottom: 1.25rem;
+  /* 📐 Positioned beautifully at the bottom left as an elite insignia */
+  left: 1.25rem;
+  z-index: 5;
+  pointer-events: none;
+}
+
+.sell-overlay-icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 3rem; /* 48px */
+  height: 3rem; /* 48px */
+}
+
+.sell-center-icon {
+  object-fit: contain;
+  /* 💡 Supreme contrast drop shadow for legibility on photography */
+  filter: brightness(0) invert(1) drop-shadow(0px 3px 12px rgba(0, 0, 0, 0.35));
+}
+
+/* ── Content Column ── */
+.sell-content-col {
+  width: 100%;
+  order: 1;
+  /* 📐 Number/Title sits right at the top under the border */
+}
+
+.sell-header-row-step {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 0;
+}
+
+.sell-inline-number {
+  font-family: var(--font-manrope), sans-serif;
+  font-size: var(--text-sm);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--ls-tagline);
+  text-transform: uppercase;
+  color: var(--color-gold-dark);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  transition: color 0.4s ease;
+}
+
+.sell-step-title {
+  font-family: var(--font-cormorant), serif;
+  font-size: var(--text-display-xs);
+  /* 💎 Replaced tag styling with official Luxury Display Heading Token */
+  color: var(--text-black);
+  font-weight: var(--fw-regular);
+  text-transform: uppercase;
+  letter-spacing: var(--ls-tight);
+  line-height: var(--lh-snug);
+  transition: color 0.4s ease;
+}
+
+/* Step body text flow underneath image */
+.sell-step-body {
+  order: 3;
+  font-family: var(--font-manrope), sans-serif;
+  font-size: var(--text-base);
+  /* 💎 Refined, clean typography for high density reading */
+  line-height: var(--lh-relaxed);
+  color: var(--text-black);
+  max-width: 100%;
+}
+
+/* ── 🌟 Timeline Mode Styles (Scroll-Driven Serpentine Timeline) ── */
+.sell-timeline-mode .sell-step-item {
+  border-top: none;
+  /* Disable static border-top */
+  padding-top: 2.25rem;
+}
+
+.sell-timeline-mode .sell-step-item::before {
+  display: none !important;
+  /* Disable standard gold hover line */
+}
+
+/* Timeline background track segment */
+.sell-timeline-line {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 0.125rem; /* 2px */
+  width: calc(100% + var(--grid-gap, 3.5rem));
+  background-color: var(--border-base);
+  z-index: 10;
+}
+
+/* If last item of a row, stretch the line to the right viewport edge */
+.sell-timeline-line.stretch-right {
+  width: calc(100% + (100vw - 100%) / 2);
+}
+
+/* Left entering track segment for first item of subsequent rows */
+.sell-timeline-left-line {
+  position: absolute;
+  top: 0;
+  left: calc(-1 * (100vw - 100%) / 2);
+  height: 0.125rem; /* 2px */
+  width: calc((100vw - 100%) / 2);
+  background-color: var(--border-strong);
+  z-index: 10;
+}
+
+/* Animated active gold progress line */
+.sell-timeline-progress {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background-color: var(--color-gold-dark);
+  transform-origin: left;
+  transform: scaleX(0);
+  /* Controlled dynamically by GSAP */
+  z-index: 11;
+  box-shadow: 0 0 8px rgba(197, 160, 89, 0.4);
+}
+
+/* Dynamic Timeline Dot Node (Point) */
+.sell-timeline-dot {
+  position: absolute;
+  top: -0.25rem; /* Centered perfectly on the 2px height timeline line */
+  left: 0;
+  width: 0.625rem; /* 10px */
+  height: 0.625rem; /* 10px */
+  border-radius: 50%;
+  background-color: var(--bg-white);
+  border: 0.125rem solid var(--border-strong); /* 2px border */
+  z-index: 12;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ── Responsive Queries ── */
+@media (max-width: 1024px) {
+  .sell-container {
+    padding: 0 1.5rem;
+  }
+
+  .sell-header-row {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+  }
+
+  .sell-header-right {
+    align-items: flex-start;
+    gap: 1.5rem;
+  }
+
+  .sell-body-text {
+    text-align: left;
+    max-width: 100%;
+  }
+
+  .sell-steps-list {
+    grid-template-columns: repeat(2, 1fr);
+    --grid-gap: 2rem;
+    gap: 3rem var(--grid-gap);
+  }
+
+  .sell-process-section {
+    padding: 3rem 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .sell-steps-list {
+    grid-template-columns: 1fr; /* On mobile/portrait, fall back to 1-column stack */
+    --grid-gap: 1.5rem;
+    gap: 2.5rem var(--grid-gap);
+  }
+
+  .sell-step-item {
+    padding-top: 1.5rem;
+    border-top: 0.0625rem solid var(--border-strong);
+  }
+
+  /* Shrink typography for optimal vertical fit in narrower mobile columns */
+  .sell-inline-number {
+    font-size: var(--text-xs);
+  }
+
+  .sell-step-title {
+    font-size: var(--text-md);
+  }
+
+  .sell-step-body {
+    font-size: var(--text-sm);
+  }
+
+  .sell-media-col {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .sell-header-row-step {
+    gap: 0.75rem;
+  }
+
+  .sell-image-inner {
+    max-width: 100%;
+    /* 📐 Shrink the bevel clip cut so it maintains absolute geometric proportion on tiny screens */
+    clip-path: polygon(0 0, 100% 0, 100% calc(100% - 1rem), calc(100% - 1rem) 100%, 0 100%);
+  }
+
+  /* Downscale floating insignia signature for compact mobile photos */
+  .sell-overlay-icon-wrapper {
+    bottom: 0.65rem;
+    left: 0.65rem;
+  }
+
+  .sell-overlay-icon {
+    width: 2.25rem; /* 36px */
+    height: 2.25rem; /* 36px */
+  }
+
+  .sell-overlay-icon img {
+    width: 1.25rem !important; /* 20px */
+    height: 1.25rem !important; /* 20px */
+  }
+}
+
+.sell-step-body a {
+  color: var(--color-gold-dark);
+  font-weight: var(--fw-semibold);
+  text-decoration: none;
+  border-bottom: 0.0625rem solid var(--color-gold-dark); /* 1px border */
+  transition: all 0.3s ease;
+  font-size: var(--text-sm-plus);
+  text-transform: uppercase;
+  display: inline-block;
+  margin-top: 0.5rem;
+  line-height: var(--lh-relaxed);
+}
+
+.sell-step-body a:hover {
+  color: var(--text-black);
+  border-bottom-color: var(--text-black);
+}

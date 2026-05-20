@@ -22,6 +22,8 @@ interface Step {
 
 interface BuyingProcessSectionProps {
   data?: {
+    disableEntranceAnimation?: boolean;
+    disableHeaderEntranceAnimation?: boolean;
     id?: string;
     tagline?: string;
     headline?: string;
@@ -38,53 +40,59 @@ export default function BuyingProcessSection({ data }: BuyingProcessSectionProps
   useEffect(() => {
     if (!sectionRef.current) return;
 
+    if (data?.disableEntranceAnimation && data?.disableHeaderEntranceAnimation) return;
+
     // Animate Section Header
-    gsap.fromTo(
-      sectionRef.current.querySelectorAll('.process-tagline, .process-headline, .process-intro'),
-      { y: 30, opacity: 0, filter: 'blur(10px)' },
-      {
-        y: 0,
-        opacity: 1,
-        filter: 'blur(0px)',
-        duration: 1.2,
-        stagger: 0.2,
-        ease: 'power3.out',
-        scrollTrigger: {
-          trigger: sectionRef.current.querySelector('.process-header'),
-          start: 'top 95%',
-          toggleActions: 'play none none reverse',
-        },
-      }
-    );
+    if (!data?.disableHeaderEntranceAnimation) {
+      gsap.fromTo(
+        sectionRef.current.querySelectorAll('.process-tagline, .process-headline, .process-intro'),
+        { y: 35, opacity: 0, filter: 'blur(10px)' },
+        {
+          y: 0,
+          opacity: 1,
+          filter: 'blur(0px)',
+          duration: 1.2,
+          stagger: 0.15,
+          ease: 'expo.out',
+          scrollTrigger: {
+            trigger: sectionRef.current.querySelector('.process-header'),
+            start: 'top 80%',
+            toggleActions: 'play none none reverse',
+          },
+        }
+      );
+    }
 
     const imageOrder = data?.imageOrder || 'right-first';
 
     // Animate individual steps as they come into view
-    stepRefs.current.forEach((stepEl, idx) => {
-      if (!stepEl) return;
-      const content = stepEl.querySelector('.step-content-col');
-      const media = stepEl.querySelector('.step-media-col');
+    if (!data?.disableEntranceAnimation) {
+      stepRefs.current.forEach((stepEl, idx) => {
+        if (!stepEl) return;
+        const content = stepEl.querySelector('.step-content-col');
+        const media = stepEl.querySelector('.step-media-col');
 
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: stepEl,
-          start: 'top 95%',
-          toggleActions: 'play none none reverse',
-        }
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: stepEl,
+            start: 'top 80%',
+            toggleActions: 'play none none reverse',
+          }
+        });
+
+        tl.fromTo(
+          media,
+          { y: 40, opacity: 0, filter: 'blur(8px)' },
+          { y: 0, opacity: 1, filter: 'blur(0px)', duration: 1.0, ease: 'power3.out' },
+          0
+        ).fromTo(
+          content,
+          { y: 40, opacity: 0, filter: 'blur(8px)' },
+          { y: 0, opacity: 1, filter: 'blur(0px)', duration: 1.0, ease: 'power3.out' },
+          0.2
+        );
       });
-
-      tl.fromTo(
-        media,
-        { y: 30, opacity: 0, filter: 'blur(8px)' },
-        { y: 0, opacity: 1, filter: 'blur(0px)', duration: 1.2, ease: 'power3.out' },
-        0
-      ).fromTo(
-        content,
-        { y: 30, opacity: 0, filter: 'blur(8px)' },
-        { y: 0, opacity: 1, filter: 'blur(0px)', duration: 1.2, ease: 'power3.out' },
-        0.2
-      );
-    });
+    }
 
     // Important: Refresh triggers after setup to account for initial layout
     ScrollTrigger.refresh();

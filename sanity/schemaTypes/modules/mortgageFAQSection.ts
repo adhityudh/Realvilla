@@ -1,5 +1,5 @@
 import { HelpCircleIcon } from '@sanity/icons'
-import { defineField, defineType } from 'sanity'
+import { ALL_FIELDS_GROUP, defineField, defineType } from 'sanity'
 import { SectionSelector } from '../../components/SectionSelector'
 import { ComponentSelector } from '../../components/ComponentSelector'
 
@@ -8,6 +8,11 @@ export const mortgageFAQSection = defineType({
   title: 'Mortgage FAQ Section',
   type: 'object',
   icon: HelpCircleIcon,
+  groups: [
+    { name: 'content', title: 'Content', default: true },
+    { name: 'advanced', title: 'Advanced' },
+    { ...ALL_FIELDS_GROUP, hidden: true },
+  ],
   fields: [
     defineField({
       name: 'id',
@@ -15,22 +20,42 @@ export const mortgageFAQSection = defineType({
       type: 'string',
       description: 'Used as an anchor identifier (e.g. for smooth scrolling links like #about).',
       initialValue: 'mortgage',
+    group: 'advanced',
+}),
+    defineField({
+      name: 'disableEntranceAnimation',
+      title: 'Disable Entrance Animation',
+      description: 'If checked, the section will load immediately without fade-in/slide-up animations.',
+      type: 'boolean',
+      initialValue: false,
+      group: 'advanced',
+    }),
+    defineField({
+      name: 'disableHeaderEntranceAnimation',
+      title: 'Disable Header Entrance Animation',
+      description: 'If checked, the section header (tagline, headline, intro) will load immediately without entrance animations.',
+      type: 'boolean',
+      initialValue: false,
+      group: 'advanced',
     }),
     defineField({
       name: 'tagline',
       title: 'Tagline',
       type: 'string',
-    }),
+    group: 'content',
+}),
     defineField({
       name: 'title',
       title: 'Title',
       type: 'string',
-    }),
+    group: 'content',
+}),
     defineField({
       name: 'description',
       title: 'Description',
       type: 'text',
-    }),
+    group: 'content',
+}),
     defineField({
       name: 'faqs',
       title: 'FAQs',
@@ -45,13 +70,15 @@ export const mortgageFAQSection = defineType({
           ],
         },
       ],
-    }),
+    group: 'content',
+}),
     // Primary CTA (Consistent with other sections)
     defineField({
       name: 'ctaLabel',
       title: 'CTA Label',
       type: 'string',
-    }),
+    group: 'content',
+}),
     defineField({
       name: 'linkType',
       title: 'Link Type',
@@ -66,7 +93,8 @@ export const mortgageFAQSection = defineType({
         layout: 'radio',
       },
       initialValue: 'internal',
-    }),
+    group: 'content',
+}),
     defineField({
       name: 'internalLink',
       title: 'Internal Link',
@@ -82,14 +110,16 @@ export const mortgageFAQSection = defineType({
             params: { language }
           };
         }
-      }
-    }),
+      },
+    group: 'content',
+}),
     defineField({
       name: 'externalLink',
       title: 'External Link',
       type: 'string',
       hidden: ({ parent }) => parent?.linkType !== 'external',
-    }),
+    group: 'content',
+}),
     defineField({
       name: 'sectionLink',
       title: 'Section Link',
@@ -98,7 +128,8 @@ export const mortgageFAQSection = defineType({
         input: SectionSelector,
       },
       hidden: ({ parent }) => parent?.linkType !== 'section',
-    }),
+    group: 'content',
+}),
     defineField({
       name: 'componentLink',
       title: 'Component Link',
@@ -107,20 +138,23 @@ export const mortgageFAQSection = defineType({
         input: ComponentSelector,
       },
       hidden: ({ parent }) => parent?.linkType !== 'component',
-    }),
+    group: 'content',
+}),
     // Secondary CTA
     defineField({
       name: 'showSecondaryCta',
       title: 'Show Secondary CTA',
       type: 'boolean',
       initialValue: true,
-    }),
+    group: 'content',
+}),
     defineField({
       name: 'secondaryCtaLabel',
       title: 'Secondary CTA Label',
       type: 'string',
       hidden: ({ parent }) => !parent?.showSecondaryCta,
-    }),
+    group: 'content',
+}),
     defineField({
       name: 'secondaryLinkType',
       title: 'Secondary Link Type',
@@ -136,7 +170,8 @@ export const mortgageFAQSection = defineType({
       },
       initialValue: 'internal',
       hidden: ({ parent }) => !parent?.showSecondaryCta,
-    }),
+    group: 'content',
+}),
     defineField({
       name: 'secondaryInternalLink',
       title: 'Secondary Internal Link',
@@ -152,14 +187,16 @@ export const mortgageFAQSection = defineType({
             params: { language }
           };
         }
-      }
-    }),
+      },
+    group: 'content',
+}),
     defineField({
       name: 'secondaryExternalLink',
       title: 'Secondary External Link',
       type: 'string',
       hidden: ({ parent }) => !parent?.showSecondaryCta || parent?.secondaryLinkType !== 'external',
-    }),
+    group: 'content',
+}),
     defineField({
       name: 'secondarySectionLink',
       title: 'Secondary Section Link',
@@ -168,7 +205,8 @@ export const mortgageFAQSection = defineType({
         input: SectionSelector,
       },
       hidden: ({ parent }) => !parent?.showSecondaryCta || parent?.secondaryLinkType !== 'section',
-    }),
+    group: 'content',
+}),
     defineField({
       name: 'secondaryComponentLink',
       title: 'Secondary Component Link',
@@ -177,7 +215,8 @@ export const mortgageFAQSection = defineType({
         input: ComponentSelector,
       },
       hidden: ({ parent }) => !parent?.showSecondaryCta || parent?.secondaryLinkType !== 'component',
-    }),
+    group: 'content',
+}),
   ],
   preview: {
     select: {

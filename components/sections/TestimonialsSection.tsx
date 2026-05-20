@@ -27,26 +27,54 @@ const TestimonialsSection = ({ data, dict }: { data?: any, dict?: any }) => {
   useEffect(() => {
     if (!sectionRef.current || !titleRef.current || !tickerWrapperRef.current || !overlapImgRef.current) return;
 
-    const entranceTl = gsap.timeline({
-      scrollTrigger: {
-        trigger: sectionRef.current,
-        start: 'top 75%',
-        toggleActions: 'play none none reverse'
-      }
-    });
+    if (!data?.disableEntranceAnimation || !data?.disableHeaderEntranceAnimation) {
+      const entranceTl = gsap.timeline({
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: 'top 80%',
+          toggleActions: 'play none none reverse'
+        }
+      });
 
-    entranceTl.fromTo(
-      [titleRef.current, tickerWrapperRef.current, overlapImgRef.current],
-      { y: 60, opacity: 0, filter: 'blur(15px)' },
-      {
-        y: 0,
-        opacity: 1,
-        filter: 'blur(0px)',
-        duration: 1.5,
-        stagger: 0.2,
-        ease: 'expo.out'
+      const headerEls = [titleRef.current].filter(Boolean);
+      const contentEls = [tickerWrapperRef.current, overlapImgRef.current].filter(Boolean);
+
+      if (!data?.disableHeaderEntranceAnimation) {
+        gsap.set(headerEls, { opacity: 0, y: 35, filter: 'blur(10px)' });
       }
-    );
+      if (!data?.disableEntranceAnimation) {
+        gsap.set(contentEls, { opacity: 0, y: 40, filter: 'blur(8px)' });
+      }
+
+      if (!data?.disableHeaderEntranceAnimation) {
+        entranceTl.to(
+          headerEls,
+          {
+            y: 0,
+            opacity: 1,
+            filter: 'blur(0px)',
+            duration: 1.2,
+            ease: 'expo.out'
+          }
+        );
+      }
+
+      if (!data?.disableEntranceAnimation) {
+        const position = !data?.disableHeaderEntranceAnimation ? '-=0.8' : 0;
+        entranceTl.to(
+          contentEls,
+          {
+            y: 0,
+            opacity: 1,
+            filter: 'blur(0px)',
+            duration: 1.0,
+            stagger: 0.1,
+            ease: 'power3.out'
+          },
+          position
+        );
+      }
+    }
 
     if (!tickerRef.current) return;
     const ticker = tickerRef.current;
@@ -65,13 +93,13 @@ const TestimonialsSection = ({ data, dict }: { data?: any, dict?: any }) => {
       ticker.removeEventListener('mouseleave', handleLeave);
       ScrollTrigger.getAll().filter(st => st.trigger === sectionRef.current).forEach(st => st.kill());
     };
-  }, []);
+  }, [data]);
 
   if (!testimonials) return null;
   const displayItems = [...testimonials, ...testimonials];
 
   return (
-    <section className="testimonials-section" ref={sectionRef} id={data?.id || 'testimonials'}>
+    <section className={`testimonials-section ${data?.disableEntranceAnimation ? 'no-entrance-anim' : ''} ${data?.disableHeaderEntranceAnimation ? 'no-header-entrance-anim' : ''}`} ref={sectionRef} id={data?.id || 'testimonials'}>
       <div className="testimonials-title-wrapper">
         <h2 className="testimonials-title" ref={titleRef}>{title}</h2>
       </div>

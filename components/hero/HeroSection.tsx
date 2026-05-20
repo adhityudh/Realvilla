@@ -35,7 +35,7 @@ function useHeroScrollAnimations() {
     });
 
     const overlayST = gsap.to('.hero-overlay', {
-      opacity: 0.85,
+      opacity: 0.8,
       ease: 'none',
       scrollTrigger: {
         trigger: '.main-hero',
@@ -60,7 +60,7 @@ export function getHeroRevealAnimation(tl: gsap.core.Timeline, isMobile: boolean
   const vW = window.innerWidth;
   const vH = window.innerHeight;
   const hRect = heroEl.getBoundingClientRect();
-  
+
   const heroW = hRect.width;
   const heroH = hRect.height;
   const heroTop = hRect.top;
@@ -69,7 +69,7 @@ export function getHeroRevealAnimation(tl: gsap.core.Timeline, isMobile: boolean
     ? Math.min(vH * 0.3, vW * 0.5)
     : Math.min(vH * 0.35, vW * 0.8);
   const boxH = isMobile ? vH * 0.38 : vH * 0.5;
-  
+
   const heroLocalCenterY = vH / 2 - heroTop;
   const insetTop = heroLocalCenterY - boxH / 2;
   const insetBottom = heroH - (insetTop + boxH);
@@ -135,7 +135,7 @@ export default function HeroSection({ data, dict }: { data?: any; dict?: any }) 
     if (!v || !device) return;
 
     const currentSrc = device === 'mobile' ? mobileVideoMP4 : desktopVideoMP4;
-    
+
     // Only call load() if the source has actually changed since the last mount/update
     if (lastSrcRef.current && lastSrcRef.current !== currentSrc) {
       v.load();
@@ -143,6 +143,13 @@ export default function HeroSection({ data, dict }: { data?: any; dict?: any }) 
     lastSrcRef.current = currentSrc;
 
     const revealMedia = () => {
+      if (data.disableEntranceAnimation) {
+        v.style.opacity = '1';
+        v.style.filter = 'none';
+        v.style.willChange = 'transform';
+        v.play().catch(() => { });
+        return;
+      }
       gsap.to(v, {
         opacity: 1,
         filter: 'blur(0px)',
@@ -161,8 +168,8 @@ export default function HeroSection({ data, dict }: { data?: any; dict?: any }) 
       v.addEventListener('loadeddata', revealMedia);
       v.addEventListener('error', revealMedia); // Reveal even on error so it doesn't stay invisible
     }
-    return () => { 
-      v.removeEventListener('loadeddata', revealMedia); 
+    return () => {
+      v.removeEventListener('loadeddata', revealMedia);
       v.removeEventListener('error', revealMedia);
     };
   }, [device, desktopVideoMP4, mobileVideoMP4]);
@@ -172,13 +179,13 @@ export default function HeroSection({ data, dict }: { data?: any; dict?: any }) 
 
   return (
     <main className="main-hero" data-is-hero="true" id={data?.id || 'hero'}>
-      <video 
-        ref={videoRef} 
-        className={`hero-bg-video ${!device ? 'is-loading' : ''}`} 
-        preload="auto" 
-        muted 
-        playsInline 
-        style={{ opacity: 0 }} // Start invisible, revealed by GSAP
+      <video
+        ref={videoRef}
+        className={`hero-bg-video ${!device ? 'is-loading' : ''}`}
+        preload="auto"
+        muted
+        playsInline
+        style={data.disableEntranceAnimation ? { opacity: 1, filter: 'none' } : { opacity: 0 }}
       >
         {currentMP4 && <source src={currentMP4} type='video/mp4; codecs="hvc1"' />}
         {currentWebM && <source src={currentWebM} type="video/webm" />}
