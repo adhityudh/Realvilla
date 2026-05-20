@@ -17,21 +17,18 @@ export const mortgageCalculator = defineType({
       title: 'Minimum Property Price (€)',
       type: 'number',
       group: 'simulator',
-      initialValue: 0,
     }),
     defineField({
       name: 'priceMax',
       title: 'Maximum Property Price (€)',
       type: 'number',
       group: 'simulator',
-      initialValue: 3000000,
     }),
     defineField({
       name: 'defaultPrice',
       title: 'Default Property Price (€)',
       type: 'number',
       group: 'simulator',
-      initialValue: 500000,
     }),
 
     // ── Savings / Down Payment Range ──────────────────────────────────────
@@ -41,14 +38,12 @@ export const mortgageCalculator = defineType({
       type: 'number',
       description: 'Minimum down payment percentage required by banks (e.g. 10 or 20).',
       group: 'simulator',
-      initialValue: 0,
     }),
     defineField({
       name: 'savingsStep',
       title: 'Savings Slider Step (€)',
       type: 'number',
       group: 'simulator',
-      initialValue: 5000,
     }),
     defineField({
       name: 'defaultSavingsPct',
@@ -56,7 +51,6 @@ export const mortgageCalculator = defineType({
       type: 'number',
       description: 'e.g. 30 = 30% of the property price as default savings.',
       group: 'simulator',
-      initialValue: 30,
     }),
     defineField({
       name: 'minSavingsWarning',
@@ -64,7 +58,6 @@ export const mortgageCalculator = defineType({
       type: 'number',
       description: 'Show a warning if savings < this % of property price. In Tenerife banks require 10% min + costs.',
       group: 'simulator',
-      initialValue: 10,
     }),
     defineField({
       name: 'minSavingsWarningText',
@@ -72,7 +65,6 @@ export const mortgageCalculator = defineType({
       type: 'string',
       description: 'Informational text shown when savings are below the minimum threshold.',
       group: 'simulator',
-      initialValue: 'Banks typically require a minimum 10% down payment plus costs.',
     }),
 
     // ── Loan Term ──────────────────────────────────────
@@ -81,21 +73,18 @@ export const mortgageCalculator = defineType({
       title: 'Minimum Loan Term (Years)',
       type: 'number',
       group: 'simulator',
-      initialValue: 5,
     }),
     defineField({
       name: 'loanTermMax',
       title: 'Maximum Loan Term (Years)',
       type: 'number',
       group: 'simulator',
-      initialValue: 30,
     }),
     defineField({
       name: 'defaultLoanTerm',
       title: 'Default Loan Term (Years)',
       type: 'number',
       group: 'simulator',
-      initialValue: 25,
     }),
 
     // ── Interest Rates ──────────────────────────────────────
@@ -105,7 +94,6 @@ export const mortgageCalculator = defineType({
       type: 'number',
       description: 'Default fixed interest rate for Tenerife (e.g. 3.5).',
       group: 'rates',
-      initialValue: 3.5,
     }),
     defineField({
       name: 'variableRate',
@@ -113,7 +101,6 @@ export const mortgageCalculator = defineType({
       type: 'number',
       description: 'Default variable interest rate for Tenerife (e.g. 3.06).',
       group: 'rates',
-      initialValue: 3.06,
     }),
     defineField({
       name: 'rateStep',
@@ -121,21 +108,18 @@ export const mortgageCalculator = defineType({
       type: 'number',
       description: 'Increment/decrement amount when user clicks +/- on rate.',
       group: 'rates',
-      initialValue: 0.05,
     }),
     defineField({
       name: 'rateMin',
       title: 'Minimum Rate (%)',
       type: 'number',
       group: 'rates',
-      initialValue: 0.1,
     }),
     defineField({
       name: 'rateMax',
       title: 'Maximum Rate (%)',
       type: 'number',
       group: 'rates',
-      initialValue: 15,
     }),
     defineField({
       name: 'defaultRateType',
@@ -149,7 +133,6 @@ export const mortgageCalculator = defineType({
         layout: 'radio',
       },
       group: 'rates',
-      initialValue: 'variable',
     }),
     defineField({
       name: 'interestTooltip',
@@ -157,7 +140,6 @@ export const mortgageCalculator = defineType({
       type: 'text',
       description: 'Informational tooltip shown next to the interest type label.',
       group: 'rates',
-      initialValue: 'Select fixed rate for stable monthly payments or variable rate linked to Euribor.',
     }),
 
     // ── Property Condition & Taxes (Tenerife specific) ──────────────────────────────────────
@@ -167,7 +149,6 @@ export const mortgageCalculator = defineType({
       type: 'boolean',
       description: 'Show New / Resale property toggle that affects tax calculation.',
       group: 'taxes',
-      initialValue: true,
     }),
     defineField({
       name: 'defaultCondition',
@@ -182,7 +163,6 @@ export const mortgageCalculator = defineType({
       },
       hidden: ({ parent }) => !parent?.enablePropertyCondition,
       group: 'taxes',
-      initialValue: 'resale',
     }),
 
     // Tenerife taxes for NEW BUILD (IVA 7% in Canary Islands - IGIC)
@@ -192,7 +172,6 @@ export const mortgageCalculator = defineType({
       type: 'number',
       description: 'In Tenerife/Canary Islands, new builds pay IGIC (7%) instead of IVA (10%).',
       group: 'taxes',
-      initialValue: 7,
     }),
     defineField({
       name: 'newBuildStampDutyRate',
@@ -200,7 +179,6 @@ export const mortgageCalculator = defineType({
       type: 'number',
       description: 'Actos Jurídicos Documentados for new builds in Canary Islands.',
       group: 'taxes',
-      initialValue: 1,
     }),
 
     // Tenerife taxes for RESALE (ITP)
@@ -210,7 +188,6 @@ export const mortgageCalculator = defineType({
       type: 'number',
       description: 'ITP rate for resale properties in Tenerife. Standard is 6.5%.',
       group: 'taxes',
-      initialValue: 6.5,
     }),
 
     // Fixed purchase costs (same for both conditions)
@@ -220,7 +197,6 @@ export const mortgageCalculator = defineType({
       type: 'number',
       description: 'Estimated notary cost. This is a fixed estimate.',
       group: 'taxes',
-      initialValue: 1000,
     }),
     defineField({
       name: 'registryCost',
@@ -228,7 +204,6 @@ export const mortgageCalculator = defineType({
       type: 'number',
       description: 'Estimated land registry cost.',
       group: 'taxes',
-      initialValue: 500,
     }),
     defineField({
       name: 'gestoriaCost',
@@ -236,7 +211,6 @@ export const mortgageCalculator = defineType({
       type: 'number',
       description: 'Estimated administrative/gestoria cost.',
       group: 'taxes',
-      initialValue: 350,
     }),
     defineField({
       name: 'valuationCost',
@@ -244,7 +218,6 @@ export const mortgageCalculator = defineType({
       type: 'number',
       description: 'Tasación — cost paid by buyer to value the property for the mortgage.',
       group: 'taxes',
-      initialValue: 400,
     }),
 
     // ── UI Labels & Tooltip Texts (Fully Customizable) ──────────────────────────────────────
@@ -383,10 +356,10 @@ export const mortgageCalculator = defineType({
     }),
     defineField({
       name: 'labelTotalWithMortgage',
-      title: 'Label: Total Cost with Mortgage',
+      title: 'Label: Property Total Cost with Mortgage',
       type: 'string',
       group: 'labels',
-      initialValue: 'Total cost with mortgage',
+      initialValue: 'Property total cost with mortgage',
     }),
     defineField({
       name: 'labelViewAmortization',

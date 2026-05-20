@@ -103,7 +103,7 @@
 }
 
 .msim-field {
-  margin-bottom: 3.5rem;
+  margin-bottom: 3rem;
   padding-bottom: 0;
 }
 
@@ -476,7 +476,7 @@
 .msim-stat-label {
   font-family: var(--font-manrope), sans-serif;
   font-size: var(--text-sm-plus);
-  color: rgba(17, 17, 17, 0.7);
+  color: var(--text-black);
   display: flex;
   align-items: center;
   gap: 0.4rem;
@@ -577,6 +577,11 @@
   gap: 0.5rem;
   transition: color 0.2s var(--ease-smooth);
   text-align: left;
+}
+
+.msim-costs-link--bold {
+  font-weight: var(--fw-semibold);
+  font-size: var(--text-base-sm);
 }
 
 .msim-costs-link:hover {

@@ -281,8 +281,8 @@ export default function BuyMortgageSimSection({ data, dict, contextData }: { dat
   const savingsPctVal = price > 0 ? Math.round((clampedSavings / price) * 100) : 0;
   // LTV is now purely (property price - down payment) / property price — correctly shows 90% at 10% savings
   const ltvPct = price > 0 ? Math.round((principal / price) * 100) : 0;
-  // Buyer pays: down payment + purchase costs out of pocket + total mortgage repayments
-  const totalWithMortgage = clampedSavings + purchaseCosts + totalRepayment;
+  // Property total cost with mortgage (down payment + total mortgage repayments, excluding purchase costs)
+  const totalWithMortgage = clampedSavings + totalRepayment;
 
   // Bottom bar: savings + principal + interest  (savings + principal = price exactly)
   const barTotal = price + totalInterest; // = clampedSavings + principal + totalInterest
@@ -374,7 +374,7 @@ export default function BuyMortgageSimSection({ data, dict, contextData }: { dat
               {L.body && <p className="msim-body-text">{L.body}</p>}
               {L.ctaLabel && L.ctaLink && (
                 <Button label={L.ctaLabel} href={L.ctaLink} variant="dark" className="msim-header-cta"
-                   onClick={(e: any) => smoothScrollToAnchor(e, L.ctaLink)} />
+                  onClick={(e: any) => smoothScrollToAnchor(e, L.ctaLink)} />
               )}
             </div>
           )}
@@ -539,26 +539,13 @@ export default function BuyMortgageSimSection({ data, dict, contextData }: { dat
                 <span className="msim-breakdown-label">{L.labelPropertyPrice}</span>
                 <span className="msim-breakdown-value">{fmt(price)}</span>
               </div>
-              <div className="msim-breakdown-row">
-                <span className="msim-breakdown-dot msim-dot--brown" />
-                <span className="msim-breakdown-label">
-                  <button className="msim-costs-link" onClick={() => setTaxModalOpen(true)}>
-                    {L.labelPurchaseCosts}
-                    <span className="msim-costs-info-icon">
-                      <img src="/icons/info.svg" alt="Info" />
-                    </span>
-                  </button>
-                </span>
-                <span className="msim-breakdown-value">{fmt(purchaseCosts)}</span>
-              </div>
             </div>
 
             {/* Combined stacked bar chart */}
             <div className="msim-bars-combined">
-              {/* Top bar: Property Price (gold) left, then Taxes & Costs (brown) to the right */}
-              <div className="msim-bar-track msim-bar-track--top" style={{ width: `${topBarWidthPct}%` }}>
-                <div className="msim-bar-seg msim-bar-seg--gold" style={{ width: `${pricePct}%` }} />
-                <div className="msim-bar-seg msim-bar-seg--brown" style={{ width: `${costsPct}%` }} />
+              {/* Top bar: Property Price only (gold) */}
+              <div className="msim-bar-track msim-bar-track--top" style={{ width: `${savingsPct + principalPct}%` }}>
+                <div className="msim-bar-seg msim-bar-seg--gold" style={{ width: '100%' }} />
               </div>
 
               {/* Bottom bar: 100% width → savings | mortgage | interest */}
@@ -599,6 +586,17 @@ export default function BuyMortgageSimSection({ data, dict, contextData }: { dat
               <div className="msim-breakdown-row msim-breakdown-row--total">
                 <span className="msim-breakdown-label msim-breakdown-label--bold">{L.labelTotalWithMortgage}</span>
                 <span className="msim-breakdown-value msim-breakdown-value--bold">{fmt(totalWithMortgage)}</span>
+              </div>
+              <div className="msim-breakdown-row">
+                <span className="msim-breakdown-label msim-breakdown-label--bold">
+                  <button className="msim-costs-link msim-costs-link--bold" onClick={() => setTaxModalOpen(true)}>
+                    {L.labelPurchaseCosts}
+                    <span className="msim-costs-info-icon">
+                      <img src="/icons/info.svg" alt="Info" />
+                    </span>
+                  </button>
+                </span>
+                <span className="msim-breakdown-value msim-breakdown-value--bold">{fmt(purchaseCosts)}</span>
               </div>
             </div>
 
