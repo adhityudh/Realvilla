@@ -546,6 +546,7 @@ html.lenis body {
 
 .js-enabled section:not(.no-header-entrance-anim) .general-hero-title,
 .js-enabled section:not(.no-header-entrance-anim) .general-hero-subtitle,
-.js-enabled section:not(.no-entrance-anim) .general-hero-cta-wrapper {
+.js-enabled section:not(.no-entrance-anim) .general-hero-cta-wrapper,
+.js-enabled section:not(.no-entrance-anim) .general-jump-links {
   opacity: 0;
 }
