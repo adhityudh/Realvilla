@@ -265,8 +265,8 @@ export default function BuyMortgageSimSection({ data, dict, contextData }: { dat
   const purchaseCosts = taxAmount + notary + registry + gestoria + valuation;
   const totalPropertyCost = price + purchaseCosts;
 
-  // Mortgage calculation (covers remaining property price + purchase costs)
-  const principal = Math.max(0, price + purchaseCosts - clampedSavings);
+  // Mortgage only finances the remaining PROPERTY PRICE (purchase costs are paid separately by buyer)
+  const principal = Math.max(0, price - clampedSavings);
   const monthlyRate = activeRate / 100 / 12;
   const n = term * 12;
   const monthlyPayment = useMemo(() => {
@@ -279,17 +279,19 @@ export default function BuyMortgageSimSection({ data, dict, contextData }: { dat
   const totalRepayment = monthlyPayment * n;
   const totalInterest = totalRepayment - principal;
   const savingsPctVal = price > 0 ? Math.round((clampedSavings / price) * 100) : 0;
+  // LTV is now purely (property price - down payment) / property price — correctly shows 90% at 10% savings
   const ltvPct = price > 0 ? Math.round((principal / price) * 100) : 0;
-  const totalWithMortgage = clampedSavings + totalRepayment;
+  // Buyer pays: down payment + purchase costs out of pocket + total mortgage repayments
+  const totalWithMortgage = clampedSavings + purchaseCosts + totalRepayment;
 
-  // Bottom bar = 100% (savings + mortgage + interest)
-  const barTotal = clampedSavings + principal + totalInterest;
+  // Bottom bar: savings + principal + interest  (savings + principal = price exactly)
+  const barTotal = price + totalInterest; // = clampedSavings + principal + totalInterest
   const savingsPct = barTotal > 0 ? (clampedSavings / barTotal) * 100 : 0;
   const principalPct = barTotal > 0 ? (principal / barTotal) * 100 : 0;
   const interestPct = barTotal > 0 ? (totalInterest / barTotal) * 100 : 0;
 
-  // Top bar only extends to the savings+mortgage boundary (= totalPropertyCost / barTotal)
-  const topBarWidthPct = barTotal > 0 ? ((clampedSavings + principal) / barTotal) * 100 : 0;
+  // Top bar aligns with totalPropertyCost (price + costs); capped so it never overflows the container
+  const topBarWidthPct = barTotal > 0 ? Math.min(100, (totalPropertyCost / barTotal) * 100) : 0;
   // Inside top bar: brown (costs) and gold (price) proportional to their own total
   const costsPct = totalPropertyCost > 0 ? (purchaseCosts / totalPropertyCost) * 100 : 0;
   const pricePct = totalPropertyCost > 0 ? (price / totalPropertyCost) * 100 : 0;
