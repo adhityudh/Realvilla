@@ -206,6 +206,64 @@
 
     .sell-search-input-real {
         font-size: var(--text-base);
+        padding-right: 2.75rem !important;
+    }
+
+    .sell-search-input-real.has-fade-right {
+        -webkit-mask-image: linear-gradient(to right, #000 0%, #000 calc(100% - 3.375rem), transparent calc(100% - 2.75rem), transparent 100%) !important;
+        mask-image: linear-gradient(to right, #000 0%, #000 calc(100% - 3.375rem), transparent calc(100% - 2.75rem), transparent 100%) !important;
+    }
+
+    .sell-search-input-real.has-fade-left.has-fade-right {
+        -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 2rem, #000 calc(100% - 3.375rem), transparent calc(100% - 2.75rem), transparent 100%) !important;
+        mask-image: linear-gradient(to right, transparent 0%, #000 2rem, #000 calc(100% - 3.375rem), transparent calc(100% - 2.75rem), transparent 100%) !important;
+    }
+
+    .sell-continue-btn {
+        width: 2.875rem !important;
+        height: 2.875rem !important;
+        border-radius: 50% !important;
+        padding: 0 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        top: 0.25rem !important;
+        bottom: 0.25rem !important;
+        right: 0.25rem !important;
+    }
+
+    .sell-continue-btn span {
+        display: none !important;
+    }
+
+    .sell-continue-btn::before {
+        display: none !important;
+    }
+
+    .sell-continue-btn .btn-stretch-arrow {
+        display: block !important;
+        margin: 0 !important;
+        width: 1.25rem !important;
+        height: 1.25rem !important;
+        color: inherit;
+    }
+
+    .sell-continue-btn .btn-stretch-arrow .arrow-shaft {
+        transform: scaleX(1) !important;
+    }
+
+    .sell-hero-subtitle {
+        font-size: var(--text-base);
+    }
+
+    .sell-search-spinner {
+        right: 4rem !important;
+        /* 56px from the right edge on mobile to sit right next to the 46px circular button */
+    }
+
+    .sell-search-trigger:has(.sell-search-spinner) .sell-search-input-real {
+        padding-right: 5rem !important;
+        /* 80px to prevent text from overlapping the spinner while loading */
     }
 }
 
@@ -255,14 +313,20 @@
 
 /* Loading Spinner */
 .sell-search-spinner {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    margin: auto 0;
+    right: 9rem;
+    /* 120px on desktop */
     width: 1.125rem;
     height: 1.125rem;
     border: 0.125rem solid var(--white-15);
     border-top: 0.125rem solid var(--text-white);
     border-radius: 50%;
     animation: sell-spin 0.6s linear infinite;
-    flex-shrink: 0;
-    margin-left: auto;
+    z-index: 5;
+    pointer-events: none;
 }
 
 @keyframes sell-spin {
@@ -285,6 +349,10 @@
     padding: 0 1.25rem !important;
     cursor: pointer;
     z-index: 10;
+}
+
+.sell-continue-btn .btn-stretch-arrow {
+    display: none;
 }
 
 .sell-continue-btn:disabled,

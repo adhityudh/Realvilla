@@ -179,11 +179,10 @@ export default function Header({ settings, dict }: { settings?: any; dict?: any 
     <header className={`header ${!isHome ? 'header-subpage' : ''}`}>
       <div className="header-bg" />
       <div className="mobile-pill-nav">
-        {navLinks.map((link: any, i: number) => (
-          <span key={link.label} style={{ display: 'contents' }}>
-            <a href={link.link} className={`pill-link ${isLinkActive(link.link) ? 'active' : ''}`}><span>{link.label}</span></a>
-            {i < navLinks.length - 1 && <div className="pill-sep" />}
-          </span>
+        {navLinks.map((link: any) => (
+          <a key={link.label} href={link.link} className={`pill-link ${isLinkActive(link.link) ? 'active' : ''}`}>
+            <span>{link.label}</span>
+          </a>
         ))}
       </div>
       <div className="header-content">

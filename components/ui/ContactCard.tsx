@@ -551,6 +551,7 @@ export default function ContactCard({
         value={addressInput}
         onChange={handleAddressChange}
         onFocus={() => {
+          if (isAddressSelected) return;
           const trimmed = addressInput.trim().toLowerCase();
           const commonPrefixes = ['calle', 'avenida', 'c/', 'av.', 'av', 'street', 'road', 'calle de', 'plaza', 'paseo', 'camino'];
           if (addressInput.trim().length >= 3 || commonPrefixes.includes(trimmed)) {
@@ -932,7 +933,7 @@ export default function ContactCard({
 
       {showSellWhatsApp && renderWhatsAppOption(sellWhatsappMessageTemplate)}
 
-      {isInsideModal ? (
+      {isInsideModal && isAddressSelected ? (
         <div className="form-group">
           <label htmlFor={isInsideModal ? "modal-sell-address-readonly" : "sell-address-readonly"}>
             {sellDict.fields.municipality} <span className="form-required">{sellDict.fields.required || "*"}</span>

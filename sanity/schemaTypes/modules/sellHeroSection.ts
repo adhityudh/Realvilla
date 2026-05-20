@@ -45,6 +45,13 @@ export const sellHeroSection = defineType({
     group: 'content',
 }),
     defineField({
+      name: 'subtitle',
+      title: 'Subtitle',
+      type: 'text',
+      rows: 3,
+    group: 'content',
+}),
+    defineField({
       name: 'backgroundImage',
       title: 'Background Image',
       type: 'image',

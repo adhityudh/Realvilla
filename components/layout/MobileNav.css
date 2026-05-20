@@ -87,6 +87,7 @@
         }
 
         .mobile-nav-overlay.active .nav-link-mobile {
+            opacity: 1;
             transform: translateY(0);
         }
 

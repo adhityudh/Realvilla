@@ -465,6 +465,7 @@ export default function SellHeroSection({ data, dict }: SellHeroSectionProps) {
                 setIsDropdownOpen(true);
               }}
               onFocus={() => {
+                if (selectedAddress) return;
                 if (suggestions.length > 0) {
                   setIsDropdownOpen(true);
                 }
@@ -476,15 +477,15 @@ export default function SellHeroSection({ data, dict }: SellHeroSectionProps) {
                 ? `${!isScrollAtStart ? 'has-fade-left' : ''} ${!isScrollAtEnd ? 'has-fade-right' : ''}`.trim()
                 : ''
                 }`}
-              style={{ paddingRight: '100px' }}
+              style={{ paddingRight: '112px' }}
             />
             {isLoading && (
-              <div className="sell-search-spinner" style={{ marginRight: '120px' }} />
+              <div className="sell-search-spinner" />
             )}
             <Button
               label={dict?.contact?.sell?.continue || 'Continue'}
               variant="pill"
-              showArrow={false}
+              showArrow={true}
               onClick={handleContinue}
               className="sell-continue-btn"
               disabled={!selectedAddress}
