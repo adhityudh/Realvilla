@@ -174,11 +174,11 @@
   font-family: var(--font-cormorant), serif;
   font-size: var(--text-display-sm);
   color: var(--text-white);
-  font-weight: var(--fw-regular);
+  font-weight: var(--fw-semibold);
   text-transform: uppercase;
   letter-spacing: var(--ls-tight);
   line-height: var(--lh-snug);
-  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
 }
 
 /* Step body text flow underneath image */
