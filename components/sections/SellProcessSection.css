@@ -174,7 +174,7 @@
   font-family: var(--font-cormorant), serif;
   font-size: var(--text-display-sm);
   color: var(--text-white);
-  font-weight: var(--fw-bold);
+  font-weight: var(--fw-regular);
   text-transform: uppercase;
   letter-spacing: var(--ls-tight);
   line-height: var(--lh-snug);
@@ -260,6 +260,10 @@
     max-width: 100%;
     /* 📐 Shrink the bevel clip cut so it maintains absolute geometric proportion on tiny screens */
     clip-path: polygon(0 0, 100% 0, 100% calc(100% - 1rem), calc(100% - 1rem) 100%, 0 100%);
+  }
+
+  .sell-overlay-title {
+    font-weight: var(--fw-bold);
   }
 
 

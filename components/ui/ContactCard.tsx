@@ -966,6 +966,20 @@ export default function ContactCard({
       </div>
 
       <div className="form-group">
+        <label htmlFor={isInsideModal ? "modal-sell-email" : "sell-email"}>
+          {sellDict.fields.email} <span className="form-required">{sellDict.fields.required || "*"}</span>
+        </label>
+        <input
+          type="email"
+          id={isInsideModal ? "modal-sell-email" : "sell-email"}
+          placeholder={sellDict.fields.email_placeholder}
+          required
+          value={sellEmail}
+          onChange={(e) => setSellEmail(e.target.value)}
+        />
+      </div>
+
+      <div className="form-group">
         <label>
           {sellDict.fields.phone} <span className="form-required">{sellDict.fields.required}</span>
         </label>
@@ -978,20 +992,6 @@ export default function ContactCard({
           numberInputProps={{
             id: isInsideModal ? "modal-sell-phone" : "sell-phone"
           }}
-        />
-      </div>
-
-      <div className="form-group">
-        <label htmlFor={isInsideModal ? "modal-sell-email" : "sell-email"}>
-          {sellDict.fields.email} <span className="form-required">{sellDict.fields.required || "*"}</span>
-        </label>
-        <input
-          type="email"
-          id={isInsideModal ? "modal-sell-email" : "sell-email"}
-          placeholder={sellDict.fields.email_placeholder}
-          required
-          value={sellEmail}
-          onChange={(e) => setSellEmail(e.target.value)}
         />
       </div>
 
