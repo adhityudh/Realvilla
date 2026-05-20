@@ -140,9 +140,18 @@ export default function PropertyCard({ prop, variant = 'default', dict }: { prop
         </h3>
         <div className="property-details">
           {(() => {
-            const highlights = [...(prop.meta || [])]
-              .filter((m: any) => m.isHighlighted)
-              .sort((a: any, b: any) => (a.highlightOrder || 0) - (b.highlightOrder || 0));
+            const categoryHighlights = prop.category?.highlightedMetas || [];
+            const highlights: any[] = [];
+
+            categoryHighlights.forEach((ch: any) => {
+              const matchingMeta = (prop.meta || []).find((m: any) => m.metaId === ch.metaId);
+              if (matchingMeta) {
+                highlights.push({
+                  ...matchingMeta,
+                  hideLabelOnHighlight: ch.hideLabel === true
+                });
+              }
+            });
             
             if (prop.category) {
               highlights.unshift({

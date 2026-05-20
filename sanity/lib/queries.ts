@@ -62,7 +62,11 @@ export const PROPERTY_CARD_FIELDS = groq`
     _id, 
     "title": coalesce(title[$language], title.en), 
     "icon": icon.asset->url, 
-    "slug": slug.current 
+    "slug": slug.current,
+    highlightedMetas[] {
+      "metaId": metaKey->_id,
+      hideLabel
+    }
   },
   // New dynamic meta (resolved inline)
   meta[] {
@@ -70,9 +74,6 @@ export const PROPERTY_CARD_FIELDS = groq`
     "shortLabel": coalesce(metaKey->shortLabel[$language], metaKey->shortLabel.en),
     "valueType": metaKey->valueType,
     "unit": coalesce(metaKey->unit[$language], metaKey->unit.en),
-    "isHighlighted": metaKey->isHighlighted,
-    "highlightOrder": metaKey->highlightOrder,
-    "hideLabelOnHighlight": metaKey->hideLabelOnHighlight,
     "icon": metaKey->icon.asset->url,
     numberValue,
     stringValue,
@@ -688,7 +689,11 @@ export const PROPERTY_DETAIL_QUERY = groq`
       _id, 
       "title": coalesce(title[$language], title.en), 
       "icon": icon.asset->url, 
-      "slug": slug.current 
+      "slug": slug.current,
+      highlightedMetas[] {
+        "metaId": metaKey->_id,
+        hideLabel
+      }
     },
     // Dynamic meta
     meta[] {
@@ -699,9 +704,6 @@ export const PROPERTY_DETAIL_QUERY = groq`
       "unit": coalesce(metaKey->unit[$language], metaKey->unit.en),
       "category": coalesce(metaKey->category->title[$language], metaKey->category->title.en),
       "categoryOrder": metaKey->category->filterGroupDisplayOrder,
-      "isHighlighted": metaKey->isHighlighted,
-      "highlightOrder": metaKey->highlightOrder,
-      "hideLabelOnHighlight": metaKey->hideLabelOnHighlight,
       "icon": metaKey->icon.asset->url,
       numberValue,
       stringValue,

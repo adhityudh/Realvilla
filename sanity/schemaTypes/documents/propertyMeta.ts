@@ -106,6 +106,8 @@ export const propertyMeta = defineType({
       to: [{ type: 'propertyMetaCategory' }],
       description: 'Which category group this meta belongs to on the detail page.',
     }),
+    /* 
+    DEPRECATED: Highlighted meta is now configured on the Property Category level (propertyCategory schema).
     defineField({
       name: 'isHighlighted',
       title: 'Highlighted',
@@ -129,6 +131,7 @@ export const propertyMeta = defineType({
       hidden: ({ document }) => !document?.isHighlighted,
       initialValue: false,
     }),
+    */
     defineField({
       name: 'filter',
       title: 'Filter Settings',

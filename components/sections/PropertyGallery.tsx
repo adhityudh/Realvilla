@@ -256,9 +256,18 @@ export default function PropertyGallery({ property, dict }: PropertyGalleryProps
           <div className="summary-bottom-row">
             <div className="summary-meta-row">
               {(() => {
-                const highlights = [...(property.meta || [])]
-                  .filter((m: any) => m.isHighlighted)
-                  .sort((a: any, b: any) => (a.highlightOrder || 0) - (b.highlightOrder || 0));
+                const categoryHighlights = property.category?.highlightedMetas || [];
+                const highlights: any[] = [];
+
+                categoryHighlights.forEach((ch: any) => {
+                  const matchingMeta = (property.meta || []).find((m: any) => m.metaId === ch.metaId);
+                  if (matchingMeta) {
+                    highlights.push({
+                      ...matchingMeta,
+                      hideLabelOnHighlight: ch.hideLabel === true
+                    });
+                  }
+                });
                 
                 if (property.category) {
                   highlights.unshift({
