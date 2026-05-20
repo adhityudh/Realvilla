@@ -243,30 +243,30 @@ export default function BuyMortgageSimSection({ data, dict, contextData }: { dat
   const activeRate = rateType === 'fixed' ? fixedRate : variableRate;
   const setActiveRate = rateType === 'fixed' ? setFixedRate : setVariableRate;
 
-  // Dynamic minimum savings based on percentage of current property price
-  const savingsMin = Math.round(price * (L.minSavingsPct / 100));
+  // Dynamic minimum savings is strictly 0, based on property price
+  const savingsMin = 0;
 
-  // Clamp savings to price
+  // Clamp savings to property price
   const clampedSavings = Math.min(savings, price);
 
   // Tax calculation
   const newBuildTaxRateVal = L.newBuildTaxRate;
   const newBuildStampDutyRateVal = L.newBuildStampDutyRate;
   const resaleTaxRateVal = L.resaleTaxRate;
+  const notary = L.notaryCost;
+  const registry = L.registryCost;
+  const gestoria = L.gestoriaCost;
+  const valuation = L.valuationCost;
 
   const purchaseTaxRate = condition === 'new'
     ? (newBuildTaxRateVal + newBuildStampDutyRateVal) / 100
     : resaleTaxRateVal / 100;
   const taxAmount = price * purchaseTaxRate;
-  const notary = L.notaryCost;
-  const registry = L.registryCost;
-  const gestoria = L.gestoriaCost;
-  const valuation = L.valuationCost;
   const purchaseCosts = taxAmount + notary + registry + gestoria + valuation;
   const totalPropertyCost = price + purchaseCosts;
 
-  // Mortgage calculation
-  const principal = Math.max(0, price - clampedSavings);
+  // Mortgage calculation (covers remaining property price + purchase costs)
+  const principal = Math.max(0, price + purchaseCosts - clampedSavings);
   const monthlyRate = activeRate / 100 / 12;
   const n = term * 12;
   const monthlyPayment = useMemo(() => {
@@ -278,6 +278,7 @@ export default function BuyMortgageSimSection({ data, dict, contextData }: { dat
 
   const totalRepayment = monthlyPayment * n;
   const totalInterest = totalRepayment - principal;
+  const savingsPctVal = price > 0 ? Math.round((clampedSavings / price) * 100) : 0;
   const ltvPct = price > 0 ? Math.round((principal / price) * 100) : 0;
   const totalWithMortgage = clampedSavings + totalRepayment;
 
@@ -287,7 +288,7 @@ export default function BuyMortgageSimSection({ data, dict, contextData }: { dat
   const principalPct = barTotal > 0 ? (principal / barTotal) * 100 : 0;
   const interestPct = barTotal > 0 ? (totalInterest / barTotal) * 100 : 0;
 
-  // Top bar only extends to the savings+mortgage boundary (= price+costs / barTotal)
+  // Top bar only extends to the savings+mortgage boundary (= totalPropertyCost / barTotal)
   const topBarWidthPct = barTotal > 0 ? ((clampedSavings + principal) / barTotal) * 100 : 0;
   // Inside top bar: brown (costs) and gold (price) proportional to their own total
   const costsPct = totalPropertyCost > 0 ? (purchaseCosts / totalPropertyCost) * 100 : 0;
@@ -302,7 +303,7 @@ export default function BuyMortgageSimSection({ data, dict, contextData }: { dat
     const v = Math.max(priceMin, parseNum(priceInput));
     setPrice(v);
     setPriceInput(fmtNum(v));
-    const minSav = Math.round(v * (L.minSavingsPct / 100));
+    const minSav = 0;
     if (savings < minSav) {
       setSavings(minSav);
       setSavingsInput(fmtNum(minSav));
@@ -415,7 +416,7 @@ export default function BuyMortgageSimSection({ data, dict, contextData }: { dat
                   }}
                   onBlur={handleSavingsBlur}
                   onKeyDown={e => e.key === 'Enter' && handleSavingsBlur()} />
-                <span className="msim-value-pct">{price > 0 ? Math.round((clampedSavings / price) * 100) : 0}%</span>
+                <span className="msim-value-pct">{savingsPctVal}%</span>
               </div>
               <Slider value={clampedSavings} min={savingsMin} max={price} step={savingsStep}
                 onChange={v => { setSavings(v); setSavingsInput(fmtNum(v)); }} />
