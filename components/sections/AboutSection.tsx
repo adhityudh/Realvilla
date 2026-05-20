@@ -1,11 +1,16 @@
 'use client';
 
-import { useRef, useEffect, useState } from 'react';
+import { useRef, useEffect } from 'react';
 import Image from 'next/image';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { Gallery, Item } from 'react-photoswipe-gallery';
-import 'photoswipe/dist/photoswipe.css';
+import LightGallery from 'lightgallery/react';
+import lgThumbnail from 'lightgallery/plugins/thumbnail';
+import lgZoom from 'lightgallery/plugins/zoom';
+
+import 'lightgallery/css/lightgallery.css';
+import 'lightgallery/css/lg-zoom.css';
+import 'lightgallery/css/lg-thumbnail.css';
 import './AboutSection.css';
 import { urlForImage } from '@/sanity/lib/image';
 
@@ -21,8 +26,6 @@ const AboutSection = ({ data, dict }: { data?: any, dict?: any }) => {
   const taglineRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const profileRef = useRef<HTMLDivElement>(null);
-
-  const [imageSizes, setImageSizes] = useState<Record<number, { w: number; h: number }>>({});
 
   if (!data) return null;
 
@@ -174,53 +177,43 @@ const AboutSection = ({ data, dict }: { data?: any, dict?: any }) => {
         </div>
 
         <div className="about-certificates">
-          <Gallery>
-            <div>
-              {certificates?.map((cert: any, index: number) => {
-                const certUrl = urlForImage(cert).url();
-                const num = index + 1;
-                return (
-                  <Item
-                    key={index}
-                    original={certUrl}
-                    thumbnail={certUrl}
-                    width={imageSizes[num]?.w || 800}
-                    height={imageSizes[num]?.h || 600}
-                  >
-                    {({ ref, open }) => (
-                      <div className="about-cert-item" ref={ref as any} onClick={open}>
-                        <div className="cert-thumb-wrapper">
-                          <Image
-                            src={certUrl}
-                            alt={`Certificate ${num}`}
-                            fill
-                            sizes="(max-width: 768px) 100vw, 200px"
-                            placeholder={cert.asset?.metadata?.lqip ? "blur" : "empty"}
-                            blurDataURL={cert.asset?.metadata?.lqip}
-                            style={{ objectFit: 'cover' }}
-                            className="img-reveal"
-                            onLoad={(e) => {
-                              const img = e.target as HTMLImageElement;
-                              img.classList.add('loaded');
-                              setImageSizes(prev => {
-                                if (!prev[num] || prev[num].w !== img.naturalWidth) {
-                                  return { ...prev, [num]: { w: img.naturalWidth, h: img.naturalHeight } };
-                                }
-                                return prev;
-                              });
-                            }}
-                          />
-                          <div className="cert-hover-overlay">
-                            <span>{dict?.about?.view_certificate || 'View Certificate'}</span>
-                          </div>
-                        </div>
-                      </div>
-                    )}
-                  </Item>
-                );
-              })}
-            </div>
-          </Gallery>
+          <LightGallery
+            speed={500}
+            plugins={[lgThumbnail, lgZoom]}
+            elementClassNames="about-certificates-gallery"
+          >
+            {certificates?.map((cert: any, index: number) => {
+              const certUrl = urlForImage(cert).url();
+              const num = index + 1;
+              return (
+                <a
+                  key={index}
+                  href={certUrl}
+                  className="about-cert-item"
+                >
+                  <div className="cert-thumb-wrapper">
+                    <Image
+                      src={certUrl}
+                      alt={`Certificate ${num}`}
+                      fill
+                      sizes="(max-width: 768px) 100vw, 200px"
+                      placeholder={cert.asset?.metadata?.lqip ? "blur" : "empty"}
+                      blurDataURL={cert.asset?.metadata?.lqip}
+                      style={{ objectFit: 'cover' }}
+                      className="img-reveal"
+                      onLoad={(e) => {
+                        const img = e.target as HTMLImageElement;
+                        img.classList.add('loaded');
+                      }}
+                    />
+                    <div className="cert-hover-overlay">
+                      <span>{dict?.about?.view_certificate || 'View Certificate'}</span>
+                    </div>
+                  </div>
+                </a>
+              );
+            })}
+          </LightGallery>
         </div>
       </div>
     </section>

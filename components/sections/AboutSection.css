@@ -408,7 +408,7 @@
     align-self: end;
 }
 
-.about-certificates>div {
+.about-certificates-gallery {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 0.5rem;
@@ -482,7 +482,7 @@
         align-self: center;
     }
 
-    .about-certificates>div {
+    .about-certificates-gallery {
         gap: 1rem;
     }
 }
@@ -498,7 +498,7 @@
         max-width: none;
     }
 
-    .about-certificates>div {
+    .about-certificates-gallery {
         display: flex;
         flex-wrap: nowrap;
         overflow-x: auto;
@@ -511,7 +511,7 @@
         align-items: center;
     }
 
-    .about-certificates>div::-webkit-scrollbar {
+    .about-certificates-gallery::-webkit-scrollbar {
         display: none;
     }
 
@@ -528,7 +528,9 @@
     }
 }
 
-/* Fix PhotoSwipe z-index to appear above header */
-.pswp {
-    z-index: 999999 !important;
+/* Fix LightGallery z-index to appear above header */
+.lg-container,
+.lg-outer,
+.lg-backdrop {
+    z-index: 9999999 !important;
 }
