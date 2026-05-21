@@ -578,7 +578,7 @@
 .accordion-options-list {
     display: flex;
     flex-direction: column;
-    gap: 0.25rem;
+    gap: 1.5rem;
 }
 
 .accordion-option-row {

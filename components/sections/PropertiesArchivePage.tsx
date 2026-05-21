@@ -237,7 +237,8 @@ export default function PropertiesArchivePage({
       const currentQuery = window.location.search.replace('?', '');
 
       if (newQuery !== currentQuery) {
-        router.replace(`${pathname}?${newQuery}`, { scroll: false });
+        const url = newQuery ? `${pathname}?${newQuery}` : pathname;
+        window.history.replaceState(null, '', url);
       }
       
       // Only update if actually different to prevent redundant fetch triggers
@@ -439,6 +440,19 @@ export default function PropertiesArchivePage({
         if (isMounted) {
           if (currentPage === 1) {
             setProperties(res.items || []);
+
+            // Smoothly scroll back to the top of listings section if the user is scrolled past
+            if (sectionRef.current) {
+              const rect = sectionRef.current.getBoundingClientRect();
+              if (rect.top < -100) {
+                const lenis = (window as any).lenis;
+                if (lenis) {
+                  lenis.scrollTo(sectionRef.current, { offset: -20, duration: 1.2 });
+                } else {
+                  sectionRef.current.scrollIntoView({ behavior: 'smooth' });
+                }
+              }
+            }
           } else {
             setProperties(prev => [...prev, ...(res.items || [])]);
           }
@@ -676,40 +690,52 @@ export default function PropertiesArchivePage({
             </div>
 
             {/* Properties Grid */}
-            <div className="archive-grid-container">
-              {loading && currentPage === 1 ? (
-                <div className="archive-loader">
+            <div className={`archive-grid-container ${loading && currentPage === 1 ? 'is-loading' : ''}`}>
+              {loading && currentPage === 1 && (
+                <div className="archive-loader-overlay">
                   <div className="spinner"></div>
                 </div>
-              ) : properties.length === 0 ? (
-                <div className="archive-empty">
-                  <div className="smart-empty-state">
-                    <div className="smart-empty-icon">
-                      <img src="/icons/info.svg" alt="No results" />
+              )}
+
+              {properties.length === 0 ? (
+                !loading && (
+                  <div className="archive-empty">
+                    <div className="smart-empty-state">
+                      <div className="smart-empty-icon">
+                        <img src="/icons/info.svg" alt="No results" />
+                      </div>
+                      <h3>
+                        {isMunicipalityFocused 
+                          ? dict?.archive?.no_properties_in_area 
+                          : dict?.archive?.no_results}
+                      </h3>
+                      <p>
+                        {isMunicipalityFocused 
+                          ? dict?.archive?.explore_others 
+                          : dict?.archive?.no_results_subtitle}
+                      </p>
+                      {isMunicipalityFocused && (
+                        <Button 
+                          label={dict?.archive?.explore_other_areas}
+                          variant="dark"
+                          showArrow={true}
+                          onClick={handleClearMunicipalities}
+                          className="empty-state-cta"
+                        />
+                      )}
                     </div>
-                    <h3>
-                      {isMunicipalityFocused 
-                        ? dict?.archive?.no_properties_in_area 
-                        : dict?.archive?.no_results}
-                    </h3>
-                    <p>
-                      {isMunicipalityFocused 
-                        ? dict?.archive?.explore_others 
-                        : dict?.archive?.no_results_subtitle}
-                    </p>
-                    {isMunicipalityFocused && (
-                      <Button 
-                        label={dict?.archive?.explore_other_areas}
-                        variant="dark"
-                        showArrow={true}
-                        onClick={handleClearMunicipalities}
-                        className="empty-state-cta"
-                      />
-                    )}
                   </div>
-                </div>
+                )
               ) : (
-                <div className="archive-grid" ref={gridRef}>
+                <div 
+                  className="archive-grid" 
+                  ref={gridRef}
+                  style={{
+                    opacity: loading && currentPage === 1 ? 0.45 : 1,
+                    pointerEvents: loading && currentPage === 1 ? 'none' : 'auto',
+                    transition: 'opacity 0.3s ease-in-out'
+                  }}
+                >
                   {properties.map((prop) => (
                     <PropertyCard key={prop._id} prop={prop} variant="seamless" dict={dict} />
                   ))}
