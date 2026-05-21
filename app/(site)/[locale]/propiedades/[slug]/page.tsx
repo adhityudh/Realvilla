@@ -69,6 +69,7 @@ export default async function PropertyPage({ params }: { params: Promise<{ local
         whatsappMessageTemplate={settings?.contactPresetMessageTemplate}
         requestGuidancePresetMessage={settings?.requestGuidancePresetMessage}
         hideRequestGuidanceWhatsApp={settings?.hideRequestGuidanceWhatsApp}
+        mortgageCalculatorData={settings?.mortgageCalculator}
       />
       <OtherProperties 
         currentPropertyId={property._id}

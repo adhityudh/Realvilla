@@ -228,6 +228,7 @@ export default function GeneralHeroSection({ data, dict }: GeneralHeroSectionPro
               href={link.link || '#'}
               onClick={(e) => handleJumpLinkClick(e, link.link)}
               variant="link"
+              size="md"
               className="jump-link"
               priority={true}
             />

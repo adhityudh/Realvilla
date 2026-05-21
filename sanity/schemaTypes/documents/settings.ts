@@ -1,5 +1,6 @@
 import { defineField, defineType } from 'sanity'
 import { InternalSectionSelector } from '../../components/InternalSectionSelector'
+import { CurrentPageSectionSelector } from '../../components/CurrentPageSectionSelector'
 
 export const settings = defineType({
   name: 'settings',
@@ -100,11 +101,30 @@ export const settings = defineType({
               type: 'string',
               options: {
                 list: [
+                  { title: 'Section on Current Page', value: 'section' },
+                  { title: 'Internal Page', value: 'internal' },
                   { title: 'External URL', value: 'external' },
                 ],
                 layout: 'radio',
               },
-              initialValue: 'external',
+              initialValue: 'section',
+            }),
+            defineField({
+              name: 'openInNewWindow',
+              title: 'Open in New Tab',
+              type: 'boolean',
+              description: 'Open this link in a new browser tab/window',
+              initialValue: false,
+            }),
+            defineField({
+              name: 'sectionId',
+              title: 'Section on Current Page',
+              description: 'Select a section from the Property Page Sections configured below',
+              type: 'string',
+              components: {
+                input: CurrentPageSectionSelector,
+              },
+              hidden: ({ parent }) => parent?.linkType !== 'section',
             }),
             defineField({
               name: 'internalLink',
@@ -112,6 +132,16 @@ export const settings = defineType({
               type: 'reference',
               to: [{ type: 'page' }],
               hidden: ({ parent }) => parent?.linkType !== 'internal',
+              options: {
+                filter: ({ document }) => {
+                  const language = document?.language;
+                  if (!language) return {};
+                  return {
+                    filter: 'language == $language || !defined(language)',
+                    params: { language }
+                  };
+                }
+              }
             }),
             defineField({
               name: 'internalSection',
@@ -230,6 +260,13 @@ export const settings = defineType({
               initialValue: 'internal',
             }),
             defineField({
+              name: 'openInNewWindow',
+              title: 'Open in New Tab',
+              type: 'boolean',
+              description: 'Open this link in a new browser tab/window',
+              initialValue: false,
+            }),
+            defineField({
               name: 'internalLink',
               title: 'Internal Link',
               type: 'reference',
@@ -295,6 +332,13 @@ export const settings = defineType({
               initialValue: 'internal',
             }),
             defineField({
+              name: 'openInNewWindow',
+              title: 'Open in New Tab',
+              type: 'boolean',
+              description: 'Open this link in a new browser tab/window',
+              initialValue: false,
+            }),
+            defineField({
               name: 'internalLink',
               title: 'Internal Link',
               type: 'reference',
@@ -355,6 +399,13 @@ export const settings = defineType({
             layout: 'radio',
           },
           initialValue: 'internal',
+        }),
+        defineField({
+          name: 'openInNewWindow',
+          title: 'Open in New Tab',
+          type: 'boolean',
+          description: 'Open this link in a new browser tab/window',
+          initialValue: false,
         }),
         defineField({
           name: 'internalLink',
@@ -438,6 +489,13 @@ export const settings = defineType({
                                     layout: 'radio',
                                   },
                                   initialValue: 'internal',
+                                }),
+                                defineField({
+                                  name: 'openInNewWindow',
+                                  title: 'Open in New Tab',
+                                  type: 'boolean',
+                                  description: 'Open this link in a new browser tab/window',
+                                  initialValue: false,
                                 }),
                                 defineField({
                                   name: 'internalLink',
@@ -541,6 +599,13 @@ export const settings = defineType({
                   initialValue: 'internal',
                 }),
                 defineField({
+                  name: 'openInNewWindow',
+                  title: 'Open in New Tab',
+                  type: 'boolean',
+                  description: 'Open this link in a new browser tab/window',
+                  initialValue: false,
+                }),
+                defineField({
                   name: 'internalLink',
                   title: 'Internal Link',
                   type: 'reference',
@@ -609,6 +674,13 @@ export const settings = defineType({
                     layout: 'radio',
                   },
                   initialValue: 'external',
+                }),
+                defineField({
+                  name: 'openInNewWindow',
+                  title: 'Open in New Tab',
+                  type: 'boolean',
+                  description: 'Open this link in a new browser tab/window',
+                  initialValue: false,
                 }),
                 defineField({
                   name: 'internalLink',

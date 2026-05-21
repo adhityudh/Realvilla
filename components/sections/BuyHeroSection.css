@@ -168,10 +168,6 @@
     padding: 0 3rem;
 }
 
-.buy-jump-links .btn-link-styled {
-    font-size: var(--text-base);
-}
-
 .jump-link {
     /* Inherits everything from btn-link-styled (1.25rem, stretch animation, etc.) */
 }

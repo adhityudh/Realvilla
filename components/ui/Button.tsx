@@ -10,7 +10,8 @@ interface ButtonProps {
   label: string;
   href?: string;
   onClick?: (e: React.MouseEvent) => void;
-  variant?: 'pill' | 'link' | 'dark' | 'outline';
+  variant?: 'pill' | 'link' | 'link-dark' | 'dark' | 'outline';
+  size?: 'default' | 'md' | 'sm';
   icon?: string;
   className?: string;
   showArrow?: boolean;
@@ -37,6 +38,7 @@ export default function Button({
   href,
   onClick,
   variant = 'pill',
+  size = 'default',
   icon,
   className = '',
   showArrow = true,
@@ -71,7 +73,13 @@ export default function Button({
   if (variant === 'pill') variantClass = 'btn-pill';
   else if (variant === 'dark') variantClass = 'btn-pill btn-dark';
   else if (variant === 'outline') variantClass = 'btn-pill btn-outline';
+  else if (variant === 'link-dark') variantClass = 'btn-link-styled btn-link-dark';
   else variantClass = 'btn-link-styled';
+
+  // Add size class
+  let sizeClass = '';
+  if (size === 'sm') sizeClass = 'btn-link-sm';
+  else if (size === 'md') sizeClass = 'btn-link-md';
 
   return (
     <Component
@@ -83,7 +91,7 @@ export default function Button({
       disabled={Component === 'button' ? disabled : undefined}
       target={Component === 'a' ? target : undefined}
       rel={Component === 'a' ? rel : undefined}
-      className={`${variantClass} ${className} ${disabled ? 'btn-disabled' : ''}`}
+      className={`${variantClass} ${sizeClass} ${className} ${disabled ? 'btn-disabled' : ''}`.trim()}
     >
       {icon && (
         <Image

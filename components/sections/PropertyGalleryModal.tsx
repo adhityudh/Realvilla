@@ -541,7 +541,7 @@ export default function PropertyGalleryModal({ isOpen, onClose, property, dict, 
               <span className="thumb-grid-label">{dict?.property?.gallery_grid_view || "Grid"}</span>
             </div>
 
-            {currentGroupItems.map((item, idx) => (
+            {currentGroupItems?.map((item, idx) => (
               <div
                 key={idx}
                 className={`detail-thumb-item ${selectedItem === item ? 'active' : ''}`}
@@ -571,7 +571,7 @@ export default function PropertyGalleryModal({ isOpen, onClose, property, dict, 
         <div className="gallery-modal-header">
           <div className="gallery-tabs-wrapper">
             <div className="gallery-tabs">
-              {tabs.map((tab) => (
+              {tabs?.map((tab) => (
                 <button
                   key={tab.id}
                   className={`gallery-tab-item ${activeTab === tab.id ? 'active' : ''}`}
@@ -580,7 +580,7 @@ export default function PropertyGalleryModal({ isOpen, onClose, property, dict, 
                     // User UX Fix: If currently in Full/Detail mode, snap focus to the first item of the newly chosen group
                     if (selectedItem) {
                       const nextFiltered = getFilteredMediaForTab(tab.id);
-                      if (nextFiltered.length > 0) {
+                      if (nextFiltered && nextFiltered.length > 0) {
                         setSelectedItem(nextFiltered[0]);
                       }
                     }
@@ -609,7 +609,7 @@ export default function PropertyGalleryModal({ isOpen, onClose, property, dict, 
             renderDetailView()
           ) : (
             <div className="gallery-grid-scrollable">
-              {filteredMedia.map((item, index) => {
+              {filteredMedia?.map((item, index) => {
                 const isVideo = item._type === 'videoItem';
                 const imageUrl = getImageUrl(item);
                 

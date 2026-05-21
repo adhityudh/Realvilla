@@ -39,7 +39,7 @@ export function MetaValueInput(props: ObjectInputProps) {
       const { valueType, selectOptions = [], isMultiSelect } = metaConfig
 
       // Map options to compatible { title, value } if they are objects
-      const safeList = selectOptions.map((opt: any) => {
+      const safeList = (selectOptions || []).map((opt: any) => {
         if (typeof opt === 'object' && opt !== null) {
           // Localized string structure
           const en = opt.en || ''

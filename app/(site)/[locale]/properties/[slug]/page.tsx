@@ -32,6 +32,7 @@ export async function generateMetadata(
 import SectionRenderer from '@/components/sections/SectionRenderer';
 import FooterPaddingSetter from '@/components/providers/FooterPaddingSetter';
 import OtherProperties from '@/components/sections/OtherProperties';
+import { GalleryModalProvider } from '@/components/providers/GalleryModalContext';
 
 export default async function PropertyPage({ params }: { params: Promise<{ locale: string, slug: string }> }) {
   const { locale, slug } = await params;
@@ -55,39 +56,42 @@ export default async function PropertyPage({ params }: { params: Promise<{ local
   }
 
   return (
-    <main>
-      <FooterPaddingSetter active={settings?.propertyDetailFooterPaddingHigh} />
-      <TranslationSetter translations={property._translations ?? []} />
-      <PropertyGallery property={property} dict={dict} />
-      <PropertyDetails 
-        property={property} 
-        dict={dict} 
-        locale={locale} 
-        quickLinks={settings?.propertyQuickLinks}
-        useRequestGuidance={settings?.propertyUseRequestGuidance}
-        whatsappNumber={settings?.contactWhatsAppNumber}
-        whatsappMessageTemplate={settings?.contactPresetMessageTemplate}
-        requestGuidancePresetMessage={settings?.requestGuidancePresetMessage}
-        hideRequestGuidanceWhatsApp={settings?.hideRequestGuidanceWhatsApp}
-      />
-      <OtherProperties 
-        currentPropertyId={property._id}
-        categoryId={property.category?._id}
-        municipality={property.location?.municipality}
-        locale={locale}
-        dict={dict}
-      />
-      {settings?.propertyDetailSections && (
-        <SectionRenderer 
-          sections={settings.propertyDetailSections} 
+    <GalleryModalProvider>
+      <main>
+        <FooterPaddingSetter active={settings?.propertyDetailFooterPaddingHigh} />
+        <TranslationSetter translations={property._translations ?? []} />
+        <PropertyGallery property={property} dict={dict} />
+        <PropertyDetails 
+          property={property} 
           dict={dict} 
-          contextData={{ 
-            propertyPrice: property?.price, 
-            whatsappNumber: settings?.contactWhatsAppNumber,
-            mortgageCalculator: settings?.mortgageCalculator
-          }}
+          locale={locale} 
+          quickLinks={settings?.propertyQuickLinks}
+          useRequestGuidance={settings?.propertyUseRequestGuidance}
+          whatsappNumber={settings?.contactWhatsAppNumber}
+          whatsappMessageTemplate={settings?.contactPresetMessageTemplate}
+          requestGuidancePresetMessage={settings?.requestGuidancePresetMessage}
+          hideRequestGuidanceWhatsApp={settings?.hideRequestGuidanceWhatsApp}
+          mortgageCalculatorData={settings?.mortgageCalculator}
         />
-      )}
-    </main>
+        <OtherProperties 
+          currentPropertyId={property._id}
+          categoryId={property.category?._id}
+          municipality={property.location?.municipality}
+          locale={locale}
+          dict={dict}
+        />
+        {settings?.propertyDetailSections && (
+          <SectionRenderer 
+            sections={settings.propertyDetailSections} 
+            dict={dict} 
+            contextData={{ 
+              propertyPrice: property?.price, 
+              whatsappNumber: settings?.contactWhatsAppNumber,
+              mortgageCalculator: settings?.mortgageCalculator
+            }}
+          />
+        )}
+      </main>
+    </GalleryModalProvider>
   );
 }

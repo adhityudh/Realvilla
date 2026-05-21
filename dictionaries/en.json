@@ -183,7 +183,9 @@
     "status_label": "Status",
     "status_for_sale": "For Sale",
     "status_reserved": "Reserved",
-    "cta_find_similar": "Find Similar Properties"
+    "cta_find_similar": "Find Similar Properties",
+    "see_more": "SEE MORE",
+    "see_less": "SEE LESS"
   },
   "mortgage": {
     "field_price": "Property Price",

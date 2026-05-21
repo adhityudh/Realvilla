@@ -7,6 +7,9 @@ import Button from '@/components/ui/Button';
 import ContactModal from '@/components/ui/ContactModal';
 import ContactCard from '@/components/ui/ContactCard';
 import { smoothScrollToAnchor } from '@/lib/scroll';
+import { urlForImage } from '@/sanity/lib/image';
+import { useGalleryModal } from '@/components/providers/GalleryModalContext';
+import MortgageCalculatorCard from '@/components/ui/MortgageCalculatorCard';
 import './PropertyDetails.css';
 
 interface PropertyDetailsProps {
@@ -19,6 +22,7 @@ interface PropertyDetailsProps {
   whatsappMessageTemplate?: string;
   requestGuidancePresetMessage?: string;
   hideRequestGuidanceWhatsApp?: boolean;
+  mortgageCalculatorData?: any;
 }
 
 export default function PropertyDetails({ 
@@ -30,12 +34,15 @@ export default function PropertyDetails({
   whatsappNumber,
   whatsappMessageTemplate,
   requestGuidancePresetMessage,
-  hideRequestGuidanceWhatsApp
+  hideRequestGuidanceWhatsApp,
+  mortgageCalculatorData
 }: PropertyDetailsProps) {
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState<boolean | null>(null);
   const [pageUrl, setPageUrl] = useState('');
+  const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
+  const { openModal } = useGalleryModal();
 
   // Update the page url for link injections on the client
   useEffect(() => {
@@ -129,24 +136,38 @@ export default function PropertyDetails({
               <h2 className="details-heading">
                 {dict?.property?.description_title || 'Description'}
               </h2>
-              <div className="portable-text-wrapper">
+              <div className={`portable-text-wrapper ${isDescriptionExpanded ? 'expanded' : 'collapsed'}`}>
                 <PortableText value={property.description} />
               </div>
               
+              <div className="description-toggle-wrapper">
+                <Button
+                  label={isDescriptionExpanded ? dict?.property?.see_less : dict?.property?.see_more}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setIsDescriptionExpanded(!isDescriptionExpanded);
+                  }}
+                  variant="link-dark"
+                  size="sm"
+                />
+              </div>
+              
+              {/* COMMENTED OUT: property-quick-links section
               {((quickLinks && quickLinks.length > 0) || useRequestGuidance) && (
                 <div className="property-quick-links">
-                  {/* Dynamically rendered editorial links */}
+                  {/* Dynamically rendered editorial links *\/}
                   {quickLinks?.map((ql: any, qIdx: number) => (
                     <Button
                       key={qIdx}
                       label={ql.label}
                       href={ql.link || '#'}
                       onClick={(e) => handleQuickLinkClick(e, ql.link)}
-                      variant="link"
+                      variant="link-dark"
+                      size="sm"
                     />
                   ))}
 
-                  {/* Fixed optional guidance direct modal trigger */}
+                  {/* Fixed optional guidance direct modal trigger *\/}
                   {useRequestGuidance && (
                     <Button
                       label={(dict?.contact?.request_guidance || 'Request Guidance').toUpperCase()}
@@ -155,16 +176,18 @@ export default function PropertyDetails({
                         e.preventDefault();
                         setIsContactModalOpen(true);
                       }}
-                      variant="link"
+                      variant="link-dark"
+                      size="sm"
                     />
                   )}
                 </div>
               )}
+              */}
             </div>
           )}
 
-          {/* 2. Basic Meta */}
-          <div className="details-block basic-meta-block">
+          {/* 2. Basic Meta - COMMENTED OUT - New Property Overview below */}
+          {/* <div className="details-block basic-meta-block">
             <h2 className="details-heading">
               {dict?.property?.basics_title || 'Property Overview'}
             </h2>
@@ -198,31 +221,118 @@ export default function PropertyDetails({
                 />
               </div>
             )}
-          </div>
+          </div> */}
 
-          {/* 3. Dynamic Grouped Meta Sorted by Sanity Display Order */}
-          {Object.entries(groupedMeta)
-            .sort(([, a]: any, [, b]: any) => a.order - b.order)
-            .map(([category, data]: [string, any]) => (
-            <div key={category} className="details-block dynamic-meta-block">
-              <h3 className="details-subheading">{category}</h3>
-              <div className="meta-items-grid">
-                {data.items.map((m: any, idx: number) => (
-                  <div key={m.metaId || idx} className="meta-item-row">
-                    <div className="meta-label-wrap">
-                      {m.icon && (
-                        <div className="meta-icon-box">
-                          <img src={m.icon} alt="" width={18} height={18} />
-                        </div>
-                      )}
-                      <span className="meta-label">{m.longLabel || m.shortLabel}</span>
-                    </div>
-                    <span className="meta-value">{formatMetaValue(m)}</span>
+          {/* 2. NEW Property Overview */}
+          <div className="details-block property-overview-block">
+            <h2 className="details-heading">
+              {dict?.property?.basics_title || 'Property Overview'}
+            </h2>
+            <div className="property-overview-grid">
+              {Object.entries(groupedMeta)
+                .sort(([, a]: any, [, b]: any) => a.order - b.order)
+                .map(([category, data]: [string, any]) => (
+                  <div key={category} className="overview-category">
+                    <h3 className="overview-category-title">{category}</h3>
+                    <ul className="overview-items-list">
+                      {data.items.map((m: any, idx: number) => {
+                        // For boolean values
+                        if (m.valueType === 'boolean') {
+                          // Only show if true
+                          if (m.booleanValue === true) {
+                            return (
+                              <li key={m.metaId || idx} className="overview-item">
+                                {m.shortLabel || m.longLabel}
+                              </li>
+                            );
+                          }
+                          return null;
+                        }
+                        
+                        // For non-boolean values
+                        const formattedValue = formatMetaValue(m);
+                        if (formattedValue === '—') return null;
+                        
+                        const label = m.shortLabel || m.longLabel;
+                        
+                        return (
+                          <li key={m.metaId || idx} className="overview-item">
+                            {formattedValue} {label}
+                          </li>
+                        );
+                      })}
+                    </ul>
                   </div>
                 ))}
-              </div>
             </div>
-          ))}
+            
+            <div className="property-last-updated">
+              {dict?.property?.updated_label || 'Last Updated'}: {formatDate(property._updatedAt)}
+            </div>
+            
+            {property.location?.coordinates?.lat && property.location?.coordinates?.lng && (
+              <div className="property-map-container">
+                <PropertyMap
+                  lat={property.location.coordinates.lat}
+                  lng={property.location.coordinates.lng}
+                  title={property.title}
+                />
+              </div>
+            )}
+            
+            {/* Virtual Tours */}
+            {(() => {
+              const clean = (str: any) => typeof str === 'string' ? str.replace(/[\u2000-\u206F\u200B-\u200D\uFEFF]/g, '').trim() : str;
+              const virtualTours = (property.gallery || []).filter((g: any) => 
+                g._type === 'galleryGroup' && clean(g.mediaType) === 'virtualTour'
+              );
+              
+              if (virtualTours.length === 0) return null;
+              
+              return (
+                <div className="property-virtual-tours">
+                  {virtualTours.map((tour: any, index: number) => (
+                    <button
+                      key={tour._key || index}
+                      onClick={() => openModal(tour)}
+                      className="virtual-tour-item"
+                      type="button"
+                    >
+                      {tour.thumbnail?.asset && (
+                        <img
+                          src={urlForImage(tour.thumbnail).url()}
+                          alt={tour.title || 'Virtual Tour'}
+                          className="virtual-tour-thumbnail"
+                        />
+                      )}
+                      <div className="virtual-tour-overlay">
+                        <div className="virtual-tour-icon">
+                          <img src="/icons/360-degrees.svg" alt="Virtual Tour" width="64" height="64" />
+                        </div>
+                      </div>
+                      {tour.title && (
+                        <div className="virtual-tour-title">{tour.title}</div>
+                      )}
+                    </button>
+                  ))}
+                </div>
+              );
+            })()}
+          </div>
+
+          {/* 3. Mortgage Calculator */}
+          {mortgageCalculatorData && property.price && (
+            <div className="details-block mortgage-calculator-block">
+              <h2 className="details-heading">
+                {dict?.property?.mortgage_calculator_title || 'Mortgage Calculator'}
+              </h2>
+              <MortgageCalculatorCard
+                data={mortgageCalculatorData}
+                dict={dict}
+                propertyPrice={property.price}
+              />
+            </div>
+          )}
         </div>
 
         <div className="details-right-col">

@@ -473,6 +473,7 @@ export default function SellHeroSection({ data, dict, contextData }: SellHeroSec
               href={link.link || '#'}
               onClick={(e) => handleJumpLinkClick(e, link.link)}
               variant="link"
+              size="md"
               className="jump-link"
               priority={true}
             />

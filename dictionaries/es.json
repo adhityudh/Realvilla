@@ -183,7 +183,9 @@
     "status_label": "Estado",
     "status_for_sale": "En Venta",
     "status_reserved": "Reservado",
-    "cta_find_similar": "Buscar propiedades similares"
+    "cta_find_similar": "Buscar propiedades similares",
+    "see_more": "VER MÁS",
+    "see_less": "VER MENOS"
   },
   "mortgage": {
     "field_price": "Precio de la propiedad",

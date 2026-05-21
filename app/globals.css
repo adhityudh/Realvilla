@@ -147,6 +147,25 @@
   padding: 0;
 }
 
+button {
+  border: none;
+  background: none;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  outline: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+button:focus-visible {
+  outline: 2px solid var(--color-gold);
+  outline-offset: 2px;
+}
+
 body {
   background-color: var(--bg-white);
   color: var(--text-black);
@@ -329,8 +348,26 @@ html.lenis body {
   border-bottom-color: var(--btn-link-color, #ffffff);
 }
 
-.btn-link-styled.btn-link-sm {
-  font-size: var(--text-sm);
+/* Dark variant - inherits from .btn-link-styled, only overrides colors */
+.btn-link-dark {
+  color: var(--text-black);
+  border-bottom-color: rgba(0, 0, 0, 0.15);
+}
+
+.btn-link-dark:hover {
+  border-bottom-color: var(--text-black);
+}
+
+/* Medium size modifier for link buttons */
+.btn-link-styled.btn-link-md,
+.btn-link-dark.btn-link-md {
+  font-size: var(--text-base);
+}
+
+/* Small size modifier for link buttons */
+.btn-link-styled.btn-link-sm,
+.btn-link-dark.btn-link-sm {
+  font-size: var(--text-sm-plus);
   padding-bottom: 4px;
   border-bottom-width: 1px;
 }

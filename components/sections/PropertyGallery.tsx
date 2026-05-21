@@ -9,6 +9,7 @@ import './PropertyGallery.css';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import Button from '@/components/ui/Button';
+import { useGalleryModal } from '@/components/providers/GalleryModalContext';
 
 interface PropertyGalleryProps {
   property: any;
@@ -19,8 +20,7 @@ export default function PropertyGallery({ property, dict }: PropertyGalleryProps
   const params = useParams();
   const locale = params?.locale || 'en';
   const [imageSizes, setImageSizes] = useState<Record<string, { w: number; h: number }>>({});
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedGalleryItem, setSelectedGalleryItem] = useState<any>(null);
+  const { isOpen: isModalOpen, selectedItem: selectedGalleryItem, openModal, closeModal } = useGalleryModal();
   
   const isSold = property?.status === 'sold';
   const archiveLink = `/${locale}/${locale === 'es' ? 'propiedades' : 'properties'}`;
@@ -263,8 +263,7 @@ export default function PropertyGallery({ property, dict }: PropertyGalleryProps
               className={`gallery-item item-${index} ${isMain ? 'main-item' : 'small-item'} ${isVideo ? 'video-item' : ''} ${isVirtualTour ? 'virtual-tour-item' : ''} ${isSeeAllItem ? 'has-see-all' : ''}`}
               onClick={() => {
                 // Only set initial item if it's NOT the main photo AND not the "See All" item
-                setSelectedGalleryItem((isMain || isSeeAllItem) ? null : item);
-                setIsModalOpen(true);
+                openModal((isMain || isSeeAllItem) ? null : item);
               }}
             >
               <Image
@@ -299,7 +298,7 @@ export default function PropertyGallery({ property, dict }: PropertyGalleryProps
                   or on the last image if there are more photos */}
 
               {index === 4 && remainingCount > 0 && (
-                <button className="see-all-btn-overlay btn-pill" onClick={(e) => { e.stopPropagation(); setSelectedGalleryItem(null); setIsModalOpen(true); }}>
+                <button className="see-all-btn-overlay btn-pill" onClick={(e) => { e.stopPropagation(); openModal(null); }}>
                   <div className="btn-content-desktop">
                     <svg width="18" height="18" viewBox="0 -960 960 960" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                       <path d="M127.69-220q-30.3 0-51.3-21-21-21-21-51.31v-375.38q0-30.31 21-51.31 21-21 51.3-21h375.39q30.3 0 51.3 21 21 21 21 51.31v375.38q0 30.31-21 51.31-21 21-51.3 21H127.69Zm0-60h375.39q4.61 0 8.46-3.85 3.84-3.84 3.84-8.46v-375.38q0-4.62-3.84-8.46-3.85-3.85-8.46-3.85H127.69q-4.61 0-8.46 3.85-3.85 3.84-3.85 8.46v375.38q0 4.62 3.85 8.46 3.85 3.85 8.46 3.85Zm36.93-84.62h301.53l-94.77-127.69-76 100-56-74-74.76 101.69ZM680-220v-520h60v520h-60Zm164.62 0v-520h59.99v520h-59.99Zm-729.24-60v-400 400Z" />
@@ -437,10 +436,7 @@ export default function PropertyGallery({ property, dict }: PropertyGalleryProps
       </div>
       <PropertyGalleryModal
         isOpen={isModalOpen}
-        onClose={() => {
-          setIsModalOpen(false);
-          setSelectedGalleryItem(null);
-        }}
+        onClose={closeModal}
         property={property}
         dict={dict}
         initialItem={selectedGalleryItem}

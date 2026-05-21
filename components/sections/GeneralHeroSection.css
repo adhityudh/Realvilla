@@ -103,9 +103,6 @@
     padding: 0 3rem;
 }
 
-.general-jump-links .btn-link-styled {
-    font-size: var(--text-base);
-}
 
 .jump-link {
     /* Inherits properties from global layout design system */

@@ -110,6 +110,13 @@ export const aboutSection = defineType({
               initialValue: 'external',
             }),
             defineField({
+              name: 'openInNewWindow',
+              title: 'Open in New Tab',
+              type: 'boolean',
+              description: 'Open this link in a new browser tab/window',
+              initialValue: false,
+            }),
+            defineField({
               name: 'internalLink',
               title: 'Internal Link',
               type: 'reference',
