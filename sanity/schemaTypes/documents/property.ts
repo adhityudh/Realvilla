@@ -214,7 +214,7 @@ export const property = defineType({
               description: 'Add images and videos to this group',
               hidden: ({ parent }) => parent?.mediaType === 'virtualTour',
               validation: (Rule) =>
-                Rule.custom((value, context) => {
+                Rule.custom((value: any[] | undefined, context) => {
                   const parent = context.parent as any;
                   if (parent?.mediaType !== 'virtualTour' && (!value || value.length === 0)) {
                     return 'Please add at least one media item to this group';
