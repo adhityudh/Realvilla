@@ -369,13 +369,13 @@ html.lenis body {
   transform: scaleX(1);
 }
 
-/* Service CTA override (outline variant) */
-.service-cta {
+/* Outline button variant */
+.btn-outline {
   background-color: transparent;
   border: 1px solid var(--border-strong);
 }
 
-.service-cta:hover {
+.btn-outline:hover {
   border-color: var(--color-gold);
   color: var(--color-gold);
 }

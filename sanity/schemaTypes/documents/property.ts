@@ -17,6 +17,7 @@ export const property = defineType({
       type: 'string',
       readOnly: true,
       hidden: true,
+      group: 'general',
     }),
 
     // ═══════════════════════════════════════
@@ -150,7 +151,7 @@ export const property = defineType({
       name: 'gallery',
       title: 'Gallery',
       type: 'array',
-      description: 'Property media. You can add individual images/videos or group them (e.g., "Interior", "Exterior").',
+      description: 'Property media. You can add individual images/videos or group them (e.g., "Photos", "Videos").',
       group: 'media',
       of: [
         // Option 1: Gallery Group
@@ -159,7 +160,7 @@ export const property = defineType({
           name: 'galleryGroup',
           title: 'Media Group',
           fields: [
-            { name: 'title', type: 'string', title: 'Group Title (e.g. Interior, Exterior)' },
+            { name: 'title', type: 'string', title: 'Group Title (e.g. Photos, Videos)' },
             {
               name: 'items',
               type: 'array',
@@ -369,18 +370,21 @@ export const property = defineType({
       title: 'Beds (Legacy)',
       type: 'number',
       hidden: true,
+      group: 'general',
     }),
     defineField({
       name: 'baths',
       title: 'Baths (Legacy)',
       type: 'number',
       hidden: true,
+      group: 'general',
     }),
     defineField({
       name: 'sqft',
       title: 'Sq.Ft. (Legacy)',
       type: 'string',
       hidden: true,
+      group: 'general',
     }),
     defineField({
       name: 'seo',

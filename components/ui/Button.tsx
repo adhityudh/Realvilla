@@ -10,7 +10,7 @@ interface ButtonProps {
   label: string;
   href?: string;
   onClick?: (e: React.MouseEvent) => void;
-  variant?: 'pill' | 'link' | 'dark';
+  variant?: 'pill' | 'link' | 'dark' | 'outline';
   icon?: string;
   className?: string;
   showArrow?: boolean;
@@ -70,6 +70,7 @@ export default function Button({
   let variantClass = '';
   if (variant === 'pill') variantClass = 'btn-pill';
   else if (variant === 'dark') variantClass = 'btn-pill btn-dark';
+  else if (variant === 'outline') variantClass = 'btn-pill btn-outline';
   else variantClass = 'btn-link-styled';
 
   return (

@@ -118,7 +118,7 @@ export default function ValuationSection({ data, dict }: { data?: any, dict?: an
           </div>
           {(ctaLabel || (showSecondaryCta && secondaryCtaLabel)) && (
             <div className="valuation-ctas valuation-cta-desktop">
-              {ctaLabel && <Button label={ctaLabel} href={ctaLink || '#'} className="service-cta" />}
+              {ctaLabel && <Button label={ctaLabel} href={ctaLink || '#'} variant="outline" />}
               {showSecondaryCta && secondaryCtaLabel && (
                 <Button
                   label={secondaryCtaLabel}
@@ -170,7 +170,7 @@ export default function ValuationSection({ data, dict }: { data?: any, dict?: an
         </div>
         {(ctaLabel || (showSecondaryCta && secondaryCtaLabel)) && (
           <div className="valuation-ctas valuation-cta-mobile">
-            {ctaLabel && <Button label={ctaLabel} href={ctaLink || '#'} className="service-cta" />}
+            {ctaLabel && <Button label={ctaLabel} href={ctaLink || '#'} variant="outline" />}
             {showSecondaryCta && secondaryCtaLabel && (
               <Button
                 label={secondaryCtaLabel}

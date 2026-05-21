@@ -162,7 +162,7 @@ const MortgageFAQSection = ({ data, dict }: { data?: any, dict?: any }) => {
         <div className="mortgage-faq-cta" ref={ctaRef}>
           {ctaLabel && <Button label={ctaLabel} href={ctaLink || '#'} variant="dark" />}
           {(data.showSecondaryCta !== false && secondaryCtaLabel) && (
-            <Button label={secondaryCtaLabel} href={secondaryCtaLink || '#'} variant="pill" className="service-cta" />
+            <Button label={secondaryCtaLabel} href={secondaryCtaLink || '#'} variant="outline" />
           )}
         </div>
       </div>

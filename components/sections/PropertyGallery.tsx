@@ -326,8 +326,7 @@ export default function PropertyGallery({ property, dict }: PropertyGalleryProps
                   <Button 
                     label={dict?.property?.cta_request_visit || 'Request a visit'} 
                     href="#" 
-                    variant="pill" 
-                    className="service-cta" 
+                    variant="outline" 
                   />
                 </>
               )}

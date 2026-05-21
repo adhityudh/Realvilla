@@ -115,7 +115,7 @@ export default function PropertyGalleryModal({ isOpen, onClose, property, dict, 
   useEffect(() => {
     setMounted(true);
   }, []);
-  const [activeTab, setActiveTab] = useState('all');
+  const [activeTab, setActiveTab] = useState('');
   const [selectedItem, setSelectedItem] = useState<any>(null);
 
   const modalRef = useRef<HTMLDivElement>(null);
@@ -190,14 +190,19 @@ export default function PropertyGalleryModal({ isOpen, onClose, property, dict, 
       }
     });
 
-    const hasVideos = allMedia.some(m => m._type === 'videoItem');
+    return Array.from(uniqueGroups).map(group => ({ id: `group-${group}`, label: group }));
+  }, [gallery]);
 
-    return [
-      { id: 'all', label: dict?.property?.gallery_all },
-      ...(hasVideos ? [{ id: 'video', label: dict?.property?.gallery_video }] : []),
-      ...Array.from(uniqueGroups).map(group => ({ id: `group-${group}`, label: group }))
-    ];
-  }, [gallery, allMedia, dict]);
+  // Sync activeTab with first available tab or fallback
+  useEffect(() => {
+    if (tabs.length > 0) {
+      if (!activeTab || !tabs.some(t => t.id === activeTab)) {
+        setActiveTab(tabs[0].id);
+      }
+    } else {
+      setActiveTab('');
+    }
+  }, [tabs, activeTab]);
 
   const getFilteredMediaForTab = (tabId: string) => {
     if (tabId === 'all') return allMedia;
@@ -228,6 +233,9 @@ export default function PropertyGalleryModal({ isOpen, onClose, property, dict, 
       
       if (matchedItem) {
         setSelectedItem(matchedItem);
+        if (matchedItem.groupTitle) {
+          setActiveTab(`group-${matchedItem.groupTitle}`);
+        }
       }
     }
   }, [isOpen, initialItem, allMedia]);
@@ -258,7 +266,11 @@ export default function PropertyGalleryModal({ isOpen, onClose, property, dict, 
       const tl = gsap.timeline({
         onComplete: () => {
           if (modalRef.current) modalRef.current.style.display = 'none';
-          setActiveTab('all');
+          if (tabs.length > 0) {
+            setActiveTab(tabs[0].id);
+          } else {
+            setActiveTab('');
+          }
           setSelectedItem(null);
         }
       });

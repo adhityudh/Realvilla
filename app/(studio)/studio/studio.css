@@ -1,0 +1,4 @@
+/* Hide the default "All fields" tab from Sanity Studio group tabs */
+[data-testid="group-tab-all-fields"] {
+  display: none !important;
+}
