@@ -656,6 +656,9 @@ export const PROPERTY_DETAIL_QUERY = groq`
       _type,
       _type == "galleryGroup" => {
         title,
+        mediaType,
+        floorfyUrl,
+        thumbnail { asset->{ _id, url, metadata { lqip, dimensions } } },
         items[] {
           _type,
           _type == "image" => {

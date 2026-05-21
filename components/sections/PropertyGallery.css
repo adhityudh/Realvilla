@@ -197,6 +197,12 @@
   transform: scale(1);
 }
 
+/* Virtual tour icon styling - similar to video */
+.gallery-item.virtual-tour-item .overlay-icon {
+  opacity: 0.9;
+  transform: scale(1);
+}
+
 .gallery-item:hover .overlay-icon {
   opacity: 1;
   transform: scale(1.1);
@@ -208,7 +214,7 @@
 }
 
 .overlay-icon img {
-  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.3));
+  filter: brightness(0) invert(1) drop-shadow(0 4px 12px rgba(0, 0, 0, 1));
 }
 
 /* Mobile Responsiveness */

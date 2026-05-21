@@ -151,37 +151,91 @@ export const property = defineType({
       name: 'gallery',
       title: 'Gallery',
       type: 'array',
-      description: 'Property media. You can add individual images/videos or group them (e.g., "Photos", "Videos").',
+      description: 'Property media groups. Create groups for photos, videos, or virtual tours.',
       group: 'media',
       of: [
-        // Option 1: Gallery Group
+        // Media Group (only option)
         {
           type: 'object',
           name: 'galleryGroup',
           title: 'Media Group',
           fields: [
-            { name: 'title', type: 'string', title: 'Group Title (e.g. Photos, Videos)' },
+            { name: 'title', type: 'string', title: 'Group Title (e.g. Photos, Videos, Virtual Tour)', validation: (Rule) => Rule.required() },
+            {
+              name: 'mediaType',
+              type: 'string',
+              title: 'Media Type',
+              description: 'Choose between regular media (photos/videos) or virtual tour (Floorfy)',
+              options: {
+                list: [
+                  { title: 'Regular Media', value: 'regular' },
+                  { title: 'Virtual Tour (Floorfy)', value: 'virtualTour' },
+                ],
+                layout: 'radio',
+              },
+              initialValue: 'regular',
+              validation: (Rule) => Rule.required(),
+            },
+            {
+              name: 'floorfyUrl',
+              type: 'url',
+              title: 'Floorfy URL',
+              description: 'Enter the Floorfy virtual tour embed URL',
+              hidden: ({ parent }) => parent?.mediaType !== 'virtualTour',
+              validation: (Rule) =>
+                Rule.custom((value, context) => {
+                  const parent = context.parent as any;
+                  if (parent?.mediaType === 'virtualTour' && !value) {
+                    return 'Floorfy URL is required for virtual tour';
+                  }
+                  return true;
+                }).uri({ scheme: ['http', 'https'] }),
+            },
+            {
+              name: 'thumbnail',
+              type: 'image',
+              title: 'Virtual Tour Thumbnail',
+              description: 'Thumbnail image for the virtual tour (shown in gallery grid)',
+              options: { hotspot: true },
+              hidden: ({ parent }) => parent?.mediaType !== 'virtualTour',
+              validation: (Rule) =>
+                Rule.custom((value, context) => {
+                  const parent = context.parent as any;
+                  if (parent?.mediaType === 'virtualTour' && !value) {
+                    return 'Thumbnail is required for virtual tour';
+                  }
+                  return true;
+                }),
+            },
             {
               name: 'items',
               type: 'array',
               title: 'Media Items',
+              description: 'Add images and videos to this group',
+              hidden: ({ parent }) => parent?.mediaType === 'virtualTour',
+              validation: (Rule) =>
+                Rule.custom((value, context) => {
+                  const parent = context.parent as any;
+                  if (parent?.mediaType !== 'virtualTour' && (!value || value.length === 0)) {
+                    return 'Please add at least one media item to this group';
+                  }
+                  return true;
+                }),
               of: [
                 {
                   type: 'image',
                   options: { hotspot: true },
                   fields: [
-                    { name: 'alt', type: 'string', title: 'Alt Text' },
                     { name: 'caption', type: 'string', title: 'Caption' },
                   ],
                   preview: {
                     select: {
                       title: 'caption',
-                      alt: 'alt',
                       media: 'asset',
                     },
-                    prepare({ title, alt, media }) {
+                    prepare({ title, media }) {
                       return {
-                        title: title || alt || 'Untitled Image',
+                        title: title || 'Untitled Image',
                         subtitle: 'Image',
                         media,
                       }
@@ -195,17 +249,15 @@ export const property = defineType({
                   fields: [
                     { name: 'url', type: 'url', title: 'YouTube URL', validation: Rule => Rule.required().uri({ scheme: ['http', 'https'] }) },
                     { name: 'thumbnail', type: 'image', title: 'Custom Thumbnail (Optional)', options: { hotspot: true } },
-                    { name: 'alt', type: 'string', title: 'Alt Text' },
                   ],
                   preview: {
                     select: {
                       url: 'url',
-                      alt: 'alt',
                       media: 'thumbnail',
                     },
-                    prepare({ url, alt, media }) {
+                    prepare({ url, media }) {
                       return {
-                        title: alt || 'YouTube Video',
+                        title: 'YouTube Video',
                         subtitle: url,
                         media,
                       }
@@ -219,61 +271,22 @@ export const property = defineType({
             select: {
               title: 'title',
               items: 'items',
+              mediaType: 'mediaType',
+              floorfyUrl: 'floorfyUrl',
+              thumbnail: 'thumbnail',
             },
-            prepare({ title, items }) {
+            prepare({ title, items, mediaType, floorfyUrl, thumbnail }) {
+              if (mediaType === 'virtualTour') {
+                return {
+                  title: title || 'Untitled Virtual Tour',
+                  subtitle: floorfyUrl ? 'Virtual Tour (Floorfy)' : 'Virtual Tour (No URL)',
+                  media: thumbnail,
+                };
+              }
               return {
                 title: title || 'Untitled Group',
                 subtitle: `${items?.length || 0} items`,
-              }
-            },
-          },
-        },
-        // Option 2: Individual Image
-        {
-          type: 'image',
-          title: 'Individual Image',
-          options: { hotspot: true },
-          fields: [
-            { name: 'alt', type: 'string', title: 'Alt Text' },
-            { name: 'caption', type: 'string', title: 'Caption' },
-          ],
-          preview: {
-            select: {
-              title: 'caption',
-              alt: 'alt',
-              media: 'asset',
-            },
-            prepare({ title, alt, media }) {
-              return {
-                title: title || alt || 'Untitled Image',
-                subtitle: 'Individual Image',
-                media,
-              }
-            },
-          },
-        },
-        // Option 3: Individual Video
-        {
-          type: 'object',
-          name: 'videoItem',
-          title: 'Individual YouTube Video',
-          fields: [
-            { name: 'url', type: 'url', title: 'YouTube URL', validation: Rule => Rule.required().uri({ scheme: ['http', 'https'] }) },
-            { name: 'thumbnail', type: 'image', title: 'Custom Thumbnail (Optional)', options: { hotspot: true } },
-            { name: 'alt', type: 'string', title: 'Alt Text' },
-          ],
-          preview: {
-            select: {
-              url: 'url',
-              alt: 'alt',
-              media: 'thumbnail',
-            },
-            prepare({ url, alt, media }) {
-              return {
-                title: alt || 'YouTube Video',
-                subtitle: url,
-                media,
-              }
+              };
             },
           },
         },

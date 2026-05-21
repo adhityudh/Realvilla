@@ -159,7 +159,7 @@
     cursor: pointer;
 }
 
-.gallery-grid-item img {
+.gallery-grid-item > img {
     transition: transform 0.6s var(--ease-smooth);
 }
 
@@ -167,26 +167,13 @@
     transform: scale(1.05);
 }
 
-.gallery-item-overlay {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: rgba(0, 0, 0, 0);
-    z-index: 2;
-    transition: background-color 0.4s var(--ease-smooth);
-    pointer-events: none;
-}
+/* 
+ * Base overlay and icon styles are inherited from PropertyGallery.css
+ * to avoid duplication. Only modal-specific overrides are defined here.
+ */
 
 .gallery-grid-item:hover .gallery-item-overlay {
     background-color: rgba(0, 0, 0, 0.45);
-}
-
-.overlay-icon {
-    opacity: 0;
-    transform: scale(0.8);
-    transition: all 0.4s var(--ease-smooth);
 }
 
 /* Video icon remains visible but darkens/scales on hover */
@@ -200,8 +187,23 @@
     transform: scale(1.1);
 }
 
-.overlay-icon img {
-    filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.3));
+/* Caption in grid view */
+.gallery-item-caption {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 0.75rem 1rem;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.25) 60%, transparent);
+    color: var(--text-white);
+    font-family: var(--font-manrope), sans-serif;
+    font-size: var(--text-sm);
+    font-weight: var(--fw-medium);
+    text-align: center;
+    opacity: 1;
+    transform: translateY(0);
+    transition: all 0.3s var(--ease-smooth);
+    pointer-events: none;
 }
 
 /* Fullscreen Mode (Lightbox inside modal) */
@@ -282,6 +284,81 @@
     transition: opacity 0.5s var(--ease-smooth);
 }
 
+/* Zoom Controls */
+.zoom-controls {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    z-index: 20;
+    display: flex;
+    gap: 0.5rem;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(10px);
+    padding: 0.5rem;
+    border-radius: var(--radius-full);
+}
+
+.zoom-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-white);
+    font-size: 1.25rem;
+    font-weight: var(--fw-bold);
+    cursor: pointer;
+    transition: all 0.3s var(--ease-smooth);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 0;
+}
+
+.zoom-btn:hover:not(:disabled) {
+    background: var(--color-gold);
+    transform: scale(1.1);
+}
+
+.zoom-btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+.zoom-btn.zoom-reset {
+    font-size: 0.75rem;
+    font-family: var(--font-manrope), sans-serif;
+}
+
+/* Zoomable Image Container */
+.zoomable-image-container {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transform-origin: center center;
+}
+
+/* Caption in detail view */
+.detail-media-caption {
+    position: absolute;
+    bottom: 0.75rem;
+    left: 50%;
+    transform: translateX(-50%);
+    max-width: 70%;
+    padding: 0.5rem 1rem;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(8px);
+    color: var(--text-white);
+    font-family: var(--font-manrope), sans-serif;
+    font-size: 0.8rem;
+    font-weight: var(--fw-medium);
+    text-align: center;
+    border-radius: var(--radius-full);
+    z-index: 10;
+    opacity: 1;
+    pointer-events: none;
+}
+
 /* SAFE CLIPPING: Using Optical Transform preserves internal layout calculations */
 .detail-media-wrapper .plyr__video-wrapper {
     overflow: hidden;
@@ -291,10 +368,19 @@
 
 .detail-media-wrapper .plyr__video-wrapper iframe {
     transform: scale(1.3) !important;
-    /* Non-destructive zoom pushes artifacts out */
+    /* Further increased zoom to hide more YouTube controls and branding */
     transform-origin: center center !important;
     pointer-events: none;
     /* Let clicks cascade to Plyr facade */
+}
+
+/* Hide YouTube's native play button overlay */
+.plyr__video-embed iframe::before,
+.ytp-large-play-button,
+.ytp-cued-thumbnail-overlay {
+    display: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
 }
 
 .detail-media-wrapper .plyr {
@@ -323,6 +409,20 @@
 
 .plyr--full-ui.plyr--video .plyr__control--overlaid {
     background: var(--color-gold);
+}
+
+/* Hide the large play button faster when video is playing/ready */
+.plyr--playing .plyr__control--overlaid,
+.plyr--ready.plyr--playing .plyr__control--overlaid {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+    transition: opacity 0.2s ease !important;
+}
+
+/* Also hide it during autoplay initialization */
+.plyr-container .plyr--playing .plyr__control--overlaid {
+    display: none !important;
 }
 
 /* Loading states for Plyr chunk initialization */
@@ -761,5 +861,10 @@
         height: 44px;
         border-radius: var(--radius-md);
         margin-right: 1rem;
+    }
+
+    /* Hide zoom controls on mobile */
+    .zoom-controls {
+        display: none !important;
     }
 }

@@ -45,62 +45,151 @@ export default function PropertyGallery({ property, dict }: PropertyGalleryProps
     displayItems.push({ _type: 'image', asset: mainImage.asset, alt: property.title, isMain: true });
   }
 
-  // 2. Logic to pick 4 small items from groups with distributed selection and video priority
+  // 2. Logic to pick 4 small items for the grid using group-based round-robin with virtual tour priority
   const smallItems: any[] = [];
   const pickedIds = new Set<string>();
-  const getItemId = (item: any) => item._id || item._key || item.asset?._id;
+  const clean = (str: any) => typeof str === 'string' ? str.replace(/[\u2000-\u206F\u200B-\u200D\uFEFF]/g, '').trim() : str;
 
-  // Map each gallery entry into an array of items. 
-  // If it's a group, we use its items. If it's an individual item, we treat it as a group of one.
-  const groupsMedia = groups.map((g: any) => {
+  const getItemId = (item: any) => {
+    // Prefer _key or _id if available (common for Sanity array items and documents)
+    if (item._key) return item._key;
+    if (item._id) return item._id;
+
+    // For images, use asset ID as a fallback
+    if (item.asset?._id) return item.asset._id;
+
+    // For videoItems, use URL as a unique identifier if no _key/_id
+    if (item._type === 'videoItem' && item.url) return item.url;
+    
+    // For galleryGroups that are virtual tours (treated as an item itself), use the group's _key or title
+    // Make sure to clean mediaType for comparison
+    if (item._type === 'galleryGroup' && clean(item.mediaType) === 'virtualTour') {
+      return `vt-group-${item._key || item.title || JSON.stringify(item)}`;
+    }
+
+    // Fallback for items that don't fit above, should ideally not be hit
+    console.warn('Could not generate unique ID for item:', item);
+    return JSON.stringify(item); // Fallback to stringifying for uniqueness, though not ideal
+  };
+
+  // Array to hold references to groups, each with its own cursor for round-robin
+  const activeGroups: { group: any; items: any[]; cursor: number }[] = [];
+
+  // Populate activeGroups with eligible items, maintaining original group structure
+  groups.forEach((g: any) => {
     if (g._type === 'galleryGroup') {
-      return (g.items || []).filter((item: any) => item.asset || item.url);
-    }
-    // Individual image or videoItem
-    return [g].filter((item: any) => item.asset || item.url);
-  });
-
-  if (groupsMedia.length > 0) {
-    // A. Rule: At least one video if any video exists in all groups
-    for (const groupItems of groupsMedia) {
-      const video = groupItems.find((item: any) => item._type === 'videoItem');
-      if (video) {
-        smallItems.push(video);
-        pickedIds.add(getItemId(video));
-        break;
-      }
-    }
-
-    // B. Rule: Distributed selection (Round-Robin) to fill up to 4 small items
-    let groupIdx = 0;
-    let itemsFoundInLastCycle = true;
-    while (smallItems.length < 4 && itemsFoundInLastCycle) {
-      itemsFoundInLastCycle = false;
-      const startIdx = groupIdx;
-
-      for (let i = 0; i < groupsMedia.length; i++) {
-        const currentIdx = (startIdx + i) % groupsMedia.length;
-        const currentGroup = groupsMedia[currentIdx];
-        const nextItem = currentGroup.find((item: any) => !pickedIds.has(getItemId(item)));
-
-        if (nextItem) {
-          smallItems.push(nextItem);
-          pickedIds.add(getItemId(nextItem));
-          itemsFoundInLastCycle = true;
-          groupIdx = (currentIdx + 1) % groupsMedia.length;
-          if (smallItems.length === 4) break;
+      const cleanMediaType = clean(g.mediaType);
+      if (cleanMediaType === 'virtualTour') {
+        // A virtual tour group is itself an item
+        activeGroups.push({ group: g, items: [g], cursor: 0 });
+      } else {
+        // A regular media group has its own array of items
+        const availableItems = (g.items || []).filter((item: any) => item.asset || item.url);
+        if (availableItems.length > 0) {
+          activeGroups.push({ group: g, items: availableItems, cursor: 0 });
         }
       }
+    } else {
+      // Individual image or video is a group of one item
+      if (g.asset || g.url) {
+        activeGroups.push({ group: g, items: [g], cursor: 0 });
+      }
     }
+  });
+
+  // Step 1: Find and add the first Virtual Tour group (P1)
+  const firstVirtualTourIndex = activeGroups.findIndex(ag => clean(ag.group.mediaType) === 'virtualTour' && ag.items.length > 0);
+  
+  if (firstVirtualTourIndex !== -1 && smallItems.length < 4) {
+    const vtItem = activeGroups[firstVirtualTourIndex].items[0];
+    smallItems.push(vtItem);
+    pickedIds.add(getItemId(vtItem));
+    // Remove virtual tour from activeGroups so it doesn't participate in round-robin
+    activeGroups.splice(firstVirtualTourIndex, 1);
+  }
+  
+  // Step 2: Round-robin through remaining groups/items for the remaining slots
+  let groupCursor = 0;
+  let attempts = 0;
+  const maxAttempts = activeGroups.length * 5; // Upper bound to prevent infinite loops, generous multiplier
+
+  while (smallItems.length < 4 && attempts < maxAttempts && activeGroups.length > 0) {
+    const currentGroupIndex = groupCursor % activeGroups.length;
+    const currentGroup = activeGroups[currentGroupIndex];
+    
+    // Find next unpicked item in this group
+    let itemToPick: any = null;
+    let originalCursor = currentGroup.cursor; // Store original cursor to detect if item was found
+    while (currentGroup.cursor < currentGroup.items.length) {
+      const potentialItem = currentGroup.items[currentGroup.cursor];
+      const itemId = getItemId(potentialItem); // Recalculate itemId here
+      if (!pickedIds.has(itemId)) {
+        itemToPick = potentialItem;
+        break;
+      }
+      currentGroup.cursor++; // Advance cursor to next item in this group
+    }
+
+    if (itemToPick) {
+      smallItems.push(itemToPick);
+      pickedIds.add(getItemId(itemToPick));
+      currentGroup.cursor++; // Advance cursor for this group
+    }
+    
+    // If no item was picked from this group, or if it was exhausted, move to next group
+    if (!itemToPick || currentGroup.cursor >= currentGroup.items.length) {
+      // If group is exhausted (all items picked from it or no items to begin with), remove it from activeGroups
+      if (currentGroup.cursor >= currentGroup.items.length) {
+        activeGroups.splice(currentGroupIndex, 1);
+        // Do NOT increment groupCursor if a group was removed, as the next group shifts into its place
+      } else {
+        groupCursor++; // Only advance groupCursor if the group still has items to potentially pick later
+      }
+    } else {
+      groupCursor++; // Always advance groupCursor if an item was successfully picked
+    }
+    attempts++;
   }
 
+
   displayItems.push(...smallItems);
+
+  // Collect all unique potential media items for total count calculation
+  const allUniquePotentialItemsMap = new Map<string, any>();
+  groups.forEach((g: any) => {
+    if (g._type === 'galleryGroup') {
+      const cleanMediaType = clean(g.mediaType);
+      if (cleanMediaType === 'virtualTour') {
+        const id = getItemId(g);
+        if (id && !allUniquePotentialItemsMap.has(id)) {
+          allUniquePotentialItemsMap.set(id, g);
+        }
+      } else {
+        (g.items || []).filter((item: any) => item.asset || item.url).forEach((item: any) => {
+          const id = getItemId(item);
+          if (id && !allUniquePotentialItemsMap.has(id)) {
+            allUniquePotentialItemsMap.set(id, item);
+          }
+        });
+      }
+    } else {
+      const id = getItemId(g);
+      if (id && (g.asset || g.url) && !allUniquePotentialItemsMap.has(id)) {
+        allUniquePotentialItemsMap.set(id, g);
+      }
+    }
+  });
 
   if (displayItems.length === 0) return null;
 
   // Calculate remaining count for "See all" functionality
   const totalMediaCount = (mainImage ? 1 : 0) + groups.reduce((acc: number, g: any) => {
-    if (g._type === 'galleryGroup') return acc + (g.items?.length || 0);
+    if (g._type === 'galleryGroup') {
+      // Virtual tour counts as 1 item
+      const cleanMediaType = clean(g.mediaType);
+      if (cleanMediaType === 'virtualTour') return acc + 1;
+      return acc + (g.items?.length || 0);
+    }
     return acc + 1;
   }, 0);
   const remainingCount = totalMediaCount - displayItems.length;
@@ -130,12 +219,20 @@ export default function PropertyGallery({ property, dict }: PropertyGalleryProps
       <div className="property-gallery-grid">
         {displayItems.map((item, index) => {
           const isVideo = item._type === 'videoItem';
+          const cleanMediaType = clean(item.mediaType);
+          const isVirtualTour = item._type === 'galleryGroup' && cleanMediaType === 'virtualTour';
           const isMain = index === 0;
 
           let imageUrl = '/placeholder-media.jpg'; // Set safe fallback to avoid console warning on empty src
           let lqip = '';
 
-          if (item._type === 'image') {
+          if (isVirtualTour) {
+            // Virtual tour thumbnail - check if thumbnail exists
+            if (item.thumbnail?.asset) {
+              imageUrl = urlForImage(item.thumbnail).url();
+              lqip = item.thumbnail.asset?.metadata?.lqip;
+            }
+          } else if (item._type === 'image') {
             imageUrl = urlForImage(item).url();
             lqip = item.asset?.metadata?.lqip;
           } else if (isVideo) {
@@ -163,7 +260,7 @@ export default function PropertyGallery({ property, dict }: PropertyGalleryProps
           return (
             <div
               key={item._id || item._key || index}
-              className={`gallery-item item-${index} ${isMain ? 'main-item' : 'small-item'} ${isVideo ? 'video-item' : ''} ${isSeeAllItem ? 'has-see-all' : ''}`}
+              className={`gallery-item item-${index} ${isMain ? 'main-item' : 'small-item'} ${isVideo ? 'video-item' : ''} ${isVirtualTour ? 'virtual-tour-item' : ''} ${isSeeAllItem ? 'has-see-all' : ''}`}
               onClick={() => {
                 // Only set initial item if it's NOT the main photo AND not the "See All" item
                 setSelectedGalleryItem((isMain || isSeeAllItem) ? null : item);
@@ -183,7 +280,11 @@ export default function PropertyGallery({ property, dict }: PropertyGalleryProps
               />
 
               <div className="gallery-item-overlay">
-                {isVideo ? (
+                {isVirtualTour ? (
+                  <div className="overlay-icon virtual-tour-icon">
+                    <img src="/icons/360-degrees.svg" alt="Virtual Tour" width="64" height="64" />
+                  </div>
+                ) : isVideo ? (
                   <div className="overlay-icon video-icon">
                     <img src="/icons/play_arrow_filled.svg" alt="Play" width="64" height="64" />
                   </div>
@@ -198,7 +299,7 @@ export default function PropertyGallery({ property, dict }: PropertyGalleryProps
                   or on the last image if there are more photos */}
 
               {index === 4 && remainingCount > 0 && (
-                <button className="see-all-btn-overlay btn-pill" onClick={(e) => { e.stopPropagation(); setIsModalOpen(true); }}>
+                <button className="see-all-btn-overlay btn-pill" onClick={(e) => { e.stopPropagation(); setSelectedGalleryItem(null); setIsModalOpen(true); }}>
                   <div className="btn-content-desktop">
                     <svg width="18" height="18" viewBox="0 -960 960 960" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                       <path d="M127.69-220q-30.3 0-51.3-21-21-21-21-51.31v-375.38q0-30.31 21-51.31 21-21 51.3-21h375.39q30.3 0 51.3 21 21 21 21 51.31v375.38q0 30.31-21 51.31-21 21-51.3 21H127.69Zm0-60h375.39q4.61 0 8.46-3.85 3.84-3.84 3.84-8.46v-375.38q0-4.62-3.84-8.46-3.85-3.85-8.46-3.85H127.69q-4.61 0-8.46 3.85-3.85 3.84-3.85 8.46v375.38q0 4.62 3.85 8.46 3.85 3.85 8.46 3.85Zm36.93-84.62h301.53l-94.77-127.69-76 100-56-74-74.76 101.69ZM680-220v-520h60v520h-60Zm164.62 0v-520h59.99v520h-59.99Zm-729.24-60v-400 400Z" />

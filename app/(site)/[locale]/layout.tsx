@@ -54,7 +54,7 @@ export default async function RootLayout({
   ]);
 
   return (
-    <html lang={locale} className={`${cormorant.variable} ${manrope.variable}`}>
+    <html lang={locale} className={`${cormorant.variable} ${manrope.variable}`} suppressHydrationWarning>
       <head>
         <script
           dangerouslySetInnerHTML={{

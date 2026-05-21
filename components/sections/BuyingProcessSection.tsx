@@ -106,11 +106,6 @@ export default function BuyingProcessSection({ data }: BuyingProcessSectionProps
 
   const { tagline, headline, intro, steps, imageOrder = 'right-first' } = data;
 
-  console.log("🧭 [BUYING PROCESS SECTION RENDER]", {
-    imageOrder,
-    stepsCount: steps?.length || 0
-  });
-
   return (
     <section className={`buying-process-section order-${imageOrder}`} id={data?.id || 'buying-process'} ref={sectionRef}>
       <div className="process-container">

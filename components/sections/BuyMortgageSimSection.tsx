@@ -322,9 +322,10 @@ export default function BuyMortgageSimSection({ data, dict, contextData }: { dat
 
   // Bottom bar: savings + principal + interest  (savings + principal = price exactly)
   const barTotal = price + totalInterest; // = clampedSavings + principal + totalInterest
-  const savingsPct = barTotal > 0 ? (clampedSavings / barTotal) * 100 : 0;
-  const principalPct = barTotal > 0 ? (principal / barTotal) * 100 : 0;
-  const interestPct = barTotal > 0 ? (totalInterest / barTotal) * 100 : 0;
+  // Round to 2 decimal places to prevent hydration mismatch between server and client
+  const savingsPct = barTotal > 0 ? Math.round((clampedSavings / barTotal) * 10000) / 100 : 0;
+  const principalPct = barTotal > 0 ? Math.round((principal / barTotal) * 10000) / 100 : 0;
+  const interestPct = barTotal > 0 ? Math.round((totalInterest / barTotal) * 10000) / 100 : 0;
 
   // Top bar aligns with totalPropertyCost (price + costs); capped so it never overflows the container
   const topBarWidthPct = barTotal > 0 ? Math.min(100, (totalPropertyCost / barTotal) * 100) : 0;

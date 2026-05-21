@@ -1,0 +1,101 @@
+/* Floorfy Virtual Tour Viewer Styles */
+
+.floorfy-viewer-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background-color: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.floorfy-iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  transition: opacity 0.3s ease;
+}
+
+.floorfy-loading-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.9);
+  z-index: 10;
+  transition: opacity 0.3s ease;
+}
+
+.floorfy-loading-spinner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  color: #ffffff;
+}
+
+.floorfy-loading-spinner svg {
+  color: var(--color-gold, #d4af37);
+}
+
+.floorfy-loading-spinner p {
+  font-family: var(--font-manrope), sans-serif;
+  font-size: var(--text-base);
+  font-weight: var(--fw-medium);
+  letter-spacing: var(--ls-wide);
+}
+
+.floorfy-viewer-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 2rem;
+  color: #ffffff;
+  text-align: center;
+}
+
+.floorfy-viewer-error img {
+  opacity: 0.5;
+}
+
+.floorfy-viewer-error p {
+  font-family: var(--font-manrope), sans-serif;
+  font-size: var(--text-base);
+  font-weight: var(--fw-medium);
+  letter-spacing: var(--ls-wide);
+  margin: 0;
+}
+
+.floorfy-viewer-error .error-detail {
+  font-size: var(--text-sm);
+  opacity: 0.7;
+}
+
+/* Virtual Tour View in Modal */
+.virtual-tour-view {
+  width: 100%;
+  height: 100%;
+  min-height: 600px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #000;
+}
+
+.gallery-modal-body:has(.virtual-tour-view) {
+  padding: 0 !important;
+}
+
+@media (max-width: 768px) {
+  .floorfy-loading-spinner p {
+    font-size: var(--text-sm);
+  }
+  
+  .floorfy-viewer-error p {
+    font-size: var(--text-sm);
+  }
+}
