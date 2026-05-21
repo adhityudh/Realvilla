@@ -294,7 +294,6 @@
   background-color: var(--bg-muted);
   cursor: pointer;
   border-radius: 0;
-  aspect-ratio: 16 / 9;
   display: block;
   text-decoration: none;
   /* Button reset styles */
