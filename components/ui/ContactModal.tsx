@@ -12,6 +12,7 @@ interface ContactModalProps {
   subtitle?: string;
   children?: React.ReactNode;
   footer?: React.ReactNode;
+  bodyRef?: React.RefObject<HTMLDivElement | null>;
 }
 
 export default function ContactModal({
@@ -20,7 +21,8 @@ export default function ContactModal({
   title,
   subtitle,
   children,
-  footer
+  footer,
+  bodyRef
 }: ContactModalProps) {
   const modalRef = useRef<HTMLDivElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
@@ -89,7 +91,7 @@ export default function ContactModal({
         </div>
 
         {/* Scrollable Body containing the Form */}
-        <div className="contact-modal-body" data-lenis-prevent="true">
+        <div className="contact-modal-body" ref={bodyRef} data-lenis-prevent="true">
           {children}
         </div>
 

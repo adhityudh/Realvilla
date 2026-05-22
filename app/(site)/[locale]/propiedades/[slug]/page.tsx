@@ -58,7 +58,7 @@ export default async function PropertyPage({ params }: { params: Promise<{ local
     <main>
       <FooterPaddingSetter active={settings?.propertyDetailFooterPaddingHigh} />
       <TranslationSetter translations={property._translations ?? []} />
-      <PropertyGallery property={property} dict={dict} />
+      <PropertyGallery property={property} dict={dict} offerEnabled={settings?.propertyOfferEnabled ?? false} />
       <PropertyDetails 
         property={property} 
         dict={dict} 
@@ -70,6 +70,14 @@ export default async function PropertyPage({ params }: { params: Promise<{ local
         requestGuidancePresetMessage={settings?.requestGuidancePresetMessage}
         hideRequestGuidanceWhatsApp={settings?.hideRequestGuidanceWhatsApp}
         mortgageCalculatorData={settings?.mortgageCalculator}
+        offerEnabled={settings?.propertyOfferEnabled ?? false}
+        offerDepositAmount={settings?.propertyOfferDepositAmount ?? 500}
+        offerConditionsTitle={settings?.propertyOfferConditionsTitle}
+        offerConditionsIntro={settings?.propertyOfferConditionsIntro}
+        offerConditionsTerms={settings?.propertyOfferConditionsTerms}
+        offerConditionsAccept={settings?.propertyOfferConditionsAccept}
+        offerPriceHelper={settings?.propertyOfferPriceHelper}
+        offerConditionsHelper={settings?.propertyOfferConditionsHelper}
       />
       <OtherProperties 
         currentPropertyId={property._id}

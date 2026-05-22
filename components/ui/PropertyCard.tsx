@@ -178,7 +178,11 @@ export default function PropertyCard({ prop, variant = 'default', dict }: { prop
               return (
                 <div key={m.metaId || i} style={{ display: 'contents' }}>
                   <span className="detail-item">
-                    {value} {!m.hideLabelOnHighlight && (m.unit || m.shortLabel)}
+                    {value}
+                    {m.valueType === 'string'
+                      ? (m.unit ? ` ${m.unit}` : '')
+                      : (!m.hideLabelOnHighlight && (m.unit || m.shortLabel) ? ` ${m.unit || m.shortLabel}` : '')
+                    }
                   </span>
                   {i < arr.length - 1 && <div className="detail-dot"></div>}
                 </div>

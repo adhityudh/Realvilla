@@ -179,8 +179,8 @@ export const settings = defineType({
     }),
     defineField({
       name: 'requestGuidancePresetMessage',
-      title: 'Preset Form Message (Hidden)',
-      description: 'Optional: Provide a default message. If set, this exact text will be pre-filled and the message input field will be hidden from the user. Use {{property_title}} and {{property_link}} to dynamically inject property details.',
+      title: 'Preset Form Message',
+      description: 'Optional: Provide a default message. If set, this exact text will be pre-filled in the message text area. Use {{property_title}} and {{property_link}} to dynamically inject property details.',
       type: 'text',
       rows: 3,
       group: 'propertyDetail',
@@ -205,6 +205,248 @@ export const settings = defineType({
       group: 'propertyDetail',
       hidden: ({ parent }) => !parent?.propertyUseRequestGuidance || parent?.hideRequestGuidanceWhatsApp === true,
     }),
+
+    // ── Make an Offer Feature ──
+    defineField({
+      name: 'propertyOfferEnabled',
+      title: '💼 Enable "Make an Offer" Feature',
+      description: 'If enabled, a "MAKE AN OFFER" button will appear on property detail pages, opening a multi-step offer form with Stripe payment.',
+      type: 'boolean',
+      initialValue: false,
+      group: 'propertyDetail',
+    }),
+    defineField({
+      name: 'propertyOfferDepositAmount',
+      title: 'Deposit Amount (€)',
+      description: 'The non-refundable deposit amount buyers must pay via Stripe to submit a proposal. This amount is charged immediately upon form submission.',
+      type: 'number',
+      validation: (Rule) => Rule.custom((value, context) => {
+        const parent = context.parent as any;
+        if (parent?.propertyOfferEnabled && !value) {
+          return 'Deposit Amount is required when the Make an Offer feature is enabled.';
+        }
+        if (value !== undefined && value !== null && value < 1) {
+          return 'Deposit Amount must be at least €1.';
+        }
+        return true;
+      }),
+      group: 'propertyDetail',
+      hidden: ({ parent }) => !parent?.propertyOfferEnabled,
+    }),
+    defineField({
+      name: 'propertyOfferPdfTemplate',
+      title: '📄 PDF Proposal Template',
+      description: `Upload a single fillable PDF (interactive PDF / AcroForm). The system will auto-fill the form fields in any language, since the content is pulled from the offer form data.
+
+HOW TO PREPARE YOUR PDF
+────────────────────────
+1. Create your proposal document in Word, Google Docs, or any editor.
+2. Export/save as PDF.
+3. Open the PDF in Adobe Acrobat (Tools → Prepare Form), LibreOffice (Insert → Form Controls), or an online tool like PDFescape.com or DocHub.com.
+4. Add a Text Field wherever you want data to be filled automatically.
+5. Name each field using the Field IDs configured in "PDF Field Name Mapping" below.
+6. Save the file and upload it here.
+
+Fields that don't exist in your PDF are simply skipped — you don't need all of them.`,
+      type: 'file',
+      options: {
+        accept: '.pdf,application/pdf',
+      },
+      group: 'propertyDetail',
+      hidden: ({ parent }) => !parent?.propertyOfferEnabled,
+    }),
+    defineField({
+      name: 'propertyOfferPdfFieldMap',
+      title: '🗂️ PDF Field Name Mapping',
+      description: 'These are the exact field names the system looks for in your PDF template. If your PDF uses different names, change them here to match — the system will fill each field with the data described. Defaults work out of the box.',
+      type: 'object',
+      group: 'propertyDetail',
+      hidden: ({ parent }) => !parent?.propertyOfferEnabled,
+      options: { collapsible: true, collapsed: true },
+      initialValue: {
+        propertyTitle:        'property_title',
+        propertyReference:    'property_reference',
+        buyerFullName:        'buyer_full_name',
+        buyerIdNumber:        'buyer_id_number',
+        buyerEmail:           'buyer_email',
+        buyerPhone:           'buyer_phone',
+        buyerAddress:         'buyer_address',
+        offerPrice:           'offer_price',
+        offerPriceWords:      'offer_price_words',
+        additionalConditions: 'additional_conditions',
+        depositAmount:        'deposit_amount',
+        stripePaymentId:      'stripe_payment_id',
+        submissionDate:       'submission_date',
+        validityDate:         'validity_date',
+      },
+      fields: [
+        defineField({
+          name: 'propertyTitle',
+          title: 'Property Title',
+          description: 'Filled with: the property name/title from Sanity.',
+          type: 'string',
+          initialValue: 'property_title',
+          placeholder: 'property_title',
+        }),
+        defineField({
+          name: 'propertyReference',
+          title: 'Property Reference',
+          description: 'Filled with: the property internal ID from Sanity.',
+          type: 'string',
+          initialValue: 'property_reference',
+          placeholder: 'property_reference',
+        }),
+        defineField({
+          name: 'buyerFullName',
+          title: 'Buyer Full Name',
+          description: "Filled with: buyer's full legal name (Step 2).",
+          type: 'string',
+          initialValue: 'buyer_full_name',
+          placeholder: 'buyer_full_name',
+        }),
+        defineField({
+          name: 'buyerIdNumber',
+          title: 'Buyer ID / Passport',
+          description: "Filled with: buyer's DNI / NIE / Passport number (Step 2).",
+          type: 'string',
+          initialValue: 'buyer_id_number',
+          placeholder: 'buyer_id_number',
+        }),
+        defineField({
+          name: 'buyerEmail',
+          title: 'Buyer Email',
+          description: "Filled with: buyer's email address (Step 2).",
+          type: 'string',
+          initialValue: 'buyer_email',
+          placeholder: 'buyer_email',
+        }),
+        defineField({
+          name: 'buyerPhone',
+          title: 'Buyer Phone',
+          description: "Filled with: buyer's phone number with country code (Step 2).",
+          type: 'string',
+          initialValue: 'buyer_phone',
+          placeholder: 'buyer_phone',
+        }),
+        defineField({
+          name: 'buyerAddress',
+          title: 'Buyer Address',
+          description: "Filled with: buyer's notification address / domicilio (Step 2).",
+          type: 'string',
+          initialValue: 'buyer_address',
+          placeholder: 'buyer_address',
+        }),
+        defineField({
+          name: 'offerPrice',
+          title: 'Offer Price (formatted)',
+          description: 'Filled with: offered price formatted with currency symbol (e.g. €450,000).',
+          type: 'string',
+          initialValue: 'offer_price',
+          placeholder: 'offer_price',
+        }),
+        defineField({
+          name: 'offerPriceWords',
+          title: 'Offer Price (number only)',
+          description: 'Filled with: offered price as a plain number without formatting (e.g. 450000). Useful for fields that require numeric input.',
+          type: 'string',
+          initialValue: 'offer_price_words',
+          placeholder: 'offer_price_words',
+        }),
+        defineField({
+          name: 'additionalConditions',
+          title: 'Additional Conditions',
+          description: 'Filled with: additional conditions or remarks entered by the buyer (optional, Step 3).',
+          type: 'string',
+          initialValue: 'additional_conditions',
+          placeholder: 'additional_conditions',
+        }),
+        defineField({
+          name: 'depositAmount',
+          title: 'Deposit Amount',
+          description: 'Filled with: the deposit amount paid via Stripe (e.g. €500).',
+          type: 'string',
+          initialValue: 'deposit_amount',
+          placeholder: 'deposit_amount',
+        }),
+        defineField({
+          name: 'stripePaymentId',
+          title: 'Stripe Payment ID',
+          description: 'Filled with: the Stripe checkout session ID — serves as the payment reference.',
+          type: 'string',
+          initialValue: 'stripe_payment_id',
+          placeholder: 'stripe_payment_id',
+        }),
+        defineField({
+          name: 'submissionDate',
+          title: 'Submission Date',
+          description: 'Filled with: the date the proposal was submitted (e.g. 22 May 2026).',
+          type: 'string',
+          initialValue: 'submission_date',
+          placeholder: 'submission_date',
+        }),
+        defineField({
+          name: 'validityDate',
+          title: 'Validity Date',
+          description: 'Filled with: the date until which the proposal is valid (+7 days from submission).',
+          type: 'string',
+          initialValue: 'validity_date',
+          placeholder: 'validity_date',
+        }),
+      ],
+    }),
+
+    defineField({
+      name: 'propertyOfferConditionsTitle',
+      title: 'Offer Conditions: Title',
+      description: 'Override the title for Step 1 (Conditions) in the Make an Offer modal.',
+      type: 'string',
+      group: 'propertyDetail',
+      hidden: ({ parent }) => !parent?.propertyOfferEnabled || !parent?.propertyUseRequestGuidance,
+    }),
+    defineField({
+      name: 'propertyOfferConditionsIntro',
+      title: 'Offer Conditions: Intro Text',
+      description: 'Override the introduction text for Step 1 in the Make an Offer modal.',
+      type: 'text',
+      rows: 3,
+      group: 'propertyDetail',
+      hidden: ({ parent }) => !parent?.propertyOfferEnabled || !parent?.propertyUseRequestGuidance,
+    }),
+    defineField({
+      name: 'propertyOfferConditionsTerms',
+      title: 'Offer Conditions: Terms & Conditions',
+      description: 'Override the bullet points of terms and conditions in Step 1.',
+      type: 'array',
+      of: [{ type: 'string' }],
+      group: 'propertyDetail',
+      hidden: ({ parent }) => !parent?.propertyOfferEnabled || !parent?.propertyUseRequestGuidance,
+    }),
+    defineField({
+      name: 'propertyOfferConditionsAccept',
+      title: 'Offer Conditions: Consent Checkbox Label',
+      description: 'Override the text next to the checkbox to accept terms in Step 1.',
+      type: 'string',
+      group: 'propertyDetail',
+      hidden: ({ parent }) => !parent?.propertyOfferEnabled || !parent?.propertyUseRequestGuidance,
+    }),
+    defineField({
+      name: 'propertyOfferPriceHelper',
+      title: 'Offer Form: Price Helper Text',
+      description: 'Override the helper text underneath the Offered Price field in Step 3.',
+      type: 'string',
+      group: 'propertyDetail',
+      hidden: ({ parent }) => !parent?.propertyOfferEnabled || !parent?.propertyUseRequestGuidance,
+    }),
+    defineField({
+      name: 'propertyOfferConditionsHelper',
+      title: 'Offer Form: Additional Conditions Helper Text',
+      description: 'Override the helper text underneath the Additional Conditions field in Step 3.',
+      type: 'text',
+      rows: 4,
+      group: 'propertyDetail',
+      hidden: ({ parent }) => !parent?.propertyOfferEnabled || !parent?.propertyUseRequestGuidance,
+    }),
+
     defineField({
       name: 'filterSidebar',
       title: 'Filter Sidebar Text',

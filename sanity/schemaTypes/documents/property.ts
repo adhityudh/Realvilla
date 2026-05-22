@@ -316,6 +316,9 @@ export const property = defineType({
               to: [{ type: 'propertyMeta' }],
               description: 'Select which meta field this value is for.',
               validation: (Rule) => Rule.required(),
+              options: {
+                filter: '!defined(children) || count(children) == 0',
+              },
             }),
             defineField({
               name: 'numberValue',

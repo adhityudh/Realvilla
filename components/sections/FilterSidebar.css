@@ -815,3 +815,77 @@
 .filter-grid-btn:active {
     transform: scale(0.98);
 }
+
+/* Parent-child nested filters styling */
+.filter-parent-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.filter-parent-header-row {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    width: 100%;
+}
+
+.filter-parent-expand-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-black);
+    padding: 0;
+    transition: transform 0.25s var(--ease-smooth), color 0.2s ease;
+    border-radius: 4px;
+}
+
+.filter-parent-expand-btn:hover {
+    color: var(--text-black);
+    background: var(--bg-muted);
+}
+
+.filter-parent-expand-btn.expanded {
+    transform: rotate(180deg);
+}
+
+.filter-parent-checkbox-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex: 1;
+    cursor: pointer;
+    border-radius: var(--radius-sm);
+    transition: background-color 0.2s ease;
+}
+
+.filter-parent-checkbox-row:hover {
+    background-color: var(--bg-muted);
+}
+
+/* Indeterminate custom checkbox state */
+.custom-checkbox-box.indeterminate {
+    background: var(--text-black);
+    border-color: var(--text-black);
+}
+
+.custom-checkbox-box.indeterminate svg {
+    transform: scale(1);
+}
+
+.filter-children-list {
+    border-left: 1.5px dashed var(--border-light);
+    margin-left: 0.5rem;
+    padding-left: 0.5rem;
+    margin-top: 0.5rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.accordion-option-row.child-row {
+    border-radius: var(--radius-sm);
+    margin-top: 0.5rem;
+    padding: 0.35rem 0.5rem;
+}

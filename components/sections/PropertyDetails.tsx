@@ -1,11 +1,11 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { PortableText } from 'next-sanity';
 import PropertyMap from '@/components/ui/Map';
 import Button from '@/components/ui/Button';
 import ContactModal from '@/components/ui/ContactModal';
-import ContactCard from '@/components/ui/ContactCard';
+import PropertyContactCard from './PropertyContactCard';
 import { smoothScrollToAnchor } from '@/lib/scroll';
 import { urlForImage } from '@/sanity/lib/image';
 import { useGalleryModal } from '@/components/providers/GalleryModalContext';
@@ -23,6 +23,15 @@ interface PropertyDetailsProps {
   requestGuidancePresetMessage?: string;
   hideRequestGuidanceWhatsApp?: boolean;
   mortgageCalculatorData?: any;
+  // ── Offer ──
+  offerEnabled?: boolean;
+  offerDepositAmount?: number;
+  offerConditionsTitle?: string;
+  offerConditionsIntro?: string;
+  offerConditionsTerms?: string[];
+  offerConditionsAccept?: string;
+  offerPriceHelper?: string;
+  offerConditionsHelper?: string;
 }
 
 export default function PropertyDetails({ 
@@ -35,7 +44,15 @@ export default function PropertyDetails({
   whatsappMessageTemplate,
   requestGuidancePresetMessage,
   hideRequestGuidanceWhatsApp,
-  mortgageCalculatorData
+  mortgageCalculatorData,
+  offerEnabled = false,
+  offerDepositAmount = 500,
+  offerConditionsTitle,
+  offerConditionsIntro,
+  offerConditionsTerms,
+  offerConditionsAccept,
+  offerPriceHelper,
+  offerConditionsHelper,
 }: PropertyDetailsProps) {
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -43,6 +60,38 @@ export default function PropertyDetails({
   const [pageUrl, setPageUrl] = useState('');
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
   const { openModal } = useGalleryModal();
+
+  const descriptionRef = useRef<HTMLDivElement>(null);
+  
+  const estimatedLength = useMemo(() => {
+    if (!property?.description || !Array.isArray(property.description)) return 0;
+    return property.description.reduce((acc: number, block: any) => {
+      if (block?.children && Array.isArray(block.children)) {
+        return acc + block.children.reduce((cAcc: number, child: any) => cAcc + (child?.text?.length || 0), 0);
+      }
+      return acc;
+    }, 0);
+  }, [property?.description]);
+
+  const [showToggle, setShowToggle] = useState(estimatedLength > 400);
+
+  useEffect(() => {
+    const checkHeight = () => {
+      if (descriptionRef.current) {
+        setShowToggle(descriptionRef.current.scrollHeight > 200);
+      }
+    };
+    checkHeight();
+    
+    if (typeof ResizeObserver !== 'undefined' && descriptionRef.current) {
+      const observer = new ResizeObserver(checkHeight);
+      observer.observe(descriptionRef.current);
+      return () => observer.disconnect();
+    } else {
+      window.addEventListener('resize', checkHeight);
+      return () => window.removeEventListener('resize', checkHeight);
+    }
+  }, [property?.description]);
 
   // Update the page url for link injections on the client
   useEffect(() => {
@@ -136,21 +185,26 @@ export default function PropertyDetails({
               <h2 className="details-heading">
                 {dict?.property?.description_title || 'Description'}
               </h2>
-              <div className={`portable-text-wrapper ${isDescriptionExpanded ? 'expanded' : 'collapsed'}`}>
+              <div 
+                ref={descriptionRef}
+                className={`portable-text-wrapper ${(!showToggle || isDescriptionExpanded) ? 'expanded' : 'collapsed'}`}
+              >
                 <PortableText value={property.description} />
               </div>
               
-              <div className="description-toggle-wrapper">
-                <Button
-                  label={isDescriptionExpanded ? dict?.property?.see_less : dict?.property?.see_more}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setIsDescriptionExpanded(!isDescriptionExpanded);
-                  }}
-                  variant="link-dark"
-                  size="sm"
-                />
-              </div>
+              {showToggle && (
+                <div className="description-toggle-wrapper">
+                  <Button
+                    label={isDescriptionExpanded ? dict?.property?.see_less : dict?.property?.see_more}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setIsDescriptionExpanded(!isDescriptionExpanded);
+                    }}
+                    variant="link-dark"
+                    size="sm"
+                  />
+                </div>
+              )}
               
               {/* COMMENTED OUT: property-quick-links section
               {((quickLinks && quickLinks.length > 0) || useRequestGuidance) && (
@@ -253,6 +307,14 @@ export default function PropertyDetails({
                         const formattedValue = formatMetaValue(m);
                         if (formattedValue === '—') return null;
                         
+                        if (m.valueType === 'string') {
+                          return (
+                            <li key={m.metaId || idx} className="overview-item">
+                              {formattedValue}
+                            </li>
+                          );
+                        }
+                        
                         const label = m.shortLabel || m.longLabel;
                         
                         return (
@@ -330,13 +392,33 @@ export default function PropertyDetails({
                 data={mortgageCalculatorData}
                 dict={dict}
                 propertyPrice={property.price}
+                locale={locale}
               />
             </div>
           )}
         </div>
 
-        <div className="details-right-col">
-          {/* Placeholder for right column content */}
+        <div className="property-details-right-col" id="contact">
+          {/* Custom PropertyContactCard in right column with optional Offer CTA */}
+          <PropertyContactCard
+            dict={dict}
+            locale={locale}
+            whatsappNumber={whatsappNumber}
+            showWhatsApp={!hideRequestGuidanceWhatsApp}
+            presetMessage={requestGuidancePresetMessage ? requestGuidancePresetMessage.replace(/{{property_title}}/g, property.title).replace(/{{property_link}}/g, pageUrl) : ''}
+            offerEnabled={offerEnabled}
+            offerDepositAmount={offerDepositAmount}
+            propertyId={property._id || ''}
+            propertyTitle={property.title || ''}
+            propertyPrice={property.price}
+            useRequestGuidance={useRequestGuidance}
+            offerConditionsTitle={offerConditionsTitle}
+            offerConditionsIntro={offerConditionsIntro}
+            offerConditionsTerms={offerConditionsTerms}
+            offerConditionsAccept={offerConditionsAccept}
+            offerPriceHelper={offerPriceHelper}
+            offerConditionsHelper={offerConditionsHelper}
+          />
         </div>
       </div>
 
@@ -379,18 +461,19 @@ export default function PropertyDetails({
               )
             }
           >
-        <ContactCard
+        <PropertyContactCard
           dict={dict}
-          initialStep="general"
-          allowBack={false}
-          isInsideExternalModal={true}
+          locale={locale}
+          isInsideModal={true}
           onSubmittingChange={setIsSubmitting}
-          onSubmitSuccessChange={setSubmitSuccess}
+          onSubmitSuccess={setSubmitSuccess}
           submitSuccess={submitSuccess}
           presetMessage={requestGuidancePresetMessage ? requestGuidancePresetMessage.replace(/{{property_title}}/g, property.title).replace(/{{property_link}}/g, pageUrl) : ''}
           whatsappNumber={whatsappNumber}
-          whatsappMessageTemplate={whatsappMessageTemplate ? whatsappMessageTemplate.replace(/{{property_title}}/g, property.title).replace(/{{property_link}}/g, pageUrl) : undefined}
-          showGeneralWhatsApp={!hideRequestGuidanceWhatsApp}
+          showWhatsApp={!hideRequestGuidanceWhatsApp}
+          propertyId={property._id || ''}
+          propertyTitle={property.title || ''}
+          propertyPrice={property.price}
         />
         </ContactModal>
         );

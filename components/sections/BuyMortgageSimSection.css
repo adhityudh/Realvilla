@@ -98,7 +98,6 @@
   display: flex;
   flex-direction: column;
   gap: 0;
-  background: var(--bg-surface);
   border-right: none;
 }
 
@@ -189,7 +188,7 @@
   outline: none;
   width: 100%;
   font-family: var(--font-manrope), sans-serif;
-  font-size: 1.5rem;
+  font-size: var(--text-xl);
   font-weight: var(--fw-semibold);
   color: var(--text-black);
   padding: 0.5rem 0;
@@ -1058,7 +1057,7 @@
   }
 
   .msim-text-input {
-    font-size: 1.25rem;
+    font-size: var(--text-md);
   }
 
   .msim-currency-symbol {

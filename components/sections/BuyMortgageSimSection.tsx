@@ -266,10 +266,12 @@ export default function BuyMortgageSimSection({ data, dict, contextData }: { dat
     Math.round(initPrice * (L.defaultSavingsPct / 100))
   );
   const [term, setTerm] = useState<number>(L.defaultLoanTerm);
-  const [rateType, setRateType] = useState<'fixed' | 'variable'>(L.defaultRateType);
+  const rawRateType = (L.defaultRateType || '').toLowerCase();
+  const [rateType, setRateType] = useState<'fixed' | 'variable'>(rawRateType.includes('variable') ? 'variable' : 'fixed');
   const [fixedRate, setFixedRate] = useState<number>(L.fixedRate);
   const [variableRate, setVariableRate] = useState<number>(L.variableRate);
-  const [condition, setCondition] = useState<string>(L.defaultCondition);
+  const rawCondition = (L.defaultCondition || '').toLowerCase();
+  const [condition, setCondition] = useState<string>(rawCondition.includes('new') ? 'new' : 'resale');
   const [taxModalOpen, setTaxModalOpen] = useState(false);
   const [amortModalOpen, setAmortModalOpen] = useState(false);
   const [priceInput, setPriceInput] = useState(fmtNum(contextData?.propertyPrice ?? L.defaultPrice));

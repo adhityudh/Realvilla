@@ -50,6 +50,7 @@ export interface ContactCardProps {
   submitSuccess?: boolean | null;
   /** Optional prefix for form element IDs to avoid conflicts when multiple instances exist */
   formIdPrefix?: string;
+
 }
 
 const intentKeys = ['general', 'sell', 'buy', 'mortgage'] as const;
@@ -88,6 +89,8 @@ export default function ContactCard({
   // Added for displaying next step in sliding sidebar drawer
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalStep, setModalStep] = useState<ContactFormStep | null>(null);
+
+
   // Guarantee we always have a valid enum string, blocking null/undefined/object/unicode-ghost edge-cases strictly
   const getValidStep = (val: any): ContactFormStep => {
     // Aggressively strip ALL non-word characters (like zero-width spaces, control chars, etc.)
@@ -101,7 +104,7 @@ export default function ContactCard({
 
   // Locales tracking
   const pathname = usePathname();
-  const locale = useMemo(() => {
+  const detectedLocale = useMemo(() => {
     const segments = pathname.split('/');
     return segments[1] || 'en';
   }, [pathname]);
@@ -503,7 +506,7 @@ export default function ContactCard({
           "label": coalesce(title[$language], title.en),
           "icon": icon.asset->url
         }`;
-        const types = await client.fetch(query, { language: locale });
+        const types = await client.fetch(query, { language: detectedLocale });
         if (isMounted) setPropertyTypes(types || []);
       } catch (err) {
         console.error('Error loading dynamic contact form datasets:', err);
@@ -512,7 +515,7 @@ export default function ContactCard({
 
     loadSources();
     return () => { isMounted = false; };
-  }, [locale]);
+  }, [detectedLocale]);
 
   // Address Autocomplete Handlers
   const handleAddressChange = (e: React.ChangeEvent<HTMLInputElement>) => {

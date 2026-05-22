@@ -1,7 +1,6 @@
 .other-properties-section {
   background-color: var(--bg-cream, #F9F9F6);
   padding: 8rem 0;
-  margin: 5rem 0;
 }
 
 .other-properties-container {
@@ -37,8 +36,7 @@
 /* Tablet Responsive Overrides */
 @media (max-width: 1024px) {
   .other-properties-section {
-    padding: 5rem 0;
-    margin: 3rem 0;
+    padding: 3rem 0;
   }
 
   .other-properties-container {
@@ -59,10 +57,6 @@
 
 /* Mobile Responsive Overrides */
 @media (max-width: 768px) {
-  .other-properties-section {
-    padding: 5rem 0;
-  }
-
   .properties-grid-suggested {
     grid-template-columns: 1fr;
     gap: 2.5rem;

@@ -66,6 +66,7 @@
   /* 17.6px — sub-copy, subtitles */
   --text-lg: 1.25rem;
   /* 20px — nav links, profile name */
+  --text-xl: 1.5rem;
 
   /* Font sizes — display scale */
   --text-display-xs: clamp(1.4rem, 2.5vw, 1.8rem);
@@ -304,6 +305,13 @@ html.lenis body {
 
 .btn-pill:hover {
   box-shadow: var(--shadow-md-hover);
+}
+
+.btn-disabled,
+.btn-pill:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
 }
 
 .btn-pill::before {
@@ -570,15 +578,15 @@ html.lenis body {
 .js-enabled section:not(.no-header-entrance-anim) .sell-hero-title,
 .js-enabled section:not(.no-header-entrance-anim) .sell-hero-subtitle,
 .js-enabled section:not(.no-entrance-anim) .sell-search-trigger,
-.js-enabled section:not(.no-entrance-anim) .sell-search-trigger > *,
+.js-enabled section:not(.no-entrance-anim) .sell-search-trigger>*,
 .js-enabled section:not(.no-entrance-anim) .sell-jump-links,
 
 .js-enabled section:not(.no-header-entrance-anim) .buy-hero-title,
 .js-enabled section:not(.no-header-entrance-anim) .buy-hero-subtitle,
 .js-enabled section:not(.no-entrance-anim) .buy-search-trigger,
-.js-enabled section:not(.no-entrance-anim) .buy-search-trigger > *,
+.js-enabled section:not(.no-entrance-anim) .buy-search-trigger>*,
 .js-enabled section:not(.no-entrance-anim) .buy-filter-btn,
-.js-enabled section:not(.no-entrance-anim) .buy-filter-btn > *,
+.js-enabled section:not(.no-entrance-anim) .buy-filter-btn>*,
 .js-enabled section:not(.no-entrance-anim) .buy-jump-links,
 
 .js-enabled section:not(.no-header-entrance-anim) .general-hero-title,

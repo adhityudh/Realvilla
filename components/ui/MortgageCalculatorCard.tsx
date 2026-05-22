@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import Button from '@/components/ui/Button';
 import Tooltip from '@/components/ui/Tooltip';
 import StretchArrow from '@/components/ui/StretchArrow';
@@ -32,9 +32,181 @@ interface MortgageCalculatorCardProps {
   data: any;
   dict?: any;
   propertyPrice?: number;
+  locale?: string;
 }
 
-export default function MortgageCalculatorCard({ data, dict, propertyPrice }: MortgageCalculatorCardProps) {
+// ─── Tax Costs Modal ──────────────────────────────────────────
+function TaxModal({ data, condition, price, isEs, onClose }: { data: any; condition: string; price: number; isEs: boolean; onClose: () => void }) {
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [data]);
+
+  const newBuildTaxRateVal = data.newBuildTaxRate;
+  const newBuildStampDutyRateVal = data.newBuildStampDutyRate;
+  const resaleTaxRateVal = data.resaleTaxRate;
+
+  const igicAmount = price * (newBuildTaxRateVal / 100);
+  const ajdAmount = price * (newBuildStampDutyRateVal / 100);
+  const itpAmount = price * (resaleTaxRateVal / 100);
+
+  const taxAmount = condition === 'new' ? igicAmount + ajdAmount : itpAmount;
+  const notary = data.notaryCost;
+  const registry = data.registryCost;
+  const gestoria = data.gestoriaCost;
+  const valuation = data.valuationCost;
+  const purchaseTotal = taxAmount + notary + registry + gestoria;
+  const grandTotal = purchaseTotal + valuation;
+
+  return (
+    <div className="msim-modal-overlay-container">
+      <div className="msim-modal-bg-overlay" onClick={onClose} />
+      <div className="msim-modal-card" onClick={e => e.stopPropagation()} data-lenis-prevent="true">
+        {/* Header */}
+        <div className="msim-modal-header">
+          <div className="msim-modal-header-text">
+            <h3 className="msim-modal-title">{data.modalTitle}</h3>
+            <p className="msim-modal-subtitle">{data.modalSubtitle}</p>
+          </div>
+          <button className="msim-modal-close" onClick={onClose} aria-label="Close">
+            <img src="/icons/close.svg" alt="Close" width="22" height="22" />
+          </button>
+        </div>
+
+        {/* Body */}
+        <div className="msim-modal-body">
+          <div className="msim-modal-group">
+            <div className="msim-modal-group-title">{data.modalPurchaseCostsTitle}</div>
+            <div className="msim-modal-row"><span>{data.modalLabelNotary}</span><span>{fmt(notary)}</span></div>
+            <div className="msim-modal-row"><span>{data.modalLabelRegistry}</span><span>{fmt(registry)}</span></div>
+            <div className="msim-modal-row"><span>{data.modalLabelGestoria}</span><span>{fmt(gestoria)}</span></div>
+            {condition === 'new' ? (
+              <>
+                <div className="msim-modal-row">
+                  <span>IGIC ({newBuildTaxRateVal}%):</span>
+                  <span>{fmt(igicAmount)}</span>
+                </div>
+                <div className="msim-modal-row">
+                  <span>AJD (~{newBuildStampDutyRateVal}%):</span>
+                  <span>{fmt(ajdAmount)}</span>
+                </div>
+              </>
+            ) : (
+              <div className="msim-modal-row">
+                <span>{isEs ? `ITP (${resaleTaxRateVal}%):` : `ITP (Transfer Tax) (${resaleTaxRateVal}%):`}</span>
+                <span>{fmt(itpAmount)}</span>
+              </div>
+            )}
+          </div>
+
+          <div className="msim-modal-group">
+            <div className="msim-modal-group-title">{data.modalMortgageCostsTitle}</div>
+            <div className="msim-modal-row"><span>{data.modalLabelValuation}</span><span>{fmt(valuation)}</span></div>
+            {data.modalValuationNote && <p className="msim-modal-note">{data.modalValuationNote}</p>}
+          </div>
+
+          <div className="msim-modal-total">
+            <span>{data.modalTotalLabel}</span>
+            <span>{fmt(grandTotal)}</span>
+          </div>
+
+          {data.modalDisclaimer && <p className="msim-modal-disclaimer">{data.modalDisclaimer}</p>}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── Amortization Modal ───────────────────────────────────────
+function AmortModal({ dict, principal, rate, term, onClose }: { dict: any; principal: number; rate: number; term: number; onClose: () => void }) {
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [dict]);
+
+  const monthlyRate = rate / 100 / 12;
+  const n = term * 12;
+  const payment = monthlyRate === 0 ? principal / n : (principal * monthlyRate * Math.pow(1 + monthlyRate, n)) / (Math.pow(1 + monthlyRate, n) - 1);
+
+  const rows = useMemo(() => {
+    const res = [];
+    let balance = principal;
+    for (let y = 1; y <= term; y++) {
+      let yearInterest = 0, yearCapital = 0;
+      for (let m = 0; m < 12; m++) {
+        if (balance <= 0) break;
+        const interestPart = balance * monthlyRate;
+        const capitalPart = Math.min(payment - interestPart, balance);
+        yearInterest += interestPart;
+        yearCapital += capitalPart;
+        balance = Math.max(0, balance - capitalPart);
+      }
+      res.push({ year: y, payment: payment * 12, capital: yearCapital, interest: yearInterest, balance });
+    }
+    return res;
+  }, [principal, rate, term]);
+
+  const labels = dict?.mortgage || {};
+  const amortTableTitle = labels.amortTableTitle ?? 'Amortization Table';
+  const amortTableSubtitle = labels.amortTableSubtitle ?? 'Yearly payment breakdown';
+  const amortLabelYear = labels.amortLabelYear ?? 'Year';
+  const amortLabelInstallment = labels.amortLabelInstallment ?? 'Annual Payment';
+  const amortLabelCapital = labels.amortLabelCapital ?? 'Capital';
+  const amortLabelInterest = labels.amortLabelInterest ?? 'Interest';
+  const amortLabelBalance = labels.amortLabelBalance ?? 'Balance';
+
+  return (
+    <div className="msim-modal-overlay-container">
+      <div className="msim-modal-bg-overlay" onClick={onClose} />
+      <div className="msim-modal-card msim-modal-card--amort" onClick={e => e.stopPropagation()} data-lenis-prevent="true">
+        {/* Header */}
+        <div className="msim-modal-header">
+          <div className="msim-modal-header-text">
+            <h3 className="msim-modal-title">{amortTableTitle}</h3>
+            <p className="msim-modal-subtitle">{amortTableSubtitle}</p>
+          </div>
+          <button className="msim-modal-close" onClick={onClose} aria-label="Close">
+            <img src="/icons/close.svg" alt="Close" width="22" height="22" />
+          </button>
+        </div>
+
+        {/* Body */}
+        <div className="msim-modal-body">
+          <div className="msim-amort-scroll" data-lenis-prevent="true">
+            <table className="msim-amort-table">
+              <thead>
+                <tr>
+                  <th>{amortLabelYear}</th>
+                  <th>{amortLabelInstallment}</th>
+                  <th>{amortLabelCapital}</th>
+                  <th>{amortLabelInterest}</th>
+                  <th>{amortLabelBalance}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {rows.map(r => (
+                  <tr key={r.year}>
+                    <td>{r.year}</td>
+                    <td>{fmt(r.payment)}</td>
+                    <td>{fmt(r.capital)}</td>
+                    <td>{fmt(r.interest)}</td>
+                    <td>{fmt(r.balance)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default function MortgageCalculatorCard({ data, dict, propertyPrice, locale = 'en' }: MortgageCalculatorCardProps) {
   if (!data) return null;
 
   const L = data;
@@ -60,6 +232,7 @@ export default function MortgageCalculatorCard({ data, dict, propertyPrice }: Mo
   const labelMortgageResult = labels.labelMortgageResult ?? 'Mortgage amount';
   const labelInterestResult = labels.labelInterestResult ?? 'Mortgage interest';
   const labelTotalWithMortgage = labels.labelTotalWithMortgage ?? 'Property total cost with mortgage';
+  const labelViewAmortization = labels.labelViewAmortization ?? 'View amortization table';
   const chartLabelSavings = labels.chartLabelSavings ?? 'Your savings';
   const chartLabelMortgage = labels.chartLabelMortgage ?? 'Mortgage';
   const chartLabelInterest = labels.chartLabelInterest ?? 'Interest';
@@ -79,13 +252,17 @@ export default function MortgageCalculatorCard({ data, dict, propertyPrice }: Mo
   const [price, setPrice] = useState<number>(initPrice);
   const [savings, setSavings] = useState<number>(Math.round(initPrice * (L.defaultSavingsPct / 100)));
   const [term, setTerm] = useState<number>(L.defaultLoanTerm);
-  const [rateType, setRateType] = useState<'fixed' | 'variable'>(L.defaultRateType);
+  const rawRateType = (L.defaultRateType || '').toLowerCase();
+  const [rateType, setRateType] = useState<'fixed' | 'variable'>(rawRateType.includes('variable') ? 'variable' : 'fixed');
   const [fixedRate, setFixedRate] = useState<number>(L.fixedRate);
   const [variableRate, setVariableRate] = useState<number>(L.variableRate);
-  const [condition, setCondition] = useState<string>(L.defaultCondition || 'resale');
+  const rawCondition = (L.defaultCondition || '').toLowerCase();
+  const [condition, setCondition] = useState<string>(rawCondition.includes('new') ? 'new' : 'resale');
   const [priceInput, setPriceInput] = useState(fmtNum(initPrice));
   const [savingsInput, setSavingsInput] = useState(fmtNum(Math.round(initPrice * (L.defaultSavingsPct / 100))));
   const [termInput, setTermInput] = useState(String(L.defaultLoanTerm));
+  const [taxModalOpen, setTaxModalOpen] = useState(false);
+  const [amortModalOpen, setAmortModalOpen] = useState(false);
 
   const activeRate = rateType === 'fixed' ? fixedRate : variableRate;
   const setActiveRate = rateType === 'fixed' ? setFixedRate : setVariableRate;
@@ -237,11 +414,11 @@ export default function MortgageCalculatorCard({ data, dict, propertyPrice }: Mo
           </label>
           <div className="msim-interest-controls">
             <label className={`msim-radio-label ${rateType === 'fixed' ? 'msim-radio-label--active' : ''}`}>
-              <input type="radio" name="rateType" value="fixed" checked={rateType === 'fixed'} onChange={() => setRateType('fixed')} />
+              <input type="radio" name="mc-rateType" value="fixed" checked={rateType === 'fixed'} onChange={() => setRateType('fixed')} />
               {labelFixed}
             </label>
             <label className={`msim-radio-label ${rateType === 'variable' ? 'msim-radio-label--active' : ''}`}>
-              <input type="radio" name="rateType" value="variable" checked={rateType === 'variable'} onChange={() => setRateType('variable')} />
+              <input type="radio" name="mc-rateType" value="variable" checked={rateType === 'variable'} onChange={() => setRateType('variable')} />
               {labelVariable}
             </label>
             <div className="msim-rate-stepper">
@@ -272,11 +449,11 @@ export default function MortgageCalculatorCard({ data, dict, propertyPrice }: Mo
             <label className="msim-label">{labelCondition}</label>
             <div className="msim-radio-group">
               <label className={`msim-radio-label ${condition === 'new' ? 'msim-radio-label--active' : ''}`}>
-                <input type="radio" name="condition" value="new" checked={condition === 'new'} onChange={() => setCondition('new')} />
+                <input type="radio" name="mc-condition" value="new" checked={condition === 'new'} onChange={() => setCondition('new')} />
                 {labelNew}
               </label>
               <label className={`msim-radio-label ${condition === 'resale' ? 'msim-radio-label--active' : ''}`}>
-                <input type="radio" name="condition" value="resale" checked={condition === 'resale'} onChange={() => setCondition('resale')} />
+                <input type="radio" name="mc-condition" value="resale" checked={condition === 'resale'} onChange={() => setCondition('resale')} />
                 {labelResale}
               </label>
             </div>
@@ -360,12 +537,41 @@ export default function MortgageCalculatorCard({ data, dict, propertyPrice }: Mo
           </div>
           <div className="msim-breakdown-row">
             <span className="msim-breakdown-label msim-breakdown-label--bold">
-              {labelPurchaseCosts}
+              <button className="msim-costs-link msim-costs-link--bold" type="button" onClick={() => setTaxModalOpen(true)}>
+                {labelPurchaseCosts}
+                <span className="msim-costs-info-icon">
+                  <img src="/icons/info.svg" alt="Info" />
+                </span>
+              </button>
             </span>
             <span className="msim-breakdown-value msim-breakdown-value--bold">{fmt(purchaseCosts)}</span>
           </div>
         </div>
+
+        {/* Amortization link */}
+        <button className="btn-link-styled msim-amort-link" type="button" onClick={() => setAmortModalOpen(true)}>
+          {labelViewAmortization}
+          <StretchArrow className="btn-stretch-arrow" />
+        </button>
       </div>
+      {taxModalOpen && (
+        <TaxModal
+          data={L}
+          condition={condition}
+          price={price}
+          isEs={locale === 'es'}
+          onClose={() => setTaxModalOpen(false)}
+        />
+      )}
+      {amortModalOpen && (
+        <AmortModal
+          dict={dict}
+          principal={principal}
+          rate={activeRate}
+          term={term}
+          onClose={() => setAmortModalOpen(false)}
+        />
+      )}
     </div>
   );
 }

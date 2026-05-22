@@ -1,5 +1,6 @@
 import { defineField, defineType, defineArrayMember } from 'sanity'
 import { FilterTypeInput } from '../../components/FilterTypeInput'
+import { ValueTypeInput } from '../../components/ValueTypeInput'
 
 export const propertyMeta = defineType({
   name: 'propertyMeta',
@@ -28,10 +29,14 @@ export const propertyMeta = defineType({
           { title: 'Number', value: 'number' },
           { title: 'Yes/No', value: 'boolean' },
           { title: 'Select', value: 'select' },
+          { title: 'Free Text', value: 'string' },
         ],
         layout: 'radio',
       },
       initialValue: 'number',
+      components: {
+        input: ValueTypeInput,
+      },
       validation: (Rule) => Rule.required(),
     }),
     defineField({
@@ -106,6 +111,27 @@ export const propertyMeta = defineType({
       to: [{ type: 'propertyMetaCategory' }],
       description: 'Which category group this meta belongs to on the detail page.',
     }),
+    defineField({
+      name: 'children',
+      title: 'Child Metas',
+      type: 'array',
+      description: 'Select child metas that belong to this group. Only applicable for Yes/No (boolean) value type.',
+      hidden: ({ document }) => document?.valueType !== 'boolean',
+      of: [
+        defineArrayMember({
+          type: 'reference',
+          to: [{ type: 'propertyMeta' }],
+          options: {
+            filter: ({ document }: any) => {
+              return {
+                filter: 'valueType == "boolean" && _id != $id && (!defined(children) || count(children) == 0)',
+                params: { id: document?._id },
+              }
+            },
+          },
+        }),
+      ],
+    }),
     /* 
     DEPRECATED: Highlighted meta is now configured on the Property Category level (propertyCategory schema).
     defineField({
@@ -137,6 +163,7 @@ export const propertyMeta = defineType({
       title: 'Filter Settings',
       type: 'object',
       description: 'Configure how this meta appears as a search filter.',
+      hidden: ({ document }) => document?.valueType === 'string',
       fields: [
         defineField({
           name: 'isFilterable',

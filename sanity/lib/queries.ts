@@ -573,6 +573,14 @@ export const SETTINGS_QUERY = groq`
       "link": ${INTERNAL_LINK_PROJECTION}
     },
     propertyUseRequestGuidance,
+    propertyOfferEnabled,
+    propertyOfferDepositAmount,
+    propertyOfferConditionsTitle,
+    propertyOfferConditionsIntro,
+    propertyOfferConditionsTerms,
+    propertyOfferConditionsAccept,
+    propertyOfferPriceHelper,
+    propertyOfferConditionsHelper,
     filterSidebar,
     socialLinks[] {
       label,
@@ -768,6 +776,7 @@ export const PROPERTY_META_QUERY = groq`
       isHighlighted,
       highlightOrder,
       hideLabelOnHighlight,
+      "children": children[]._ref,
       "autoMax": math::max(*[_type == "property"].meta[metaKey._ref == ^._id || metaKey._ref == "drafts." + ^._id || ^._id == "drafts." + metaKey._ref].numberValue),
       filter {
         isFilterable,

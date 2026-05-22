@@ -14,9 +14,10 @@ import { useGalleryModal } from '@/components/providers/GalleryModalContext';
 interface PropertyGalleryProps {
   property: any;
   dict?: any;
+  offerEnabled?: boolean;
 }
 
-export default function PropertyGallery({ property, dict }: PropertyGalleryProps) {
+export default function PropertyGallery({ property, dict, offerEnabled = false }: PropertyGalleryProps) {
   const params = useParams();
   const locale = params?.locale || 'en';
   const [imageSizes, setImageSizes] = useState<Record<string, { w: number; h: number }>>({});
@@ -418,14 +419,16 @@ export default function PropertyGallery({ property, dict }: PropertyGalleryProps
                 </>
               ) : (
                 <>
+                  {offerEnabled && (
+                    <Button 
+                      label={dict?.property?.cta_make_offer || 'Make an offer'} 
+                      href="modal:make-an-offer" 
+                      variant="dark" 
+                    />
+                  )}
                   <Button 
-                    label={dict?.property?.cta_make_offer || 'Make an offer'} 
-                    href="#" 
-                    variant="dark" 
-                  />
-                  <Button 
-                    label={dict?.property?.cta_request_visit || 'Request a visit'} 
-                    href="#" 
+                    label={dict?.property?.cta_request_info || 'Request info'} 
+                    href="#contact" 
                     variant="outline" 
                   />
                 </>

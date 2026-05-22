@@ -1,0 +1,331 @@
+/* PropertyContactCard.css - Independent Custom Contact Card Styling */
+
+.property-contact-card {
+  background: var(--bg-surface);
+  width: 100%;
+  max-width: 600px;
+  height: auto;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  margin-left: 0;
+  z-index: 20;
+  box-shadow: var(--shadow-modal);
+}
+
+.property-contact-card.in-modal {
+  border: none;
+  background: transparent;
+  padding: 0;
+  max-width: 100%;
+}
+
+.property-contact-form,
+.property-contact-success-content {
+  padding: 3rem;
+}
+
+.property-contact-success-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  width: 100%;
+}
+
+.property-contact-form {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  justify-content: flex-start;
+}
+
+.property-contact-form-title {
+  font-family: var(--font-cormorant), serif;
+  letter-spacing: var(--ls-tight);
+  text-transform: uppercase;
+  color: var(--text-black);
+  font-size: var(--text-display-sm);
+  font-weight: var(--fw-light);
+  line-height: var(--lh-tight);
+  text-align: left;
+  margin-bottom: 0.5rem;
+}
+
+.property-contact-form-subtitle {
+  font-family: var(--font-manrope), sans-serif;
+  font-size: var(--text-sm-plus);
+  color: var(--text-black);
+  text-align: left;
+  margin-bottom: 2rem;
+  line-height: var(--lh-base);
+  opacity: 0.8;
+}
+
+/* WhatsApp Link Wrapper */
+.property-contact-whatsapp-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.property-contact-divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 1.5rem 0 0.5rem 0;
+  width: 100%;
+}
+
+.property-contact-divider::before,
+.property-contact-divider::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.property-contact-divider:not(:empty)::before {
+  margin-right: 1rem;
+}
+
+.property-contact-divider:not(:empty)::after {
+  margin-left: 1rem;
+}
+
+.property-contact-divider span {
+  font-family: var(--font-manrope), sans-serif;
+  font-size: var(--text-xs);
+  color: var(--text-subtle);
+  letter-spacing: var(--ls-widest);
+  font-weight: var(--fw-bold);
+}
+
+/* Form Group Layout */
+.property-contact-form-group {
+  margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.property-contact-form-group label {
+  font-family: var(--font-manrope), sans-serif;
+  font-size: var(--text-sm);
+  font-weight: var(--fw-bold);
+  text-transform: uppercase;
+  letter-spacing: var(--ls-widest);
+  color: var(--text-black);
+  margin-bottom: 0.5rem;
+  opacity: 0.9;
+}
+
+.property-contact-form-group input,
+.property-contact-form-group textarea {
+  font-family: var(--font-manrope), sans-serif;
+  font-size: var(--text-base);
+  padding: 0.75rem 0;
+  border: none;
+  border-bottom: 1px solid var(--border-light);
+  background: transparent;
+  transition: border-color 0.3s ease;
+  outline: none;
+  resize: none;
+  color: var(--text-black);
+  max-height: 96px;
+}
+
+.property-contact-form-group input:focus,
+.property-contact-form-group textarea:focus {
+  border-bottom-color: var(--color-gold-light);
+}
+
+.property-contact-required {
+  color: var(--color-gold-light);
+  font-weight: var(--fw-bold);
+}
+
+/* Expandable Section for Name, Email, Phone */
+.property-contact-expandable-section {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.45s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
+  opacity: 0;
+  overflow: hidden;
+}
+
+.property-contact-expandable-section.expanded {
+  grid-template-rows: 1fr;
+  opacity: 1;
+}
+
+.property-contact-expandable-inner {
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.property-contact-submit-wrapper {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.property-contact-submit-btn {
+  padding: 1.1rem 3rem !important;
+  font-size: var(--text-sm-plus) !important;
+  width: 100% !important;
+  justify-content: center;
+}
+
+.property-contact-error-message {
+  font-family: var(--font-manrope), sans-serif;
+  font-size: var(--text-sm);
+  color: #D32F2F;
+  margin-top: 0.5rem;
+}
+
+/* Success State Styles */
+.property-contact-card.success-state {
+  min-height: 400px;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  animation: propertyCardFadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.property-contact-success-icon-wrap {
+  width: 72px;
+  height: 72px;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-full);
+}
+
+.property-contact-success-icon {
+  width: 100%;
+  height: 100%;
+  filter: var(--color-gold-filter);
+}
+
+/* Make an Offer Button CTA */
+.property-contact-offer-cta {
+  margin-top: 0;
+  padding: 2rem 3rem 3rem 3rem;
+  background-color: var(--bg-muted);
+  width: 100%;
+}
+
+.property-contact-offer-btn {
+  padding: 1.1rem 3rem !important;
+  font-size: var(--text-sm-plus) !important;
+  width: 100% !important;
+  justify-content: center;
+}
+
+.property-contact-offer-intro {
+  font-family: var(--font-manrope), sans-serif;
+  font-size: var(--text-base-sm);
+  color: var(--text-black);
+  line-height: var(--lh-base);
+  margin-bottom: 1.25rem;
+  text-align: center;
+}
+
+/* PhoneInput custom styling overrides */
+.property-contact-form-group .PhoneInput {
+  border-bottom: 1px solid var(--border-light);
+  padding: 0.25rem 0;
+  transition: border-color 0.3s ease;
+}
+
+.property-contact-form-group .PhoneInput:focus-within {
+  border-bottom-color: var(--color-gold-light);
+}
+
+.property-contact-form-group .PhoneInputInput {
+  border: none !important;
+  outline: none !important;
+  background: transparent !important;
+  font-family: var(--font-manrope), sans-serif !important;
+  font-size: var(--text-base) !important;
+  color: var(--text-black) !important;
+  padding: 0.75rem 0 !important;
+  flex: 1;
+}
+
+.property-contact-form-group .PhoneInputCountry {
+  margin-right: 10px;
+  padding: 0.5rem;
+  cursor: pointer;
+}
+
+.property-contact-form-group .PhoneInputCountryIcon {
+  width: 24px !important;
+  height: 18px !important;
+  box-shadow: var(--shadow-xs);
+  border-radius: 2px;
+}
+
+/* Animations */
+@keyframes propertyCardFadeIn {
+  0% {
+    transform: translateY(10px);
+    opacity: 0;
+  }
+
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Responsiveness overrides */
+@media (max-width: 1024px) {
+  .property-contact-card {
+    padding: 0;
+    margin: 0 -0.5rem;
+    width: calc(100% + 1rem);
+  }
+
+  .property-contact-form,
+  .property-contact-success-content {
+    padding: 2.5rem;
+  }
+
+  .property-contact-offer-cta {
+    padding: 2rem 2.5rem 2.5rem 2.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .property-contact-card {
+    padding: 0;
+  }
+
+  .property-contact-form,
+  .property-contact-success-content {
+    padding: 2rem 1.5rem;
+  }
+
+  .property-contact-offer-cta {
+    padding: 1.5rem 1.5rem 2rem 1.5rem;
+  }
+
+  .property-contact-submit-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* Modal specific overrides for child paddings */
+.property-contact-card.in-modal .property-contact-form,
+.property-contact-card.in-modal .property-contact-offer-cta,
+.property-contact-card.in-modal .property-contact-success-content {
+  padding: 0;
+}

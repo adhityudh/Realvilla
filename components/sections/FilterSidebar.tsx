@@ -107,6 +107,14 @@ export default function FilterSidebar({
 
   // 3. Dynamic Sanity-driven Filter Values State
   const [filterValues, setFilterValues] = useState<Record<string, any>>({});
+  const [expandedParents, setExpandedParents] = useState<Record<string, boolean>>({});
+
+  const toggleParentExpanded = (parentId: string) => {
+    setExpandedParents(prev => ({
+      ...prev,
+      [parentId]: !prev[parentId]
+    }));
+  };
 
   // Helper to format numeric values with thousand commas (e.g., 2,000,000)
   const formatNumberWithCommas = (num: number): string => {
@@ -204,8 +212,43 @@ export default function FilterSidebar({
 
   // Parse Sanity filter definitions dynamically
   const filterableDefs = (meta?.definitions || [])
-    .filter((def: any) => def?.filter?.isFilterable === true)
+    .filter((def: any) => def?.filter?.isFilterable === true && def?.valueType !== 'string')
     .sort((a: any, b: any) => (a?.filter?.filterOrder || 0) - (b?.filter?.filterOrder || 0));
+
+  const parentMap = useMemo(() => {
+    const map = new Map<string, any[]>();
+    filterableDefs.forEach((def: any) => {
+      if (def.valueType === 'boolean' && Array.isArray(def.children) && def.children.length > 0) {
+        const cleanParent = def._id.replace('drafts.', '');
+        const resolvedChildren: any[] = [];
+        def.children.forEach((childRef: string) => {
+          const cleanChildId = childRef.replace('drafts.', '');
+          const childDef = filterableDefs.find((d: any) => d._id.replace('drafts.', '') === cleanChildId);
+          if (childDef) {
+            resolvedChildren.push(childDef);
+          }
+        });
+        map.set(cleanParent, resolvedChildren);
+      }
+    });
+    return map;
+  }, [filterableDefs]);
+
+  const rootFilterableDefs = useMemo(() => {
+    const childIds = new Set<string>();
+    filterableDefs.forEach((def: any) => {
+      if (def.valueType === 'boolean' && Array.isArray(def.children)) {
+        def.children.forEach((childRef: string) => {
+          childIds.add(childRef.replace('drafts.', ''));
+        });
+      }
+    });
+
+    return filterableDefs.filter((def: any) => {
+      const cleanId = def._id.replace('drafts.', '');
+      return !childIds.has(cleanId);
+    });
+  }, [filterableDefs]);
 
   const categorizedFilters = useMemo(() => {
     const blocks: any[] = [];
@@ -222,7 +265,7 @@ export default function FilterSidebar({
 
     const groups: Record<string, any[]> = {};
 
-    filterableDefs.forEach((def: any) => {
+    rootFilterableDefs.forEach((def: any) => {
       const catTitle = def.category;
       if (catTitle) {
         if (!groups[catTitle]) groups[catTitle] = [];
@@ -259,7 +302,7 @@ export default function FilterSidebar({
     });
 
     return { blocks, uncategorized };
-  }, [filterableDefs, meta?.categories]);
+  }, [rootFilterableDefs, meta?.categories]);
 
   useEffect(() => {
     if (isInline) {
@@ -368,6 +411,132 @@ export default function FilterSidebar({
     const type = def.filter?.filterType;
     const label = def.shortLabel || def.longLabel || dict?.archive?.filter;
     const unit = def.unit ? ` ${def.unit}` : '';
+
+    const cleanId = filterId.replace('drafts.', '');
+    const children = parentMap.get(cleanId) || [];
+    const hasChildren = children.length > 0;
+
+    if (hasChildren) {
+      const isExpanded = !!expandedParents[cleanId];
+      const allChecked = children.every(child => !!filterValues[child._id]);
+      const someChecked = !allChecked && children.some(child => !!filterValues[child._id]);
+
+      const handleParentToggle = () => {
+        setFilterValues(prev => {
+          const next = { ...prev };
+          children.forEach(child => {
+            if (allChecked) {
+              delete next[child._id];
+            } else {
+              next[child._id] = true;
+            }
+          });
+          return next;
+        });
+      };
+
+      return (
+        <div className="filter-parent-group" key={filterId}>
+          {/* Parent Header Row */}
+          <div className="filter-parent-header-row">
+            <div
+              className={`filter-parent-checkbox-row ${allChecked ? 'selected' : ''}`}
+              onClick={() => toggleParentExpanded(cleanId)}
+            >
+              <div 
+                className="custom-checkbox-wrapper"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleParentToggle();
+                }}
+              >
+                <input
+                  type="checkbox"
+                  checked={allChecked}
+                  ref={(el) => {
+                    if (el) {
+                      el.indeterminate = someChecked;
+                    }
+                  }}
+                  onChange={() => { }}
+                  className="accordion-checkbox-hidden"
+                />
+                <span className={`custom-checkbox-box ${someChecked ? 'indeterminate' : ''}`}>
+                  {someChecked ? (
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4">
+                      <line x1="5" y1="12" x2="19" y2="12"></line>
+                    </svg>
+                  ) : (
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4">
+                      <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                  )}
+                </span>
+              </div>
+
+              <span className="accordion-option-label parent-label">
+                {label}
+              </span>
+            </div>
+
+            <button
+              type="button"
+              className={`filter-parent-expand-btn ${isExpanded ? 'expanded' : ''}`}
+              onClick={() => toggleParentExpanded(cleanId)}
+              aria-label="Toggle children"
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <path d="M6 9l6 6 6-6" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </button>
+          </div>
+
+          {/* Children Container */}
+          {isExpanded && (
+            <div className="filter-children-list">
+              {children.map((child: any) => {
+                const childId = child._id;
+                const childChecked = !!filterValues[childId];
+                const childLabel = child.shortLabel || child.longLabel || '';
+
+                return (
+                  <div
+                    key={childId}
+                    className={`accordion-option-row child-row ${childChecked ? 'selected' : ''}`}
+                    onClick={() => setFilterValues(prev => {
+                      const next = { ...prev };
+                      if (childChecked) {
+                        delete next[childId];
+                      } else {
+                        next[childId] = true;
+                      }
+                      return next;
+                    })}
+                  >
+                    <div className="custom-checkbox-wrapper">
+                      <input
+                        type="checkbox"
+                        checked={childChecked}
+                        onChange={() => { }}
+                        className="accordion-checkbox-hidden"
+                      />
+                      <span className="custom-checkbox-box">
+                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4">
+                          <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                      </span>
+                    </div>
+                    <span className="accordion-option-label child-label">
+                      {childLabel}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      );
+    }
 
     if (type === 'rangeSlider') {
       const isDouble = def.filter?.isDoubleSlider === true;
@@ -565,7 +734,7 @@ export default function FilterSidebar({
       const currentValue = !!filterValues[filterId];
 
       return (
-        <div className="filter-group" key={filterId} style={{ marginTop: '0.25rem' }}>
+        <div className="filter-group" key={filterId}>
           <div
             className={`accordion-option-row ${currentValue ? 'selected' : ''}`}
             onClick={() => setFilterValues(prev => ({ ...prev, [filterId]: !currentValue }))}
@@ -616,11 +785,11 @@ export default function FilterSidebar({
               const optVal = typeof opt === 'object' && opt !== null ? opt.value : opt;
               const optLabel = typeof opt === 'object' && opt !== null ? opt.label : opt;
               const optIcon = typeof opt === 'object' && opt !== null ? opt.icon : null;
-              
+
               const active = type === 'multiSelect'
                 ? (Array.isArray(selected) && selected.includes(optVal))
                 : selected === optVal;
-                
+
               return (
                 <button
                   key={`${filterId}-${optVal}`}
@@ -646,6 +815,12 @@ export default function FilterSidebar({
 
   const isDefActive = (def: any) => {
     const filterId = def._id;
+    const cleanId = filterId.replace('drafts.', '');
+    if (parentMap.has(cleanId)) {
+      const children = parentMap.get(cleanId) || [];
+      return children.some((child: any) => !!filterValues[child._id]);
+    }
+
     const type = def.filter?.filterType;
     const val = filterValues[filterId];
 
@@ -683,6 +858,12 @@ export default function FilterSidebar({
 
   const getDefActiveCount = (def: any) => {
     const filterId = def._id;
+    const cleanId = filterId.replace('drafts.', '');
+    if (parentMap.has(cleanId)) {
+      const children = parentMap.get(cleanId) || [];
+      return children.reduce((sum: number, child: any) => sum + (filterValues[child._id] ? 1 : 0), 0);
+    }
+
     const type = def.filter?.filterType;
     const val = filterValues[filterId];
 
@@ -738,9 +919,9 @@ export default function FilterSidebar({
                       key={cat._id}
                       className={`filter-grid-btn ${active ? 'active' : ''}`}
                       onClick={() => {
-                        setSelectedCategories(prev => 
-                          prev.includes(cat._id) 
-                            ? prev.filter(c => c !== cat._id) 
+                        setSelectedCategories(prev =>
+                          prev.includes(cat._id)
+                            ? prev.filter(c => c !== cat._id)
                             : [...prev, cat._id]
                         );
                       }}
@@ -1022,26 +1203,26 @@ export default function FilterSidebar({
             {orderedElements.map(el => el.node)}
           </div>
 
-        {/* Footer Actions */}
-        {!isInline && (
-          <div className="filter-sidebar-footer">
-            <button
-              className="filter-reset-btn"
-              onClick={handleResetAll}
-            >
-              {dict?.filter?.reset_all}
-            </button>
-            <Button
-              label={dict?.filter?.apply_filters}
-              variant="dark"
-              showArrow={true}
-              onClick={handleApply}
-              className="filter-apply-btn"
-            />
-          </div>
-        )}
+          {/* Footer Actions */}
+          {!isInline && (
+            <div className="filter-sidebar-footer">
+              <button
+                className="filter-reset-btn"
+                onClick={handleResetAll}
+              >
+                {dict?.filter?.reset_all}
+              </button>
+              <Button
+                label={dict?.filter?.apply_filters}
+                variant="dark"
+                showArrow={true}
+                onClick={handleApply}
+                className="filter-apply-btn"
+              />
+            </div>
+          )}
+        </div>
       </div>
-    </div>
     );
   };
 
