@@ -366,11 +366,24 @@
   opacity: 0.15;
   pointer-events: none;
   z-index: 0;
+  
+  /* Responsive sizing - maintains design intent */
   height: 225%;
+  aspect-ratio: 1 / 1;
+  
+  /* Safety net: prevent 0px dimensions that break masking */
+  min-width: 180px;
+  min-height: 180px;
+  
   position: absolute;
   top: -50%;
   right: 0px;
-  aspect-ratio: 1 / 1;
+  
+  /* Performance optimizations for stable rendering */
+  transform: translateZ(0);
+  will-change: transform;
+  contain: layout style paint;
+  backface-visibility: hidden;
 
   -webkit-mask-image: url("/images/logo-mark.svg");
   mask-image: url("/images/logo-mark.svg");
