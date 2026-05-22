@@ -149,27 +149,91 @@ export async function POST(request: Request) {
     const form = pdfDoc.getForm();
     const fields = form.getFields();
 
-    // Log available field names for debugging
-    console.log('[Offer/GeneratePDF] PDF template fields found:', fields.map(f => f.getName()));
+    // ── DEBUGGING: Check if PDF has fillable fields ────────────────────────────
+    console.log('[Offer/GeneratePDF] ═══════════════════════════════════════════════════');
+    console.log('[Offer/GeneratePDF] PDF DEBUGGING INFO:');
+    console.log('[Offer/GeneratePDF] - Total pages:', pdfDoc.getPageCount());
+    console.log('[Offer/GeneratePDF] - Total form fields found:', fields.length);
+    
+    if (fields.length === 0) {
+      console.error('[Offer/GeneratePDF] ❌ ERROR: PDF has NO fillable form fields!');
+      console.error('[Offer/GeneratePDF] 💡 Solution: Open your PDF in Adobe Acrobat or LibreOffice and add form fields.');
+      console.error('[Offer/GeneratePDF] 💡 Or use an online tool like PDFescape.com to add fillable fields.');
+    }
+
+    // Get all PDF field names and types
+    const pdfFieldNames = fields.map(f => f.getName());
+    const pdfFieldDetails = fields.map(f => ({
+      name: f.getName(),
+      type: f.constructor.name,
+    }));
+    
+    console.log('[Offer/GeneratePDF] PDF template fields found:', pdfFieldNames);
+    console.log('[Offer/GeneratePDF] PDF field details:', pdfFieldDetails);
+    console.log('[Offer/GeneratePDF] Expected field names from config:', Object.keys(fieldValues));
+    console.log('[Offer/GeneratePDF] ═══════════════════════════════════════════════════');
+
+    // Create a normalized lookup map for flexible matching
+    // This handles variations like "Property Title" vs "property_title"
+    const normalizeFieldName = (name: string) => 
+      name.toLowerCase().replace(/[\s\-]/g, '_').replace(/[^\w]/g, '');
+
+    // Create reverse lookup: normalized name -> actual PDF field name
+    const normalizedPdfFields = new Map<string, string>();
+    for (const pdfFieldName of pdfFieldNames) {
+      const normalized = normalizeFieldName(pdfFieldName);
+      normalizedPdfFields.set(normalized, pdfFieldName);
+    }
+
+    // Create lookup: normalized expected name -> value
+    const normalizedFieldValues = new Map<string, { originalKey: string; value: string }>();
+    for (const [key, value] of Object.entries(fieldValues)) {
+      const normalized = normalizeFieldName(key);
+      normalizedFieldValues.set(normalized, { originalKey: key, value });
+    }
 
     // Fill each matching field
     let filledCount = 0;
-    for (const field of fields) {
-      const name = field.getName();
-      if (name in fieldValues) {
+    const unmatchedExpected: string[] = [];
+    const unmatchedPdf: string[] = [];
+
+    // Try to fill fields using normalized matching
+    for (const [normalizedName, pdfFieldName] of normalizedPdfFields.entries()) {
+      const fieldData = normalizedFieldValues.get(normalizedName);
+      
+      if (fieldData) {
         try {
           // Try to fill as TextField (most common)
-          const textField = form.getTextField(name);
-          textField.setText(fieldValues[name]);
+          const textField = form.getTextField(pdfFieldName);
+          textField.setText(fieldData.value);
           filledCount++;
-        } catch {
+          console.log(`[Offer/GeneratePDF] ✓ Filled "${pdfFieldName}" with value from "${fieldData.originalKey}"`);
+        } catch (err) {
           // May be a different field type (dropdown, checkbox) — skip gracefully
-          console.warn(`[Offer/GeneratePDF] Could not fill field "${name}" as TextField — skipping.`);
+          console.warn(`[Offer/GeneratePDF] ✗ Could not fill field "${pdfFieldName}" as TextField — skipping.`);
         }
+      } else {
+        unmatchedPdf.push(pdfFieldName);
       }
     }
 
-    console.log(`[Offer/GeneratePDF] Filled ${filledCount}/${Object.keys(fieldValues).length} fields.`);
+    // Check for expected fields that weren't found in PDF
+    for (const [normalizedName, fieldData] of normalizedFieldValues.entries()) {
+      if (!normalizedPdfFields.has(normalizedName)) {
+        unmatchedExpected.push(fieldData.originalKey);
+      }
+    }
+
+    console.log(`[Offer/GeneratePDF] ✓ Successfully filled ${filledCount}/${Object.keys(fieldValues).length} fields.`);
+    
+    if (unmatchedExpected.length > 0) {
+      console.warn(`[Offer/GeneratePDF] ⚠️  Expected fields not found in PDF template:`, unmatchedExpected);
+      console.warn(`[Offer/GeneratePDF] 💡 Tip: Update the "PDF Field Name Mapping" in Sanity to match your PDF's actual field names.`);
+    }
+    
+    if (unmatchedPdf.length > 0) {
+      console.log(`[Offer/GeneratePDF] ℹ️  PDF fields that were not filled (no matching data):`, unmatchedPdf);
+    }
 
     // Flatten the form so fields become read-only text in the final PDF
     form.flatten();
