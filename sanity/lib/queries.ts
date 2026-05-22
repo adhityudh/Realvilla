@@ -725,7 +725,7 @@ export const PROPERTY_DETAIL_QUERY = groq`
       )
     },
     "seo": {
-      "metaTitle": title + " | Realvilla",
+      "metaTitle": title + " | REALVILLA",
       "metaDescription": pt::text(description),
       "ogImage": image { asset->{ url } }
     },
