@@ -22,6 +22,42 @@ export const smoothScrollToAnchor = (
     .replace(/[^\x20-\x7E]/g, '') // purge non-ascii/unprintable chars
     .trim();
 
+  // Guard: Verify if the URL points to a local page anchor on the same page/pathname
+  if (typeof window !== 'undefined') {
+    const isLocalAnchor = (val: string): boolean => {
+      if (val.startsWith('#')) return true;
+      if (!val.includes('#')) return false;
+
+      const normalizePath = (p: string) => p.replace(/\/$/, '') || '/';
+
+      if (val.startsWith('http://') || val.startsWith('https://')) {
+        try {
+          const parsed = new URL(val);
+          const current = new URL(window.location.href);
+          return parsed.origin === current.origin && normalizePath(parsed.pathname) === normalizePath(current.pathname);
+        } catch {
+          return false;
+        }
+      }
+
+      if (val.startsWith('mailto:') || val.startsWith('tel:') || val.startsWith('javascript:')) {
+        return false;
+      }
+
+      try {
+        const parsed = new URL(val, window.location.origin);
+        const current = new URL(window.location.href);
+        return normalizePath(parsed.pathname) === normalizePath(current.pathname);
+      } catch {
+        return false;
+      }
+    };
+
+    if (!isLocalAnchor(cleanUrl)) {
+      return false;
+    }
+  }
+
   const hashIndex = cleanUrl.indexOf('#');
   if (hashIndex !== -1) {
     const anchorId = cleanUrl.substring(hashIndex + 1).trim();

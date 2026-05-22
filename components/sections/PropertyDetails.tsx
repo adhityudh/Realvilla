@@ -16,12 +16,8 @@ interface PropertyDetailsProps {
   property: any;
   dict?: any;
   locale?: string;
-  quickLinks?: any[];
-  useRequestGuidance?: boolean;
   whatsappNumber?: string;
   whatsappMessageTemplate?: string;
-  requestGuidancePresetMessage?: string;
-  hideRequestGuidanceWhatsApp?: boolean;
   mortgageCalculatorData?: any;
   // ── Offer ──
   offerEnabled?: boolean;
@@ -38,12 +34,8 @@ export default function PropertyDetails({
   property, 
   dict, 
   locale = 'en',
-  quickLinks = [],
-  useRequestGuidance = true,
   whatsappNumber,
   whatsappMessageTemplate,
-  requestGuidancePresetMessage,
-  hideRequestGuidanceWhatsApp,
   mortgageCalculatorData,
   offerEnabled = false,
   offerDepositAmount = 500,
@@ -404,14 +396,14 @@ export default function PropertyDetails({
             dict={dict}
             locale={locale}
             whatsappNumber={whatsappNumber}
-            showWhatsApp={!hideRequestGuidanceWhatsApp}
-            presetMessage={requestGuidancePresetMessage ? requestGuidancePresetMessage.replace(/{{property_title}}/g, property.title).replace(/{{property_link}}/g, pageUrl) : ''}
+            showWhatsApp={true}
+            presetMessage={''}
+            whatsappMessageTemplate={whatsappMessageTemplate ? whatsappMessageTemplate.replace(/{{property_title}}/g, property.title || '').replace(/{{property_link}}/g, pageUrl) : ''}
             offerEnabled={offerEnabled}
             offerDepositAmount={offerDepositAmount}
             propertyId={property._id || ''}
             propertyTitle={property.title || ''}
             propertyPrice={property.price}
-            useRequestGuidance={useRequestGuidance}
             offerConditionsTitle={offerConditionsTitle}
             offerConditionsIntro={offerConditionsIntro}
             offerConditionsTerms={offerConditionsTerms}
@@ -468,9 +460,10 @@ export default function PropertyDetails({
           onSubmittingChange={setIsSubmitting}
           onSubmitSuccess={setSubmitSuccess}
           submitSuccess={submitSuccess}
-          presetMessage={requestGuidancePresetMessage ? requestGuidancePresetMessage.replace(/{{property_title}}/g, property.title).replace(/{{property_link}}/g, pageUrl) : ''}
+          presetMessage={''}
+          whatsappMessageTemplate={whatsappMessageTemplate ? whatsappMessageTemplate.replace(/{{property_title}}/g, property.title || '').replace(/{{property_link}}/g, pageUrl) : ''}
           whatsappNumber={whatsappNumber}
-          showWhatsApp={!hideRequestGuidanceWhatsApp}
+          showWhatsApp={true}
           propertyId={property._id || ''}
           propertyTitle={property.title || ''}
           propertyPrice={property.price}

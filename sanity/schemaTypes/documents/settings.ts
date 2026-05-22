@@ -85,125 +85,12 @@ export const settings = defineType({
       group: 'propertyDetail',
     }),
     defineField({
-      name: 'propertyQuickLinks',
-      title: 'Property Quick Links',
-      description: 'Add editorial jumping links right beneath the property description block (e.g. BUYING PROCESS, MORTGAGE OPTIONS).',
-      type: 'array',
-      group: 'propertyDetail',
-      of: [
-        {
-          type: 'object',
-          fields: [
-            defineField({ name: 'label', title: 'Label', type: 'string' }),
-            defineField({
-              name: 'linkType',
-              title: 'Link Type',
-              type: 'string',
-              options: {
-                list: [
-                  { title: 'Section on Current Page', value: 'section' },
-                  { title: 'Internal Page', value: 'internal' },
-                  { title: 'External URL', value: 'external' },
-                ],
-                layout: 'radio',
-              },
-              initialValue: 'section',
-            }),
-            defineField({
-              name: 'openInNewWindow',
-              title: 'Open in New Tab',
-              type: 'boolean',
-              description: 'Open this link in a new browser tab/window',
-              initialValue: false,
-            }),
-            defineField({
-              name: 'sectionId',
-              title: 'Section on Current Page',
-              description: 'Select a section from the Property Page Sections configured below',
-              type: 'string',
-              components: {
-                input: CurrentPageSectionSelector,
-              },
-              hidden: ({ parent }) => parent?.linkType !== 'section',
-            }),
-            defineField({
-              name: 'internalLink',
-              title: 'Internal Link',
-              type: 'reference',
-              to: [{ type: 'page' }],
-              hidden: ({ parent }) => parent?.linkType !== 'internal',
-              options: {
-                filter: ({ document }) => {
-                  const language = document?.language;
-                  if (!language) return {};
-                  return {
-                    filter: 'language == $language || !defined(language)',
-                    params: { language }
-                  };
-                }
-              }
-            }),
-            defineField({
-              name: 'internalSection',
-              title: 'Internal Page Section',
-              type: 'string',
-              components: {
-                input: InternalSectionSelector,
-              },
-              hidden: ({ parent }) => parent?.linkType !== 'internal' || !parent?.internalLink,
-            }),
-            defineField({
-              name: 'externalLink',
-              title: 'External URL',
-              type: 'string',
-              hidden: ({ parent }) => parent?.linkType !== 'external',
-              description: 'Enter a full URL (https://...) or relative path.',
-            }),
-          ],
-          preview: {
-            select: {
-              title: 'label',
-              subtitle: 'externalLink',
-            },
-          },
-        },
-      ],
-    }),
-    defineField({
-      name: 'propertyUseRequestGuidance',
-      title: 'Use Request Guidance Modal',
-      description: 'If enabled, the "REQUEST GUIDANCE" link will appear in the quick links and trigger the direct contact modal on click.',
-      type: 'boolean',
-      initialValue: true,
-      group: 'propertyDetail',
-    }),
-    defineField({
-      name: 'requestGuidancePresetMessage',
-      title: 'Preset Form Message',
-      description: 'Optional: Provide a default message. If set, this exact text will be pre-filled in the message text area. Use {{property_title}} and {{property_link}} to dynamically inject property details.',
-      type: 'text',
-      rows: 3,
-      group: 'propertyDetail',
-      hidden: ({ parent }) => !parent?.propertyUseRequestGuidance,
-    }),
-    defineField({
-      name: 'hideRequestGuidanceWhatsApp',
-      title: 'Hide WhatsApp Option (Request Guidance)',
-      description: 'Check this to hide the WhatsApp option in the Request Guidance modal on Property pages.',
-      type: 'boolean',
-      initialValue: false,
-      group: 'propertyDetail',
-      hidden: ({ parent }) => !parent?.propertyUseRequestGuidance,
-    }),
-
-    defineField({
       name: 'contactPresetMessageTemplate',
-      title: 'Request Guidance WhatsApp Template',
-      description: 'The default text template for the WhatsApp button when requesting guidance on individual Property pages. Use {{property_title}} and {{property_link}} to dynamically inject property details.',
+      title: 'WhatsApp Message Template',
+      description: 'The default text template for the WhatsApp button on individual Property pages. Use {{property_title}} and {{property_link}} to dynamically inject property details.',
       type: 'text',
       rows: 2,
       group: 'propertyDetail',
-      hidden: ({ parent }) => !parent?.propertyUseRequestGuidance || parent?.hideRequestGuidanceWhatsApp === true,
     }),
 
     // ── Make an Offer Feature ──
@@ -401,7 +288,7 @@ Fields that don't exist in your PDF are simply skipped — you don't need all of
       description: 'Override the title for Step 1 (Conditions) in the Make an Offer modal.',
       type: 'string',
       group: 'propertyDetail',
-      hidden: ({ parent }) => !parent?.propertyOfferEnabled || !parent?.propertyUseRequestGuidance,
+      hidden: ({ parent }) => !parent?.propertyOfferEnabled,
     }),
     defineField({
       name: 'propertyOfferConditionsIntro',
@@ -410,7 +297,7 @@ Fields that don't exist in your PDF are simply skipped — you don't need all of
       type: 'text',
       rows: 3,
       group: 'propertyDetail',
-      hidden: ({ parent }) => !parent?.propertyOfferEnabled || !parent?.propertyUseRequestGuidance,
+      hidden: ({ parent }) => !parent?.propertyOfferEnabled,
     }),
     defineField({
       name: 'propertyOfferConditionsTerms',
@@ -419,7 +306,7 @@ Fields that don't exist in your PDF are simply skipped — you don't need all of
       type: 'array',
       of: [{ type: 'string' }],
       group: 'propertyDetail',
-      hidden: ({ parent }) => !parent?.propertyOfferEnabled || !parent?.propertyUseRequestGuidance,
+      hidden: ({ parent }) => !parent?.propertyOfferEnabled,
     }),
     defineField({
       name: 'propertyOfferConditionsAccept',
@@ -427,7 +314,7 @@ Fields that don't exist in your PDF are simply skipped — you don't need all of
       description: 'Override the text next to the checkbox to accept terms in Step 1.',
       type: 'string',
       group: 'propertyDetail',
-      hidden: ({ parent }) => !parent?.propertyOfferEnabled || !parent?.propertyUseRequestGuidance,
+      hidden: ({ parent }) => !parent?.propertyOfferEnabled,
     }),
     defineField({
       name: 'propertyOfferPriceHelper',
@@ -435,7 +322,7 @@ Fields that don't exist in your PDF are simply skipped — you don't need all of
       description: 'Override the helper text underneath the Offered Price field in Step 3.',
       type: 'string',
       group: 'propertyDetail',
-      hidden: ({ parent }) => !parent?.propertyOfferEnabled || !parent?.propertyUseRequestGuidance,
+      hidden: ({ parent }) => !parent?.propertyOfferEnabled,
     }),
     defineField({
       name: 'propertyOfferConditionsHelper',
@@ -444,7 +331,7 @@ Fields that don't exist in your PDF are simply skipped — you don't need all of
       type: 'text',
       rows: 4,
       group: 'propertyDetail',
-      hidden: ({ parent }) => !parent?.propertyOfferEnabled || !parent?.propertyUseRequestGuidance,
+      hidden: ({ parent }) => !parent?.propertyOfferEnabled,
     }),
 
     defineField({

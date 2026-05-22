@@ -558,21 +558,14 @@ export const SETTINGS_QUERY = groq`
       amortLabelInterest,
       amortLabelBalance
     },
-    hideRequestGuidanceWhatsApp,
-    requestGuidancePresetMessage,
     contactPresetMessageTemplate,
-    "propertiesPageSeo": propertiesPageSeo {
+    \"propertiesPageSeo\": propertiesPageSeo {
       ${SEO_SUBFIELDS}
     },
-    "propertyDetailSections": propertyDetailSections[] {
+    \"propertyDetailSections\": propertyDetailSections[] {
       ${SECTION_PROJECTION}
     },
     propertyDetailFooterPaddingHigh,
-    propertyQuickLinks[] {
-      label,
-      "link": ${INTERNAL_LINK_PROJECTION}
-    },
-    propertyUseRequestGuidance,
     propertyOfferEnabled,
     propertyOfferDepositAmount,
     propertyOfferConditionsTitle,

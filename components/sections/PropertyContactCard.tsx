@@ -17,6 +17,7 @@ interface PropertyContactCardProps {
   propertyPrice?: number;
   whatsappNumber?: string;
   presetMessage?: string;
+  whatsappMessageTemplate?: string;
   showWhatsApp?: boolean;
   offerEnabled?: boolean;
   offerDepositAmount?: number;
@@ -41,6 +42,7 @@ export default function PropertyContactCard({
   propertyPrice,
   whatsappNumber,
   presetMessage,
+  whatsappMessageTemplate,
   showWhatsApp = true,
   offerEnabled = false,
   offerDepositAmount = 500,
@@ -176,8 +178,8 @@ export default function PropertyContactCard({
   const propertyDict = dict?.property || {};
   const contactDict = dict?.contact || {};
 
-  const cleanPreset = presetMessage ? encodeURIComponent(presetMessage) : '';
-  const waLink = whatsappNumber ? `https://wa.me/${whatsappNumber.replace(/\+/g, '')}${cleanPreset ? `?text=${cleanPreset}` : ''}` : '';
+  const cleanPreset = whatsappMessageTemplate ? encodeURIComponent(whatsappMessageTemplate) : '';
+  const waLink = whatsappNumber ? `https://wa.me/${whatsappNumber.replace(/[^0-9]/g, '')}${cleanPreset ? `?text=${cleanPreset}` : ''}` : '';
 
   if (submitSuccess) {
     return (

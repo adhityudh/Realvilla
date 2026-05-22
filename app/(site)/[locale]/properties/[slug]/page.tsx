@@ -65,12 +65,8 @@ export default async function PropertyPage({ params }: { params: Promise<{ local
           property={property} 
           dict={dict} 
           locale={locale} 
-          quickLinks={settings?.propertyQuickLinks}
-          useRequestGuidance={settings?.propertyUseRequestGuidance}
           whatsappNumber={settings?.contactWhatsAppNumber}
           whatsappMessageTemplate={settings?.contactPresetMessageTemplate}
-          requestGuidancePresetMessage={settings?.requestGuidancePresetMessage}
-          hideRequestGuidanceWhatsApp={settings?.hideRequestGuidanceWhatsApp}
           mortgageCalculatorData={settings?.mortgageCalculator}
           offerEnabled={settings?.propertyOfferEnabled ?? false}
           offerDepositAmount={settings?.propertyOfferDepositAmount ?? 500}
