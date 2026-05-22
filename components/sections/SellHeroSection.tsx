@@ -43,6 +43,7 @@ export default function SellHeroSection({ data, dict, contextData }: SellHeroSec
   const [selectedPlaceId, setSelectedPlaceId] = useState('');
   const [isScrollAtEnd, setIsScrollAtEnd] = useState(false);
   const [isScrollAtStart, setIsScrollAtStart] = useState(true);
+  const [showEmptyState, setShowEmptyState] = useState(false);
 
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -132,16 +133,27 @@ export default function SellHeroSection({ data, dict, contextData }: SellHeroSec
     }
 
     setIsLoading(true);
+    setShowEmptyState(false);
     debounceTimerRef.current = setTimeout(async () => {
       try {
         const res = await fetch(`/api/places/autocomplete/?q=${encodeURIComponent(val)}`);
         if (res.ok) {
           const data = await res.json();
-          setSuggestions(data.predictions || []);
-          setIsDropdownOpen((data.predictions || []).length > 0);
+          const predictions = data.predictions || [];
+          setSuggestions(predictions);
+          
+          if (predictions.length > 0) {
+            setIsDropdownOpen(true);
+            setShowEmptyState(false);
+          } else {
+            // Show empty state when search completed but no results
+            setIsDropdownOpen(true);
+            setShowEmptyState(true);
+          }
         }
       } catch (err) {
         console.error('Error fetching address suggestions:', err);
+        setShowEmptyState(false);
       } finally {
         setIsLoading(false);
       }
@@ -447,18 +459,26 @@ export default function SellHeroSection({ data, dict, contextData }: SellHeroSec
             />
           </div>
 
-          {isDropdownOpen && suggestions.length > 0 && (
+          {isDropdownOpen && (suggestions.length > 0 || showEmptyState) && (
             <div className="sell-suggestions-dropdown" data-lenis-prevent="true">
-              {suggestions.map((item) => (
-                <button
-                  key={item.place_id}
-                  type="button"
-                  className="sell-suggestion-item"
-                  onClick={() => handleSelectAddress(item.display_name, String(item.place_id))}
-                >
-                  {item.display_name}
-                </button>
-              ))}
+              {suggestions.length > 0 ? (
+                suggestions.map((item) => (
+                  <button
+                    key={item.place_id}
+                    type="button"
+                    className="sell-suggestion-item"
+                    onClick={() => handleSelectAddress(item.display_name, String(item.place_id))}
+                  >
+                    {item.display_name}
+                  </button>
+                ))
+              ) : showEmptyState ? (
+                <div className="sell-empty-state">
+                  <p className="sell-empty-state-text">
+                    {dict?.contact?.sell?.no_results || 'No addresses found. Please try a different search.'}
+                  </p>
+                </div>
+              ) : null}
             </div>
           )}
         </div>

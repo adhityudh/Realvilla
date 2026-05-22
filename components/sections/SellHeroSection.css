@@ -305,6 +305,20 @@
     color: var(--color-gold-dark);
 }
 
+/* Empty State */
+.sell-empty-state {
+    padding: 2rem 1.5rem;
+    text-align: center;
+}
+
+.sell-empty-state-text {
+    font-family: var(--font-manrope), sans-serif;
+    font-size: var(--text-base-sm);
+    color: var(--text-muted);
+    line-height: var(--lh-base);
+    margin: 0;
+}
+
 /* Loading Spinner */
 .sell-search-spinner {
     position: absolute;
