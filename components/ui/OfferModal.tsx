@@ -733,17 +733,6 @@ export default function OfferModal({
       </div>
 
       {checkoutError && <p className="offer-error-message">✕ {checkoutError}</p>}
-
-      {/* Back button lives in the body on step 4 */}
-      <button
-        type="button"
-        className="offer-back-btn offer-back-inline"
-        onClick={handleBack}
-        id="offer-step4-back"
-      >
-        <img src="/icons/arrow_left_alt.svg" alt="" aria-hidden="true" className="offer-back-icon" />
-        {od.btn_back}
-      </button>
     </div>
   );
 
