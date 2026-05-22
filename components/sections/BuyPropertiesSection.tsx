@@ -6,6 +6,7 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { client } from '@/sanity/lib/client';
 import { PROPERTY_META_QUERY, PROPERTY_CARD_FIELDS } from '@/sanity/lib/queries';
+import { sanitizeSanityData } from '@/lib/sanitize';
 import PropertyCard from '../ui/PropertyCard';
 import Button from '../ui/Button';
 import SearchModal from './SearchModal';
@@ -76,8 +77,8 @@ export default function BuyPropertiesSection({ data, dict, filterMeta: initialMe
     }
     const fetchFilterMeta = async () => {
       try {
-        const res = await client.fetch(PROPERTY_META_QUERY, { language: locale }, { stega: false });
-        setFilterMeta(res);
+        const rawRes = await client.fetch(PROPERTY_META_QUERY, { language: locale }, { stega: false });
+        setFilterMeta(sanitizeSanityData(rawRes));
       } catch (err) {
         console.error('Error fetching filter meta:', err);
       }

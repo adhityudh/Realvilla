@@ -1,6 +1,7 @@
 import { Metadata } from 'next'
 import { client } from '@/sanity/lib/client'
 import { SETTINGS_QUERY } from '@/sanity/lib/queries'
+import { sanitizeSanityData } from './sanitize'
 
 export type SeoData = {
   metaTitle?: string
@@ -12,9 +13,10 @@ export type SeoData = {
 }
 
 export async function getGlobalSettings(locale: string) {
-  return await client.fetch(SETTINGS_QUERY, { language: locale }, {
+  const rawSettings = await client.fetch(SETTINGS_QUERY, { language: locale }, {
     next: { tags: ['settings'] }
   })
+  return sanitizeSanityData(rawSettings)
 }
 
 export function constructMetadata(

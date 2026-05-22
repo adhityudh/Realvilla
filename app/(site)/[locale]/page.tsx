@@ -9,6 +9,7 @@ import { client, getClient } from '@/sanity/lib/client';
 import { PAGE_QUERY, SETTINGS_QUERY, PROPERTY_META_QUERY } from '@/sanity/lib/queries';
 import { getGlobalSettings, constructMetadata } from '@/lib/metadata';
 import { getDictionary } from '@/lib/get-dictionary';
+import { sanitizeSanityData } from '@/lib/sanitize';
 import { Metadata } from 'next';
 import TranslationSetter from '@/components/providers/TranslationSetter';
 
@@ -16,10 +17,11 @@ export async function generateMetadata(
   { params }: { params: Promise<{ locale: string }> }
 ): Promise<Metadata> {
   const { locale } = await params;
-  const [page, settings] = await Promise.all([
+  const [rawPage, settings] = await Promise.all([
     client.fetch(PAGE_QUERY, { slug: 'home', language: locale }),
     getGlobalSettings(locale)
   ]);
+  const page = sanitizeSanityData(rawPage);
   
   return constructMetadata(page?.seo, settings?.seo, `/${locale}`, settings?.favicon);
 }
@@ -45,12 +47,15 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
       } 
     };
 
-    [data, settingsData, dict, filterMeta] = await Promise.all([
+    const [rawData, rawSettings, dict, rawFilterMeta] = await Promise.all([
       activeClient.fetch(PAGE_QUERY, { slug: 'home', language: locale }, fetchOptions),
       activeClient.fetch(SETTINGS_QUERY, { language: locale }, fetchOptions),
       getDictionary(locale as any),
       activeClient.fetch(PROPERTY_META_QUERY, { language: locale }, { stega: false, next: { revalidate: 3600, tags: ['meta'] } })
     ]);
+    data = sanitizeSanityData(rawData);
+    settingsData = sanitizeSanityData(rawSettings);
+    filterMeta = sanitizeSanityData(rawFilterMeta);
   } catch (error) {
     console.error('Sanity fetch error:', error);
   }

@@ -1,6 +1,7 @@
 import { client } from '@/sanity/lib/client';
 import { groq } from 'next-sanity';
 import { PROPERTY_CARD_FIELDS } from '@/sanity/lib/queries';
+import { sanitizeSanityData } from '@/lib/sanitize';
 import PropertyCard from '@/components/ui/PropertyCard';
 import Button from '@/components/ui/Button';
 import './OtherProperties.css';
@@ -37,7 +38,7 @@ const SUGGESTED_PROPERTIES_QUERY = groq`
 export default async function OtherProperties({ currentPropertyId, categoryId, municipality, locale, dict }: OtherPropertiesProps) {
   let properties = [];
   try {
-    properties = await client.fetch(
+    const rawProperties = await client.fetch(
       SUGGESTED_PROPERTIES_QUERY, 
       { 
         language: locale, 
@@ -47,6 +48,7 @@ export default async function OtherProperties({ currentPropertyId, categoryId, m
       },
       { next: { revalidate: 60 } }
     );
+    properties = sanitizeSanityData(rawProperties);
   } catch (err) {
     console.error('[OtherProperties] Suggestion fetch error:', err);
   }

@@ -6,6 +6,7 @@ import gsap from 'gsap';
 import Button from '../ui/Button';
 import { getMunicipalities } from '../../lib/municipalities';
 import { client } from '@/sanity/lib/client';
+import { sanitizeSanityData } from '@/lib/sanitize';
 import './FilterSidebar.css';
 
 interface FilterSidebarProps {
@@ -87,9 +88,9 @@ export default function FilterSidebar({
     const fetchTexts = async () => {
       try {
         const query = `*[_type == "settings" && (language == $language || (!defined(language) && $language == "en"))][0].filterSidebar`;
-        const data = await client.fetch(query, { language: locale });
-        if (data) {
-          setSanityFilterTexts(data);
+        const rawData = await client.fetch(query, { language: locale });
+        if (rawData) {
+          setSanityFilterTexts(sanitizeSanityData(rawData));
         }
       } catch (e) {
         console.error('Failed fetching dynamic filter texts:', e);

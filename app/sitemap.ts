@@ -1,6 +1,7 @@
 import { MetadataRoute } from 'next'
 import { client } from '@/sanity/lib/client'
 import { locales } from '@/lib/i18n'
+import { sanitizeSanityData } from '@/lib/sanitize'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Ensure trailing slash removal for robust concatenation
@@ -38,7 +39,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       }
     }`
     
-    const results = await client.fetch(query, {}, { next: { revalidate: 3600 } })
+    const rawResults = await client.fetch(query, {}, { next: { revalidate: 3600 } })
+    const results = sanitizeSanityData(rawResults);
 
     results.forEach((item: any) => {
       const lang = item.language === 'es' ? 'es' : 'en'

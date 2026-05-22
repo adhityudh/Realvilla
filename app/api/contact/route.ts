@@ -1,6 +1,7 @@
 import { NextResponse, userAgent } from 'next/server';
 import { Resend } from 'resend';
 import { client } from '@/sanity/lib/client';
+import { sanitizeSanityData } from '@/lib/sanitize';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -282,11 +283,11 @@ export async function POST(request: Request) {
     // Dynamically fetch recipients from Sanity configurations with layered fallback strategies
     let toEmails: string[] = [];
     try {
-      const settings = await client.fetch(`*[_type == "settings"][0]{ contactRecipientEmails }`);
+      const rawSettings = await client.fetch(`*[_type == "settings"][0]{ contactRecipientEmails }`);
+      const settings = sanitizeSanityData(rawSettings);
       if (settings?.contactRecipientEmails && Array.isArray(settings.contactRecipientEmails) && settings.contactRecipientEmails.length > 0) {
-        // Sanitize to strip all invisible non-ASCII noise (like Mac non-breaking spaces \u00A0 from manual typing)
         toEmails = settings.contactRecipientEmails
-          .map((e: string) => e.replace(/[^\x20-\x7E]/g, '').trim())
+          .map((e: string) => e.trim())
           .filter(Boolean);
       }
     } catch (fetchErr) {

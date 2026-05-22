@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { Resend } from 'resend';
+import { sanitizeSanityData } from '@/lib/sanitize';
 
 export async function POST(request: Request) {
   if (!process.env.STRIPE_SECRET_KEY || !process.env.STRIPE_WEBHOOK_SECRET) {
@@ -48,13 +49,16 @@ export async function POST(request: Request) {
 
       try {
         const { client } = await import('@/sanity/lib/client');
-        const settings = await client.fetch(
+        const rawSettings = await client.fetch(
           `*[_type == "settings"][0]{
             contactRecipientEmails,
             "pdfTemplateUrl": propertyOfferPdfTemplate.asset->url,
             "pdfFieldMap": propertyOfferPdfFieldMap
           }`
         );
+
+        // Sanitize settings to remove invisible Unicode characters
+        const settings = sanitizeSanityData(rawSettings);
 
         if (settings?.contactRecipientEmails?.length) {
           adminEmails = settings.contactRecipientEmails

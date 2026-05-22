@@ -6,6 +6,7 @@ import { Metadata } from 'next';
 import { getGlobalSettings, constructMetadata } from '@/lib/metadata';
 import { client } from '@/sanity/lib/client';
 import { PROPERTY_META_QUERY, INITIAL_PROPERTIES_QUERY } from '@/sanity/lib/queries';
+import { sanitizeSanityData } from '@/lib/sanitize';
 
 export async function generateMetadata(
   { params }: { params: Promise<{ locale: string }> }
@@ -25,7 +26,7 @@ export default async function PropiedadesPage({ params }: { params: Promise<{ lo
   const { locale } = await params;
   
   // Fetch dictionary, filter metadata, and initial 12 properties in parallel on the server
-  const [dict, initialMeta, initialData] = await Promise.all([
+  const [dict, rawInitialMeta, rawInitialData] = await Promise.all([
     getDictionary(locale as any),
     client.fetch(PROPERTY_META_QUERY, { language: locale }, { 
       stega: false,
@@ -36,6 +37,8 @@ export default async function PropiedadesPage({ params }: { params: Promise<{ lo
       next: { revalidate: 60, tags: ['properties'] }
     })
   ]);
+  const initialMeta = sanitizeSanityData(rawInitialMeta);
+  const initialData = sanitizeSanityData(rawInitialData);
 
   const translations = [
     { language: 'en', slug: 'properties' },

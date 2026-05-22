@@ -5,6 +5,7 @@ import { useRouter, usePathname } from 'next/navigation';
 import Button from '@/components/ui/Button';
 import ContactModal from './ContactModal';
 import { client } from '@/sanity/lib/client';
+import { sanitizeSanityData } from '@/lib/sanitize';
 
 import PhoneInput from 'react-phone-number-input';
 import 'react-phone-number-input/style.css';
@@ -506,8 +507,8 @@ export default function ContactCard({
           "label": coalesce(title[$language], title.en),
           "icon": icon.asset->url
         }`;
-        const types = await client.fetch(query, { language: detectedLocale });
-        if (isMounted) setPropertyTypes(types || []);
+        const rawTypes = await client.fetch(query, { language: detectedLocale });
+        if (isMounted) setPropertyTypes(sanitizeSanityData(rawTypes) || []);
       } catch (err) {
         console.error('Error loading dynamic contact form datasets:', err);
       }

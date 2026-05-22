@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { PDFDocument } from 'pdf-lib';
+import { sanitizeFieldMap } from '@/lib/sanitize';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -32,6 +33,7 @@ interface PdfFieldMap {
   stripePaymentId?: string;
   submissionDate?: string;
   validityDate?: string;
+  [key: string]: string | undefined; // Allow index signature for sanitization
 }
 
 interface GeneratePDFPayload {
@@ -106,7 +108,8 @@ export async function POST(request: Request) {
 
     // ── Field map: data values keyed by configurable PDF field names ───────────
     // Uses names from Sanity settings if configured; falls back to defaults.
-    const fm = pdfFieldMap || {};
+    // Sanitize field map to remove any invisible Unicode characters from Sanity
+    const fm = pdfFieldMap ? sanitizeFieldMap(pdfFieldMap) : {};
     const fieldValues: Record<string, string> = {
       [fm.propertyTitle        ?? 'property_title']:        propertyTitle || '',
       [fm.propertyReference    ?? 'property_reference']:    propertyId || '',
@@ -175,8 +178,13 @@ export async function POST(request: Request) {
 
     // Create a normalized lookup map for flexible matching
     // This handles variations like "Property Title" vs "property_title"
-    const normalizeFieldName = (name: string) => 
-      name.toLowerCase().replace(/[\s\-]/g, '_').replace(/[^\w]/g, '');
+    // Also strips invisible/zero-width Unicode characters
+    const normalizeFieldName = (name: string) => {
+      // First, remove all invisible/zero-width characters (U+200B to U+200D, U+FEFF, etc.)
+      const cleaned = name.replace(/[\u200B-\u200D\uFEFF\u00A0\u2060\u180E]/g, '');
+      // Then normalize: lowercase, replace spaces/hyphens with underscores, remove non-word chars
+      return cleaned.toLowerCase().replace(/[\s\-]/g, '_').replace(/[^\w]/g, '');
+    };
 
     // Create reverse lookup: normalized name -> actual PDF field name
     const normalizedPdfFields = new Map<string, string>();

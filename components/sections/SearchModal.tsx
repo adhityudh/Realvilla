@@ -7,6 +7,7 @@ import gsap from 'gsap';
 import { client } from '@/sanity/lib/client';
 import { getMunicipalities } from '@/lib/municipalities';
 import { useLenis } from '@/lib/LenisContext';
+import { sanitizeSanityData } from '@/lib/sanitize';
 import './SearchModal.css';
 
 interface SearchModalProps {
@@ -58,9 +59,9 @@ export default function SearchModal({ isOpen, onClose, dict }: SearchModalProps)
     const fetchTrendingSearches = async () => {
       try {
         const query = `*[_type == "page" && (language == $language || (!defined(language) && $language == "en")) && count(sections[_type == "buyHeroSection"]) > 0][0].sections[_type == "buyHeroSection"][0].trendingSearches`;
-        const data = await client.fetch(query, { language });
-        if (data && Array.isArray(data)) {
-          setTrendingSearches(data);
+        const rawData = await client.fetch(query, { language });
+        if (rawData && Array.isArray(rawData)) {
+          setTrendingSearches(sanitizeSanityData(rawData));
         }
       } catch (err) {
         console.error('Failed to fetch trending searches:', err);
@@ -89,10 +90,12 @@ export default function SearchModal({ isOpen, onClose, dict }: SearchModalProps)
           "icon": icon.asset->url
         }`;
 
-        const [metas, cats] = await Promise.all([
+        const [rawMetas, rawCats] = await Promise.all([
           client.fetch(metaQuery, { language: locale }, { stega: false }),
           client.fetch(categoryQuery, { language: locale }, { stega: false })
         ]);
+        const metas = sanitizeSanityData(rawMetas);
+        const cats = sanitizeSanityData(rawCats);
 
         // Wrap the categories as a simulated meta block for simple consumption
         const combined = [...(metas || [])];
