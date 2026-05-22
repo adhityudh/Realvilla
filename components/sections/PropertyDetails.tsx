@@ -18,6 +18,7 @@ interface PropertyDetailsProps {
   locale?: string;
   whatsappNumber?: string;
   whatsappMessageTemplate?: string;
+  propertyContactPresetMessage?: string;
   mortgageCalculatorData?: any;
   // ── Offer ──
   offerEnabled?: boolean;
@@ -36,6 +37,7 @@ export default function PropertyDetails({
   locale = 'en',
   whatsappNumber,
   whatsappMessageTemplate,
+  propertyContactPresetMessage,
   mortgageCalculatorData,
   offerEnabled = false,
   offerDepositAmount = 500,
@@ -397,7 +399,7 @@ export default function PropertyDetails({
             locale={locale}
             whatsappNumber={whatsappNumber}
             showWhatsApp={true}
-            presetMessage={''}
+            presetMessage={propertyContactPresetMessage}
             whatsappMessageTemplate={whatsappMessageTemplate ? whatsappMessageTemplate.replace(/{{property_title}}/g, property.title || '').replace(/{{property_link}}/g, pageUrl) : ''}
             offerEnabled={offerEnabled}
             offerDepositAmount={offerDepositAmount}
@@ -460,7 +462,7 @@ export default function PropertyDetails({
           onSubmittingChange={setIsSubmitting}
           onSubmitSuccess={setSubmitSuccess}
           submitSuccess={submitSuccess}
-          presetMessage={''}
+          presetMessage={propertyContactPresetMessage}
           whatsappMessageTemplate={whatsappMessageTemplate ? whatsappMessageTemplate.replace(/{{property_title}}/g, property.title || '').replace(/{{property_link}}/g, pageUrl) : ''}
           whatsappNumber={whatsappNumber}
           showWhatsApp={true}

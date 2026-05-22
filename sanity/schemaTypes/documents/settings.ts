@@ -92,6 +92,14 @@ export const settings = defineType({
       rows: 2,
       group: 'propertyDetail',
     }),
+    defineField({
+      name: 'propertyContactPresetMessage',
+      title: 'Contact Form Preset Message',
+      description: 'The default text that will be pre-filled in the MESSAGE field of the property contact form. This helps users get started with their inquiry.',
+      type: 'text',
+      rows: 2,
+      group: 'propertyDetail',
+    }),
 
     // ── Make an Offer Feature ──
     defineField({

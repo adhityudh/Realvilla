@@ -559,7 +559,8 @@ export const SETTINGS_QUERY = groq`
       amortLabelBalance
     },
     contactPresetMessageTemplate,
-    \"propertiesPageSeo\": propertiesPageSeo {
+    propertyContactPresetMessage,
+    "propertiesPageSeo": propertiesPageSeo {
       ${SEO_SUBFIELDS}
     },
     \"propertyDetailSections\": propertyDetailSections[] {

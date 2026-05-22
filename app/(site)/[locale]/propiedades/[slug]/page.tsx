@@ -67,6 +67,7 @@ export default async function PropertyPage({ params }: { params: Promise<{ local
           locale={locale} 
           whatsappNumber={settings?.contactWhatsAppNumber}
           whatsappMessageTemplate={settings?.contactPresetMessageTemplate}
+          propertyContactPresetMessage={settings?.propertyContactPresetMessage}
           mortgageCalculatorData={settings?.mortgageCalculator}
           offerEnabled={settings?.propertyOfferEnabled ?? false}
           offerDepositAmount={settings?.propertyOfferDepositAmount ?? 500}
