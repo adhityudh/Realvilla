@@ -303,7 +303,7 @@ function buildAdminEmail(data: {
           </table>
 
           <!-- Touchpoint Metadata Section -->
-          <table width="100%" cellspacing="0" cellpadding="0" style="margin-top:45px;border-top:1px solid #F4F4F0;padding-top:35px;">
+          <table width="100%" cellspacing="0" cellpadding="0" style="margin-top:45px;padding-top:35px;">
             <tr><td>
               <div style="font-size:10px;font-weight:400;color:#111;letter-spacing:2px;text-transform:uppercase;margin-bottom:18px;">TOUCHPOINT METADATA</div>
               <table width="100%" cellspacing="0" cellpadding="0">
