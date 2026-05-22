@@ -439,7 +439,7 @@ export default function OfferModal({
         <div className="offer-deposit-notice">
           <span 
             className="offer-deposit-notice-text"
-            dangerouslySetInnerHTML={{ __html: step1Intro }}
+            dangerouslySetInnerHTML={{ __html: step1Intro || '' }}
           />
         </div>
 
