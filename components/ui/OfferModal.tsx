@@ -25,6 +25,7 @@ export interface OfferModalProps {
   isOpen: boolean;
   onClose: () => void;
   propertyId: string;
+  propertySlug?: string;
   propertyTitle: string;
   propertyPrice?: number;
   depositAmount?: number;
@@ -56,6 +57,7 @@ export default function OfferModal({
   isOpen,
   onClose,
   propertyId,
+  propertySlug,
   propertyTitle,
   propertyPrice,
   depositAmount = 500,
@@ -334,6 +336,7 @@ export default function OfferModal({
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           propertyId,
+          propertySlug,
           propertyTitle,
           propertyPrice,
           depositAmount,

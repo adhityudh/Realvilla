@@ -1,5 +1,4 @@
 import { getDictionary } from '@/lib/get-dictionary';
-import Link from 'next/link';
 
 export default async function OfferSuccessPage({
   params,
@@ -68,7 +67,7 @@ export default async function OfferSuccessPage({
           margin: '0 0 1.25rem',
           textTransform: 'uppercase',
         }}>
-          {od.success_title || 'Proposal Submitted!'}
+          {od.success_title}
         </h1>
 
         <p style={{
@@ -78,7 +77,7 @@ export default async function OfferSuccessPage({
           color: 'var(--text-body)',
           margin: '0 0 2rem',
         }}>
-          {od.success_subtitle || 'Your offer has been successfully registered and the deposit payment confirmed. You will receive a copy of your proposal document by email shortly.'}
+          {od.success_subtitle}
         </p>
 
         {session_id && (
@@ -92,27 +91,9 @@ export default async function OfferSuccessPage({
           </p>
         )}
 
-        <Link
-          href={propertiesPath}
-          style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: '0.5rem',
-            padding: '0.9rem 2.5rem',
-            background: 'var(--text-black)',
-            color: 'var(--text-white)',
-            fontFamily: 'var(--font-manrope), sans-serif',
-            fontSize: 'var(--text-xs)',
-            fontWeight: 700,
-            letterSpacing: '0.2em',
-            textTransform: 'uppercase',
-            textDecoration: 'none',
-            transition: 'background 0.3s ease',
-          }}
-        >
-          {od.success_close || 'Back to Properties'}
-        </Link>
+        <a href={propertyPath} className="btn-pill btn-dark">
+          <span>{od.success_close}</span>
+        </a>
       </div>
     </main>
   );

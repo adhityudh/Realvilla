@@ -13,6 +13,7 @@ interface PropertyContactCardProps {
   dict?: any;
   locale?: string;
   propertyId: string;
+  propertySlug?: string;
   propertyTitle: string;
   propertyPrice?: number;
   whatsappNumber?: string;
@@ -38,6 +39,7 @@ export default function PropertyContactCard({
   dict,
   locale = 'en',
   propertyId,
+  propertySlug,
   propertyTitle,
   propertyPrice,
   whatsappNumber,
@@ -370,6 +372,7 @@ export default function PropertyContactCard({
           isOpen={isOfferModalOpen}
           onClose={() => setIsOfferModalOpen(false)}
           propertyId={propertyId}
+          propertySlug={propertySlug}
           propertyTitle={propertyTitle}
           propertyPrice={propertyPrice}
           depositAmount={offerDepositAmount}
