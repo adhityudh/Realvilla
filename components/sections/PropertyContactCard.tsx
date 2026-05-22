@@ -60,10 +60,17 @@ export default function PropertyContactCard({
   onSubmittingChange,
   submitSuccess: submitSuccessProp
 }: PropertyContactCardProps) {
+  // Sanitize preset message to remove invisible Unicode characters
+  const sanitizeText = (text: string | undefined) => {
+    if (!text) return '';
+    // Remove zero-width spaces, zero-width joiners, and other invisible characters
+    return text.replace(/[\u200B-\u200D\uFEFF\u2060\u180E]/g, '').trim();
+  };
+
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState<any>(undefined);
-  const [message, setMessage] = useState(presetMessage || '');
+  const [message, setMessage] = useState(sanitizeText(presetMessage));
   const [isFormExpanded, setIsFormExpanded] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
   const isClickingInsideCard = useRef(false);
@@ -89,7 +96,7 @@ export default function PropertyContactCard({
   }, []);
 
   useEffect(() => {
-    setMessage(presetMessage || '');
+    setMessage(sanitizeText(presetMessage));
   }, [presetMessage]);
 
   useEffect(() => {
