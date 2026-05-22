@@ -1,7 +1,10 @@
-/** @type {import('next').NextConfig} */
-const nextConfig = {
+import type { NextConfig } from "next";
+
+const nextConfig: NextConfig = {
   images: {
     formats: ['image/avif', 'image/webp'],
+    qualities: [75, 85, 90],
+    minimumCacheTTL: 2678400, // 31 days
     remotePatterns: [
       {
         protocol: 'https',
@@ -20,6 +23,7 @@ const nextConfig = {
       },
     ],
   },
+  trailingSlash: true,
 };
 
-module.exports = nextConfig;
+export default nextConfig;
