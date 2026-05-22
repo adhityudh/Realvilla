@@ -305,12 +305,46 @@ export default function OfferModal({
 
     if (step === 2) {
       const errs = validateStep2();
-      if (Object.keys(errs).length > 0) { setFieldErrors(errs); return; }
+      if (Object.keys(errs).length > 0) { 
+        setFieldErrors(errs);
+        // Auto-scroll to first error field
+        setTimeout(() => {
+          const firstErrorField = modalBodyRef.current?.querySelector('.form-group.has-error');
+          if (firstErrorField && modalBodyRef.current) {
+            // Calculate position relative to modal body
+            const modalBody = modalBodyRef.current;
+            const fieldTop = (firstErrorField as HTMLElement).offsetTop;
+            modalBody.scrollTo({ top: fieldTop - 100, behavior: 'smooth' });
+            
+            // Focus on the input inside
+            const input = firstErrorField.querySelector('input, textarea') as HTMLElement;
+            if (input) input.focus();
+          }
+        }, 100);
+        return; 
+      }
     }
 
     if (step === 3) {
       const errs = validateStep3();
-      if (Object.keys(errs).length > 0) { setFieldErrors(errs); return; }
+      if (Object.keys(errs).length > 0) { 
+        setFieldErrors(errs);
+        // Auto-scroll to first error field
+        setTimeout(() => {
+          const firstErrorField = modalBodyRef.current?.querySelector('.form-group.has-error');
+          if (firstErrorField && modalBodyRef.current) {
+            // Calculate position relative to modal body
+            const modalBody = modalBodyRef.current;
+            const fieldTop = (firstErrorField as HTMLElement).offsetTop;
+            modalBody.scrollTo({ top: fieldTop - 100, behavior: 'smooth' });
+            
+            // Focus on the input inside
+            const input = firstErrorField.querySelector('input, textarea') as HTMLElement;
+            if (input) input.focus();
+          }
+        }, 100);
+        return; 
+      }
     }
 
     setStep((s) => Math.min(s + 1, TOTAL_STEPS));
@@ -402,15 +436,18 @@ export default function OfferModal({
           {step1Title}
         </h3>
 
-        <p className="offer-conditions-intro">
-          {step1Intro}
-        </p>
+        <div className="offer-deposit-notice">
+          <span 
+            className="offer-deposit-notice-text"
+            dangerouslySetInnerHTML={{ __html: step1Intro }}
+          />
+        </div>
 
         <ul className="offer-terms-list">
           {step1Terms.map((term, i) => (
             <li key={i} className="offer-term-item">
               <div className="offer-term-bullet" aria-hidden="true" />
-              <span>{term}</span>
+              <span dangerouslySetInnerHTML={{ __html: term }} />
             </li>
           ))}
         </ul>
@@ -548,6 +585,16 @@ export default function OfferModal({
         {od.step3_subtitle}
       </p>
 
+      {/* Property Info Box */}
+      {propertyPrice && (
+        <div className="offer-deposit-notice" style={{ marginBottom: '2rem' }}>
+          <span className="offer-deposit-notice-text">
+            <div style={{ marginBottom: '0.25rem' }}>{propertyTitle}</div>
+            <strong>{formatPrice(propertyPrice)}</strong>
+          </span>
+        </div>
+      )}
+
       {/* Offered Price */}
       <div className={`form-group ${fieldErrors.offerPrice ? 'has-error' : ''}`}>
         <label htmlFor="offer-price">
@@ -679,7 +726,8 @@ export default function OfferModal({
         <span className="offer-deposit-notice-text">
           <span>{od.deposit_notice_part1}</span>
           <strong>{od.deposit_notice_part2}</strong>
-          <span>{od.deposit_notice_part3}€{depositAmount}</span>
+          <span>{od.deposit_notice_part3}</span>
+          <strong>€{depositAmount}</strong>
           <span>{od.deposit_notice_part4}</span>
         </span>
       </div>
@@ -769,7 +817,7 @@ export default function OfferModal({
           variant="dark"
           label={isSubmitting
             ? od.btn_submitting
-            : `${od.btn_submit}${depositAmount}`
+            : `${od.btn_submit}`
           }
           className="form-submit-btn"
           onClick={handleSubmit}

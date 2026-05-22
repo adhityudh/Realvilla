@@ -163,6 +163,14 @@ export async function POST(request: Request) {
           depositAmount: formattedDeposit,
           submittedAt: formattedDate,
           validUntil: validUntilDate,
+          // Telemetry
+          device: meta.device || 'Unknown',
+          os: meta.os || 'Unknown',
+          browser: meta.browser || 'Unknown',
+          country: meta.country || '',
+          city: meta.city || '',
+          ip: meta.ip || '',
+          submissionTime: meta.submissionTime || formattedDate,
         }),
         replyTo: meta.email,
       };
@@ -182,8 +190,8 @@ export async function POST(request: Request) {
 
       await resend.emails.send(adminEmailPayload);
 
-      // ── Send Buyer Confirmation Email (no PDF — per spec) ──────────────────
-      await resend.emails.send({
+      // ── Send Buyer Confirmation Email (with PDF attached) ──────────────────
+      const buyerEmailPayload: any = {
         from: 'REALVILLA <hello@realvilla.es>',
         to: [meta.email],
         subject: isEs
@@ -199,7 +207,22 @@ export async function POST(request: Request) {
           validUntil: validUntilDate,
           submittedAt: formattedDate,
         }),
-      });
+      };
+
+      // Attach PDF to buyer email (same as admin)
+      if (pdfBase64) {
+        const propertyRef = (meta.propertyId || 'property').substring(0, 8);
+        const buyerRef = (meta.fullName || 'buyer').replace(/\s+/g, '-').substring(0, 20);
+        buyerEmailPayload.attachments = [
+          {
+            filename: `RealVilla-Offer-${propertyRef}-${buyerRef}.pdf`,
+            content: Buffer.from(pdfBase64, 'base64'),
+            contentType: 'application/pdf',
+          },
+        ];
+      }
+
+      await resend.emails.send(buyerEmailPayload);
 
       console.log('[Offer/Webhook] All emails dispatched for session:', session.id);
     } catch (err: any) {
@@ -233,6 +256,13 @@ function buildAdminEmail(data: {
   depositAmount: string;
   submittedAt: string;
   validUntil: string;
+  device: string;
+  os: string;
+  browser: string;
+  country: string;
+  city: string;
+  ip: string;
+  submissionTime: string;
 }) {
   return `<!DOCTYPE html>
 <html>
@@ -264,18 +294,55 @@ function buildAdminEmail(data: {
             ${buildRow('EMAIL', `<a href="mailto:${data.email}" style="color:#D4AF37;">${data.email}</a>`)}
             ${buildRow('PHONE', `<a href="tel:${data.phone}" style="color:#111;">${data.phone}</a>`)}
             ${buildRow('ADDRESS', data.address)}
-            ${buildRow('OFFERED PRICE', `<strong style="font-size:20px;font-family:'Cormorant Garamond',serif;">${data.offerPrice}</strong>`)}
-            ${data.additionalConditions ? buildRow('CONDITIONS', `<em>${data.additionalConditions}</em>`) : ''}
+            ${buildRow('OFFERED PRICE', `<strong>${data.offerPrice}</strong>`)}
+            ${data.additionalConditions ? buildRow('CONDITIONS', `${data.additionalConditions}`) : ''}
             ${buildRow('DEPOSIT PAID', `<strong>${data.depositAmount}</strong> ✅`)}
             ${buildRow('STRIPE SESSION', `<code style="font-size:11px;">${data.sessionId}</code>`)}
             ${buildRow('SUBMITTED', data.submittedAt)}
             ${buildRow('VALID UNTIL', data.validUntil)}
           </table>
+
+          <!-- Touchpoint Metadata Section -->
+          <table width="100%" cellspacing="0" cellpadding="0" style="margin-top:45px;border-top:1px solid #F4F4F0;padding-top:35px;">
+            <tr><td>
+              <div style="font-size:10px;font-weight:400;color:#111;letter-spacing:2px;text-transform:uppercase;margin-bottom:18px;">TOUCHPOINT METADATA</div>
+              <table width="100%" cellspacing="0" cellpadding="0">
+                <tr>
+                  <td width="50%" valign="top" style="padding-bottom:15px;padding-right:15px;">
+                    <div style="font-size:9px;font-weight:600;color:#A0A098;letter-spacing:1px;text-transform:uppercase;margin-bottom:3px;">DEVICE & OPERATING SOFTWARE</div>
+                    <div style="font-size:12px;color:#333;font-weight:500;">${data.device} • ${data.os}</div>
+                    <div style="font-size:11px;color:#888;margin-top:3px;">${data.browser}</div>
+                  </td>
+                  <td width="50%" valign="top" style="padding-bottom:15px;">
+                    <div style="font-size:9px;font-weight:600;color:#A0A098;letter-spacing:1px;text-transform:uppercase;margin-bottom:3px;">SUBMISSION TIMESTAMPS</div>
+                    <div style="font-size:12px;color:#333;font-weight:500;">${data.submissionTime}</div>
+                    <div style="font-size:11px;color:#888;margin-top:3px;">Network Address: ${data.ip}</div>
+                  </td>
+                </tr>
+                ${(data.city || data.country) ? `
+                <tr>
+                  <td colspan="2" valign="top" style="padding-top:8px;">
+                    <div style="font-size:9px;font-weight:600;color:#A0A098;letter-spacing:1px;text-transform:uppercase;margin-bottom:3px;">ESTIMATED GEOGRAPHIC LOCATOR</div>
+                    <div style="font-size:12px;color:#D4AF37;font-weight:600;">
+                      📍 ${data.city ? data.city + ', ' : ''}${data.country}
+                    </div>
+                  </td>
+                </tr>
+                ` : ''}
+              </table>
+            </td></tr>
+          </table>
+
           <table width="100%" cellspacing="0" cellpadding="0" style="margin-top:40px;">
             <tr><td align="center">
               <a href="mailto:${data.email}" style="display:inline-block;background:#111;color:#FFF;font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;text-decoration:none;padding:14px 28px;margin:0 5px 8px;">
-                REPLY TO BUYER
+                REPLY VIA EMAIL
               </a>
+              ${data.phone ? `
+              <a href="https://wa.me/${data.phone.replace(/[^0-9]/g, '')}" target="_blank" style="display:inline-block;background:#25D366;color:#FFF;font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;text-decoration:none;padding:14px 28px;margin:0 5px 8px;">
+                RESPOND VIA WHATSAPP
+              </a>
+              ` : ''}
             </td></tr>
           </table>
         </td></tr>
@@ -338,10 +405,10 @@ function buildBuyerEmail(data: {
                 ${isEs ? 'RESUMEN DE LA PROPUESTA' : 'PROPOSAL SUMMARY'}
               </div>
               <div style="font-size:13px;color:#555;line-height:1.8;">
-                🏠 <strong>${data.propertyTitle}</strong><br/>
-                💶 ${isEs ? 'Precio ofertado' : 'Offered price'}: <strong>${data.offerPrice}</strong><br/>
-                🔒 ${isEs ? 'Depósito pagado' : 'Deposit paid'}: <strong>${data.depositAmount}</strong><br/>
-                📅 ${isEs ? 'Válida hasta' : 'Valid until'}: <strong>${data.validUntil}</strong>
+                <strong>${data.propertyTitle}</strong><br/>
+                ${isEs ? 'Precio ofertado' : 'Offered price'}: <strong>${data.offerPrice}</strong><br/>
+                ${isEs ? 'Depósito pagado' : 'Deposit paid'}: <strong>${data.depositAmount}</strong><br/>
+                ${isEs ? 'Válida hasta' : 'Valid until'}: <strong>${data.validUntil}</strong>
               </div>
             </td></tr>
           </table>

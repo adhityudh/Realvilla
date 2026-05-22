@@ -490,16 +490,28 @@
 }
 
 .select-options-list::-webkit-scrollbar {
-    width: 5px;
+    width: 12px;
 }
 
 .select-options-list::-webkit-scrollbar-track {
-    background: transparent;
+    background: rgba(0, 0, 0, 0.15);
+    border-radius: var(--radius-full);
 }
 
 .select-options-list::-webkit-scrollbar-thumb {
-    background: var(--bg-subtle);
-    border-radius: 10px;
+    background: rgba(0, 0, 0, 0.6);
+    border-radius: var(--radius-full);
+    border: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.select-options-list::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.8);
+}
+
+/* Firefox scrollbar - Always Visible */
+.select-options-list {
+    scrollbar-width: auto;
+    scrollbar-color: rgba(0, 0, 0, 0.6) rgba(0, 0, 0, 0.15);
 }
 
 .select-option-row {

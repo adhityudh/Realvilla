@@ -88,17 +88,6 @@
    STEP 1: CONDITIONS
    ========================================= */
 
-.offer-conditions-intro {
-  font-family: var(--font-manrope), sans-serif;
-  font-size: var(--text-base-sm);
-  line-height: var(--lh-relaxed);
-  color: var(--text-body);
-  margin-bottom: 2rem;
-  padding: 1.25rem 1.5rem;
-  background: var(--bg-muted);
-  border-left: 3px solid var(--color-gold-dark);
-}
-
 .offer-terms-list {
   list-style: none;
   padding: 0;
@@ -417,7 +406,7 @@
 
 .offer-deposit-notice-text {
   font-family: var(--font-manrope), sans-serif;
-  font-size: var(--text-sm-plus);
+  font-size: var(--text-base-sm);
   line-height: var(--lh-base);
   color: var(--text-body);
 }

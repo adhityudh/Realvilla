@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+import { NextResponse, userAgent } from 'next/server';
 import Stripe from 'stripe';
 
 export async function POST(request: Request) {
@@ -11,6 +11,27 @@ export async function POST(request: Request) {
   });
 
   try {
+    // Capture telemetry data
+    const ua = userAgent(request);
+    const browser = `${ua.browser.name || ''} ${ua.browser.version || ''}`.trim() || 'Unknown Browser';
+    const os = `${ua.os.name || ''} ${ua.os.version || ''}`.trim() || 'Unknown OS';
+    
+    let deviceType = 'Desktop/PC';
+    if (ua.device.type) {
+      deviceType = ua.device.type.charAt(0).toUpperCase() + ua.device.type.slice(1);
+    }
+    const device = `${ua.device.vendor || ''} ${ua.device.model || ''}`.trim() || deviceType;
+    
+    const country = request.headers.get('x-vercel-ip-country') || '';
+    const city = request.headers.get('x-vercel-ip-city') || '';
+    const ip = request.headers.get('x-forwarded-for')?.split(',')[0].trim() || '127.0.0.1';
+    
+    const submissionTime = new Date().toLocaleString('en-GB', {
+      timeZone: 'Europe/Madrid',
+      dateStyle: 'full',
+      timeStyle: 'short'
+    }) + ' (Madrid)';
+
     const body = await request.json();
     const {
       propertyId,
@@ -91,6 +112,14 @@ export async function POST(request: Request) {
         // Timestamps
         submittedAt: new Date().toISOString(),
         validUntil: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(), // +7 days
+        // Telemetry
+        device: device.substring(0, 500),
+        os: os.substring(0, 500),
+        browser: browser.substring(0, 500),
+        country: country.substring(0, 100),
+        city: city.substring(0, 100),
+        ip: ip.substring(0, 100),
+        submissionTime: submissionTime.substring(0, 500),
       },
       locale: locale === 'es' ? 'es' : 'en',
     });

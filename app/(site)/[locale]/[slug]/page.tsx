@@ -46,12 +46,13 @@ export default async function DynamicPage({ params }: { params: Promise<{ locale
       } 
     };
 
-    const [rawData, dict, rawSettings] = await Promise.all([
+    const [rawData, dictResult, rawSettings] = await Promise.all([
       activeClient.fetch(PAGE_QUERY, { slug, language: locale }, fetchOptions),
       getDictionary(locale as any),
       activeClient.fetch(SETTINGS_QUERY, { language: locale }, fetchOptions)
     ]);
     data = sanitizeSanityData(rawData);
+    dict = dictResult;
     settings = sanitizeSanityData(rawSettings);
   } catch (error) {
     console.error('Sanity fetch error:', error);

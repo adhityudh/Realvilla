@@ -47,7 +47,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
       } 
     };
 
-    const [rawData, rawSettings, dict, rawFilterMeta] = await Promise.all([
+    const [rawData, rawSettings, dictResult, rawFilterMeta] = await Promise.all([
       activeClient.fetch(PAGE_QUERY, { slug: 'home', language: locale }, fetchOptions),
       activeClient.fetch(SETTINGS_QUERY, { language: locale }, fetchOptions),
       getDictionary(locale as any),
@@ -55,6 +55,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
     ]);
     data = sanitizeSanityData(rawData);
     settingsData = sanitizeSanityData(rawSettings);
+    dict = dictResult;
     filterMeta = sanitizeSanityData(rawFilterMeta);
   } catch (error) {
     console.error('Sanity fetch error:', error);

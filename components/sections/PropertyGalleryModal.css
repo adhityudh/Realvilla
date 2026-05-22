@@ -144,6 +144,32 @@
     padding: 1.5rem 2.5rem;
 }
 
+/* Scrollbar Styles - Always Visible */
+.gallery-modal-body::-webkit-scrollbar {
+    width: 14px;
+}
+
+.gallery-modal-body::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.15);
+    border-radius: var(--radius-full);
+}
+
+.gallery-modal-body::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.6);
+    border-radius: var(--radius-full);
+    border: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.gallery-modal-body::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.8);
+}
+
+/* Firefox scrollbar - Always Visible */
+.gallery-modal-body {
+    scrollbar-width: auto;
+    scrollbar-color: rgba(0, 0, 0, 0.6) rgba(0, 0, 0, 0.15);
+}
+
 .gallery-grid-scrollable {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
