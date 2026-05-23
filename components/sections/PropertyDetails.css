@@ -420,6 +420,17 @@
   .portable-text-wrapper {
     font-size: var(--text-base-sm);
   }
+
+  .property-map-container{
+    width: calc(100% + 1rem);
+    margin: 1rem -.5rem 0;
+  }
+
+  .property-virtual-tours {
+    width: calc(100% + 1rem);
+    margin: 1rem -.5rem 0;
+    gap: 1rem;
+  }
 }
 
 @media (max-width: 768px) {
@@ -456,11 +467,6 @@
     font-size: var(--text-base-sm);
   }
 
-  .property-virtual-tours {
-    margin-top: 1rem;
-    gap: 1rem;
-  }
-
   .virtual-tour-title {
     font-size: var(--text-sm);
     padding: 0.75rem;
@@ -480,17 +486,19 @@
   --msim-color-brown: #9e472a;
 }
 
-/* Force vertical layout (mobile style) for embedded calculator */
-.mortgage-calculator-block .msim-body-card {
-  width: 100%;
-  margin: 0;
-  box-shadow: none;
-  grid-template-columns: 1fr !important;
-}
 
-.mortgage-calculator-block .msim-inputs-col {
-  border-bottom: 1px solid var(--border-subtle);
-  padding: 1.5rem 0px 3rem;
+@media (min-width: 1025px) {
+  .mortgage-calculator-block .msim-body-card {
+    width: 100%;
+    margin: 0;
+    box-shadow: none;
+    grid-template-columns: 1fr !important;
+  }
+
+  .mortgage-calculator-block .msim-inputs-col {
+    border-bottom: 1px solid var(--border-subtle);
+    padding: 1.5rem 0px 3rem;
+  }
 }
 
 .mortgage-calculator-block .msim-results-col {
@@ -738,12 +746,6 @@
   font-style: italic;
 }
 
-@media (max-width: 1024px) {
-  .mortgage-calculator-block .msim-results-col {
-    margin: 0 -0.5rem;
-  }
-}
-
 @media (max-width: 768px) {
 
   /* Modal responsiveness */
@@ -765,10 +767,6 @@
   .msim-modal-body {
     padding: 1.5rem 1.25rem;
     gap: 1.25rem;
-  }
-
-  .mortgage-calculator-block .msim-inputs-col {
-    padding: 1rem 0 2.5rem;
   }
 }
 
