@@ -342,12 +342,18 @@ export default function PropertyGalleryModal({ isOpen, onClose, property, dict, 
           setSelectedItem(matchedItem);
           if (matchedItem.groupTitle) {
             setActiveTab(`group-${matchedItem.groupTitle}`);
+          } else {
+            // Item has no groupTitle (e.g., main image), switch to first non-virtual tab
+            // to prevent virtual tour from persisting as activeTab
+            const firstRegularTab = tabs.find(t => !t.isVirtualTour);
+            setActiveTab(firstRegularTab ? firstRegularTab.id : '');
           }
         }
       }
     } else if (isOpen && !initialItem && tabs.length > 0) {
-      // Reset to first tab when opening via "See All" (no initialItem)
-      setActiveTab(tabs[0].id);
+      // Reset to first non-virtual tour tab when opening via "See All" (no initialItem)
+      const firstRegularTab = tabs.find(t => !t.isVirtualTour) || tabs[0];
+      setActiveTab(firstRegularTab.id);
     }
   }, [isOpen, initialItem, allMedia, tabs]);
 
