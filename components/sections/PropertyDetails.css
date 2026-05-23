@@ -493,22 +493,12 @@
     margin: 0;
     box-shadow: none;
     grid-template-columns: 1fr !important;
-  }
-
-  .mortgage-calculator-block .msim-inputs-col {
-    border-bottom: 1px solid var(--border-subtle);
-    padding: 1.5rem 0px 3rem;
+    border: 0.5px solid var(--border-light);
   }
 }
 
 .mortgage-calculator-block .msim-results-col {
   border-top: none;
-}
-
-@media (max-width: 768px) {
-  .mortgage-calculator-block .msim-body-card {
-    box-shadow: none;
-  }
 }
 
 /* Costs trigger button */

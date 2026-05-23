@@ -99,6 +99,7 @@
   flex-direction: column;
   gap: 0;
   border-right: none;
+  background-color: var(--bg-surface);
 }
 
 .msim-field {
