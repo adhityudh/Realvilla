@@ -77,7 +77,7 @@ export async function POST(request: Request) {
 
     const formatEuro = (val: string | number) => {
       const n = typeof val === 'string' ? parseFloat(val) : val;
-      return isNaN(n) ? '' : `€${n.toLocaleString('en-IE')}`;
+      return isNaN(n) ? '' : `${n.toLocaleString('en-IE')}`;
     };
 
     const formattedOfferPrice = formatEuro(offer.offerPrice);
