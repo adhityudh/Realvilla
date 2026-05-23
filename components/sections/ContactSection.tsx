@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import Image from 'next/image';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import ContactCard from '@/components/ui/ContactCard';
@@ -18,6 +19,8 @@ export default function ContactSection({ data, dict, contextData }: { data?: any
   const headline = data.headline;
   const subtitle = data.subtitle;
   const marketData = data.marketData;
+  const backgroundImage = data.backgroundImage;
+  const backgroundImageMobile = data.backgroundImageMobile;
 
   useEffect(() => {
     if (!sectionRef.current) return;
@@ -138,7 +141,27 @@ export default function ContactSection({ data, dict, contextData }: { data?: any
 
 
   return (
-    <section className={`contact-section ${data?.disableEntranceAnimation ? 'no-entrance-anim' : ''} ${data?.disableHeaderEntranceAnimation ? 'no-header-entrance-anim' : ''}`} id={data?.id || 'contact'} ref={sectionRef}>
+    <section className={`contact-section ${data?.disableEntranceAnimation ? 'no-entrance-anim' : ''} ${data?.disableHeaderEntranceAnimation ? 'no-header-entrance-anim' : ''} ${(backgroundImage || backgroundImageMobile) ? 'has-bg-override' : ''}`} id={data?.id || 'contact'} ref={sectionRef}>
+      {(backgroundImage || backgroundImageMobile) && (
+        <div className="contact-bg-override">
+          <picture>
+            {backgroundImageMobile && (
+              <source
+                media="(max-width: 1024px)"
+                srcSet={backgroundImageMobile}
+              />
+            )}
+            <Image
+              src={backgroundImage || backgroundImageMobile}
+              alt="Contact Background"
+              fill
+              priority
+              className="contact-bg-img"
+            />
+          </picture>
+          <div className="contact-bg-overlay" />
+        </div>
+      )}
       <div className="contact-big-logo-wrapper">
         <div className="contact-single-logo-container">
           <div className="contact-single-logo" />

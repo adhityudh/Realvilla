@@ -13,6 +13,77 @@
     margin-top: 5rem;
 }
 
+/* Background Override Styles */
+.contact-bg-override {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+}
+
+.contact-bg-img {
+    object-fit: cover;
+}
+
+/* Desktop background - hidden on mobile */
+.contact-bg-img-desktop {
+    display: block;
+}
+
+/* Mobile background - hidden on desktop, shown on mobile */
+.contact-bg-img-mobile {
+    display: none;
+}
+
+.contact-bg-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.25) 0%, rgba(45, 35, 15, 0.375) 50%, rgba(0, 0, 0, 0.5) 100%);
+}
+
+/* When background override is active, hide the default background */
+.contact-section.has-bg-override {
+    background-image: none;
+    background-color: transparent;
+}
+
+/* Hide logo wrapper when background override is active */
+.contact-section.has-bg-override .contact-big-logo-wrapper {
+    display: none;
+}
+
+/* Make all content white when background override is active */
+.contact-section.has-bg-override .contact-content,
+.contact-section.has-bg-override .contact-headline,
+.contact-section.has-bg-override .contact-subtitle,
+.contact-section.has-bg-override .contact-tagline,
+.contact-section.has-bg-override .market-data-value,
+.contact-section.has-bg-override .market-data-prefix,
+.contact-section.has-bg-override .market-data-unit,
+.contact-section.has-bg-override .market-data-label {
+    color: white;
+}
+
+/* Adjust tagline decorative line to white */
+.contact-section.has-bg-override .contact-tagline::before {
+    background: white;
+}
+
+/* Adjust market data dividers to white */
+.contact-section.has-bg-override .contact-market-item:not(:last-child)::after {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* Mobile responsive - swap desktop and mobile backgrounds */
+@media (max-width: 1024px) {
+    .contact-bg-img-desktop {
+        display: none;
+    }
+    
+    .contact-bg-img-mobile {
+        display: block;
+    }
+}
+
 .contact-big-logo-wrapper {
     position: absolute;
     inset: 0;

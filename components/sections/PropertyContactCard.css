@@ -301,6 +301,12 @@
   .property-contact-offer-cta {
     padding: 2rem 2.5rem 2.5rem 2.5rem;
   }
+  
+  /* Always expand form on mobile */
+  .property-contact-expandable-section {
+    grid-template-rows: 1fr !important;
+    opacity: 1 !important;
+  }
 }
 
 @media (max-width: 768px) {

@@ -47,10 +47,18 @@ export const buyHeroSection = defineType({
 }),
     defineField({
       name: 'backgroundImage',
-      title: 'Background Image',
+      title: 'Background Image (Desktop)',
       type: 'image',
       options: { hotspot: true },
       group: 'content',
+}),
+    defineField({
+      name: 'backgroundImageMobile',
+      title: 'Background Image (Mobile)',
+      type: 'image',
+      options: { hotspot: true },
+      group: 'content',
+      description: 'Optional: Override the background with a custom image for mobile devices. If not set, the desktop image will be used.',
 }),
     defineField({
       name: 'searchPlaceholder',

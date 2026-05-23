@@ -29,6 +29,7 @@ interface GeneralHeroSectionProps {
       link: string;
     };
     backgroundImage?: string;
+    backgroundImageMobile?: string;
     jumpLinks?: Array<{ label: string; link: string }>;
   };
   dict?: any;
@@ -175,14 +176,22 @@ export default function GeneralHeroSection({ data, dict }: GeneralHeroSectionPro
       id={data?.id || 'general-hero'}
     >
       <div className="general-hero-bg">
-        {data.backgroundImage && (
-          <Image
-            src={data.backgroundImage}
-            alt="Hero Background"
-            fill
-            priority
-            className="general-hero-img"
-          />
+        {(data.backgroundImage || data.backgroundImageMobile) && (
+          <picture>
+            {data.backgroundImageMobile && (
+              <source
+                media="(max-width: 1024px)"
+                srcSet={data.backgroundImageMobile}
+              />
+            )}
+            <Image
+              src={data.backgroundImage || data.backgroundImageMobile}
+              alt="Hero Background"
+              fill
+              priority
+              className="general-hero-img"
+            />
+          </picture>
         )}
         <div className="general-hero-overlay" />
       </div>

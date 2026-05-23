@@ -265,6 +265,8 @@ export const SECTION_PROJECTION = groq`
       _type == "contactSection" => {
         headline,
         subtitle,
+        "backgroundImage": backgroundImage.asset->url,
+        "backgroundImageMobile": backgroundImageMobile.asset->url,
         formTitle,
         formSubtitle,
         showIntentWhatsApp,
@@ -316,6 +318,7 @@ export const SECTION_PROJECTION = groq`
       _type == "buyHeroSection" => {
         title,
         "backgroundImage": backgroundImage.asset->url,
+        "backgroundImageMobile": backgroundImageMobile.asset->url,
         searchPlaceholder,
         trendingSearches,
         jumpLinks[] {
@@ -327,6 +330,7 @@ export const SECTION_PROJECTION = groq`
         title,
         subtitle,
         "backgroundImage": backgroundImage.asset->url,
+        "backgroundImageMobile": backgroundImageMobile.asset->url,
         searchPlaceholder,
         modalTitle,
         modalSubtitle,
@@ -349,6 +353,7 @@ export const SECTION_PROJECTION = groq`
           "link": ${INTERNAL_LINK_PROJECTION}
         },
         "backgroundImage": backgroundImage.asset->url,
+        "backgroundImageMobile": backgroundImageMobile.asset->url,
         jumpLinks[] {
           label,
           "link": ${INTERNAL_LINK_PROJECTION}

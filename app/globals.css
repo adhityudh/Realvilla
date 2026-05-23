@@ -595,3 +595,27 @@ html.lenis body {
 .js-enabled section:not(.no-entrance-anim) .general-jump-links {
   opacity: 0;
 }
+
+/* ================================================
+   FIRST SECTION MARGIN REMOVAL
+   Remove top margin/padding from first section on any page
+================================================ */
+main > section:first-of-type,
+body > section:first-of-type {
+  margin-top: 0 !important;
+}
+
+/* Responsive adjustments for first sections */
+@media (max-width: 1024px) {
+  main > section:first-of-type,
+  body > section:first-of-type {
+    margin-top: 0 !important;
+  }
+}
+
+@media (max-width: 768px) {
+  main > section:first-of-type,
+  body > section:first-of-type {
+    margin-top: 0 !important;
+  }
+}

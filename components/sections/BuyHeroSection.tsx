@@ -20,6 +20,7 @@ interface BuyHeroSectionProps {
     id?: string;
     title?: string;
     backgroundImage?: string;
+    backgroundImageMobile?: string;
     searchPlaceholder?: string;
     jumpLinks?: Array<{ label: string; link: string }>;
   };
@@ -208,14 +209,22 @@ export default function BuyHeroSection({ data, dict }: BuyHeroSectionProps) {
     <>
       <section className={`buy-hero ${data?.disableEntranceAnimation ? 'no-entrance-anim' : ''}`} ref={sectionRef} data-is-hero="true" id={data?.id || 'buy-hero'}>
         <div className="buy-hero-bg">
-          {data.backgroundImage && (
-            <Image
-              src={data.backgroundImage}
-              alt="Buy Background"
-              fill
-              priority
-              className="buy-hero-img"
-            />
+          {(data.backgroundImage || data.backgroundImageMobile) && (
+            <picture>
+              {data.backgroundImageMobile && (
+                <source
+                  media="(max-width: 1024px)"
+                  srcSet={data.backgroundImageMobile}
+                />
+              )}
+              <Image
+                src={data.backgroundImage || data.backgroundImageMobile}
+                alt="Buy Background"
+                fill
+                priority
+                className="buy-hero-img"
+              />
+            </picture>
           )}
           <div className="buy-hero-overlay" />
         </div>

@@ -800,7 +800,7 @@
     }
 
     .gallery-modal-content {
-        height: 100vh;
+        height: 100dvh;
         border-radius: 0;
     }
 

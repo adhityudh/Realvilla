@@ -55,6 +55,22 @@ export const contactSection = defineType({
       description: 'Supporting text shown directly beneath the main headline.'
     }),
     defineField({
+      name: 'backgroundImage',
+      title: 'Background Image Override (Desktop)',
+      type: 'image',
+      options: { hotspot: true },
+      group: 'header',
+      description: 'Optional: Override the default background with a custom image for desktop. When set, an overlay will be applied similar to the general hero section.'
+    }),
+    defineField({
+      name: 'backgroundImageMobile',
+      title: 'Background Image Override (Mobile)',
+      type: 'image',
+      options: { hotspot: true },
+      group: 'header',
+      description: 'Optional: Override the default background with a custom image for mobile devices. If not set, the desktop image will be used.'
+    }),
+    defineField({
       name: 'marketData',
       title: 'Market Data',
       type: 'array',

@@ -24,6 +24,7 @@ interface SellHeroSectionProps {
     title?: string;
     subtitle?: string;
     backgroundImage?: string;
+    backgroundImageMobile?: string;
     searchPlaceholder?: string;
     modalTitle?: string;
     modalSubtitle?: string;
@@ -206,6 +207,7 @@ export default function SellHeroSection({ data, dict, contextData }: SellHeroSec
 
   // Use Sell page background image as default fallback if none provided
   const bgImage = data?.backgroundImage;
+  const bgImageMobile = data?.backgroundImageMobile;
 
   const jumpLinks = data?.jumpLinks;
 
@@ -401,14 +403,22 @@ export default function SellHeroSection({ data, dict, contextData }: SellHeroSec
   return (
     <section className={`sell-hero ${data?.disableEntranceAnimation ? 'no-entrance-anim' : ''} ${data?.disableHeaderEntranceAnimation ? 'no-header-entrance-anim' : ''}`} ref={sectionRef} data-is-hero="true" id={data?.id || 'sell-hero'}>
       <div className="sell-hero-bg">
-        {bgImage && (
-          <Image
-            src={bgImage}
-            alt="Sell Background"
-            fill
-            priority
-            className="sell-hero-img"
-          />
+        {(bgImage || bgImageMobile) && (
+          <picture>
+            {bgImageMobile && (
+              <source
+                media="(max-width: 1024px)"
+                srcSet={bgImageMobile}
+              />
+            )}
+            <Image
+              src={bgImage || bgImageMobile}
+              alt="Sell Background"
+              fill
+              priority
+              className="sell-hero-img"
+            />
+          </picture>
         )}
         <div className="sell-hero-overlay" />
       </div>
