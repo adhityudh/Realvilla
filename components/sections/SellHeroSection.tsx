@@ -412,7 +412,7 @@ export default function SellHeroSection({ data, dict, contextData }: SellHeroSec
               />
             )}
             <Image
-              src={bgImage || bgImageMobile}
+              src={(bgImage || bgImageMobile)!}
               alt="Sell Background"
               fill
               priority

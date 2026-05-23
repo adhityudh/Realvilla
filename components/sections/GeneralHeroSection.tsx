@@ -185,7 +185,7 @@ export default function GeneralHeroSection({ data, dict }: GeneralHeroSectionPro
               />
             )}
             <Image
-              src={data.backgroundImage || data.backgroundImageMobile}
+              src={(data.backgroundImage || data.backgroundImageMobile)!}
               alt="Hero Background"
               fill
               priority

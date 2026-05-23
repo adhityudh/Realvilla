@@ -218,7 +218,7 @@ export default function BuyHeroSection({ data, dict }: BuyHeroSectionProps) {
                 />
               )}
               <Image
-                src={data.backgroundImage || data.backgroundImageMobile}
+                src={(data.backgroundImage || data.backgroundImageMobile)!}
                 alt="Buy Background"
                 fill
                 priority
