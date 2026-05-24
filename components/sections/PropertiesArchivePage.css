@@ -283,7 +283,7 @@
 
 .archive-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+    grid-template-columns: 1fr 1fr;
     gap: 3rem 1.5rem;
 }
 
