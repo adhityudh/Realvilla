@@ -409,7 +409,7 @@
 .archive-load-more-container {
     display: flex;
     justify-content: center;
-    padding: 6rem 0 2rem 0;
+    padding: 5rem 0 0rem 0;
     width: 100%;
 }
 
@@ -489,6 +489,11 @@
         width: 1.5rem;
         height: 1.5rem;
     }
+
+    .archive-mobile-filter-btn {
+        height: 40px;
+    }
+
 }
 
 @media (max-width: 768px) {
@@ -522,7 +527,6 @@
         width: 100%;
         align-items: center;
         justify-content: center;
-        height: 40px;
     }
 
     .archive-sort-pills {
