@@ -161,6 +161,7 @@ Fields that don't exist in your PDF are simply skipped — you don't need all of
       initialValue: {
         propertyTitle:        'property_title',
         propertyReference:    'property_reference',
+        propertyCode:         'property_code',
         buyerFullName:        'buyer_full_name',
         buyerIdNumber:        'buyer_id_number',
         buyerEmail:           'buyer_email',
@@ -190,6 +191,14 @@ Fields that don't exist in your PDF are simply skipped — you don't need all of
           type: 'string',
           initialValue: 'property_reference',
           placeholder: 'property_reference',
+        }),
+        defineField({
+          name: 'propertyCode',
+          title: 'Property Code',
+          description: 'Filled with: the property code (e.g. RV0001) from Sanity.',
+          type: 'string',
+          initialValue: 'property_code',
+          placeholder: 'property_code',
         }),
         defineField({
           name: 'buyerFullName',

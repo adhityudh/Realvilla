@@ -82,6 +82,23 @@ export async function POST(request: Request) {
         adminEmails = fallback.split(',').map((e) => e.trim()).filter(Boolean);
       }
 
+      // ── Fetch property code from Sanity ────────────────────────────────────
+      let propertyCode: string | null = null;
+      if (meta.propertyId) {
+        try {
+          const { client } = await import('@/sanity/lib/client');
+          const prop = await client.fetch(
+            `*[_id == $id][0]{ propertyCode }`,
+            { id: meta.propertyId }
+          );
+          if (prop?.propertyCode) {
+            propertyCode = prop.propertyCode;
+          }
+        } catch (err) {
+          console.warn('[Offer/Webhook] Failed to fetch property code:', err);
+        }
+      }
+
       // ── Trigger PDF Generation (using template from Sanity) ────────────────
       let pdfBase64: string | null = null;
 
@@ -93,6 +110,7 @@ export async function POST(request: Request) {
             body: JSON.stringify({
               sessionId: session.id,
               propertyId: meta.propertyId,
+              propertyCode: propertyCode || undefined,
               propertyTitle: meta.propertyTitle,
               propertyPrice: meta.propertyPrice,
               depositAmount: meta.depositAmount,

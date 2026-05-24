@@ -21,6 +21,7 @@ interface OfferData {
 interface PdfFieldMap {
   propertyTitle?: string;
   propertyReference?: string;
+  propertyCode?: string;
   buyerFullName?: string;
   buyerIdNumber?: string;
   buyerEmail?: string;
@@ -39,6 +40,7 @@ interface PdfFieldMap {
 interface GeneratePDFPayload {
   sessionId: string;
   propertyId: string;
+  propertyCode?: string;
   propertyTitle: string;
   propertyPrice?: string;
   depositAmount: string;
@@ -59,6 +61,7 @@ export async function POST(request: Request) {
     const {
       sessionId,
       propertyId,
+      propertyCode,
       propertyTitle,
       propertyPrice,
       depositAmount,
@@ -113,6 +116,7 @@ export async function POST(request: Request) {
     const fieldValues: Record<string, string> = {
       [fm.propertyTitle        ?? 'property_title']:        propertyTitle || '',
       [fm.propertyReference    ?? 'property_reference']:    propertyId || '',
+      [fm.propertyCode         ?? 'property_code']:         propertyCode || '',
       [fm.buyerFullName        ?? 'buyer_full_name']:       personal.fullName || '',
       [fm.buyerIdNumber        ?? 'buyer_id_number']:       personal.idNumber || '',
       [fm.buyerEmail           ?? 'buyer_email']:           personal.email || '',
