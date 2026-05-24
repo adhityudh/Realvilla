@@ -133,10 +133,10 @@
 
 /* Reusable Badge (glassmorphic pill for overlays on images) */
 .badge {
-    background: rgba(0, 0, 0, 0.2);
+    background: var(--bg-surface);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-    color: var(--text-white);
+    color: var(--text-black);
     padding: 0.5rem 0.75rem;
     font-family: var(--font-manrope), sans-serif;
     font-size: var(--text-xs);
@@ -144,7 +144,7 @@
     letter-spacing: var(--ls-wider);
     text-transform: uppercase;
     border-radius: var(--radius-md);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(0, 0, 0, 0.1);
     pointer-events: none;
     display: inline-flex;
     align-items: center;
@@ -156,7 +156,7 @@
     height: 14px;
     flex-shrink: 0;
     object-fit: contain;
-    filter: brightness(0) invert(1);
+    filter: brightness(0);
 }
 
 .badge-row {
@@ -210,24 +210,28 @@
     width: 36px;
     height: 36px;
     border-radius: 50%;
-    background: var(--bg-surface);
-    border: none;
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.15);
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
     opacity: 1;
     transition: opacity 0.3s var(--ease-smooth);
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
 }
 
+.carousel-arrow:hover {
+    opacity: 0.9;
+}
+
 .carousel-arrow img {
-    width: 18px;
-    height: 18px;
-    opacity: 0.8;
-    filter: brightness(0);
+    width: 20px;
+    height: 20px;
+    opacity: 1;
+    filter: brightness(0) invert(1);
 }
 
 .carousel-arrow--prev {
@@ -295,14 +299,14 @@
     }
 
     .carousel-arrow {
-        width: 32px;
-        height: 32px;
+        width: 36px;
+        height: 36px;
         opacity: 1;
     }
 
     .carousel-arrow img {
-        width: 14px;
-        height: 14px;
+        width: 20px;
+        height: 20px;
     }
 
     .carousel-arrow--prev {

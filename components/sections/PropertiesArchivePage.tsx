@@ -325,7 +325,7 @@ export default function PropertiesArchivePage({
 
     const fetchProperties = async () => {
       try {
-        let baseFilter = `_type == "property" && (language == $language || (!defined(language) && $language == "en")) && status != "sold" && status != "reserved"`;
+        let baseFilter = `_type == "property" && (language == $language || (!defined(language) && $language == "en"))`;
 
         // Price Range Filter
         baseFilter += ` && price >= $priceMin && price <= $priceMax`;
