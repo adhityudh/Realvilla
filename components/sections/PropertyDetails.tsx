@@ -9,7 +9,6 @@ import PropertyContactCard from './PropertyContactCard';
 import { smoothScrollToAnchor } from '@/lib/scroll';
 import { urlForImage } from '@/sanity/lib/image';
 import { useGalleryModal } from '@/components/providers/GalleryModalContext';
-import MortgageCalculatorCard from '@/components/ui/MortgageCalculatorCard';
 import './PropertyDetails.css';
 
 interface PropertyDetailsProps {
@@ -19,7 +18,6 @@ interface PropertyDetailsProps {
   whatsappNumber?: string;
   whatsappMessageTemplate?: string;
   propertyContactPresetMessage?: string;
-  mortgageCalculatorData?: any;
   // ── Offer ──
   offerEnabled?: boolean;
   offerDepositAmount?: number;
@@ -38,7 +36,6 @@ export default function PropertyDetails({
   whatsappNumber,
   whatsappMessageTemplate,
   propertyContactPresetMessage,
-  mortgageCalculatorData,
   offerEnabled = false,
   offerDepositAmount = 500,
   offerConditionsTitle,
@@ -376,20 +373,6 @@ export default function PropertyDetails({
             })()}
           </div>
 
-          {/* 3. Mortgage Calculator */}
-          {mortgageCalculatorData && property.price && (
-            <div className="details-block mortgage-calculator-block">
-              <h2 className="details-heading">
-                {dict?.property?.mortgage_calculator_title || 'Mortgage Calculator'}
-              </h2>
-              <MortgageCalculatorCard
-                data={mortgageCalculatorData}
-                dict={dict}
-                propertyPrice={property.price}
-                locale={locale}
-              />
-            </div>
-          )}
         </div>
 
         <div className="property-details-right-col" id="contact">

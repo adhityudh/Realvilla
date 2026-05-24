@@ -45,7 +45,7 @@
         "email_placeholder": "Ingrese su correo electrónico",
         "optional": "(Opcional)",
         "required": "*",
-        "municipality": "Dirección de la Propiedad (Tenerife)",
+        "municipality": "Dirección de la Propiedad (España)",
         "municipality_placeholder": "Ingrese la dirección de la propiedad...",
         "property_type": "Tipo de Propiedad",
         "select_type": "Seleccione el tipo de propiedad",

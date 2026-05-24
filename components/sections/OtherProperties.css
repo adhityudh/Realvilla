@@ -24,7 +24,7 @@
 .properties-grid-suggested {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 4rem 1.5rem;
+  gap: 3rem 1.5rem;
   margin-bottom: 5rem;
 }
 
@@ -45,7 +45,7 @@
 
   .properties-grid-suggested {
     grid-template-columns: repeat(2, 1fr);
-    gap: 3rem 1.5rem;
+    gap: 2rem 1rem;
     margin-bottom: 3rem;
   }
 
@@ -59,7 +59,7 @@
 @media (max-width: 768px) {
   .properties-grid-suggested {
     grid-template-columns: 1fr;
-    gap: 2.5rem;
+    gap: 2rem;
     margin-bottom: 3rem;
   }
 

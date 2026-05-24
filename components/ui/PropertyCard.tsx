@@ -1,9 +1,8 @@
 'use client';
 
-import { useRef } from 'react';
+import { useState, useCallback } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import gsap from 'gsap';
 import { urlForImage } from '@/sanity/lib/image';
 import { useParams } from 'next/navigation';
 import './PropertyCard.css';
@@ -14,130 +13,163 @@ export interface PropertyCardProps {
 }
 
 export default function PropertyCard({ prop, variant = 'default', dict }: { prop: any, variant?: 'default' | 'seamless', dict?: any }) {
-  const secondaryImgRef = useRef<HTMLImageElement>(null);
-  const hoverTl = useRef<gsap.core.Timeline | null>(null);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
 
-  const primarySrc = prop.image?.asset ? urlForImage(prop.image).url() : null;
-  const secondarySrc = prop.secondaryImage?.asset ? urlForImage(prop.secondaryImage).url() : null;
+  // Build carousel images array: primary image + all images from gallery groups (excluding virtual tours)
+  const carouselImages = (() => {
+    const images: { src: string; lqip?: string }[] = [];
 
-  if (!primarySrc) return null;
+    // 1. Primary image
+    if (prop.image?.asset) {
+      images.push({
+        src: urlForImage(prop.image).url(),
+        lqip: prop.image.asset?.metadata?.lqip,
+      });
+    }
 
-  const handleMouseEnter = () => {
-    if (!secondaryImgRef.current) return;
-    if (hoverTl.current) hoverTl.current.kill();
-    const target = secondaryImgRef.current;
-    const obj = { p: 0 };
-    hoverTl.current = gsap.timeline();
-    hoverTl.current.to(obj, {
-      p: 1,
-      duration: 0.8,
-      ease: 'power2.inOut',
-      onUpdate: () => {
-        const numStrips = 12;
-        const stagger = 0.3;
-        const stops = [];
-        for (let j = 0; j < numStrips; j++) {
-          const stripStart = ((numStrips - 1 - j) / numStrips) * (1 - stagger);
-          const stripEnd = stripStart + stagger;
-          let sP = (obj.p - stripStart) / (stripEnd - stripStart);
-          sP = Math.max(0, Math.min(1, sP));
-          const y1 = (j / numStrips) * 100;
-          const y2 = ((j + 1) / numStrips) * 100;
-          const cut = y2 - (y2 - y1) * sP;
-          stops.push(`transparent ${y1}%`);
-          stops.push(`transparent ${cut}%`);
-          stops.push(`#000 ${cut}%`);
-          stops.push(`#000 ${y2}%`);
+    // 2. Images from gallery groups (only image type, not virtual tours)
+    if (prop.gallery) {
+      prop.gallery.forEach((g: any) => {
+        if (g._type === 'galleryGroup') {
+          // Skip virtual tours
+          const cleanMediaType = typeof g.mediaType === 'string'
+            ? g.mediaType.replace(/[\u2000-\u206F\u200B-\u200D\uFEFF]/g, '').trim()
+            : g.mediaType;
+          if (cleanMediaType === 'virtualTour') return;
+
+          if (g.items && Array.isArray(g.items)) {
+            g.items.forEach((item: any) => {
+              if (item._type === 'image' && item.asset) {
+                images.push({
+                  src: urlForImage(item).url(),
+                  lqip: item.asset?.metadata?.lqip,
+                });
+              }
+            });
+          }
+        } else if (g._type === 'image' && g.asset) {
+          images.push({
+            src: urlForImage(g).url(),
+            lqip: g.asset?.metadata?.lqip,
+          });
         }
-        const mask = `linear-gradient(to bottom, ${stops.join(', ')})`;
-        (target.style as any).WebkitMaskImage = mask;
-        target.style.maskImage = mask;
-      }
-    });
-  };
+      });
+    }
 
-  const handleMouseLeave = () => {
-    if (!secondaryImgRef.current) return;
-    if (hoverTl.current) hoverTl.current.kill();
-    const target = secondaryImgRef.current;
-    const obj = { p: 1 };
-    hoverTl.current = gsap.timeline();
-    hoverTl.current.to(obj, {
-      p: 0,
-      duration: 0.6,
-      ease: 'power2.inOut',
-      onUpdate: () => {
-        const numStrips = 12;
-        const stagger = 0.3;
-        const stops = [];
-        for (let j = 0; j < numStrips; j++) {
-          const stripStart = ((numStrips - 1 - j) / numStrips) * (1 - stagger);
-          const stripEnd = stripStart + stagger;
-          let sP = (obj.p - stripStart) / (stripEnd - stripStart);
-          sP = Math.max(0, Math.min(1, sP));
-          const y1 = (j / numStrips) * 100;
-          const y2 = ((j + 1) / numStrips) * 100;
-          const cut = y2 - (y2 - y1) * sP;
-          stops.push(`transparent ${y1}%`);
-          stops.push(`transparent ${cut}%`);
-          stops.push(`#000 ${cut}%`);
-          stops.push(`#000 ${y2}%`);
-        }
-        const mask = `linear-gradient(to bottom, ${stops.join(', ')})`;
-        (target.style as any).WebkitMaskImage = mask;
-        target.style.maskImage = mask;
-      }
-    });
-  };
+    return images;
+  })();
+
+  const hasMultipleImages = carouselImages.length > 1;
+
+  const goToNext = useCallback((e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setActiveImageIndex(prev => (prev + 1) % carouselImages.length);
+  }, [carouselImages.length]);
+
+  const goToPrev = useCallback((e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setActiveImageIndex(prev => (prev - 1 + carouselImages.length) % carouselImages.length);
+  }, [carouselImages.length]);
+
+  // Sanitize slug to remove Sanity Stega invisible characters that break URLs
+  const cleanSlug = typeof prop.slug === 'string' 
+    ? prop.slug.replace(/[\u200B-\u200D\uFEFF\u00A0\u2060\u180E\u202A-\u202E\u2066-\u2069]/g, '').trim()
+    : prop.slug;
 
   const params = useParams();
   const activeLocale = prop.language || (params?.locale as string) || 'en';
   const routePrefix = (activeLocale === 'es') ? 'propiedades' : 'properties';
 
+  if (!carouselImages.length) return null;
+
+  const currentImage = carouselImages[activeImageIndex];
+
   return (
-    <Link href={`/${activeLocale}/${routePrefix}/${prop.slug}`} className={`property-card ${variant === 'seamless' ? 'property-card-seamless' : ''}`} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} style={{ display: 'block', textDecoration: 'none' }}>
+    <Link href={`/${activeLocale}/${routePrefix}/${cleanSlug}`} className={`property-card ${variant === 'seamless' ? 'property-card-seamless' : ''}`}>
       <div className="property-image-wrapper">
-        {prop.status === 'sold' && (
-          <div className="property-status-badge sold">
-            {dict?.property?.status_sold || 'Sold'}
-          </div>
+        <div className="badge-row">
+          {prop.category?.title && (
+            <span className="badge">
+              {prop.category.icon && <img src={prop.category.icon} alt="" className="badge-icon" />}
+              {prop.category.title}
+            </span>
+          )}
+          {prop.propertyCode && (
+            <span className="badge">
+              #{prop.propertyCode}
+            </span>
+          )}
+        </div>
+        {(prop.status === 'sold' || prop.status === 'reserved') && (
+          <span className="badge badge--tr badge--status">
+            <span className={`badge-dot badge-dot--${prop.status}`} />
+            {prop.status === 'reserved' 
+              ? (dict?.property?.status_reserved || 'Reserved')
+              : (dict?.property?.status_sold || 'Sold')}
+          </span>
         )}
+
+        {/* Carousel navigation arrows */}
+        {hasMultipleImages && (
+          <>
+            <button className="carousel-arrow carousel-arrow--prev" onClick={goToPrev} type="button" aria-label="Previous image">
+              <img src="/icons/chevron_backward.svg" alt="Previous" />
+            </button>
+            <button className="carousel-arrow carousel-arrow--next" onClick={goToNext} type="button" aria-label="Next image">
+              <img src="/icons/chevron_forward.svg" alt="Next" />
+            </button>
+          </>
+        )}
+
         <Image 
-          src={primarySrc} 
+          src={currentImage.src}
           alt={prop.address || 'Property'} 
           className="property-image primary img-reveal" 
           fill
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-          placeholder={prop.image?.asset?.metadata?.lqip ? "blur" : "empty"}
-          blurDataURL={prop.image?.asset?.metadata?.lqip}
+          placeholder={currentImage.lqip ? "blur" : "empty"}
+          blurDataURL={currentImage.lqip}
           style={{ objectFit: 'cover' }}
           onLoad={(e) => e.currentTarget.classList.add('loaded')}
         />
-        {secondarySrc && (
-          <Image
-            ref={secondaryImgRef}
-            src={secondarySrc}
-            alt={prop.address || 'Property'}
-            className="property-image secondary"
-            fill
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            placeholder={prop.secondaryImage?.asset?.metadata?.lqip ? "blur" : "empty"}
-            blurDataURL={prop.secondaryImage?.asset?.metadata?.lqip}
-            style={{ 
-              objectFit: 'cover',
-              WebkitMaskImage: 'linear-gradient(transparent, transparent)', 
-              maskImage: 'linear-gradient(transparent, transparent)' 
-              }}
-          />
+
+        {/* Carousel dots */}
+        {hasMultipleImages && (
+          <div className="carousel-dots">
+            {carouselImages.map((_, idx) => (
+              <button
+                key={idx}
+                className={`carousel-dot ${idx === activeImageIndex ? 'active' : ''}`}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setActiveImageIndex(idx);
+                }}
+                type="button"
+                aria-label={`Go to image ${idx + 1}`}
+              />
+            ))}
+          </div>
         )}
       </div>
       <div className="property-info">
-        <div className="property-price">
-          {prop.price ? new Intl.NumberFormat('en-IE', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(prop.price) : dict?.properties?.price_upon_request}
+        <div className="property-info-header">
+          <div className="property-info-left">
+            <h3 className="property-address">
+              {prop.title || prop.address}
+            </h3>
+            {prop.locationMunicipality && (
+              <p className="property-address-line">
+                {[prop.locationMunicipality, prop.locationPostalCode].filter(Boolean).join(', ')}
+              </p>
+            )}
+          </div>
+          <div className="property-price">
+            {prop.price ? new Intl.NumberFormat('en-IE', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(prop.price) : dict?.properties?.price_upon_request}
+          </div>
         </div>
-        <h3 className="property-address">
-          {prop.title || prop.address}
-        </h3>
         <div className="property-details">
           {(() => {
             const categoryHighlights = prop.category?.highlightedMetas || [];
@@ -153,14 +185,6 @@ export default function PropertyCard({ prop, variant = 'default', dict }: { prop
               }
             });
             
-            if (prop.category) {
-              highlights.unshift({
-                metaId: 'injected-category',
-                stringValue: prop.category.title,
-                hideLabelOnHighlight: true
-              });
-            }
-
             return highlights.map((m: any, i: number, arr: any[]) => {
               // Helper to strip invisible Stega characters that break simple equality matching
               const clean = (str: any) => typeof str === 'string' ? str.replace(/[\u2000-\u206F\u200B-\u200D\uFEFF]/g, '').trim() : str;
@@ -178,6 +202,7 @@ export default function PropertyCard({ prop, variant = 'default', dict }: { prop
               return (
                 <div key={m.metaId || i} style={{ display: 'contents' }}>
                   <span className="detail-item">
+                    {m.icon && <img src={m.icon} alt="" className="detail-icon" />}
                     {value}
                     {m.valueType === 'string'
                       ? (m.unit ? ` ${m.unit}` : '')

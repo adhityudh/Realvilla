@@ -814,8 +814,7 @@
     }
 
     .gallery-grid-scrollable {
-        grid-template-columns: 1fr 1fr;
-        gap: 0.5rem;
+        grid-template-columns: 1fr;
         padding: 0 1.5rem;
     }
 

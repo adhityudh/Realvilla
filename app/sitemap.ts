@@ -27,22 +27,35 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   })
 
   try {
-    // 2. Fetch all dynamic pages and properties AND their connected translations from Sanity
-    const query = `*[_type in ["page", "property"] && !(_id in path("drafts.**")) && defined(slug.current) && slug.current != "home"] {
-      _type,
-      "slug": slug.current,
-      "language": coalesce(language, "en"),
-      _updatedAt,
-      "translations": *[_type == "translation.metadata" && references(^._id)][0].translations[].value-> {
+    // 2. Fetch pages and properties separately since they use different slug fields
+    const query = `{
+      "pages": *[_type == "page" && !(_id in path("drafts.**")) && defined(slug.current) && slug.current != "home"] {
+        _type,
+        "slug": slug.current,
         "language": coalesce(language, "en"),
-        "slug": slug.current
+        _updatedAt,
+        "translations": *[_type == "translation.metadata" && references(^._id)][0].translations[].value-> {
+          "language": coalesce(language, "en"),
+          "slug": slug.current
+        }
+      },
+      "properties": *[_type == "property" && !(_id in path("drafts.**")) && defined(propertyCode)] {
+        _type,
+        "slug": propertyCode,
+        "language": coalesce(language, "en"),
+        _updatedAt,
+        "translations": *[_type == "translation.metadata" && references(^._id)][0].translations[].value-> {
+          "language": coalesce(language, "en"),
+          "slug": ^.propertyCode
+        }
       }
     }`
     
     const rawResults = await client.fetch(query, {}, { next: { revalidate: 3600 } })
-    const results = sanitizeSanityData(rawResults);
+    const data = sanitizeSanityData(rawResults);
+    const allItems = [...(data.pages || []), ...(data.properties || [])];
 
-    results.forEach((item: any) => {
+    allItems.forEach((item: any) => {
       const lang = item.language === 'es' ? 'es' : 'en'
       let fullUrl = ''
       let priority = 0.7

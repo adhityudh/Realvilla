@@ -21,6 +21,9 @@ export default function ContactSection({ data, dict, contextData }: { data?: any
   const marketData = data.marketData;
   const backgroundImage = data.backgroundImage;
   const backgroundImageMobile = data.backgroundImageMobile;
+  const mode = data.mode || 'default';
+  const contactList = data.contactList || [];
+  const isShowcase = mode === 'showcase';
 
   useEffect(() => {
     if (!sectionRef.current) return;
@@ -141,7 +144,7 @@ export default function ContactSection({ data, dict, contextData }: { data?: any
 
 
   return (
-    <section className={`contact-section ${data?.disableEntranceAnimation ? 'no-entrance-anim' : ''} ${data?.disableHeaderEntranceAnimation ? 'no-header-entrance-anim' : ''} ${(backgroundImage || backgroundImageMobile) ? 'has-bg-override' : ''}`} id={data?.id || 'contact'} ref={sectionRef}>
+    <section className={`contact-section ${data?.disableEntranceAnimation ? 'no-entrance-anim' : ''} ${data?.disableHeaderEntranceAnimation ? 'no-header-entrance-anim' : ''} ${(backgroundImage || backgroundImageMobile) ? 'has-bg-override' : ''} ${isShowcase ? 'contact-showcase' : ''}`} id={data?.id || 'contact'} ref={sectionRef}>
       {(backgroundImage || backgroundImageMobile) && (
         <div className="contact-bg-override">
           <picture>
@@ -185,6 +188,28 @@ export default function ContactSection({ data, dict, contextData }: { data?: any
               </div>
             ))}
           </div>
+          {isShowcase && contactList.length > 0 && (
+            <div className="contact-showcase-list">
+              {contactList.map((item: any, idx: number) => (
+                <a 
+                  key={idx} 
+                  href={item.link} 
+                  className="contact-showcase-item"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {item.icon?.asset && (
+                    <img 
+                      src={item.icon.asset.url || `/icons/${item.icon.asset._ref?.split('-')[1]}.svg`} 
+                      alt={item.label}
+                      className="contact-showcase-icon"
+                    />
+                  )}
+                  <span className="contact-showcase-label">{item.label}</span>
+                </a>
+              ))}
+            </div>
+          )}
         </div>
         <div className="contact-form-wrapper">
           <ContactCard 

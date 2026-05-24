@@ -325,7 +325,7 @@ export default function PropertiesArchivePage({
 
     const fetchProperties = async () => {
       try {
-        let baseFilter = `_type == "property" && (language == $language || (!defined(language) && $language == "en"))`;
+        let baseFilter = `_type == "property" && (language == $language || (!defined(language) && $language == "en")) && status != "sold" && status != "reserved"`;
 
         // Price Range Filter
         baseFilter += ` && price >= $priceMin && price <= $priceMax`;
@@ -419,7 +419,7 @@ export default function PropertiesArchivePage({
 
         const query = `
           {
-            "items": *[${baseFilter}] | order(select(status == "sold" => 1, 0) asc, ${orderBy}) [$start...$end] {
+            "items": *[${baseFilter}] | order(select(status == "reserved" => 1, status == "sold" => 2, 0) asc, ${orderBy}) [$start...$end] {
               ${PROPERTY_CARD_FIELDS}
             },
             "total": count(*[${baseFilter}])
@@ -738,7 +738,7 @@ export default function PropertiesArchivePage({
                   }}
                 >
                   {properties.map((prop) => (
-                    <PropertyCard key={prop._id} prop={prop} variant="seamless" dict={dict} />
+                    <PropertyCard key={prop._id} prop={prop} dict={dict} />
                   ))}
                 </div>
               )}

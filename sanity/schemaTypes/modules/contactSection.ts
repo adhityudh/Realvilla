@@ -22,8 +22,23 @@ export const contactSection = defineType({
       type: 'string',
       description: 'Used as an anchor identifier (e.g. for smooth scrolling links like #about).',
       initialValue: 'contact',
-    group: 'advanced',
-}),
+      group: 'advanced',
+    }),
+    defineField({
+      name: 'mode',
+      title: 'Section Mode',
+      type: 'string',
+      group: 'header',
+      initialValue: 'default',
+      options: {
+        list: [
+          { title: 'Default', value: 'default' },
+          { title: 'Contact Showcase', value: 'showcase' },
+        ],
+        layout: 'radio'
+      },
+      description: 'Set the section mode. "Contact Showcase" hides the form and displays a contact list instead.'
+    }),
     defineField({
       name: 'disableEntranceAnimation',
       title: 'Disable Entrance Animation',
@@ -87,6 +102,30 @@ export const contactSection = defineType({
           ],
         },
       ],
+    }),
+    defineField({
+      name: 'contactList',
+      title: 'Contact List',
+      type: 'array',
+      group: 'header',
+      hidden: ({ parent }) => parent?.mode !== 'showcase',
+      of: [
+        {
+          type: 'object',
+          name: 'contactListItem',
+          fields: [
+            defineField({ name: 'label', title: 'Label', type: 'string' }),
+            defineField({ name: 'link', title: 'Link', type: 'string' }),
+            defineField({ 
+              name: 'icon', 
+              title: 'Icon', 
+              type: 'image',
+              options: { hotspot: false }
+            }),
+          ],
+        },
+      ],
+      description: 'List of contact links to display in "Contact Showcase" mode.'
     }),
     defineField({
       name: 'initialStep',

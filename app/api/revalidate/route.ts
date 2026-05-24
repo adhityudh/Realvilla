@@ -4,7 +4,7 @@ import { parseBody } from 'next-sanity/webhook';
 
 export async function POST(req: NextRequest) {
   try {
-    const { isValidSignature, body } = await parseBody<{ _type: string; slug?: { current: string } }>(
+    const { isValidSignature, body } = await parseBody<{ _type: string; slug?: { current: string }; propertyCode?: string }>(
       req,
       process.env.SANITY_REVALIDATE_SECRET
     );
@@ -30,13 +30,16 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // 3. Since the homepage depends on many document types (like properties),
-    // we also revalidate the 'page' tag when those types change to be safe.
-    if (['property'].includes(body._type)) {
+    // 3. If it's a property, revalidate by propertyCode and also the 'page' tag
+    if (body._type === 'property') {
       revalidateTag('page', { expire: 0 });
+      if (body.propertyCode) {
+        revalidateTag(body.propertyCode, { expire: 0 });
+      }
     }
 
-    console.log(`[Webhook] Revalidated: ${body._type} ${body.slug?.current || ''}`);
+    const identifier = body._type === 'property' ? body.propertyCode : body.slug?.current;
+    console.log(`[Webhook] Revalidated: ${body._type} ${identifier || ''}`);
 
     return NextResponse.json({
       status: 200,

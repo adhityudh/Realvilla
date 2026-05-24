@@ -89,7 +89,7 @@
 .buy-properties-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
-    gap: 4rem 1.5rem;
+    gap: 3rem 1.5rem;
     padding-bottom: 5rem;
 }
 
@@ -279,14 +279,14 @@
 
     .buy-properties-grid {
         grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-        gap: 3rem 1.5rem;
+        gap: 2rem 1rem;
         padding-bottom: 4rem;
     }
 }
 
 @media (max-width: 768px) {
     .buy-properties-grid {
-        gap: 3rem 1.5rem;
+        gap: 2rem 1rem;
         padding-bottom: 3rem;
     }
 

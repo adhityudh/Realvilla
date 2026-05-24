@@ -494,8 +494,8 @@
     font-family: var(--font-manrope), sans-serif;
     font-size: 10px;
     font-weight: 800;
-    width: 18px;
-    height: 18px;
+    width: 1rem;
+    height: 1rem;
     border-radius: 50%;
     margin-left: 0.25rem;
     flex-shrink: 0;
@@ -642,11 +642,6 @@
     font-weight: var(--fw-medium);
     color: var(--text-black);
     transition: color 0.2s ease;
-}
-
-.accordion-option-row.selected .accordion-option-label {
-    font-weight: var(--fw-bold);
-    color: var(--text-black);
 }
 
 .accordion-empty {

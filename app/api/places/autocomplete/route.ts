@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from 'next/server';
  * GET /api/places/autocomplete?q=<query>
  *
  * Server-side proxy to the Google Places API (New) v1.
- * - Scoped strictly to Tenerife via locationRestriction bounding box
+ * - Scoped to all of Spain via regionCode (no longer restricted to Tenerife)
  * - Enforces street-level minimum via includedPrimaryTypes
  * - Keeps the API key secure (not exposed to client bundle)
  */
@@ -26,13 +26,7 @@ export async function GET(req: NextRequest) {
   const body = {
     input,
     languageCode: 'es',
-    // Strictly restrict to Tenerife bounding box (no results outside)
-    locationRestriction: {
-      rectangle: {
-        low: { latitude: 27.98, longitude: -16.95 },
-        high: { latitude: 28.59, longitude: -16.10 },
-      },
-    },
+    regionCode: 'ES',
     // Street-level minimum: routes (streets), street_address, premise (buildings)
     includedPrimaryTypes: ['route', 'street_address', 'premise'],
   };

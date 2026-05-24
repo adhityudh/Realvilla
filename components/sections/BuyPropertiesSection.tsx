@@ -182,7 +182,7 @@ export default function BuyPropertiesSection({ data, dict, filterMeta: initialMe
 
     const fetchProperties = async () => {
       try {
-        let baseFilter = `_type == "property" && (language == $language || (!defined(language) && $language == "en"))${data?.showSold ? "" : " && status != 'sold'"}${data?.selectionType === "manual" ? " && _id in $manualIds" : ""}`;
+        let baseFilter = `_type == "property" && (language == $language || (!defined(language) && $language == "en"))${data?.showSold ? "" : " && status != 'sold' && status != 'reserved'"}${data?.selectionType === "manual" ? " && _id in $manualIds" : ""}`;
 
         // Price Range Filter
         baseFilter += ` && price >= $priceMin && price <= $priceMax`;
@@ -253,7 +253,7 @@ export default function BuyPropertiesSection({ data, dict, filterMeta: initialMe
 
         const query = `
           {
-            "items": *[${baseFilter}] | order(select(status == "sold" => 1, 0) asc, ${sortOrder}) [$start...$end] {
+            "items": *[${baseFilter}] | order(select(status == "reserved" => 1, status == "sold" => 2, 0) asc, ${sortOrder}) [$start...$end] {
               ${PROPERTY_CARD_FIELDS}
             },
             "total": count(*[${baseFilter}])
@@ -464,7 +464,7 @@ export default function BuyPropertiesSection({ data, dict, filterMeta: initialMe
           ) : (
             <div className="buy-properties-grid" ref={gridRef}>
               {properties.map((prop) => (
-                <PropertyCard key={prop._id} prop={prop} variant="seamless" dict={dict} />
+                <PropertyCard key={prop._id} prop={prop} dict={dict} />
               ))}
             </div>
           )}

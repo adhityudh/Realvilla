@@ -45,7 +45,7 @@
         "email_placeholder": "Enter your email address",
         "optional": "(Optional)",
         "required": "*",
-        "municipality": "Property Address (Tenerife)",
+        "municipality": "Property Address (Spain)",
         "municipality_placeholder": "Enter property address...",
         "property_type": "Property Type",
         "select_type": "Select property type",

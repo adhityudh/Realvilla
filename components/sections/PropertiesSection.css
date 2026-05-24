@@ -63,7 +63,7 @@
 .properties-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 4rem 1.5rem;
+    gap: 3rem 1.5rem;
     padding-bottom: 4rem;
 }
 
@@ -96,6 +96,7 @@
     --btn-link-border: var(--border-strong);
     border-bottom-width: 1px;
     padding-bottom: 4px;
+    font-family: var(--font-manrope), 'Manrope', sans-serif;
 }
 
 .properties-mortgage-cta .properties-mortgage-link:hover {
@@ -120,7 +121,7 @@
 
     .properties-grid {
         grid-template-columns: repeat(2, 1fr);
-        gap: 3rem 1.5rem;
+        gap: 2rem 1rem;
         padding-bottom: 4rem;
     }
 
@@ -134,7 +135,7 @@
 @media (max-width: 768px) {
     .properties-grid {
         grid-template-columns: 1fr;
-        gap: 1.5rem;
+        gap: 2rem;
         padding-bottom: 3rem;
     }
 }

@@ -23,7 +23,7 @@ export default function PropertyGallery({ property, dict, offerEnabled = false }
   const [imageSizes, setImageSizes] = useState<Record<string, { w: number; h: number }>>({});
   const { isOpen: isModalOpen, selectedItem: selectedGalleryItem, openModal, closeModal } = useGalleryModal();
   
-  const isSold = property?.status === 'sold';
+  const isSold = property?.status === 'sold' || property?.status === 'reserved';
   const archiveLink = `/${locale}/${locale === 'es' ? 'propiedades' : 'properties'}`;
 
   useEffect(() => {
@@ -319,10 +319,18 @@ export default function PropertyGallery({ property, dict, offerEnabled = false }
       <div className="property-gallery-summary">
         <div className="summary-details-col">
           <div className="summary-info-group">
-            <div className="summary-price-row">
-              <div className="summary-price">
-                {property.price ? new Intl.NumberFormat('en-IE', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(property.price) : dict?.properties?.price_upon_request}
-              </div>
+            <div className="summary-badge-row">
+              {property.category?.title && (
+                <span className="badge--outline">
+                  {property.category.icon && <img src={property.category.icon} alt="" className="badge--outline-icon" />}
+                  {property.category.title}
+                </span>
+              )}
+              {property.propertyCode && (
+                <span className="badge--outline">
+                  #{property.propertyCode}
+                </span>
+              )}
               <button 
                 className="summary-share-btn" 
                 onClick={() => {
@@ -343,7 +351,12 @@ export default function PropertyGallery({ property, dict, offerEnabled = false }
               </button>
             </div>
 
-            <h1 className="summary-title">{property.title}</h1>
+            <div className="summary-title-row">
+              <h1 className="summary-title">{property.title}</h1>
+              <div className="summary-price">
+                {property.price ? new Intl.NumberFormat('en-IE', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(property.price) : dict?.properties?.price_upon_request}
+              </div>
+            </div>
             <p className="summary-address">{property.address}</p>
             
             <div 
@@ -369,14 +382,6 @@ export default function PropertyGallery({ property, dict, offerEnabled = false }
                     });
                   }
                 });
-                
-                if (property.category) {
-                  highlights.unshift({
-                    metaId: 'injected-category',
-                    stringValue: property.category.title,
-                    hideLabelOnHighlight: true
-                  });
-                }
 
                 return highlights.map((m: any, i: number, arr: any[]) => {
                   // Helper to strip invisible Stega characters that break simple equality matching
@@ -395,6 +400,7 @@ export default function PropertyGallery({ property, dict, offerEnabled = false }
                   return (
                     <div key={m.metaId || i} style={{ display: 'contents' }}>
                       <span className="summary-meta-item">
+                        {m.icon && <img src={m.icon} alt="" className="summary-meta-icon" />}
                         {value} {!m.hideLabelOnHighlight && (m.unit || m.shortLabel)}
                       </span>
                       {i < arr.length - 1 && <div className="summary-meta-dot"></div>}
@@ -407,8 +413,10 @@ export default function PropertyGallery({ property, dict, offerEnabled = false }
             <div className="summary-cta-group">
               {isSold ? (
                 <>
-                  <span className="summary-sold-badge">
-                    {dict?.property?.status_sold || 'Sold'}
+                  <span className={`summary-sold-badge ${property?.status === 'reserved' ? 'reserved' : ''}`}>
+                    {property?.status === 'reserved' 
+                      ? (dict?.property?.status_reserved || 'Reserved')
+                      : (dict?.property?.status_sold || 'Sold')}
                   </span>
                   <Button 
                     label={dict?.property?.cta_find_similar || 'Find Similar Properties'} 

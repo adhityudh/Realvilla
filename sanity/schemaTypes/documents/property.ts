@@ -1,5 +1,6 @@
 import { defineField, defineType } from 'sanity'
 import { MetaValueInput } from '../../components/MetaValueInput'
+import { PropertyCodeInput } from '../../components/PropertyCodeInput'
 
 export const property = defineType({
   name: 'property',
@@ -38,30 +39,19 @@ export const property = defineType({
       group: 'general',
     }),
     defineField({
-      name: 'slug',
-      title: 'Slug',
-      type: 'slug',
-      options: {
-        source: (doc) => (doc.title as string) || (doc.address as string) || '',
-        maxLength: 96,
-        isUnique: async (slug, context) => {
-          const { document, getClient } = context
-          const client = getClient({ apiVersion: '2024-05-02' })
-          const id = document?._id.replace(/^drafts\./, '')
-          const language = document?.language
-
-          // Only check uniqueness within the same language
-          const query = `*[_type == "property" && slug.current == $slug && language == $language && _id != $id && !(_id in path("drafts.**"))][0]`
-          const result = await client.fetch(query, { 
-            slug, 
-            language: language || null, 
-            id 
-          })
-          
-          return !result
-        }
+      name: 'propertyCode',
+      title: 'Property Code',
+      type: 'string',
+      description: 'Unique property identifier with format RV + 4 digits (e.g. RV0001). Auto-generated and read-only.',
+      components: {
+        input: PropertyCodeInput,
       },
-      validation: (Rule) => Rule.required(),
+      validation: (Rule) =>
+        Rule.custom((value) => {
+          if (!value) return 'Property code is required.'
+          if (!/^RV\d{4}$/.test(value)) return 'Must be in format RV followed by 4 digits (e.g. RV0001).'
+          return true
+        }),
       group: 'general',
     }),
     defineField({
@@ -136,14 +126,6 @@ export const property = defineType({
       title: 'Primary Image',
       type: 'image',
       description: 'Main image shown on property cards.',
-      options: { hotspot: true },
-      group: 'media',
-    }),
-    defineField({
-      name: 'secondaryImage',
-      title: 'Secondary Image (Hover)',
-      type: 'image',
-      description: 'Image shown on card hover.',
       options: { hotspot: true },
       group: 'media',
     }),

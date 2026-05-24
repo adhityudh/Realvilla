@@ -284,7 +284,7 @@
 .archive-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
-    gap: 4rem 1.5rem;
+    gap: 3rem 1.5rem;
 }
 
 .archive-empty {
@@ -481,7 +481,13 @@
 
     .archive-grid {
         grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-        gap: 3rem 1.5rem;
+        gap: 2rem 1rem;
+    }
+
+    .archive-properties-section .archive-search-clear{
+        font-size: var(--text-base);
+        width: 1.5rem;
+        height: 1.5rem;
     }
 }
 
@@ -516,6 +522,7 @@
         width: 100%;
         align-items: center;
         justify-content: center;
+        height: 40px;
     }
 
     .archive-sort-pills {

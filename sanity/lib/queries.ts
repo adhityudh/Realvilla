@@ -49,11 +49,31 @@ export const PROPERTY_CARD_FIELDS = groq`
     location.municipality,
     address
   ),
+  propertyCode,
+  "locationMunicipality": location.municipality,
+  "locationPostalCode": location.postalCode,
   price,
   status,
-  "slug": slug.current,
+  "slug": propertyCode,
   image { asset->{ _id, url, metadata { lqip, dimensions } } },
-  secondaryImage { asset->{ _id, url, metadata { lqip, dimensions } } },
+  // Gallery for card carousel
+  gallery[] {
+    _type,
+    _type == "galleryGroup" => {
+      mediaType,
+      items[] {
+        _type,
+        _type == "image" => {
+          asset->{ _id, url, metadata { lqip, dimensions } },
+          alt
+        }
+      }
+    },
+    _type == "image" => {
+      asset->{ _id, url, metadata { lqip, dimensions } },
+      alt
+    }
+  },
   // Legacy fields for backward compat
   beds,
   baths,
@@ -247,7 +267,7 @@ export const SECTION_PROJECTION = groq`
           selectionType == "manual" => manualProperties[]-> {
             ${PROPERTY_CARD_FIELDS}
           },
-          selectionType == "dynamic" || !selectionType => *[_type == "property" && (language == $language || (!defined(language) && $language == "en")) && (^.showSold == true || status != "sold")] | order(select(status == "sold" => 1, 0) asc, _createdAt desc) [0...10] {
+          selectionType == "dynamic" || !selectionType => *[_type == "property" && (language == $language || (!defined(language) && $language == "en")) && (^.showSold == true || (status != "sold" && status != "reserved"))] | order(select(status == "reserved" => 1, status == "sold" => 2, 0) asc, _createdAt desc) [0...10] {
             ${PROPERTY_CARD_FIELDS}
           }
         )
@@ -267,6 +287,12 @@ export const SECTION_PROJECTION = groq`
         subtitle,
         "backgroundImage": backgroundImage.asset->url,
         "backgroundImageMobile": backgroundImageMobile.asset->url,
+        mode,
+        contactList[] {
+          label,
+          "icon": icon.asset->{ _id, url },
+          "link": externalLink
+        },
         formTitle,
         formSubtitle,
         showIntentWhatsApp,
@@ -626,7 +652,7 @@ export const SETTINGS_QUERY = groq`
 
 // ─── Property Detail Query ───
 export const PROPERTY_DETAIL_QUERY = groq`
-  *[_type == "property" && slug.current == $slug && (language == $language || (!defined(language) && $language == "en"))][0] {
+  *[_type == "property" && propertyCode == $slug && (language == $language || (!defined(language) && $language == "en"))][0] {
     _id,
     ${SEO_FIELDS},
     title,
@@ -640,9 +666,10 @@ export const PROPERTY_DETAIL_QUERY = groq`
       location.municipality,
       address
     ),
+    propertyCode,
     price,
     status,
-    "slug": slug.current,
+    "slug": propertyCode,
     _updatedAt,
     description,
     location {
@@ -737,8 +764,8 @@ export const PROPERTY_DETAIL_QUERY = groq`
     "_translations": *[_type == "translation.metadata" && references(^._id)][0].translations[].value->{
       "language": language,
       "slug": select(
-        language == "es" => "propiedades/" + slug.current,
-        "properties/" + slug.current
+        language == "es" => "propiedades/" + propertyCode,
+        "properties/" + propertyCode
       )
     }
   }
@@ -809,14 +836,14 @@ export const PROPERTY_META_QUERY = groq`
 
 // ─── Properties List Query (for /buy page with filtering) ───
 export const PROPERTIES_LIST_QUERY = groq`
-  *[_type == "property" && (language == $language || (!defined(language) && $language == "en"))] | order(select(status == "sold" => 1, 0) asc, _createdAt desc) {
+  *[_type == "property" && (language == $language || (!defined(language) && $language == "en"))] | order(select(status == "reserved" => 1, status == "sold" => 2, 0) asc, _createdAt desc) {
     ${PROPERTY_CARD_FIELDS}
   }
 `
 
 export const INITIAL_PROPERTIES_QUERY = groq`
   {
-    "items": *[_type == "property" && (language == $language || (!defined(language) && $language == "en"))] | order(select(status == "sold" => 1, 0) asc, _createdAt desc) [0...12] {
+    "items": *[_type == "property" && (language == $language || (!defined(language) && $language == "en"))] | order(select(status == "reserved" => 1, status == "sold" => 2, 0) asc, _createdAt desc) [0...12] {
       ${PROPERTY_CARD_FIELDS}
     },
     "total": count(*[_type == "property" && (language == $language || (!defined(language) && $language == "en"))])
