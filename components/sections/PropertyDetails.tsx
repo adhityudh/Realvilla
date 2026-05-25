@@ -387,6 +387,7 @@ export default function PropertyDetails({
             offerEnabled={offerEnabled}
             offerDepositAmount={offerDepositAmount}
             propertyId={property._id || ''}
+            propertySlug={property.propertyCode}
             propertyTitle={property.title || ''}
             propertyCode={property.propertyCode}
             propertyPrice={property.price}
@@ -451,6 +452,7 @@ export default function PropertyDetails({
           whatsappNumber={whatsappNumber}
           showWhatsApp={true}
           propertyId={property._id || ''}
+          propertySlug={property.propertyCode}
           propertyTitle={property.title || ''}
           propertyCode={property.propertyCode}
           propertyPrice={property.price}

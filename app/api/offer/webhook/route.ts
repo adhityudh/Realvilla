@@ -202,11 +202,11 @@ export async function POST(request: Request) {
 
       // Attach PDF to admin email
       if (pdfBase64) {
-        const propertyRef = (meta.propertyId || 'property').substring(0, 8);
+        const propCode = propertyCode || (meta.propertyId || 'property').substring(0, 8);
         const buyerRef = (meta.fullName || 'buyer').replace(/\s+/g, '-').substring(0, 20);
         adminEmailPayload.attachments = [
           {
-            filename: `RealVilla-Offer-${propertyRef}-${buyerRef}.pdf`,
+            filename: `RealVilla-Offer-${propCode}-${buyerRef}.pdf`,
             content: Buffer.from(pdfBase64, 'base64'),
             contentType: 'application/pdf',
           },
@@ -237,11 +237,11 @@ export async function POST(request: Request) {
 
       // Attach PDF to buyer email (same as admin)
       if (pdfBase64) {
-        const propertyRef = (meta.propertyId || 'property').substring(0, 8);
+        const propCode = propertyCode || (meta.propertyId || 'property').substring(0, 8);
         const buyerRef = (meta.fullName || 'buyer').replace(/\s+/g, '-').substring(0, 20);
         buyerEmailPayload.attachments = [
           {
-            filename: `RealVilla-Offer-${propertyRef}-${buyerRef}.pdf`,
+            filename: `RealVilla-Offer-${propCode}-${buyerRef}.pdf`,
             content: Buffer.from(pdfBase64, 'base64'),
             contentType: 'application/pdf',
           },
