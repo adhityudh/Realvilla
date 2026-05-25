@@ -24,7 +24,7 @@ export const blogPost = defineType({
     defineField({
       name: 'title',
       title: 'Title',
-      type: 'localizedString',
+      type: 'string',
       description: 'Blog post headline.',
       group: 'content',
       validation: (Rule) => Rule.required(),
@@ -34,7 +34,7 @@ export const blogPost = defineType({
       title: 'Slug',
       type: 'slug',
       options: {
-        source: 'title.en',
+        source: 'title',
         maxLength: 120,
         isUnique: async (slug, context) => {
           const { document, getClient } = context
@@ -149,7 +149,7 @@ export const blogPost = defineType({
     {
       title: 'Title: A-Z',
       name: 'titleAsc',
-      by: [{ field: 'title.en', direction: 'asc' }],
+      by: [{ field: 'title', direction: 'asc' }],
     },
     {
       title: 'Recently Updated',
@@ -159,20 +159,20 @@ export const blogPost = defineType({
   ],
   preview: {
     select: {
-      title: 'title.en',
-      subtitle: 'excerpt',
+      title: 'title',
+      excerpt: 'excerpt',
       media: 'featuredImage',
       publishedAt: 'publishedAt',
       language: 'language',
     },
-    prepare({ title, subtitle, media, publishedAt, language }) {
+    prepare({ title, excerpt, media, publishedAt, language }) {
       const date = publishedAt
         ? new Date(publishedAt).toLocaleDateString('en-IE', { year: 'numeric', month: 'short', day: 'numeric' })
         : ''
 
       return {
         title: `${language ? `[${language.toUpperCase()}] ` : ''}${title || 'Untitled Post'}`,
-        subtitle: `${date}${subtitle ? ` — ${subtitle}` : ''}`,
+        subtitle: `${date}${excerpt ? ` — ${excerpt}` : ''}`,
         media,
       }
     },

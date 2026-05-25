@@ -37,7 +37,7 @@ export default defineConfig({
         { id: 'en', title: 'English' },
         { id: 'es', title: 'Spanish' },
       ],
-      schemaTypes: ['page', 'property', 'settings', 'blogPost', 'blogCategory'],
+      schemaTypes: ['page', 'property', 'settings', 'blogPost'],
     }),
     googleMapsInput({
       apiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || '',
