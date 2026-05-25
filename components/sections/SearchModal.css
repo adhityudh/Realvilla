@@ -209,6 +209,29 @@ img.result-item-icon {
     opacity: 1;
 }
 
+.result-item-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+}
+
+.result-item-badges .badge {
+    background: var(--bg-surface);
+    color: var(--text-black);
+    font-family: var(--font-manrope), sans-serif;
+    font-size: var(--text-xs);
+    font-weight: var(--fw-extrabold);
+    letter-spacing: var(--ls-wider);
+    text-transform: uppercase;
+    border-radius: var(--radius-sm);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    pointer-events: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.25rem 0.5rem;
+}
+
 .result-text-block {
     display: flex;
     flex-direction: column;
@@ -489,7 +512,7 @@ img.result-item-icon {
 
     .result-item-image-wrapper {
         width: 80px;
-        height: 60px;
+        height: 80px;
     }
 
     .result-item::after,
@@ -498,13 +521,13 @@ img.result-item-icon {
         right: 1.5rem !important;
     }
 
-    /* Mobile Property Grid - Places Price Above Title */
+    /* Mobile Property Grid — price below text block */
     .property-item {
         display: grid !important;
         grid-template-columns: 80px 1fr;
         grid-template-rows: auto auto;
-        align-items: center;
-        gap: 0.15rem 1.25rem !important;
+        align-items: start;
+        gap: 0.5rem 1.25rem !important;
     }
 
     .property-item .result-item-image-wrapper {
@@ -516,13 +539,12 @@ img.result-item-icon {
 
     .property-item .result-text-block {
         grid-column: 2;
-        grid-row: 2;
+        grid-row: 1;
     }
 
     .property-item .result-price {
         grid-column: 2;
-        grid-row: 1;
-        margin-bottom: 0.15rem;
+        grid-row: 2;
         font-size: var(--text-base);
     }
 }
@@ -531,7 +553,7 @@ img.result-item-icon {
 .result-item-image-wrapper {
     position: relative;
     width: 100px;
-    height: 75px;
+    height: 100px;
     border-radius: 0 !important;
     /* sharp corners matching property card */
     overflow: hidden;

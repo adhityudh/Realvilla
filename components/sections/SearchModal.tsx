@@ -27,6 +27,13 @@ interface SearchResultItem {
   slug?: string;
   imageUrl?: string;
   price?: number;
+  propertyCode?: string;
+  category?: {
+    _id: string;
+    title: string;
+    icon?: string;
+    slug?: string;
+  };
 }
 
 export default function SearchModal({ isOpen, onClose, dict }: SearchModalProps) {
@@ -165,6 +172,7 @@ export default function SearchModal({ isOpen, onClose, dict }: SearchModalProps)
         const query = `*[_type == "property" && !(_id in path('drafts.**')) && (language == $language || (!defined(language) && $language == "en")) && (
           title match $search || 
           title[$language] match $search ||
+          propertyCode match $search ||
           location.streetAddress match $search || 
           location.complexName match $search || 
           location.municipality match $search ||
@@ -184,7 +192,9 @@ export default function SearchModal({ isOpen, onClose, dict }: SearchModalProps)
           "postalCode": location.postalCode,
           "slug": slug.current,
           "imageUrl": image.asset->url,
-          price
+          price,
+          propertyCode,
+          "category": category->{ _id, "title": coalesce(title[$language], title.en), "icon": icon.asset->url, slug }
         }`;
 
         const data = await client.fetch(query, { 
@@ -522,6 +532,19 @@ export default function SearchModal({ isOpen, onClose, dict }: SearchModalProps)
                               )}
                             </div>
                             <div className="result-text-block">
+                              <div className="result-item-badges">
+                                {prop.category?.title && (
+                                  <span className="badge badge--sm">
+                                    {prop.category.icon && <img src={prop.category.icon} alt="" className="badge-icon" />}
+                                    {prop.category.title}
+                                  </span>
+                                )}
+                                {prop.propertyCode && (
+                                  <span className="badge badge--sm">
+                                    #{prop.propertyCode}
+                                  </span>
+                                )}
+                              </div>
                               <span className="result-title">{prop.title}</span>
                               <span className="result-subtitle">{prop.address}</span>
                             </div>

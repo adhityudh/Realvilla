@@ -133,7 +133,6 @@ export const propertiesSection = defineType({
       name: 'ctaLabel',
       title: 'CTA Label',
       type: 'string',
-      initialValue: 'View All Properties',
       group: 'content',
 }),
     defineField({

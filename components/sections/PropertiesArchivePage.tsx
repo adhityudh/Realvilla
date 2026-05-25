@@ -408,6 +408,7 @@ export default function PropertiesArchivePage({
           baseFilter += ` && (
             title match $search || 
             title[$language] match $search ||
+            propertyCode match $search ||
             location.streetAddress match $search || 
             location.complexName match $search || 
             location.municipality match $search ||
@@ -524,6 +525,7 @@ export default function PropertiesArchivePage({
     const fetchAllForMap = async () => {
       try {
         let baseFilter = `_type == "property" && (language == $language || (!defined(language) && $language == "en"))`;
+        baseFilter += ` && status != 'sold' && status != 'reserved'`;
         baseFilter += ` && price >= $priceMin && price <= $priceMax`;
 
         if (activeFilters.municipalities.length > 0) {
@@ -534,7 +536,7 @@ export default function PropertiesArchivePage({
         }
 
         if (debouncedSearchQuery.trim().length > 0) {
-          baseFilter += ` && (title match $search || title[$language] match $search || location.streetAddress match $search || location.complexName match $search || location.municipality match $search || category->title match $search || category->title[$language] match $search)`;
+          baseFilter += ` && (title match $search || title[$language] match $search || propertyCode match $search || location.streetAddress match $search || location.complexName match $search || location.municipality match $search || category->title match $search || category->title[$language] match $search)`;
         }
 
         Object.entries(activeFilters.metaFilters).forEach(([metaId, val]) => {
