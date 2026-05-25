@@ -463,7 +463,7 @@ export default function SearchModal({ isOpen, onClose, dict }: SearchModalProps)
                               width="16" 
                               height="16" 
                               className="result-item-icon" 
-                              style={{ opacity: 0.7 }} 
+                              style={{ opacity: 1 }} 
                             />
                             <span className="result-title">{mun}</span>
                             <span className="result-meta-tag">{dict?.search?.view_all}</span>
@@ -492,7 +492,7 @@ export default function SearchModal({ isOpen, onClose, dict }: SearchModalProps)
                               width="16" 
                               height="16" 
                               className="result-item-icon" 
-                              style={{ opacity: 0.7, filter: opt.icon ? 'none' : 'grayscale(1)' }} 
+                              style={{ opacity: 1, filter: opt.icon ? 'none' : 'grayscale(1)' }} 
                             />
                             <span className="result-title">{opt.label}</span>
                             <span className="result-meta-tag">{dict?.search?.view_all}</span>

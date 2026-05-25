@@ -93,7 +93,7 @@ export default function ContactSection({ data, dict, contextData }: { data?: any
       }
       gsap.set('.contact-headline', { opacity: 1 });
       const subtitle = section.querySelector('.contact-subtitle');
-      if (subtitle) gsap.set(subtitle, { opacity: 0.7 });
+      if (subtitle) gsap.set(subtitle, { opacity: 1 });
       const marketItems = section.querySelectorAll('.contact-market-item');
       if (marketItems.length > 0) gsap.set(marketItems, { opacity: 1 });
       return () => {
@@ -111,7 +111,7 @@ export default function ContactSection({ data, dict, contextData }: { data?: any
     if (data?.disableHeaderEntranceAnimation) {
       gsap.set('.contact-headline', { opacity: 1 });
       const subtitle = section.querySelector('.contact-subtitle');
-      if (subtitle) gsap.set(subtitle, { opacity: 0.7 });
+      if (subtitle) gsap.set(subtitle, { opacity: 1 });
       const marketItems = section.querySelectorAll('.contact-market-item');
       if (marketItems.length > 0) gsap.set(marketItems, { opacity: 1 });
     } else {
@@ -146,7 +146,7 @@ export default function ContactSection({ data, dict, contextData }: { data?: any
       if (subtitleEl) {
         tl.fromTo(subtitleEl,
           { y: 20, opacity: 0, filter: 'blur(4px)' },
-          { y: 0, opacity: 0.7, filter: 'blur(0px)', duration: 1, ease: 'expo.out' },
+          { y: 0, opacity: 1, filter: 'blur(0px)', duration: 1, ease: 'expo.out' },
           '-=0.8'
         );
       }
