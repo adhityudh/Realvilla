@@ -74,6 +74,7 @@ export const settings = defineType({
         { type: 'statsSection' },
         { type: 'generalProcessSection' },
         { type: 'sellProcessSection' },
+        { type: 'blogSection' },
       ],
     }),
     defineField({

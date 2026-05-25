@@ -75,6 +75,7 @@ export const page = defineType({
         { type: 'sellProcessSection' },
         { type: 'documentLedgerSection' },
         { type: 'financingCardsSection' },
+        { type: 'blogSection' },
       ],
       group: 'content',
     }),

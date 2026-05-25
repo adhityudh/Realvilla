@@ -2,6 +2,9 @@ import { type SchemaTypeDefinition } from 'sanity'
 
 import { page } from './documents/page'
 import { property } from './documents/property'
+import { blogPost } from './documents/blogPost'
+import { blogCategory } from './documents/blogCategory'
+import { blogAuthor } from './documents/blogAuthor'
 import { propertyMeta } from './documents/propertyMeta'
 import { propertyMetaCategory } from './documents/propertyMetaCategory'
 import { propertyCategory } from './documents/propertyCategory'
@@ -32,11 +35,15 @@ import { localizedString } from './objects/localizedString'
 import { mortgageCalculator } from './objects/mortgageCalculator'
 import { contactModalComponent } from './modules/contactModalComponent'
 import { genericModalComponent } from './modules/genericModalComponent'
+import { blogSection } from './modules/blogSection'
 
 export const schema: { types: SchemaTypeDefinition[] } = {
   types: [
     page,
     property,
+    blogPost,
+    blogCategory,
+    blogAuthor,
     propertyMeta,
     propertyMetaCategory,
     propertyCategory,
@@ -66,6 +73,7 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     generalProcessSection,
     sellProcessSection,
     documentLedgerSection,
-    financingCardsSection
+    financingCardsSection,
+    blogSection
   ],
 }

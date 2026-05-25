@@ -14,6 +14,7 @@ import { googleMapsInput } from '@sanity/google-maps-input'
 // Go to https://www.sanity.io/docs/api-versioning for how versioning works
 import { apiVersion, dataset, projectId } from './sanity/env'
 import { schema } from './sanity/schemaTypes'
+import { structure } from './sanity/structure'
 
 export default defineConfig({
   basePath: '/studio',
@@ -22,7 +23,7 @@ export default defineConfig({
   // Add and edit the content schema in the './sanity/schema' directory
   schema,
   plugins: [
-    structureTool(),
+    structureTool({ structure }),
     presentationTool({
       previewUrl: {
         origin: typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000',
@@ -36,7 +37,7 @@ export default defineConfig({
         { id: 'en', title: 'English' },
         { id: 'es', title: 'Spanish' },
       ],
-      schemaTypes: ['page', 'property', 'settings'],
+      schemaTypes: ['page', 'property', 'settings', 'blogPost', 'blogCategory'],
     }),
     googleMapsInput({
       apiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || '',
