@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { Resend } from 'resend';
-import { sanitizeSanityData } from '@/lib/sanitize';
+import { sanitizeSanityData, removeInvisibleChars } from '@/lib/sanitize';
 
 export async function POST(request: Request) {
   if (!process.env.STRIPE_SECRET_KEY || !process.env.STRIPE_WEBHOOK_SECRET) {
@@ -35,7 +35,13 @@ export async function POST(request: Request) {
   // Handle successful payment
   if (event.type === 'checkout.session.completed') {
     const session = event.data.object as Stripe.Checkout.Session;
-    const meta = session.metadata || {};
+    const rawMeta = session.metadata || {};
+
+    // Sanitize all metadata values to remove invisible Unicode chars early
+    const meta: Record<string, string> = {};
+    for (const [key, value] of Object.entries(rawMeta)) {
+      meta[key] = removeInvisibleChars(value || '');
+    }
 
     console.log('[Offer/Webhook] Checkout completed:', session.id);
 
@@ -92,7 +98,7 @@ export async function POST(request: Request) {
             { id: meta.propertyId }
           );
           if (prop?.propertyCode) {
-            propertyCode = prop.propertyCode;
+            propertyCode = removeInvisibleChars(prop.propertyCode);
           }
         } catch (err) {
           console.warn('[Offer/Webhook] Failed to fetch property code:', err);
@@ -166,7 +172,7 @@ export async function POST(request: Request) {
       const adminEmailPayload: any = {
         from: 'REALVILLA <hello@realvilla.es>',
         to: adminEmails,
-        subject: `[REALVILLA] New Offer: ${propertyCode ? `[${propertyCode}] ` : ''}${meta.propertyTitle} — ${meta.fullName}`,
+        subject: `[REALVILLA] New Offer: ${propertyCode ? `[${propertyCode}] ` : ''}${meta.propertyTitle || ''} — ${meta.fullName}`,
         html: buildAdminEmail({
           sessionId: session.id,
           propertyTitle: meta.propertyTitle,
@@ -214,8 +220,8 @@ export async function POST(request: Request) {
         from: 'REALVILLA <hello@realvilla.es>',
         to: [meta.email],
         subject: isEs
-          ? `REALVILLA — Confirmación de Propuesta: ${propertyCode ? `[${propertyCode}] ` : ''}${meta.propertyTitle}`
-          : `REALVILLA — Proposal Confirmation: ${propertyCode ? `[${propertyCode}] ` : ''}${meta.propertyTitle}`,
+          ? `REALVILLA — Confirmación de Propuesta: ${propertyCode ? `[${propertyCode}] ` : ''}${meta.propertyTitle || ''}`
+          : `REALVILLA — Proposal Confirmation: ${propertyCode ? `[${propertyCode}] ` : ''}${meta.propertyTitle || ''}`,
         html: buildBuyerEmail({
           isEs,
           propertyTitle: meta.propertyTitle,
@@ -285,7 +291,8 @@ function buildAdminEmail(data: {
   ip: string;
   submissionTime: string;
 }) {
-  const formattedPropertyTitle = data.propertyCode ? `[${data.propertyCode}] ${data.propertyTitle}` : data.propertyTitle;
+  const cleanPropertyTitle = removeInvisibleChars(data.propertyTitle);
+  const formattedPropertyTitle = data.propertyCode ? `[${removeInvisibleChars(data.propertyCode)}] ${cleanPropertyTitle}` : cleanPropertyTitle;
   return `<!DOCTYPE html>
 <html>
 <head>
@@ -400,7 +407,8 @@ function buildBuyerEmail(data: {
   submittedAt: string;
 }) {
   const { isEs } = data;
-  const formattedPropertyTitle = data.propertyCode ? `[${data.propertyCode}] ${data.propertyTitle}` : data.propertyTitle;
+  const cleanPropertyTitle = removeInvisibleChars(data.propertyTitle);
+  const formattedPropertyTitle = data.propertyCode ? `[${removeInvisibleChars(data.propertyCode)}] ${cleanPropertyTitle}` : cleanPropertyTitle;
   return `<!DOCTYPE html>
 <html>
 <head>

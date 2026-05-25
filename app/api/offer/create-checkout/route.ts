@@ -1,5 +1,6 @@
 import { NextResponse, userAgent } from 'next/server';
 import Stripe from 'stripe';
+import { removeInvisibleChars } from '@/lib/sanitize';
 
 export async function POST(request: Request) {
   if (!process.env.STRIPE_SECRET_KEY) {
@@ -35,6 +36,7 @@ export async function POST(request: Request) {
     const body = await request.json();
     const {
       propertyId,
+      propertySlug,
       propertyTitle,
       propertyPrice,
       depositAmount = 500,
@@ -59,7 +61,8 @@ export async function POST(request: Request) {
 
     // Build success/cancel URLs
     const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://realvilla.es';
-    const successUrl = `${baseUrl}/${locale}/offer-success?session_id={CHECKOUT_SESSION_ID}&property=${encodeURIComponent(propertyId)}&locale=${locale}`;
+    const slug = propertySlug || propertyId;
+    const successUrl = `${baseUrl}/${locale}/offer-success?session_id={CHECKOUT_SESSION_ID}&property=${encodeURIComponent(slug)}&locale=${locale}`;
     const cancelUrl = pageUrl || `${baseUrl}/${locale}/properties`;
 
     // Format property price for display
@@ -95,7 +98,7 @@ export async function POST(request: Request) {
       // Store all form data in metadata for webhook processing
       metadata: {
         propertyId,
-        propertyTitle: propertyTitle.substring(0, 500), // Stripe metadata limit
+        propertyTitle: removeInvisibleChars(propertyTitle).substring(0, 500), // Stripe metadata limit
         propertyPrice: propertyPrice?.toString() || '',
         depositAmount: depositAmount.toString(),
         locale,

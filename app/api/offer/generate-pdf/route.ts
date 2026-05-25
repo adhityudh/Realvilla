@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { PDFDocument } from 'pdf-lib';
-import { sanitizeFieldMap } from '@/lib/sanitize';
+import { sanitizeFieldMap, removeInvisibleChars } from '@/lib/sanitize';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -74,6 +74,26 @@ export async function POST(request: Request) {
       pdfFieldMap,
     } = body;
 
+    // ── Sanitize all string values to remove invisible Unicode chars ───────────
+    const sanitizedTitle = removeInvisibleChars(propertyTitle || '');
+    const sanitizedCode = removeInvisibleChars(propertyCode || '');
+    const sanitizedPersonal = {
+      fullName: removeInvisibleChars(personal?.fullName || ''),
+      idNumber: removeInvisibleChars(personal?.idNumber || ''),
+      email: removeInvisibleChars(personal?.email || ''),
+      phone: removeInvisibleChars(personal?.phone || ''),
+      address: removeInvisibleChars(personal?.address || ''),
+    };
+    const sanitizedAdditionalConditions = removeInvisibleChars(offer?.additionalConditions || '');
+    const sanitizedSessionId = removeInvisibleChars(sessionId || '');
+    const sanitizedPropertyId = removeInvisibleChars(propertyId || '');
+    const sanitizedSubmittedAt = removeInvisibleChars(submittedAt || '');
+    const sanitizedValidUntil = removeInvisibleChars(validUntil || '');
+    const sanitizedPdfTemplateUrl = removeInvisibleChars(pdfTemplateUrl || '');
+    const sanitizedDepositAmount = removeInvisibleChars(depositAmount || '');
+    const sanitizedOfferPrice = removeInvisibleChars(offer?.offerPrice || '');
+    const sanitizedPropertyPrice = removeInvisibleChars(propertyPrice || '');
+
     const isEs = locale === 'es';
 
     // ── Format field values ────────────────────────────────────────────────────
@@ -114,32 +134,32 @@ export async function POST(request: Request) {
     // Sanitize field map to remove any invisible Unicode characters from Sanity
     const fm = pdfFieldMap ? sanitizeFieldMap(pdfFieldMap) : {};
     const fieldValues: Record<string, string> = {
-      [fm.propertyTitle        ?? 'property_title']:        propertyTitle || '',
-      [fm.propertyReference    ?? 'property_reference']:    propertyId || '',
-      [fm.propertyCode         ?? 'property_code']:         propertyCode || '',
-      [fm.buyerFullName        ?? 'buyer_full_name']:       personal.fullName || '',
-      [fm.buyerIdNumber        ?? 'buyer_id_number']:       personal.idNumber || '',
-      [fm.buyerEmail           ?? 'buyer_email']:           personal.email || '',
-      [fm.buyerPhone           ?? 'buyer_phone']:           personal.phone || '',
-      [fm.buyerAddress         ?? 'buyer_address']:         personal.address || '',
+      [fm.propertyTitle        ?? 'property_title']:        sanitizedTitle,
+      [fm.propertyReference    ?? 'property_reference']:    sanitizedPropertyId,
+      [fm.propertyCode         ?? 'property_code']:         sanitizedCode,
+      [fm.buyerFullName        ?? 'buyer_full_name']:       sanitizedPersonal.fullName,
+      [fm.buyerIdNumber        ?? 'buyer_id_number']:       sanitizedPersonal.idNumber,
+      [fm.buyerEmail           ?? 'buyer_email']:           sanitizedPersonal.email,
+      [fm.buyerPhone           ?? 'buyer_phone']:           sanitizedPersonal.phone,
+      [fm.buyerAddress         ?? 'buyer_address']:         sanitizedPersonal.address,
       [fm.offerPrice           ?? 'offer_price']:           formattedOfferPrice,
       [fm.offerPriceWords      ?? 'offer_price_words']:     plainOfferPrice,
-      [fm.additionalConditions ?? 'additional_conditions']: offer.additionalConditions || '',
+      [fm.additionalConditions ?? 'additional_conditions']: sanitizedAdditionalConditions,
       [fm.depositAmount        ?? 'deposit_amount']:        formattedDeposit,
-      [fm.stripePaymentId      ?? 'stripe_payment_id']:     sessionId || '',
+      [fm.stripePaymentId      ?? 'stripe_payment_id']:     sanitizedSessionId,
       [fm.submissionDate       ?? 'submission_date']:       formattedSubmittedAt,
       [fm.validityDate         ?? 'validity_date']:         formattedValidUntil,
     };
 
     // ── Load PDF template ──────────────────────────────────────────────────────
 
-    if (!pdfTemplateUrl) {
+    if (!sanitizedPdfTemplateUrl) {
       console.warn('[Offer/GeneratePDF] No PDF template URL provided — skipping PDF generation.');
       return NextResponse.json({ error: 'No PDF template configured in Sanity settings.' }, { status: 422 });
     }
 
     // Fetch the PDF template from Sanity CDN
-    const templateResponse = await fetch(pdfTemplateUrl, { next: { revalidate: 3600 } });
+    const templateResponse = await fetch(sanitizedPdfTemplateUrl, { next: { revalidate: 3600 } });
     if (!templateResponse.ok) {
       throw new Error(`Failed to fetch PDF template: ${templateResponse.status} ${templateResponse.statusText}`);
     }
