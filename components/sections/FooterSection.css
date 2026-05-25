@@ -377,13 +377,6 @@ body.footer-force-high-padding .footer-section {
     padding-top: 12rem !important;
 }
 
-@media (max-width: 1024px) {
-    body.footer-force-high-padding .footer-section {
-        padding-top: 6rem !important;
-        /* Safe tablet middle-ground padding */
-    }
-}
-
 @media (max-width: 768px) {
     body.footer-force-high-padding .footer-section {
         padding-top: 10rem !important;

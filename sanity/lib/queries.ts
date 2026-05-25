@@ -296,7 +296,7 @@ export const SECTION_PROJECTION = groq`
         contactList[] {
           label,
           "icon": icon.asset->{ _id, url },
-          "link": externalLink
+          link
         },
         formTitle,
         formSubtitle,

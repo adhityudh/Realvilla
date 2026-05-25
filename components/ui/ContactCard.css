@@ -303,7 +303,7 @@
 /* Encapsulated Responsive Media Queries */
 @media (max-width: 1024px) {
     .contact-card {
-        padding: 4rem 3rem;
+        padding: 4.5rem 3rem 4rem;
     }
 
     .form-title {
@@ -317,7 +317,7 @@
 
 @media (max-width: 768px) {
     .contact-card {
-        padding: 2rem 1.5rem;
+        padding: 2.5rem 1.5rem 2rem;
     }
 
     .form-subtitle {

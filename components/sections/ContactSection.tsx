@@ -29,9 +29,53 @@ export default function ContactSection({ data, dict, contextData }: { data?: any
     if (!sectionRef.current) return;
     const section = sectionRef.current;
     const isMobile = window.innerWidth <= 1024;
+    const hasBgOverride = !!(backgroundImage || backgroundImageMobile);
 
-    if (!isMobile) {
-      ScrollTrigger.create({
+    let headerSt: ScrollTrigger | null = null;
+
+    if (hasBgOverride) {
+      // Same header behavior as GeneralHeroSection — applies on all screen sizes
+      headerSt = ScrollTrigger.create({
+        trigger: section,
+        start: 'top top',
+        end: 'bottom top',
+        onToggle: (self) => {
+          if (self.isActive) {
+            document.body.classList.remove('header-dark-mode');
+            document.body.classList.add('header-light-mode');
+            document.body.classList.add('header-black-bg');
+          } else {
+            if (self.progress === 1) {
+              document.body.classList.remove('header-light-mode');
+              document.body.classList.remove('header-black-bg');
+              document.body.classList.add('header-dark-mode');
+            } else {
+              document.body.classList.remove('header-dark-mode');
+              document.body.classList.add('header-light-mode');
+              document.body.classList.add('header-black-bg');
+            }
+          }
+        },
+        onRefresh: (self) => {
+          if (self.isActive) {
+            document.body.classList.remove('header-dark-mode');
+            document.body.classList.add('header-light-mode');
+            document.body.classList.add('header-black-bg');
+          } else {
+            if (self.progress === 1) {
+              document.body.classList.remove('header-light-mode');
+              document.body.classList.remove('header-black-bg');
+              document.body.classList.add('header-dark-mode');
+            } else {
+              document.body.classList.remove('header-dark-mode');
+              document.body.classList.add('header-light-mode');
+              document.body.classList.add('header-black-bg');
+            }
+          }
+        }
+      });
+    } else if (!isMobile) {
+      headerSt = ScrollTrigger.create({
         trigger: section,
         start: 'top 50px',
         end: 'bottom 50px',
@@ -176,38 +220,43 @@ export default function ContactSection({ data, dict, contextData }: { data?: any
             <h2 className="contact-headline">{headline}</h2>
             {subtitle && <p className="contact-subtitle">{subtitle}</p>}
           </div>
-          <div className="contact-market-data">
-            {marketData?.map((item: any, idx: number) => (
-              <div key={idx} className="contact-market-item">
-                <div className="market-data-number-row">
-                  {item.prefix && <span className="market-data-prefix">{item.prefix}</span>}
-                  <span className="market-data-value">{item.value}</span>
-                  <span className="market-data-unit">{item.unit}</span>
+          {marketData?.length > 0 && (
+            <div className="contact-market-data">
+              {marketData.map((item: any, idx: number) => (
+                <div key={idx} className="contact-market-item">
+                  <div className="market-data-number-row">
+                    {item.prefix && <span className="market-data-prefix">{item.prefix}</span>}
+                    <span className="market-data-value">{item.value}</span>
+                    <span className="market-data-unit">{item.unit}</span>
+                  </div>
+                  <p className="market-data-label">{item.label}</p>
                 </div>
-                <p className="market-data-label">{item.label}</p>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
           {isShowcase && contactList.length > 0 && (
             <div className="contact-showcase-list">
-              {contactList.map((item: any, idx: number) => (
-                <a 
-                  key={idx} 
-                  href={item.link} 
-                  className="contact-showcase-item"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {item.icon?.asset && (
-                    <img 
-                      src={item.icon.asset.url || `/icons/${item.icon.asset._ref?.split('-')[1]}.svg`} 
-                      alt={item.label}
-                      className="contact-showcase-icon"
-                    />
-                  )}
-                  <span className="contact-showcase-label">{item.label}</span>
-                </a>
-              ))}
+              {contactList.map((item: any, idx: number) => {
+                const iconUrl = item.icon?.url;
+                return (
+                  <a
+                    key={idx}
+                    href={item.link}
+                    className="btn-link-styled btn-link-md contact-showcase-btn"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {iconUrl && (
+                      <img
+                        src={iconUrl}
+                        alt={item.label}
+                        className="btn-icon"
+                      />
+                    )}
+                    <span>{item.label}</span>
+                  </a>
+                );
+              })}
             </div>
           )}
         </div>
