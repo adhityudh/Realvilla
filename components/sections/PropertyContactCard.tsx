@@ -15,6 +15,7 @@ interface PropertyContactCardProps {
   propertyId: string;
   propertySlug?: string;
   propertyTitle: string;
+  propertyCode?: string;
   propertyPrice?: number;
   whatsappNumber?: string;
   presetMessage?: string;
@@ -41,6 +42,7 @@ export default function PropertyContactCard({
   propertyId,
   propertySlug,
   propertyTitle,
+  propertyCode,
   propertyPrice,
   whatsappNumber,
   presetMessage,
@@ -196,7 +198,7 @@ export default function PropertyContactCard({
         <div className="property-contact-success-content">
           <div className="property-contact-success-icon-wrap">
             <img
-              src="/icons/success-check.svg"
+              src="/icons/check_circle.svg"
               alt="Success"
               className="property-contact-success-icon"
             />
@@ -381,6 +383,7 @@ export default function PropertyContactCard({
           propertyId={propertyId}
           propertySlug={propertySlug}
           propertyTitle={propertyTitle}
+          propertyCode={propertyCode}
           propertyPrice={propertyPrice}
           depositAmount={offerDepositAmount}
           dict={dict}

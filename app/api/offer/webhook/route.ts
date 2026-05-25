@@ -166,10 +166,11 @@ export async function POST(request: Request) {
       const adminEmailPayload: any = {
         from: 'REALVILLA <hello@realvilla.es>',
         to: adminEmails,
-        subject: `[REALVILLA] New Offer: ${meta.propertyTitle} — ${meta.fullName}`,
+        subject: `[REALVILLA] New Offer: ${propertyCode ? `[${propertyCode}] ` : ''}${meta.propertyTitle} — ${meta.fullName}`,
         html: buildAdminEmail({
           sessionId: session.id,
           propertyTitle: meta.propertyTitle,
+          propertyCode: propertyCode || undefined,
           propertyId: meta.propertyId,
           fullName: meta.fullName,
           idNumber: meta.idNumber,
@@ -213,11 +214,12 @@ export async function POST(request: Request) {
         from: 'REALVILLA <hello@realvilla.es>',
         to: [meta.email],
         subject: isEs
-          ? `REALVILLA — Confirmación de Propuesta: ${meta.propertyTitle}`
-          : `REALVILLA — Proposal Confirmation: ${meta.propertyTitle}`,
+          ? `REALVILLA — Confirmación de Propuesta: ${propertyCode ? `[${propertyCode}] ` : ''}${meta.propertyTitle}`
+          : `REALVILLA — Proposal Confirmation: ${propertyCode ? `[${propertyCode}] ` : ''}${meta.propertyTitle}`,
         html: buildBuyerEmail({
           isEs,
           propertyTitle: meta.propertyTitle,
+          propertyCode: propertyCode || undefined,
           fullName: meta.fullName,
           offerPrice: formattedOfferPrice,
           depositAmount: formattedDeposit,
@@ -263,6 +265,7 @@ export async function POST(request: Request) {
 function buildAdminEmail(data: {
   sessionId: string;
   propertyTitle: string;
+  propertyCode?: string;
   propertyId: string;
   fullName: string;
   idNumber: string;
@@ -282,6 +285,7 @@ function buildAdminEmail(data: {
   ip: string;
   submissionTime: string;
 }) {
+  const formattedPropertyTitle = data.propertyCode ? `[${data.propertyCode}] ${data.propertyTitle}` : data.propertyTitle;
   return `<!DOCTYPE html>
 <html>
 <head>
@@ -304,7 +308,7 @@ function buildAdminEmail(data: {
         </td></tr>
         <tr><td style="padding:0 45px 45px;">
           <h2 style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:400;color:#111;margin:0 0 30px;text-transform:uppercase;">
-            New Offer: ${data.propertyTitle}
+            New Offer: ${formattedPropertyTitle}
           </h2>
           <table width="100%" cellspacing="0" cellpadding="0">
             ${buildRow('BUYER', `<strong>${data.fullName}</strong>`)}
@@ -387,6 +391,7 @@ function buildRow(label: string, value: string) {
 function buildBuyerEmail(data: {
   isEs: boolean;
   propertyTitle: string;
+  propertyCode?: string;
   fullName: string;
   offerPrice: string;
   depositAmount: string;
@@ -395,6 +400,7 @@ function buildBuyerEmail(data: {
   submittedAt: string;
 }) {
   const { isEs } = data;
+  const formattedPropertyTitle = data.propertyCode ? `[${data.propertyCode}] ${data.propertyTitle}` : data.propertyTitle;
   return `<!DOCTYPE html>
 <html>
 <head>
@@ -413,8 +419,8 @@ function buildBuyerEmail(data: {
           </h2>
           <p style="font-size:15px;line-height:1.7;color:#444;margin:0 0 30px;">
             ${isEs
-    ? `Estimado/a <strong>${data.fullName}</strong>, su propuesta de compra para <strong>${data.propertyTitle}</strong> ha sido recibida y el pago del depósito confirmado correctamente.`
-    : `Dear <strong>${data.fullName}</strong>, your purchase proposal for <strong>${data.propertyTitle}</strong> has been received and the deposit payment has been confirmed.`
+    ? `Estimado/a <strong>${data.fullName}</strong>, su propuesta de compra para <strong>${formattedPropertyTitle}</strong> ha sido recibida y el pago del depósito confirmado correctamente.`
+    : `Dear <strong>${data.fullName}</strong>, your purchase proposal for <strong>${formattedPropertyTitle}</strong> has been received and the deposit payment has been confirmed.`
   }
           </p>
           <table width="100%" cellspacing="0" cellpadding="0" style="background:#FAFAF8;border-left:3px solid #D4AF37;margin-bottom:30px;">
@@ -423,7 +429,7 @@ function buildBuyerEmail(data: {
                 ${isEs ? 'RESUMEN DE LA PROPUESTA' : 'PROPOSAL SUMMARY'}
               </div>
               <div style="font-size:13px;color:#555;line-height:1.8;">
-                <strong>${data.propertyTitle}</strong><br/>
+                <strong>${formattedPropertyTitle}</strong><br/>
                 ${isEs ? 'Precio ofertado' : 'Offered price'}: <strong>${data.offerPrice}</strong><br/>
                 ${isEs ? 'Depósito pagado' : 'Deposit paid'}: <strong>${data.depositAmount}</strong><br/>
                 ${isEs ? 'Válida hasta' : 'Valid until'}: <strong>${data.validUntil}</strong>

@@ -27,6 +27,7 @@ export interface OfferModalProps {
   propertyId: string;
   propertySlug?: string;
   propertyTitle: string;
+  propertyCode?: string;
   propertyPrice?: number;
   depositAmount?: number;
   dict?: any;
@@ -59,6 +60,7 @@ export default function OfferModal({
   propertyId,
   propertySlug,
   propertyTitle,
+  propertyCode,
   propertyPrice,
   depositAmount = 500,
   dict,
@@ -98,6 +100,7 @@ export default function OfferModal({
     additionalConditions: '',
   });
 
+  const formattedSubtitle = propertyCode ? `[${propertyCode}] ${propertyTitle}` : propertyTitle;
   const pathname = usePathname();
 
   const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -589,7 +592,7 @@ export default function OfferModal({
       {propertyPrice && (
         <div className="offer-deposit-notice" style={{ marginBottom: '2rem' }}>
           <span className="offer-deposit-notice-text">
-            <div style={{ marginBottom: '0.25rem' }}>{propertyTitle}</div>
+            <div style={{ marginBottom: '0.25rem' }}>{formattedSubtitle}</div>
             <strong>{formatPrice(propertyPrice)}</strong>
           </span>
         </div>
@@ -825,7 +828,7 @@ export default function OfferModal({
       isOpen={isOpen}
       onClose={onClose}
       title={od.modal_title}
-      subtitle={propertyTitle}
+      subtitle={formattedSubtitle}
       footer={renderFooter()}
       bodyRef={modalBodyRef}
     >

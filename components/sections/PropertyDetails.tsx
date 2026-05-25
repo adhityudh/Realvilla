@@ -388,6 +388,7 @@ export default function PropertyDetails({
             offerDepositAmount={offerDepositAmount}
             propertyId={property._id || ''}
             propertyTitle={property.title || ''}
+            propertyCode={property.propertyCode}
             propertyPrice={property.price}
             offerConditionsTitle={offerConditionsTitle}
             offerConditionsIntro={offerConditionsIntro}
@@ -451,6 +452,7 @@ export default function PropertyDetails({
           showWhatsApp={true}
           propertyId={property._id || ''}
           propertyTitle={property.title || ''}
+          propertyCode={property.propertyCode}
           propertyPrice={property.price}
         />
         </ContactModal>
