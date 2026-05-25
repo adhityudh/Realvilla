@@ -801,7 +801,7 @@ export default function PropertiesArchivePage({
                 <Image src="/icons/tune.svg" alt="Filter" width={18} height={18} className="btn-icon" />
               </button>
               <button className="map-list-toggle-btn-archive btn-pill" onClick={() => setViewMode('list')}>
-                <Image src="/icons/map.svg" alt="List" width={18} height={18} />
+                <Image src="/icons/grid_view.svg" alt="Grid" width={18} height={18} />
                 <span>{dict?.archive?.list_view}</span>
               </button>
             </div>
@@ -809,7 +809,7 @@ export default function PropertiesArchivePage({
           {isMobile && (
             <div className="map-mobile-controls-archive">
               <button className="map-toggle-btn-mobile-map btn-pill btn-dark" onClick={() => setViewMode('list')}>
-                <Image src="/icons/map.svg" alt="List" width={18} height={18} />
+                <Image src="/icons/grid_view.svg" alt="Grid" width={18} height={18} />
                 <span>{dict?.archive?.list_view}</span>
               </button>
             </div>
