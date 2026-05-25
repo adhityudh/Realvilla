@@ -52,6 +52,11 @@ export const PROPERTY_CARD_FIELDS = groq`
   propertyCode,
   "locationMunicipality": location.municipality,
   "locationPostalCode": location.postalCode,
+  "coordinates": select(
+    coordinateMethod == "url" && defined(lat) && defined(lng) => { "_type": "geopoint", "lat": lat, "lng": lng },
+    defined(location.coordinates) => location.coordinates,
+    null
+  ),
   price,
   status,
   "slug": propertyCode,

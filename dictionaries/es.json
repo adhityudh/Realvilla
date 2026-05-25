@@ -152,7 +152,9 @@
     "view_all_short": "Ver todas",
     "load_more": "Cargar más",
     "loading": "Cargando...",
-    "other": "Otros"
+    "other": "Otros",
+    "map_view": "Mapa",
+    "list_view": "Lista"
   },
   "valuation": {
     "loading": "Cargando herramienta de valoración..."

@@ -2,7 +2,7 @@
   "hero": {
     "scroll": "Scroll",
     "title": "Find Your Perfect Home",
-    "search_placeholder": "Search by Property Name, location, or Municipalities..."
+    "search_placeholder": "Search by property Name, location, or Municipalities (Tenerife)..."
   },
   "about": {
     "view_certificate": "View Certificate"
@@ -135,7 +135,7 @@
     "matching_properties": "Matching Properties"
   },
   "archive": {
-    "search_placeholder": "Search by Property Name, location, or municipalities...",
+    "search_placeholder": "Search by property Name, location, or municipalities (Tenerife)...",
     "sort_label": "Sort by:",
     "sort_newest": "Newest",
     "sort_price_desc": "Price: High to Low",
@@ -152,7 +152,9 @@
     "view_all_short": "All Properties",
     "load_more": "Load More",
     "loading": "Loading...",
-    "other": "Other"
+    "other": "Other",
+    "map_view": "Maps View",
+    "list_view": "List View"
   },
   "valuation": {
     "loading": "Loading Valuation Tool..."

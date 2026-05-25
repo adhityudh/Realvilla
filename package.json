@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@formatjs/intl-localematcher": "^0.8.5",
+    "@googlemaps/markerclusterer": "^2.6.2",
     "@sanity/client": "^7.22.0",
     "@sanity/document-internationalization": "^6.1.1",
     "@sanity/google-maps-input": "^4.2.1",

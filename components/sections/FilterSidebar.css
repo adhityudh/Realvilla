@@ -108,7 +108,7 @@
 }
 
 .filter-sidebar-body::-webkit-scrollbar-thumb:hover {
-    background: var(--color-gold-hover);
+    background: var(--color-gold);
 }
 
 /* Filter Groups */
@@ -148,7 +148,7 @@
 
 .price-input-box:focus-within {
     background: transparent;
-    border-bottom-color: var(--color-gold-hover);
+    border-bottom-color: var(--color-gold);
     box-shadow: none;
 }
 
@@ -206,7 +206,7 @@
     height: 20px;
     border-radius: 50%;
     background: var(--bg-surface);
-    border: 2px solid var(--color-gold-hover);
+    border: 2px solid var(--color-gold);
     box-shadow: var(--shadow-xs);
     cursor: pointer;
     transition: transform 0.2s ease;
@@ -218,7 +218,7 @@
     height: 20px;
     border-radius: 50%;
     background: var(--bg-surface);
-    border: 2px solid var(--color-gold-hover);
+    border: 2px solid var(--color-gold);
     box-shadow: var(--shadow-xs);
     cursor: pointer;
     transition: transform 0.2s ease;
@@ -247,7 +247,7 @@
 
 .range-active-fill {
     height: 100%;
-    background: var(--color-gold-hover);
+    background: var(--color-gold);
     border-radius: 10px;
     position: absolute;
 }
@@ -282,7 +282,7 @@
 
 .filter-chip:hover {
     background: var(--bg-surface);
-    border-color: var(--color-gold-hover);
+    border-color: var(--color-gold);
     color: var(--text-black);
     transform: translateY(-1px);
 }
@@ -391,7 +391,7 @@
 }
 
 .toggle-checkbox:checked+.toggle-switch-slider {
-    background-color: var(--color-gold-hover);
+    background-color: var(--color-gold);
 }
 
 .toggle-checkbox:checked+.toggle-switch-slider:before {
@@ -489,7 +489,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: var(--color-gold-hover);
+    background-color: var(--color-gold);
     color: var(--text-white);
     font-family: var(--font-manrope), sans-serif;
     font-size: 10px;
@@ -748,7 +748,7 @@
 
 .filter-grid-btn:hover {
     background: var(--bg-surface);
-    border-color: var(--color-gold-hover);
+    border-color: var(--color-gold);
     transform: translateY(-2px);
     box-shadow: var(--shadow-xs);
 }

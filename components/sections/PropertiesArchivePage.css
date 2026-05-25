@@ -22,6 +22,13 @@
     z-index: -1;
 }
 
+.archive-page-padder {
+    max-width: var(--container-max-width);
+    padding: 0 3rem;
+    margin: 0 auto;
+    width: 100%;
+}
+
 .archive-properties-wrapper {
     max-width: var(--container-max-width);
     padding: 0 3rem;
@@ -117,7 +124,7 @@
 /* Main Layout Grid split */
 .archive-main-layout {
     display: grid;
-    grid-template-columns: 340px 1fr;
+    grid-template-columns: min(33.33%, 340px) 1fr;
     gap: 4rem;
     align-items: start;
 }
@@ -215,17 +222,65 @@
     justify-content: space-between;
     padding-bottom: 1.5rem;
     border-bottom: 1px solid var(--border-light);
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     gap: 1rem;
-    padding-top: 1rem;
+}
+
+/* Sort Pills Wrapper — contains scroll gradient overlays */
+.archive-sort-pills-wrapper {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+}
+
+.archive-sort-pills-wrapper::before,
+.archive-sort-pills-wrapper::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 32px;
+    z-index: 2;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.archive-sort-pills-wrapper.is-scrollable-left::before,
+.archive-sort-pills-wrapper.is-scrollable-right::after {
+    opacity: 1;
+}
+
+.archive-sort-pills-wrapper::before {
+    left: 0;
+    background: linear-gradient(to right, #ffffff, rgba(255, 255, 255, 0));
+}
+
+.archive-sort-pills-wrapper::after {
+    right: 0;
+    background: linear-gradient(to left, #ffffff, rgba(255, 255, 255, 0));
 }
 
 .archive-sort-pills {
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     gap: 0.75rem;
     align-items: center;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    padding-top: 1rem;
+}
 
+.archive-sort-pills::-webkit-scrollbar {
+    display: none;
+}
+
+.sort-label,
+.suggestion-item {
+    flex-shrink: 0;
+    white-space: nowrap;
 }
 
 .sort-label {
@@ -328,6 +383,7 @@
     color: var(--text-black);
     margin: 0;
     text-transform: uppercase;
+    text-align: center;
 }
 
 .smart-empty-state p {
@@ -418,6 +474,261 @@
     min-width: 200px;
 }
 
+
+
+/* ─── MAP VIEW MODE ─── */
+
+/* Desktop Map Toggle Button (next to sort pills) */
+.map-toggle-btn-desktop {
+    margin-left: auto;
+    height: 40px;
+    padding: 0 1.5rem !important;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: transparent;
+    border: 1px solid var(--border-strong);
+    color: var(--text-black);
+    font-size: var(--text-sm);
+    letter-spacing: var(--ls-label);
+    cursor: pointer;
+    flex-shrink: 0;
+    margin-top: 1rem;
+}
+
+.map-toggle-btn-desktop:hover {
+    background: var(--text-black);
+    color: var(--text-white);
+    border-color: var(--text-black);
+}
+
+.map-toggle-btn-desktop img {
+    filter: brightness(0);
+    transition: filter 0.3s ease;
+}
+
+.map-toggle-btn-desktop:hover img {
+    filter: brightness(0) invert(1);
+}
+
+/* Map mode — section becomes flex column */
+body.properties-archive-map-mode .archive-properties-section {
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh);
+    min-height: 0;
+    overflow: hidden;
+}
+
+body.properties-archive-map-mode .archive-properties-section::before {
+    display: block;
+}
+
+body.properties-archive-map-mode .archive-page-padder {
+    flex-shrink: 0;
+    position: absolute;
+    left: 0;
+    right: 0;
+    margin-left: auto;
+    margin-right: auto;
+    z-index: 120;
+}
+
+body.properties-archive-map-mode .archive-search-container {
+    margin-bottom: 1.5rem;
+}
+
+/* Map container fills remaining space */
+.archive-map-container-archive {
+    flex: 1;
+    min-height: 0;
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+    padding-top: 44px;
+}
+
+/* Map empty state overlay */
+.archive-map-empty-state {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    /* Start below the padding-top area to avoid covering the search bar region */
+    top: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(253, 252, 251, 0.85);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    z-index: 50;
+}
+
+.archive-map-empty-state .smart-empty-state {
+    max-width: 420px;
+}
+
+.archive-map-container-archive .properties-map-inner {
+    height: 100%;
+    width: 100%;
+}
+
+/* Desktop Map Controls (top-right corner) */
+.map-desktop-controls-archive {
+    position: absolute;
+    top: calc(72px + 1.5rem + 1rem);
+    z-index: 100;
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+    width: 100%;
+    max-width: var(--container-max-width);
+    padding: 0 3rem;
+    justify-content: space-between;
+    margin: 0 auto;
+    left: 0;
+    right: 0;
+    pointer-events: none;
+}
+
+.map-filter-btn-archive,
+.map-list-toggle-btn-archive {
+    height: 40px;
+    padding: 0 1.25rem !important;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-strong);
+    box-shadow: var(--shadow-md);
+    font-size: var(--text-sm);
+    letter-spacing: var(--ls-label);
+    cursor: pointer;
+    pointer-events: auto;
+}
+
+.map-filter-btn-archive:hover,
+.map-list-toggle-btn-archive:hover {
+    background: var(--text-black);
+    color: var(--text-white);
+    border-color: var(--text-black);
+}
+
+.map-filter-btn-archive .btn-icon,
+.map-list-toggle-btn-archive img {
+    filter: brightness(0);
+    transition: filter 0.3s ease;
+}
+
+.map-filter-btn-archive:hover .btn-icon,
+.map-list-toggle-btn-archive:hover img {
+    filter: brightness(0) invert(1);
+}
+
+/* Mobile Map Controls (bottom stacked) */
+.map-mobile-controls-archive {
+    position: fixed;
+    bottom: 2rem;
+    left: 1rem;
+    right: 1rem;
+    z-index: 120;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    pointer-events: none;
+}
+
+.map-mobile-controls-archive > * {
+    pointer-events: auto;
+}
+
+.map-toggle-btn-mobile-map {
+    width: fit-content;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    color: var(--text-white);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    padding: 0.75rem 1.75rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: var(--text-sm);
+    letter-spacing: var(--ls-label);
+}
+
+.map-toggle-btn-mobile-map img {
+    filter: brightness(0) invert(1);
+}
+
+.map-filter-btn-mobile-archive {
+    width: 100%;
+    height: 48px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-strong);
+    color: var(--text-black);
+    box-shadow: var(--shadow-md);
+    font-size: var(--text-sm);
+    letter-spacing: var(--ls-label);
+    padding: 0 1.75rem !important;
+}
+
+.map-filter-btn-mobile-archive:hover {
+    background: var(--text-black);
+    color: var(--text-white);
+    border-color: var(--text-black);
+}
+
+.map-filter-btn-mobile-archive .btn-icon {
+    filter: brightness(0);
+}
+
+.map-filter-btn-mobile-archive:hover .btn-icon {
+    filter: brightness(0) invert(1);
+}
+
+/* Mobile Map Toggle (floating button in list view) */
+.map-toggle-btn-mobile {
+    position: fixed;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 100;
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    color: var(--text-white);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    padding: 0.75rem 1.75rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: var(--text-sm);
+    letter-spacing: var(--ls-label);
+    box-shadow: var(--shadow-lg);
+}
+
+.map-toggle-btn-mobile img {
+    filter: brightness(0) invert(1);
+}
+
+/* Hide footer and prevent scroll in map mode */
+body.properties-archive-map-mode {
+    overflow: hidden !important;
+}
+
+body.properties-archive-map-mode .footer-section,
+body.properties-archive-map-mode footer {
+    display: none !important;
+}
+
+
 /* Responsive Overrides */
 @media (max-width: 1200px) {
     .archive-main-layout {
@@ -427,7 +738,7 @@
 
 @media (max-width: 1024px) {
     .archive-properties-section {
-        padding: 7rem 0rem 3rem 0rem;
+        padding-top: 7rem;
         border-bottom: none
     }
 
@@ -491,12 +802,50 @@
     }
 
     .archive-mobile-filter-btn {
-        height: 40px;
+        height: 42px;
     }
 
+    .archive-page-padder{
+        padding: 0;
+    }
+
+    .archive-map-container-archive {
+        padding-top: 28px;
+    }
+
+    .map-mobile-filter-top {
+        position: absolute;
+        top: calc(64px + 1.5rem + 0.5rem);
+        right: 1.5rem;
+        z-index: 100;
+        pointer-events: none;
+    }
+
+    .map-mobile-filter-top > * {
+        pointer-events: auto;
+    }
+
+    .map-mobile-filter-top .archive-mobile-filter-btn {
+        height: 42px;
+        width: auto;
+        padding: 0 28px;
+        background: var(--bg-surface);
+        border: 1px solid var(--border-strong);
+        box-shadow: var(--shadow-md);
+        white-space: nowrap;
+    }
+
+    .archive-load-more-container{
+        padding: 3rem 0 0 0;
+    }
 }
 
 @media (max-width: 768px) {
+    .map-mobile-filter-top{
+        top: calc(48px + 1.5rem + 0.5rem);
+        right: 1rem;
+    }
+
     .archive-properties-section .search-input-wrapper {
         height: 50px !important;
         border-radius: 1rem !important;
@@ -527,26 +876,6 @@
         width: 100%;
         align-items: center;
         justify-content: center;
-    }
-
-    .archive-sort-pills {
-        display: flex;
-        flex-wrap: nowrap;
-        overflow-x: auto;
-        width: 100%;
-        max-width: 100%;
-        -webkit-overflow-scrolling: touch;
-        scrollbar-width: none;
-    }
-
-    .archive-sort-pills::-webkit-scrollbar {
-        display: none;
-    }
-
-    .sort-label,
-    .suggestion-item {
-        flex-shrink: 0;
-        white-space: nowrap;
     }
 }
 
