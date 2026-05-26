@@ -154,7 +154,7 @@ export default function BlogFeaturedHero({ posts, locale, dict }: BlogFeaturedHe
     };
   }, [currentIndex]);
 
-  const postUrl = `/${locale}/blog/${currentPost.slug?.current || currentPost.slug}`;
+  const postUrl = `/${locale}/blog/${currentPost.slug}`;
   const formattedDate = currentPost.publishedAt
     ? new Date(currentPost.publishedAt).toLocaleDateString(locale, {
         year: 'numeric',
