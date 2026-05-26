@@ -880,14 +880,14 @@ export const BLOG_CARD_FIELDS = groq`
 `
 
 export const BLOG_FEATURED_QUERY = groq`
-  *[_type == "blogPost" && language == $language && defined(featuredImage)] | order(publishedAt desc) [0...4] {
+  *[_type == "blogPost" && language == $language && isFeatured == true][0] {
     ${BLOG_CARD_FIELDS}
   }
 `
 
 export const BLOG_ARCHIVE_QUERY = groq`
   {
-    "featured": *[_type == "blogPost" && language == $language && defined(featuredImage)] | order(publishedAt desc) [0...4] {
+    "featured": *[_type == "blogPost" && language == $language && isFeatured == true][0] {
       ${BLOG_CARD_FIELDS}
     },
     "items": *[_type == "blogPost" && language == $language] | order(publishedAt desc) [$start...$end] {

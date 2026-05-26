@@ -1,4 +1,5 @@
 import { defineField, defineType } from 'sanity'
+import { FeaturedArticleInput } from '@/sanity/plugins/featuredArticleInput'
 
 export const blogPost = defineType({
   name: 'blogPost',
@@ -111,6 +112,17 @@ export const blogPost = defineType({
         layout: 'tags',
       },
     }),
+    defineField({
+      name: 'isFeatured',
+      title: 'Featured Article',
+      type: 'boolean',
+      description: 'Mark this article as featured. Only one article can be featured at a time.',
+      group: 'content',
+      initialValue: false,
+      components: {
+        input: FeaturedArticleInput,
+      },
+    }),
 
     // ═══════════════════════════════════════
     //  MEDIA
@@ -164,14 +176,17 @@ export const blogPost = defineType({
       media: 'featuredImage',
       publishedAt: 'publishedAt',
       language: 'language',
+      isFeatured: 'isFeatured',
     },
-    prepare({ title, excerpt, media, publishedAt, language }) {
+    prepare({ title, excerpt, media, publishedAt, language, isFeatured }) {
       const date = publishedAt
         ? new Date(publishedAt).toLocaleDateString('en-IE', { year: 'numeric', month: 'short', day: 'numeric' })
         : ''
 
+      const featuredIndicator = isFeatured ? '⭐ ' : ''
+
       return {
-        title: `${language ? `[${language.toUpperCase()}] ` : ''}${title || 'Untitled Post'}`,
+        title: `${featuredIndicator}${language ? `[${language.toUpperCase()}] ` : ''}${title || 'Untitled Post'}`,
         subtitle: `${date}${excerpt ? ` — ${excerpt}` : ''}`,
         media,
       }

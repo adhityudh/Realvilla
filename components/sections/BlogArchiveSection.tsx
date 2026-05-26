@@ -17,7 +17,7 @@ if (typeof window !== 'undefined') {
 interface BlogArchiveSectionProps {
   dict?: any;
   locale: string;
-  initialFeatured?: BlogPost[];
+  initialFeatured?: BlogPost | null;
   initialItems?: BlogPost[];
   initialTotalCount?: number;
 }
@@ -34,7 +34,7 @@ export default function BlogArchiveSection({
   const sectionRef = useRef<HTMLElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
 
-  const [featured, setFeatured] = useState<BlogPost[]>(initialFeatured || []);
+  const [featured, setFeatured] = useState<BlogPost | null>(initialFeatured || null);
   const [items, setItems] = useState<BlogPost[]>(initialItems || []);
   const [totalCount, setTotalCount] = useState<number>(initialTotalCount || 0);
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -78,7 +78,7 @@ export default function BlogArchiveSection({
         if (!isMounted) return;
 
         if (currentPage === 1) {
-          setFeatured(data.featured || []);
+          setFeatured(data.featured || null);
           setItems(data.items || []);
         } else {
           setItems((prev) => [...prev, ...(data.items || [])]);
@@ -98,7 +98,6 @@ export default function BlogArchiveSection({
   }, [currentPage, locale]);
 
   const hasMore = items.length < totalCount;
-  const displayedFeatured = featured.slice(0, 3);
 
   const handleLoadMore = useCallback(() => {
     setCurrentPage((prev) => prev + 1);
@@ -106,21 +105,16 @@ export default function BlogArchiveSection({
 
   return (
     <section className="blog-archive-section" ref={sectionRef}>
-      {/* Featured Articles */}
-      {displayedFeatured.length > 0 && (
+      {/* Featured Article */}
+      {featured && (
         <div className="blog-featured-grid">
-          {displayedFeatured.map((post, index) => (
-            <div
-              key={post._id}
-              className={`blog-featured-item blog-featured-item--${index === 0 ? 'span-2' : 'span-1'}`}
-            >
-              <BlogCard
-                post={post}
-                locale={locale}
-                variant="seamless"
-              />
-            </div>
-          ))}
+          <div className="blog-featured-item blog-featured-item--span-2">
+            <BlogCard
+              post={featured}
+              locale={locale}
+              variant="seamless"
+            />
+          </div>
         </div>
       )}
 
