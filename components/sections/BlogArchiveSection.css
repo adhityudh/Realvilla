@@ -1,5 +1,5 @@
 .blog-archive-section {
-  padding: 6rem 0rem 0rem 0rem;
+  padding: 0rem 0rem 0rem 0rem;
   background-color: var(--bg-white, #fdfcfb);
   min-height: 100vh;
   border-bottom: 1px solid var(--border-light);
@@ -135,7 +135,7 @@
 
 @media (max-width: 1024px) {
   .blog-archive-section {
-    padding-top: 5rem;
+    padding-top: 0rem;
   }
 
   .blog-featured-grid {
@@ -173,7 +173,7 @@
 
 @media (max-width: 768px) {
   .blog-archive-section {
-    padding-top: 5rem;
+    padding-top: 0rem;
   }
 
   .blog-featured-grid {

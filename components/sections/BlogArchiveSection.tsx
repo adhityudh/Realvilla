@@ -5,6 +5,7 @@ import { client } from '@/sanity/lib/client';
 import { BLOG_ARCHIVE_QUERY } from '@/sanity/lib/queries';
 import { sanitizeSanityData } from '@/lib/sanitize';
 import BlogCard, { BlogPost } from '../ui/BlogCard';
+import BlogFeaturedHero from './BlogFeaturedHero';
 import Button from '../ui/Button';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -105,8 +106,12 @@ export default function BlogArchiveSection({
 
   return (
     <section className="blog-archive-section" ref={sectionRef}>
-      {/* Featured Articles */}
       {featured.length > 0 && (
+        <BlogFeaturedHero posts={featured} locale={locale} dict={dict} />
+      )}
+
+      {/* Featured Articles */}
+      {/* {featured.length > 0 && (
         <div className="blog-featured-grid">
           <div className="blog-featured-item blog-featured-item--highlight">
             <BlogCard
@@ -128,7 +133,7 @@ export default function BlogArchiveSection({
             </div>
           )}
         </div>
-      )}
+      )} */}
 
       {/* Archive Grid */}
       {items.length > 0 && (
