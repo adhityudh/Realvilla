@@ -235,6 +235,13 @@
     "amortLabelInterest": "Intereses",
     "amortLabelBalance": "Saldo"
   },
+  "blog": {
+    "back_to_blog": "Volver al Blog",
+    "related_posts": "Artículos Relacionados",
+    "no_results": "No se encontraron artículos.",
+    "loading": "Cargando...",
+    "load_more": "Cargar Más"
+  },
   "offer": {
     "modal_title": "Hacer una Oferta de Propiedad",
     "step_label": "Paso",

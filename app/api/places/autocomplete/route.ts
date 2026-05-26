@@ -27,6 +27,8 @@ export async function GET(req: NextRequest) {
     input,
     languageCode: 'es',
     regionCode: 'ES',
+    // Strictly restrict results to Spain only (regionCode is just a bias, includedRegionCodes is strict)
+    includedRegionCodes: ['ES'],
     // Street-level minimum: routes (streets), street_address, premise (buildings)
     includedPrimaryTypes: ['route', 'street_address', 'premise'],
   };

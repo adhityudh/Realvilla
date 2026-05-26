@@ -854,3 +854,87 @@ export const INITIAL_PROPERTIES_QUERY = groq`
     "total": count(*[_type == "property" && (language == $language || (!defined(language) && $language == "en"))])
   }
 `
+
+// ─── Blog Post Queries ───
+export const BLOG_CARD_FIELDS = groq`
+  _id,
+  language,
+  "title": coalesce(title, "Untitled"),
+  "slug": slug.current,
+  publishedAt,
+  excerpt,
+  "author": author-> {
+    name,
+    "avatar": avatar.asset->{ _id, url, metadata { lqip, dimensions } }
+  },
+  "categories": categories[]-> {
+    _id,
+    "title": coalesce(title.en, title.es),
+    "slug": slug.current
+  },
+  "featuredImage": featuredImage {
+    asset->{ _id, url, metadata { lqip, dimensions } },
+    alt
+  },
+  tags
+`
+
+export const BLOG_FEATURED_QUERY = groq`
+  *[_type == "blogPost" && language == $language && defined(featuredImage)] | order(publishedAt desc) [0...4] {
+    ${BLOG_CARD_FIELDS}
+  }
+`
+
+export const BLOG_ARCHIVE_QUERY = groq`
+  {
+    "featured": *[_type == "blogPost" && language == $language && defined(featuredImage)] | order(publishedAt desc) [0...4] {
+      ${BLOG_CARD_FIELDS}
+    },
+    "items": *[_type == "blogPost" && language == $language] | order(publishedAt desc) [$start...$end] {
+      ${BLOG_CARD_FIELDS}
+    },
+    "total": count(*[_type == "blogPost" && language == $language])
+  }
+`
+
+export const BLOG_DETAIL_QUERY = groq`
+  *[_type == "blogPost" && slug.current == $slug && language == $language][0] {
+    _id,
+    ${SEO_FIELDS},
+    "title": coalesce(title, "Untitled"),
+    "slug": slug.current,
+    publishedAt,
+    excerpt,
+    body,
+    "author": author-> {
+      name,
+      role,
+      bio,
+      "avatar": avatar.asset->{ _id, url, metadata { lqip, dimensions } }
+    },
+    "categories": categories[]-> {
+      _id,
+      "title": coalesce(title.en, title.es),
+      "slug": slug.current
+    },
+    "featuredImage": featuredImage {
+      asset->{ _id, url, metadata { lqip, dimensions } },
+      alt
+    },
+    tags,
+    "_translations": *[_type == "translation.metadata" && references(^._id)][0].translations[].value->{
+      "language": language,
+      "slug": slug.current
+    },
+    "relatedPosts": *[_type == "blogPost" && language == $language && slug.current != $slug] | order(publishedAt desc) [0...3] {
+      ${BLOG_CARD_FIELDS}
+    }
+  }
+`
+
+export const BLOG_PATHS_QUERY = groq`
+  *[_type == "blogPost" && defined(slug.current) && language == $language && !(_id in path("drafts.**"))] {
+    "slug": slug.current,
+    "language": coalesce(language, "en")
+  }
+`

@@ -235,6 +235,13 @@
     "amortLabelInterest": "Interest",
     "amortLabelBalance": "Balance"
   },
+  "blog": {
+    "back_to_blog": "Back to Blog",
+    "related_posts": "Related Articles",
+    "no_results": "No blog posts found.",
+    "loading": "Loading...",
+    "load_more": "Load More"
+  },
   "offer": {
     "modal_title": "Make a Property Offer",
     "step_label": "Step",

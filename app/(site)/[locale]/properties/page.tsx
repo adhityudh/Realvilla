@@ -13,11 +13,12 @@ export async function generateMetadata(
 ): Promise<Metadata> {
   const { locale } = await params;
   const settings = await getGlobalSettings(locale);
+  const canonicalPath = locale === 'es' ? `/${locale}/propiedades` : `/${locale}/properties`;
   
   return constructMetadata(
     settings?.propertiesPageSeo, 
     settings?.seo, 
-    `/${locale}/properties`, 
+    canonicalPath, 
     settings?.favicon
   );
 }

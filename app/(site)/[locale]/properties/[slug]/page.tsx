@@ -28,7 +28,8 @@ export async function generateMetadata(
     ogImage: property?.seo?.ogImage || property?.image
   };
 
-  return constructMetadata(propertySeo, settings?.seo, `/${locale}/properties/${slug}`, settings?.favicon);
+  const canonicalPath = locale === 'es' ? `/${locale}/propiedades/${slug}` : `/${locale}/properties/${slug}`;
+  return constructMetadata(propertySeo, settings?.seo, canonicalPath, settings?.favicon);
 }
 
 import SectionRenderer from '@/components/sections/SectionRenderer';

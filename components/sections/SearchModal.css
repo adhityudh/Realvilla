@@ -184,10 +184,13 @@
     transition: background-color 0.3s ease;
     position: relative;
     overflow: hidden;
+    text-decoration: none;
+    color: inherit;
 }
 
 .result-item.clickable:hover {
     background-color: rgba(0, 0, 0, 0.03) !important;
+    text-decoration: none;
 }
 
 .result-item-icon {
@@ -414,6 +417,8 @@ img.result-item-icon {
     justify-content: flex-start;
     align-items: center;
     gap: 1rem;
+    text-decoration: none;
+    color: inherit;
 }
 
 .result-item:hover {

@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, useMemo } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import gsap from 'gsap';
 import { client } from '@/sanity/lib/client';
@@ -202,10 +203,10 @@ export default function SearchModal({ isOpen, onClose, dict }: SearchModalProps)
           language: locale,
           matchedMetaValues: matchedMetaValues,
           matchedCategoryIds: matchedCategoryIds
-        });
+        }, { stega: false });
         
         if (active) {
-          setResults(data || []);
+          setResults(sanitizeSanityData(data) || []);
         }
       } catch (err) {
         console.error('Error searching properties:', err);
@@ -507,11 +508,25 @@ export default function SearchModal({ isOpen, onClose, dict }: SearchModalProps)
                     <div className="result-group">
                       <p className="group-label">{dict?.search?.matching_properties}</p>
                       <div className="result-items">
-                        {propertiesGroup.map((prop) => (
-                          <div 
+                        {propertiesGroup.map((prop) => {
+                          const targetPrefix = locale === 'es' ? 'propiedades' : 'properties';
+                          // Use propertyCode as slug for URL routing (consistent with PROPERTY_CARD_FIELDS and PROPERTY_DETAIL_QUERY)
+                          const slugValue = (prop.propertyCode || '')
+                            .replace(/[\u200B-\u200D\uFEFF\u00A0\u2060\u180E\u202A-\u202E\u2066-\u2069]/g, '')
+                            .trim();
+                          const href = slugValue ? `/${locale}/${targetPrefix}/${slugValue}` : '#';
+                          return (
+                          <Link 
                             key={prop._id} 
+                            href={href}
                             className="result-item clickable property-item"
-                            onClick={() => prop.slug && handlePropertyClick(prop.slug)}
+                            onClick={(e) => {
+                              if (!slugValue) {
+                                e.preventDefault();
+                                return;
+                              }
+                              onClose();
+                            }}
                           >
                             <div className="result-item-image-wrapper">
                               {prop.imageUrl ? (
@@ -553,8 +568,9 @@ export default function SearchModal({ isOpen, onClose, dict }: SearchModalProps)
                                 €{prop.price.toLocaleString()}
                               </span>
                             )}
-                          </div>
-                        ))}
+                          </Link>
+                          );
+                        })}
                       </div>
                     </div>
                   )}
