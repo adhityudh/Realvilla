@@ -47,7 +47,7 @@ export default async function BlogPage({ params }: { params: Promise<{ locale: s
       <BlogArchiveSection 
         dict={dict}
         locale={locale}
-        initialFeatured={initialData?.featured || null}
+        initialFeatured={initialData?.featured || []}
         initialItems={initialData?.items || []}
         initialTotalCount={initialData?.total || 0}
       />

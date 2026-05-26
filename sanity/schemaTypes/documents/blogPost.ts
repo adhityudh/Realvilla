@@ -116,7 +116,7 @@ export const blogPost = defineType({
       name: 'isFeatured',
       title: 'Featured Article',
       type: 'boolean',
-      description: 'Mark this article as featured. Only one article can be featured at a time.',
+      description: 'Mark this article as featured. Up to 4 articles can be featured at a time, displayed in order from newest to oldest.',
       group: 'content',
       initialValue: false,
       components: {

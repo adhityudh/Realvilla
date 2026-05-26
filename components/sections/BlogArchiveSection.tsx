@@ -17,7 +17,7 @@ if (typeof window !== 'undefined') {
 interface BlogArchiveSectionProps {
   dict?: any;
   locale: string;
-  initialFeatured?: BlogPost | null;
+  initialFeatured?: BlogPost[];
   initialItems?: BlogPost[];
   initialTotalCount?: number;
 }
@@ -34,7 +34,7 @@ export default function BlogArchiveSection({
   const sectionRef = useRef<HTMLElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
 
-  const [featured, setFeatured] = useState<BlogPost | null>(initialFeatured || null);
+  const [featured, setFeatured] = useState<BlogPost[]>(initialFeatured || []);
   const [items, setItems] = useState<BlogPost[]>(initialItems || []);
   const [totalCount, setTotalCount] = useState<number>(initialTotalCount || 0);
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -78,7 +78,7 @@ export default function BlogArchiveSection({
         if (!isMounted) return;
 
         if (currentPage === 1) {
-          setFeatured(data.featured || null);
+          setFeatured(data.featured || []);
           setItems(data.items || []);
         } else {
           setItems((prev) => [...prev, ...(data.items || [])]);
@@ -105,16 +105,28 @@ export default function BlogArchiveSection({
 
   return (
     <section className="blog-archive-section" ref={sectionRef}>
-      {/* Featured Article */}
-      {featured && (
+      {/* Featured Articles */}
+      {featured.length > 0 && (
         <div className="blog-featured-grid">
-          <div className="blog-featured-item blog-featured-item--span-2">
+          <div className="blog-featured-item blog-featured-item--highlight">
             <BlogCard
-              post={featured}
+              post={featured[0]}
               locale={locale}
-              variant="seamless"
+              variant="default"
             />
           </div>
+          {featured.length > 1 && (
+            <div className="blog-featured-list">
+              {featured.slice(1, 4).map((post) => (
+                <BlogCard
+                  key={post._id}
+                  post={post}
+                  locale={locale}
+                  variant="horizontal"
+                />
+              ))}
+            </div>
+          )}
         </div>
       )}
 

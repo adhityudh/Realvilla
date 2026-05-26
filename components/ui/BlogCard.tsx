@@ -25,7 +25,7 @@ export interface BlogPost {
   language?: string;
 }
 
-export default function BlogCard({ post, locale, variant = 'default' }: { post: BlogPost; locale: string; variant?: 'default' | 'featured' | 'seamless' }) {
+export default function BlogCard({ post, locale, variant = 'default' }: { post: BlogPost; locale: string; variant?: 'default' | 'seamless' | 'horizontal' }) {
   const { title, slug, publishedAt, excerpt, featuredImage, author, categories } = post;
   const href = `/${locale}/blog/${slug}`;
 
@@ -43,7 +43,7 @@ export default function BlogCard({ post, locale, variant = 'default' }: { post: 
   };
 
   const imageUrl = featuredImage?.asset?.url
-    ? urlForImage(featuredImage).width(variant === 'featured' ? 800 : 600).url()
+    ? urlForImage(featuredImage).width(600).url()
     : null;
 
   return (
@@ -55,40 +55,49 @@ export default function BlogCard({ post, locale, variant = 'default' }: { post: 
             alt={featuredImage?.alt || title}
             className="blog-card-image"
             fill
-            sizes={variant === 'featured' ? '(max-width: 768px) 100vw, 50vw' : '(max-width: 768px) 100vw, 33vw'}
+            sizes="(max-width: 768px) 100vw, 33vw"
             style={{ objectFit: 'cover' }}
           />
         ) : (
           <div className="blog-card-image-placeholder" />
         )}
-        {categories && categories.length > 0 && (
+        {categories && categories.length > 0 && variant !== 'horizontal' && (
           <span className="blog-card-category-badge">
             {categories[0].title}
           </span>
         )}
       </div>
       <div className="blog-card-content">
-        {publishedAt && (
-          <time className="blog-card-date" dateTime={publishedAt}>
-            {formatDate(publishedAt)}
-          </time>
-        )}
-        <h3 className="blog-card-title">{title}</h3>
-        {excerpt && <p className="blog-card-excerpt">{excerpt}</p>}
-        {author && author.name && (
-          <div className="blog-card-author">
-            {author.avatar?.asset?.url && (
-              <Image
-                src={urlForImage(author.avatar).width(32).height(32).url()}
-                alt={author.name}
-                width={24}
-                height={24}
-                className="blog-card-avatar"
-              />
+        <div className="blog-card-meta">
+          {categories && categories.length > 0 && variant === 'horizontal' && (
+            <span className="blog-card-category-badge">
+              {categories[0].title}
+            </span>
+          )}
+          <div className="blog-card-date-author">
+            {publishedAt && (
+              <time className="blog-card-date" dateTime={publishedAt}>
+                {formatDate(publishedAt)}
+              </time>
             )}
-            <span className="blog-card-author-name">{author.name}</span>
+            {author && author.name && (
+              <div className="blog-card-author">
+                {author.avatar?.asset?.url && (
+                  <Image
+                    src={urlForImage(author.avatar).width(32).height(32).url()}
+                    alt={author.name}
+                    width={24}
+                    height={24}
+                    className="blog-card-avatar"
+                  />
+                )}
+                <span className="blog-card-author-name">{author.name}</span>
+              </div>
+            )}
           </div>
-        )}
+        </div>
+        <h3 className="blog-card-title">{title}</h3>
+        {excerpt && variant !== 'horizontal' && <p className="blog-card-excerpt">{excerpt}</p>}
       </div>
     </Link>
   );

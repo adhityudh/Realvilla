@@ -8,6 +8,7 @@ interface FeaturedArticle {
   _id: string
   title: string
   language: string
+  publishedAt?: string
 }
 
 export function FeaturedArticleInput(props: BooleanInputProps) {
@@ -21,34 +22,36 @@ export function FeaturedArticleInput(props: BooleanInputProps) {
   const [isChecking, setIsChecking] = useState(false)
   const [isUpdating, setIsUpdating] = useState(false)
   const [showDialog, setShowDialog] = useState(false)
-  const [existingFeatured, setExistingFeatured] = useState<FeaturedArticle | null>(null)
+  const [existingFeatured, setExistingFeatured] = useState<FeaturedArticle[]>([])
+  const [selectedToReplace, setSelectedToReplace] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
 
   const cleanDocId = currentDocId?.replace(/^drafts\./, '')
 
   const checkExistingFeatured = useCallback(async () => {
-    if (!cleanDocId || !currentLanguage) return null
+    if (!cleanDocId || !currentLanguage) return []
 
     setIsChecking(true)
     setError(null)
 
     try {
-      const query = `*[_type == "blogPost" && isFeatured == true && language == $language && _id != $currentId && !(_id in path("drafts.**"))][0] {
+      const query = `*[_type == "blogPost" && isFeatured == true && language == $language && _id != $currentId && !(_id in path("drafts.**"))] | order(publishedAt desc) {
         _id,
         title,
-        language
+        language,
+        publishedAt
       }`
       
-      const result = await client.fetch<FeaturedArticle | null>(query, {
+      const result = await client.fetch<FeaturedArticle[]>(query, {
         language: currentLanguage,
         currentId: cleanDocId,
       })
 
-      return result
+      return result || []
     } catch (err) {
-      console.error('Error checking existing featured article:', err)
-      setError('Failed to check existing featured article')
-      return null
+      console.error('Error checking existing featured articles:', err)
+      setError('Failed to check existing featured articles')
+      return []
     } finally {
       setIsChecking(false)
     }
@@ -62,8 +65,9 @@ export function FeaturedArticleInput(props: BooleanInputProps) {
 
     const existing = await checkExistingFeatured()
     
-    if (existing) {
+    if (existing.length >= 4) {
       setExistingFeatured(existing)
+      setSelectedToReplace(existing[0]._id)
       setShowDialog(true)
     } else {
       onChange(set(true))
@@ -71,13 +75,13 @@ export function FeaturedArticleInput(props: BooleanInputProps) {
   }, [value, onChange, checkExistingFeatured])
 
   const handleConfirmReplace = useCallback(async () => {
-    if (!existingFeatured || !cleanDocId) return
+    if (existingFeatured.length === 0 || !selectedToReplace || !cleanDocId) return
 
     setIsUpdating(true)
     setError(null)
 
     try {
-      const existingCleanId = existingFeatured._id.replace(/^drafts\./, '')
+      const existingCleanId = selectedToReplace.replace(/^drafts\./, '')
       
       await client
         .transaction()
@@ -87,18 +91,20 @@ export function FeaturedArticleInput(props: BooleanInputProps) {
 
       onChange(set(true))
       setShowDialog(false)
-      setExistingFeatured(null)
+      setExistingFeatured([])
+      setSelectedToReplace(null)
     } catch (err) {
       console.error('Error replacing featured article:', err)
       setError('Failed to replace featured article. Please try again.')
     } finally {
       setIsUpdating(false)
     }
-  }, [client, existingFeatured, cleanDocId, onChange])
+  }, [client, existingFeatured, selectedToReplace, cleanDocId, onChange])
 
   const handleCancelReplace = useCallback(() => {
     setShowDialog(false)
-    setExistingFeatured(null)
+    setExistingFeatured([])
+    setSelectedToReplace(null)
     setError(null)
   }, [])
 
@@ -108,7 +114,7 @@ export function FeaturedArticleInput(props: BooleanInputProps) {
         <Stack space={2}>
           <Text weight="semibold" size={1}>Featured Article</Text>
           <Text size={1} muted>
-            Mark this article as featured. Only one article can be featured at a time.
+            Mark this article as featured. Up to 4 articles can be featured at a time, displayed in order from newest to oldest.
           </Text>
         </Stack>
 
@@ -134,23 +140,52 @@ export function FeaturedArticleInput(props: BooleanInputProps) {
         )}
       </Stack>
 
-      {showDialog && existingFeatured && (
+      {showDialog && existingFeatured.length > 0 && (
         <Dialog
-          header="Replace Featured Article?"
+          header="Maximum Featured Articles Reached"
           id="featured-article-dialog"
           onClose={handleCancelReplace}
           width={1}
         >
           <Stack space={4} padding={4}>
             <Text>
-              The article <strong>"{existingFeatured.title}"</strong> is currently featured.
+              You already have <strong>4 featured articles</strong> (the maximum allowed).
             </Text>
             <Text>
-              Do you want to replace it with <strong>"{currentTitle || 'this article'}"</strong>?
+              To feature <strong>"{currentTitle || 'this article'}"</strong>, please select which article to replace:
             </Text>
-            <Text size={1} muted>
-              The previous featured article will be automatically unfeatured.
-            </Text>
+
+            <Stack space={3}>
+              {existingFeatured.map((article) => (
+                <Card
+                  key={article._id}
+                  padding={3}
+                  radius={2}
+                  tone={selectedToReplace === article._id ? 'primary' : 'default'}
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => setSelectedToReplace(article._id)}
+                >
+                  <Flex align="center" gap={3}>
+                    <Checkbox
+                      checked={selectedToReplace === article._id}
+                      readOnly
+                    />
+                    <Stack space={2} flex={1}>
+                      <Text weight="medium">{article.title}</Text>
+                      {article.publishedAt && (
+                        <Text size={1} muted>
+                          {new Date(article.publishedAt).toLocaleDateString('en-US', {
+                            year: 'numeric',
+                            month: 'short',
+                            day: 'numeric'
+                          })}
+                        </Text>
+                      )}
+                    </Stack>
+                  </Flex>
+                </Card>
+              ))}
+            </Stack>
 
             {error && (
               <Card padding={3} radius={2} tone="critical">
@@ -166,10 +201,10 @@ export function FeaturedArticleInput(props: BooleanInputProps) {
                 disabled={isUpdating}
               />
               <Button
-                text={isUpdating ? 'Replacing...' : 'Replace'}
+                text={isUpdating ? 'Replacing...' : 'Replace Selected'}
                 tone="primary"
                 onClick={handleConfirmReplace}
-                disabled={isUpdating}
+                disabled={isUpdating || !selectedToReplace}
                 loading={isUpdating}
               />
             </Flex>

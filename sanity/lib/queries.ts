@@ -887,7 +887,7 @@ export const BLOG_FEATURED_QUERY = groq`
 
 export const BLOG_ARCHIVE_QUERY = groq`
   {
-    "featured": *[_type == "blogPost" && language == $language && isFeatured == true][0] {
+    "featured": *[_type == "blogPost" && language == $language && isFeatured == true] | order(publishedAt desc) [0...4] {
       ${BLOG_CARD_FIELDS}
     },
     "items": *[_type == "blogPost" && language == $language] | order(publishedAt desc) [$start...$end] {
