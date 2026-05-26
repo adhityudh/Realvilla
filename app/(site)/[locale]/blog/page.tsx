@@ -1,4 +1,6 @@
 import BlogArchiveSection from '@/components/sections/BlogArchiveSection';
+import SectionRenderer from '@/components/sections/SectionRenderer';
+import FooterPaddingSetter from '@/components/providers/FooterPaddingSetter';
 import { getDictionary } from '@/lib/get-dictionary';
 import TranslationSetter from '@/components/providers/TranslationSetter';
 import { Metadata } from 'next';
@@ -29,12 +31,13 @@ export async function generateMetadata(
 export default async function BlogPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
 
-  const [dict, rawInitialData] = await Promise.all([
+  const [dict, rawInitialData, settings] = await Promise.all([
     getDictionary(locale as any),
-    client.fetch(BLOG_ARCHIVE_QUERY, { language: locale, start: 0, end: 9 }, { 
+    client.fetch(BLOG_ARCHIVE_QUERY, { language: locale, start: 0, end: 6, categoryId: null }, { 
       stega: false,
       next: { revalidate: 60, tags: ['blog'] } 
     }),
+    getGlobalSettings(locale)
   ]);
   const initialData = sanitizeSanityData(rawInitialData);
 
@@ -44,13 +47,25 @@ export default async function BlogPage({ params }: { params: Promise<{ locale: s
   return (
     <>
       <TranslationSetter translations={translations} />
+      <FooterPaddingSetter active={settings?.blogPageFooterPaddingHigh} />
       <BlogArchiveSection 
         dict={dict}
         locale={locale}
         initialFeatured={initialData?.featured || []}
         initialItems={initialData?.items || []}
         initialTotalCount={initialData?.total || 0}
+        initialCategories={initialData?.allCategories || []}
       />
+      {settings?.blogPageSections && (
+        <SectionRenderer 
+          sections={settings.blogPageSections} 
+          dict={dict} 
+          contextData={{ 
+            whatsappNumber: settings?.contactWhatsAppNumber,
+            mortgageCalculator: settings?.mortgageCalculator
+          }}
+        />
+      )}
     </>
   );
 }

@@ -53,6 +53,7 @@ export default function BlogFeaturedHero({ posts, locale, dict }: BlogFeaturedHe
     }, PROGRESS_INTERVAL);
 
     timerRef.current = setTimeout(() => {
+      setProgress(0);
       setCurrentIndex((prev) => (prev + 1) % posts.length);
     }, SLIDE_DURATION);
 

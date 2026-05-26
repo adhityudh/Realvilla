@@ -9,7 +9,6 @@
     overflow: hidden;
     padding-top: 7.5rem;
     padding-bottom: 7.5rem;
-    margin-bottom: 5rem;
 }
 
 .blog-featured-hero-bg {
@@ -161,7 +160,6 @@
 @media (max-width: 1024px) {
     .blog-featured-hero {
         padding-bottom: 6rem;
-        margin-bottom: 3rem;
     }
 
     .blog-featured-hero .blog-card-meta {

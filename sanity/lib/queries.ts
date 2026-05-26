@@ -599,6 +599,13 @@ export const SETTINGS_QUERY = groq`
     "propertiesPageSeo": propertiesPageSeo {
       ${SEO_SUBFIELDS}
     },
+    "blogPageSeo": blogPageSeo {
+      ${SEO_SUBFIELDS}
+    },
+    blogPageFooterPaddingHigh,
+    \"blogPageSections\": blogPageSections[] {
+      ${SECTION_PROJECTION}
+    },
     \"propertyDetailSections\": propertyDetailSections[] {
       ${SECTION_PROJECTION}
     },
@@ -890,10 +897,11 @@ export const BLOG_ARCHIVE_QUERY = groq`
     "featured": *[_type == "blogPost" && language == $language && isFeatured == true] | order(publishedAt desc) [0...4] {
       ${BLOG_CARD_FIELDS}
     },
-    "items": *[_type == "blogPost" && language == $language] | order(publishedAt desc) [$start...$end] {
+    "items": *[_type == "blogPost" && language == $language && (!defined($categoryId) || $categoryId == null || $categoryId in categories[]->_id)] | order(publishedAt desc) [$start...$end] {
       ${BLOG_CARD_FIELDS}
     },
-    "total": count(*[_type == "blogPost" && language == $language])
+    "total": count(*[_type == "blogPost" && language == $language && (!defined($categoryId) || $categoryId == null || $categoryId in categories[]->_id)]),
+    "allCategories": array::unique(*[_type == "blogPost" && language == $language].categories[]->{ _id, "title": coalesce(title.en, title.es), "slug": slug.current })
   }
 `
 

@@ -120,7 +120,7 @@
 }
 
 .blog-card-content {
-  padding: 1.25rem 1.25rem;
+  padding: 1.5rem 1.25rem;
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
@@ -202,9 +202,9 @@
 }
 
 /* Responsive */
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
   .blog-card-content {
-    padding: 1rem;
+    padding: 1.5rem 1rem;
   }
   .blog-card-title {
     font-size: var(--text-base);
@@ -213,5 +213,9 @@
     flex-direction: column;
     align-items: flex-start;
     gap: 0.5rem;
+  }
+
+  .blog-card-excerpt {
+    font-size: var(--text-sm);
   }
 }
