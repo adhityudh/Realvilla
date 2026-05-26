@@ -6,6 +6,8 @@ import { getGlobalSettings, constructMetadata } from '@/lib/metadata';
 import { client } from '@/sanity/lib/client';
 import { BLOG_ARCHIVE_QUERY } from '@/sanity/lib/queries';
 import { sanitizeSanityData } from '@/lib/sanitize';
+import { getLocalizedPath, generateTranslations } from '@/lib/routes';
+import { Locale } from '@/lib/i18n';
 
 export async function generateMetadata(
   { params }: { params: Promise<{ locale: string }> }
@@ -13,10 +15,13 @@ export async function generateMetadata(
   const { locale } = await params;
   const settings = await getGlobalSettings(locale);
   
+  // Use centralized route helper for canonical path
+  const canonicalPath = getLocalizedPath('blog', locale as Locale);
+  
   return constructMetadata(
     settings?.blogPageSeo, 
     settings?.seo, 
-    `/${locale}/blog`, 
+    canonicalPath, 
     settings?.favicon
   );
 }
@@ -33,10 +38,8 @@ export default async function BlogPage({ params }: { params: Promise<{ locale: s
   ]);
   const initialData = sanitizeSanityData(rawInitialData);
 
-  const translations = [
-    { language: 'en', slug: 'blog' },
-    { language: 'es', slug: 'blog' }
-  ];
+  // Use centralized route helper for translations
+  const translations = generateTranslations('blog');
 
   return (
     <>

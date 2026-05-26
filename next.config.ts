@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import { getAllRouteRewrites, getAllRouteRedirects } from './lib/routes';
 
 const nextConfig: NextConfig = {
   images: {
@@ -25,28 +26,14 @@ const nextConfig: NextConfig = {
   },
   trailingSlash: true,
   async rewrites() {
-    return [
-      // Spanish "propiedades" URLs internally serve from the "properties" route handler
-      {
-        source: '/es/propiedades/:path*',
-        destination: '/es/properties/:path*',
-      },
-    ];
+    // Automatically generate rewrites from centralized route configuration
+    // This maps localized URLs (e.g., /es/propiedades) to canonical route handlers (e.g., /es/properties)
+    return getAllRouteRewrites();
   },
   async redirects() {
-    return [
-      // Redirect wrong locale combinations to the correct path
-      {
-        source: '/en/propiedades/:path*',
-        destination: '/en/properties/:path*',
-        permanent: true,
-      },
-      {
-        source: '/es/properties/:path*',
-        destination: '/es/propiedades/:path*',
-        permanent: true,
-      },
-    ];
+    // Automatically generate redirects from centralized route configuration
+    // This ensures users see the correct localized URL for their locale
+    return getAllRouteRedirects();
   },
 };
 

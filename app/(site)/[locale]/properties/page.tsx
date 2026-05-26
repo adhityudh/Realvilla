@@ -7,13 +7,17 @@ import { getGlobalSettings, constructMetadata } from '@/lib/metadata';
 import { client } from '@/sanity/lib/client';
 import { PROPERTY_META_QUERY, INITIAL_PROPERTIES_QUERY } from '@/sanity/lib/queries';
 import { sanitizeSanityData } from '@/lib/sanitize';
+import { getLocalizedPath, generateTranslations } from '@/lib/routes';
+import { Locale } from '@/lib/i18n';
 
 export async function generateMetadata(
   { params }: { params: Promise<{ locale: string }> }
 ): Promise<Metadata> {
   const { locale } = await params;
   const settings = await getGlobalSettings(locale);
-  const canonicalPath = locale === 'es' ? `/${locale}/propiedades` : `/${locale}/properties`;
+  
+  // Use centralized route helper for canonical path
+  const canonicalPath = getLocalizedPath('properties', locale as Locale);
   
   return constructMetadata(
     settings?.propertiesPageSeo, 
@@ -41,10 +45,8 @@ export default async function PropertiesPage({ params }: { params: Promise<{ loc
   const initialMeta = sanitizeSanityData(rawInitialMeta);
   const initialData = sanitizeSanityData(rawInitialData);
 
-  const translations = [
-    { language: 'en', slug: 'properties' },
-    { language: 'es', slug: 'propiedades' }
-  ];
+  // Use centralized route helper for translations
+  const translations = generateTranslations('properties');
 
   return (
     <>

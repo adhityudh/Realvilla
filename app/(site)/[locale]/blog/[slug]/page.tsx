@@ -7,6 +7,8 @@ import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import TranslationSetter from '@/components/providers/TranslationSetter';
 import BlogDetailSection from '@/components/sections/BlogDetailSection';
+import { getLocalizedPath } from '@/lib/routes';
+import { Locale } from '@/lib/i18n';
 
 export async function generateMetadata(
   { params }: { params: Promise<{ locale: string, slug: string }> }
@@ -20,7 +22,10 @@ export async function generateMetadata(
   
   if (!post) return {};
 
-  return constructMetadata(post?.seo, settings?.seo, `/${locale}/blog/${slug}`, settings?.favicon);
+  // Use centralized route helper for canonical path
+  const canonicalPath = getLocalizedPath('blog', locale as Locale, slug);
+
+  return constructMetadata(post?.seo, settings?.seo, canonicalPath, settings?.favicon);
 }
 
 export default async function BlogPostPage({ params }: { params: Promise<{ locale: string, slug: string }> }) {

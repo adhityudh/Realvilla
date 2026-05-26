@@ -8,6 +8,8 @@ import { notFound } from 'next/navigation';
 import TranslationSetter from '@/components/providers/TranslationSetter';
 import PropertyGallery from '@/components/sections/PropertyGallery';
 import PropertyDetails from '@/components/sections/PropertyDetails';
+import { getLocalizedPath } from '@/lib/routes';
+import { Locale } from '@/lib/i18n';
 
 export async function generateMetadata(
   { params }: { params: Promise<{ locale: string, slug: string }> }
@@ -28,7 +30,9 @@ export async function generateMetadata(
     ogImage: property?.seo?.ogImage || property?.image
   };
 
-  const canonicalPath = locale === 'es' ? `/${locale}/propiedades/${slug}` : `/${locale}/properties/${slug}`;
+  // Use centralized route helper for canonical path
+  const canonicalPath = getLocalizedPath('properties', locale as Locale, slug);
+  
   return constructMetadata(propertySeo, settings?.seo, canonicalPath, settings?.favicon);
 }
 
