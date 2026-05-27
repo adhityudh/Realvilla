@@ -32,7 +32,7 @@ interface FooterData {
 }
 
 interface PropertyCategory {
-  slug: string;
+  _id: string;
   title: string;
 }
 
@@ -73,7 +73,7 @@ const FooterSection = ({
           title: undefined,
           links: propertyCategories.map((cat) => ({
             label: cat.title,
-            link: `/${resolvedLocale}/${propertiesPath}?categories=${encodeURIComponent(cat.slug)}`,
+            link: `/${resolvedLocale}/${propertiesPath}?categories=${encodeURIComponent(cat._id)}`,
           })),
         }],
       };

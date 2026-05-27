@@ -690,7 +690,7 @@ export const SETTINGS_QUERY = groq`
       }
     },
     "propertyCategories": *[_type == "propertyCategory"] | order(title[$language] asc) {
-      "slug": slug.current,
+      "_id": _id,
       "title": coalesce(title[$language], title.en)
     }
   }
