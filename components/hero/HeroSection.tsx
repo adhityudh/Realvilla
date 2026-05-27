@@ -22,11 +22,14 @@ function useHeroScrollAnimations() {
 
     const isMobile = window.innerWidth <= 1024;
 
+    // Skip scroll-driven animations entirely on mobile — reduces JS work on touch
+    if (isMobile) return;
+
     const videoST = gsap.to('.hero-bg-video', {
-      yPercent: isMobile ? 0 : 30,
+      yPercent: 30,
       force3D: true,
       ease: 'none',
-      scrollTrigger: isMobile ? undefined : {
+      scrollTrigger: {
         trigger: '.main-hero',
         start: 'top top',
         end: 'bottom top',
@@ -182,7 +185,7 @@ export default function HeroSection({ data, dict }: { data?: any; dict?: any }) 
       <video
         ref={videoRef}
         className={`hero-bg-video ${!device ? 'is-loading' : ''}`}
-        preload="auto"
+        preload="metadata"
         muted
         playsInline
         style={data.disableEntranceAnimation ? { opacity: 1, filter: 'none' } : { opacity: 0 }}

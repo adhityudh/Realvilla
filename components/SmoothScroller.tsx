@@ -24,6 +24,7 @@ export default function SmoothScroller({ children }: { children: React.ReactNode
     document.body.classList.add('preloading');
 
     const isMobile = window.innerWidth <= 1024;
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream;
     const lenisInstance = new Lenis({
       duration: isMobile ? 0.8 : 1.2,
       easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
@@ -31,7 +32,9 @@ export default function SmoothScroller({ children }: { children: React.ReactNode
       direction: 'vertical',
       gestureDirection: 'vertical',
       smoothWheel: true,
-      smoothTouch: true,
+      // iOS Safari has GPU-accelerated native scroll — JS smooth touch overrides it
+      // causing heavy CPU load and tab crashes on low-memory devices.
+      smoothTouch: false,
       touchMultiplier: isMobile ? 1.8 : 2,
       infinite: false,
     } as ConstructorParameters<typeof Lenis>[0]);
