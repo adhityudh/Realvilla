@@ -81,7 +81,7 @@ export default async function RootLayout({
             <Header settings={settings} dict={dict} />
             <MobileNav settings={settings} dict={dict} />
             {children}
-            <FooterSection data={settings?.footer} />
+            <FooterSection data={settings?.footer} propertyCategories={settings?.propertyCategories} locale={locale} />
           </ModalRegistryProvider>
         </TranslationProvider>
         <JsonLd data={getSchemaData(settings, `/${locale}`)} />

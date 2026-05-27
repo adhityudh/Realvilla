@@ -203,9 +203,9 @@ export default function PropertyContactCard({
               className="property-contact-success-icon"
             />
           </div>
-          <h3 className="property-contact-form-title">{successDict.title || "Message Sent!"}</h3>
+          <h3 className="property-contact-form-title">{successDict.title}</h3>
           <p className="property-contact-form-subtitle">
-            {successDict.subtitle || "Thank you for contacting us. Our specialists will respond shortly."}
+            {successDict.subtitle}
           </p>
         </div>
       </div>
@@ -266,24 +266,24 @@ export default function PropertyContactCard({
             <Button
               href={waLink}
               variant="link"
-              label={contactDict.whatsapp_cta || "Contact via WhatsApp"}
+              label={contactDict.whatsapp_cta}
               icon="/icons/logo-wa.svg"
               className="whatsapp-link-sm"
               target="_blank"
               rel="noopener noreferrer"
             />
             <div className="property-contact-divider">
-              <span>{contactDict.whatsapp_or_form || "OR SEND VIA FORM"}</span>
+              <span>{contactDict.whatsapp_or_form}</span>
             </div>
           </div>
         )}
 
         <div className="property-contact-form-group">
-          <label htmlFor="prop-contact-message">{generalDict.fields?.message || "Message"}</label>
+          <label htmlFor="prop-contact-message">{generalDict.fields?.message}</label>
           <textarea
             id="prop-contact-message"
             rows={4}
-            placeholder={generalDict.fields?.message_placeholder || "How can we help you?"}
+            placeholder={generalDict.fields?.message_placeholder}
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             maxLength={1000}
@@ -294,12 +294,12 @@ export default function PropertyContactCard({
           <div className="property-contact-expandable-inner">
             <div className="property-contact-form-group">
               <label htmlFor="prop-contact-name">
-                {generalDict.fields?.name || "Full Name"} <span className="property-contact-required">*</span>
+                {generalDict.fields?.name} <span className="property-contact-required">*</span>
               </label>
               <input
                 type="text"
                 id="prop-contact-name"
-                placeholder={generalDict.fields?.name_placeholder || "Enter your full name"}
+                placeholder={generalDict.fields?.name_placeholder}
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 required
@@ -309,12 +309,12 @@ export default function PropertyContactCard({
 
             <div className="property-contact-form-group">
               <label htmlFor="prop-contact-email">
-                {generalDict.fields?.email || "Email Address"} <span className="property-contact-required">*</span>
+                {generalDict.fields?.email} <span className="property-contact-required">*</span>
               </label>
               <input
                 type="email"
                 id="prop-contact-email"
-                placeholder={generalDict.fields?.email_placeholder || "Enter your email address"}
+                placeholder={generalDict.fields?.email_placeholder}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
@@ -323,10 +323,10 @@ export default function PropertyContactCard({
 
             <div className="property-contact-form-group">
               <label htmlFor="prop-contact-phone">
-                {generalDict.fields?.phone || "Phone Number"} <span className="property-contact-required">*</span>
+                {generalDict.fields?.phone} <span className="property-contact-required">*</span>
               </label>
               <PhoneInput
-                placeholder={generalDict.fields?.phone_placeholder || "Enter your phone number"}
+                placeholder={generalDict.fields?.phone_placeholder}
                 value={phone}
                 onChange={setPhone}
                 defaultCountry={detectedCountry}
@@ -348,7 +348,7 @@ export default function PropertyContactCard({
             <Button
               type="submit"
               variant={isFormExpanded ? "dark" : "outline"}
-              label={isSubmitting ? (contactDict.sending || "Sending...") : (generalDict.submit || "SEND MESSAGE")}
+              label={isSubmitting ? contactDict.sending : generalDict.submit}
               className="property-contact-submit-btn"
               showArrow={!isSubmitting}
               disabled={isSubmitting}
@@ -361,14 +361,14 @@ export default function PropertyContactCard({
       {offerEnabled && !isInsideModal && (
         <div className="property-contact-offer-cta">
           <p className="property-contact-offer-intro">
-            {propertyDict.offer_cta_intro || "Don't miss out on this property—Propose your price and let's negotiate."}
+            {propertyDict.offer_cta_intro}
           </p>
           <Button
             type="button"
             id="prop-make-an-offer-btn"
             onClick={() => setIsOfferModalOpen(true)}
             variant="dark"
-            label={propertyDict.cta_make_offer || "MAKE AN OFFER"}
+            label={propertyDict.cta_make_offer}
             className="property-contact-offer-btn"
             showArrow={true}
           />

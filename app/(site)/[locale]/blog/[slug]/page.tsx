@@ -33,14 +33,35 @@ export default async function BlogPostPage({ params }: { params: Promise<{ local
 
   let post = null;
   let dict = null;
+  let blogDetailCta = null;
 
   try {
-    const [rawPost, dictResult] = await Promise.all([
+    const [rawPost, dictResult, settings] = await Promise.all([
       client.fetch(BLOG_DETAIL_QUERY, { slug, language: locale }, { next: { revalidate: 60 } }),
       getDictionary(locale as any),
+      getGlobalSettings(locale),
     ]);
     post = sanitizeSanityData(rawPost);
     dict = dictResult;
+    
+    // Check if specific blog post has a custom Sidebar CTA override (validated by having a headline)
+    const postCta = post?.blogDetailCta;
+    const hasPostCta = postCta && postCta.headline;
+    blogDetailCta = hasPostCta ? postCta : (settings?.blogDetailCta ?? null);
+    const blogDetailAbout = settings?.blogDetailAbout ?? null;
+    
+    return (
+      <main>
+        <TranslationSetter translations={post._translations ?? []} />
+        <BlogDetailSection 
+          post={post} 
+          dict={dict} 
+          locale={locale} 
+          blogDetailCta={blogDetailCta} 
+          blogDetailAbout={blogDetailAbout} 
+        />
+      </main>
+    );
   } catch (error) {
     console.error('Sanity fetch error:', error);
   }
@@ -49,10 +70,5 @@ export default async function BlogPostPage({ params }: { params: Promise<{ local
     notFound();
   }
 
-  return (
-    <main>
-      <TranslationSetter translations={post._translations ?? []} />
-      <BlogDetailSection post={post} dict={dict} locale={locale} />
-    </main>
-  );
+  return null;
 }

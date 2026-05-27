@@ -1,0 +1,96 @@
+[
+  {
+    "en_title": "Top Things to Do in Tenerife: A Local's Guide to Island Living",
+    "en_slug": "top-things-do-tenerife-local-guide",
+    "en_id": "blog-post-top-things-do-tenerife-2026-en",
+    "status": "OK",
+    "es_match": {
+      "title": "Las Mejores Cosas que Hacer en Tenerife: Guía de Vida Isleña",
+      "slug": "mejores-cosas-hacer-tenerife-guia-local",
+      "id": "blog-post-mejores-cosas-hacer-tenerife-2026-es"
+    },
+    "issues": []
+  },
+  {
+    "en_title": "Why Tenerife Remains a Top Investment Destination in 2026",
+    "en_slug": "investment-property-tenerife-2026",
+    "en_id": "blog-post-investment-property-tenerife-2026-en",
+    "status": "OK",
+    "es_match": {
+      "title": "Por Qué Tenerife Sigue Siendo el Mejor Destino de Inversión en 2026",
+      "slug": "por-que-tenerife-mejor-inversion-2026",
+      "id": "blog-post-por-que-tenerife-mejor-inversion-2026-es"
+    },
+    "issues": []
+  },
+  {
+    "en_title": "Top 10 Questions to Ask Before Buying a Villa in Costa Adeje",
+    "en_slug": "questions-before-buying-villa-costa-adeje",
+    "en_id": "blog-post-questions-before-buying-villa-costa-adeje-en",
+    "status": "NEEDS_UPDATE",
+    "es_match": {
+      "title": "10 Preguntas Clave Antes de Comprar una Villa en Costa Adeje",
+      "slug": "preguntas-comprar-villa-costa-adeje",
+      "id": "blog-post-preguntas-comprar-villa-costa-adeje-es"
+    },
+    "issues": [
+      "Significant body content length difference. Maybe not fully translated?"
+    ]
+  },
+  {
+    "en_title": "The Cost of Buying a Home in Tenerife: A Complete Breakdown",
+    "en_slug": "cost-buying-home-tenerife-breakdown",
+    "en_id": "blog-post-cost-buying-home-tenerife-breakdown-en",
+    "status": "NEEDS_UPDATE",
+    "es_match": {
+      "title": "El Costo de Comprar una Casa en Tenerife: Desglose Completo",
+      "slug": "costo-comprar-casa-tenerife-desglose",
+      "id": "blog-post-costo-comprar-casa-tenerife-desglose-es"
+    },
+    "issues": [
+      "Significant body content length difference. Maybe not fully translated?"
+    ]
+  },
+  {
+    "en_title": "Understanding Tenerife's Property Market Trends in 2026",
+    "en_slug": "tenerife-property-market-trends-2026",
+    "en_id": "blog-post-tenerife-property-market-trends-2026-en",
+    "status": "NEEDS_UPDATE",
+    "es_match": {
+      "title": "Tendencias del Mercado Inmobiliario de Tenerife en 2026",
+      "slug": "tendencias-mercado-inmobiliario-tenerife-2026",
+      "id": "blog-post-tendencias-mercado-inmobiliario-tenerife-2026-es"
+    },
+    "issues": [
+      "Significant body content length difference. Maybe not fully translated?"
+    ]
+  },
+  {
+    "en_title": "Best Areas to Live in Tenerife: Where to Buy in 2026",
+    "en_slug": "best-areas-live-tenerife-2026",
+    "en_id": "blog-post-best-areas-live-tenerife-2026-en",
+    "status": "NEEDS_UPDATE",
+    "es_match": {
+      "title": "Las Mejores Zonas para Vivir en Tenerife: Dónde Comprar en 2026",
+      "slug": "mejores-zonas-vivir-tenerife-2026",
+      "id": "blog-post-mejores-zonas-vivir-tenerife-2026-es"
+    },
+    "issues": [
+      "Significant body content length difference. Maybe not fully translated?"
+    ]
+  },
+  {
+    "en_title": "A Complete Guide to Buying Property in Tenerife as a Foreigner",
+    "en_slug": "buying-property-tenerife-foreigner-guide",
+    "en_id": "blog-post-buying-property-tenerife-foreigner-guide-en",
+    "status": "NEEDS_UPDATE",
+    "es_match": {
+      "title": "Guía Completa para Comprar Propiedad en Tenerife como Extranjero",
+      "slug": "comprar-propiedad-tenerife-extranjero-guia",
+      "id": "blog-post-comprar-propiedad-tenerife-extranjero-guia-es"
+    },
+    "issues": [
+      "Significant body content length difference. Maybe not fully translated?"
+    ]
+  }
+]

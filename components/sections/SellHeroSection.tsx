@@ -460,7 +460,7 @@ export default function SellHeroSection({ data, dict, contextData }: SellHeroSec
               <div className="sell-search-spinner" />
             )}
             <Button
-              label={dict?.contact?.sell?.continue || 'Continue'}
+              label={dict?.contact?.sell?.continue}
               variant="pill"
               showArrow={true}
               onClick={handleContinue}
@@ -485,7 +485,7 @@ export default function SellHeroSection({ data, dict, contextData }: SellHeroSec
               ) : showEmptyState ? (
                 <div className="sell-empty-state">
                   <p className="sell-empty-state-text">
-                    {dict?.contact?.sell?.no_results || 'No addresses found. Please try a different search.'}
+                    {dict?.contact?.sell?.no_results}
                   </p>
                 </div>
               ) : null}
@@ -500,7 +500,7 @@ export default function SellHeroSection({ data, dict, contextData }: SellHeroSec
             <Button
               key={idx}
               label={link.label}
-              href={link.link || '#'}
+              href={link.link}
               onClick={(e) => handleJumpLinkClick(e, link.link)}
               variant="link"
               size="md"

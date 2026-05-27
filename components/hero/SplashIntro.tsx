@@ -191,11 +191,14 @@ function breakoutLogoSynchronously(logoArea: HTMLElement, splashIntro: HTMLEleme
   logoArea.parentNode?.insertBefore(spacer, logoArea);
   logoArea.id = 'morph-breakout-logo';
 
-  // Set fixed position but keep invisible until ready
+  // Set fixed position but keep invisible until ready.
+  // IMPORTANT: position:fixed is always relative to the viewport, so top = logoAreaRect.top
+  // (from getBoundingClientRect) — never add scrollY, which would push the element below the
+  // viewport whenever Chrome's scroll-restoration fires before Lenis resets to 0.
   Object.assign(logoArea.style, {
     position: 'fixed',
     left: `${logoAreaRect.left}px`,
-    top: `${logoAreaRect.top + scrollY}px`,
+    top: `${logoAreaRect.top}px`,
     width: widthToSet,
     margin: '0',
     padding: '0',
@@ -227,18 +230,20 @@ export function setupLogoMorph(isMobile: boolean, heroEl: HTMLElement) {
   if (!wordContainer || !heroCtas || !heroDesc) return { morphTl: null, morphST: null };
 
   // BATCH READS
+  // scrollY should always be 0 here (Lenis locked), but read it defensively.
+  // Avoid using it for fixed-position math — fixed elements are viewport-relative.
   const headerRectLocal = headerContent.getBoundingClientRect();
   const wordRect = wordContainer.getBoundingClientRect();
   const logoAreaRect = logoArea.getBoundingClientRect();
-  const scrollY = window.scrollY;
   const viewportWidth = window.innerWidth;
   const heroHeight = heroEl.offsetHeight;
 
   const headerLogoHeight = viewportWidth <= 480 ? 14 : 20;
   const targetScale = headerLogoHeight / wordRect.height;
   const targetLeftPx = 48;
-  const initialWordCenterY = wordRect.top + scrollY + wordRect.height / 2;
-  const targetHeaderCenterY = headerRectLocal.top + scrollY + headerRectLocal.height / 2;
+  // All rects are viewport-relative (from getBoundingClientRect), so no scrollY needed.
+  const initialWordCenterY = wordRect.top + wordRect.height / 2;
+  const targetHeaderCenterY = headerRectLocal.top + headerRectLocal.height / 2;
   const wordLocalY = targetHeaderCenterY - initialWordCenterY + heroHeight;
   const toX = targetLeftPx - wordRect.left;
 
@@ -334,30 +339,35 @@ function useIntroOrchestrator() {
         onComplete: () => { releaseScroll(); initMorph(); },
       });
 
-      // Small delay to ensure siblings (HeroSection) are rendered
+      // Small delay to ensure siblings (HeroSection) are rendered.
+      // We also wait for Lenis to finish its synchronous scroll-to-0, because Chrome's
+      // scroll-restoration can leave scrollY > 0 for a few frames even after lenis.scrollTo(0).
+      // Waiting one rAF after the timeout guarantees scrollY === 0 before we read rects.
       const initTimer = setTimeout(() => {
-        const heroEl = document.querySelector('.main-hero') as HTMLElement;
-        const logoArea = document.querySelector('.logo-content-area') as HTMLElement;
-        const splashIntro = document.querySelector('.splash-intro') as HTMLElement;
-        if (!heroEl || !logoArea || !splashIntro) {
-          // Safety fallback: if elements are missing, release scroll anyway
-          releaseScroll();
-          return;
-        }
+        requestAnimationFrame(() => {
+          const heroEl = document.querySelector('.main-hero') as HTMLElement;
+          const logoArea = document.querySelector('.logo-content-area') as HTMLElement;
+          const splashIntro = document.querySelector('.splash-intro') as HTMLElement;
+          if (!heroEl || !logoArea || !splashIntro) {
+            // Safety fallback: if elements are missing, release scroll anyway
+            releaseScroll();
+            return;
+          }
 
-        if (!isMobile) breakoutLogoSynchronously(logoArea, splashIntro);
-        else gsap.set(logoArea, { opacity: 1, visibility: 'visible' });
+          if (!isMobile) breakoutLogoSynchronously(logoArea, splashIntro);
+          else gsap.set(logoArea, { opacity: 1, visibility: 'visible' });
 
-        getHeroRevealAnimation(tl, isMobile);
-        getSplashIntroAnimations(tl, releaseScroll);
-        tl.add(() => { initMorph(); }, 1.6);
+          getHeroRevealAnimation(tl, isMobile);
+          getSplashIntroAnimations(tl, releaseScroll);
+          tl.add(() => { initMorph(); }, 1.6);
 
-        // Play the full cinematic reveal sequence immediately if assets are cached
-        if (globalPreloaderFinished) {
-          // Hide the circular preloader circle immediately since loading is pre-cached
-          gsap.set('.preloader-border-box', { opacity: 0, display: 'none' });
-          tl.play();
-        }
+          // Play the full cinematic reveal sequence immediately if assets are cached
+          if (globalPreloaderFinished) {
+            // Hide the circular preloader circle immediately since loading is pre-cached
+            gsap.set('.preloader-border-box', { opacity: 0, display: 'none' });
+            tl.play();
+          }
+        });
       }, 100); // Slightly longer delay for safer DOM check
 
       const handlePreloaderComplete = () => {
@@ -548,7 +558,7 @@ export default function SplashIntro({ data, dict }: { data?: any, dict?: any }) 
           ))}
         </div>
         <div className="hero-scroll">
-          <span>{dict?.hero?.scroll || 'Scroll'}</span>
+          <span>{dict?.hero?.scroll}</span>
           <div className="scroll-line-track"><div className="scroll-line-thumb" /></div>
         </div>
       </div>

@@ -71,7 +71,6 @@
   font-size: var(--text-base);
   line-height: var(--lh-relaxed);
   color: var(--text-black);
-  text-align: right;
   max-width: 26.25rem;
   /* 420px */
 }

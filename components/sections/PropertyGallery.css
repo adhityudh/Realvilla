@@ -15,11 +15,12 @@
   top: 0;
   left: 0;
   right: 0;
-  height: 560px;
-  background-color: var(--color-gold-light);
-  z-index: -1;
-  display: none;
-  /* Hidden for now */
+  height: 600px;
+  background: url('/images/general-deco-bg.webp') no-repeat top center;
+  background-size: cover;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.5;
 }
 
 .property-breadcrumb-wrapper {
@@ -30,6 +31,8 @@
   /* Account for sticky header */
   display: flex;
   align-items: center;
+  position: relative;
+  z-index: 1;
 }
 
 .property-breadcrumb {
@@ -97,8 +100,10 @@
   width: 100%;
   max-width: var(--container-max-width);
   margin: 0 auto;
-  padding: 0 3rem 2.5rem 3rem;
+  padding: 0 3rem 2rem 3rem;
   /* Moved top padding to breadcrumb wrapper */
+  position: relative;
+  z-index: 1;
 }
 
 .gallery-item {

@@ -347,6 +347,7 @@ html.lenis body {
   text-transform: uppercase;
   padding-bottom: 6px;
   text-align: center;
+  width: fit-content;
   border-bottom: 2px solid var(--btn-link-border, rgba(255, 255, 255, 0.2));
   transition: border-bottom-color 0.4s ease, transform 0.4s ease, opacity 0.4s ease;
   font-family: var(--font-cormorant), 'Cormorant Garamond', serif;
@@ -600,22 +601,24 @@ html.lenis body {
    FIRST SECTION MARGIN REMOVAL
    Remove top margin/padding from first section on any page
 ================================================ */
-main > section:first-of-type,
-body > section:first-of-type {
+main>section:first-of-type,
+body>section:first-of-type {
   margin-top: 0 !important;
 }
 
 /* Responsive adjustments for first sections */
 @media (max-width: 1024px) {
-  main > section:first-of-type,
-  body > section:first-of-type {
+
+  main>section:first-of-type,
+  body>section:first-of-type {
     margin-top: 0 !important;
   }
 }
 
 @media (max-width: 768px) {
-  main > section:first-of-type,
-  body > section:first-of-type {
+
+  main>section:first-of-type,
+  body>section:first-of-type {
     margin-top: 0 !important;
   }
 }

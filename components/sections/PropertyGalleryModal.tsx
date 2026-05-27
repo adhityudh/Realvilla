@@ -539,12 +539,12 @@ export default function PropertyGalleryModal({ isOpen, onClose, property, dict, 
             <div 
               className="detail-thumb-item back-to-grid-thumb"
               onClick={() => setSelectedItem(null)}
-              title={dict?.property?.gallery_grid_view || "Back to grid"}
+              title={dict?.property?.gallery_grid_view}
             >
               <div className="thumb-grid-icon">
                 <img src="/icons/grid_view.svg" alt="Grid" width="24" height="24" />
               </div>
-              <span className="thumb-grid-label">{dict?.property?.gallery_grid_view || "Grid"}</span>
+              <span className="thumb-grid-label">{dict?.property?.gallery_grid_view}</span>
             </div>
 
             {currentGroupItems?.map((item, idx) => (

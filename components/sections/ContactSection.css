@@ -130,6 +130,7 @@
     -webkit-mask-position: bottom center;
     mask-position: bottom center;
     filter: sepia(0.4) saturate(1.5) contrast(1.25) brightness(0.88);
+    transform: translateZ(0);;
 }
 
 .contact-container {

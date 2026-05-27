@@ -237,7 +237,7 @@ export default function BlogArchiveSection({
                 className={`blog-archive-tab-item ${selectedCategory === null ? 'active' : ''}`}
                 onClick={() => handleCategoryChange(null)}
               >
-                All
+                {dict?.blog?.all || 'All'}
               </button>
               {allCategories.map((category) => (
                 <button
@@ -254,20 +254,23 @@ export default function BlogArchiveSection({
       )}
 
       {/* Archive Grid */}
-      {items.length > 0 && (
-        <div className="blog-archive-grid" ref={gridRef}>
-          {items.map((post) => (
-            <BlogCard key={post._id} post={post} locale={locale} />
-          ))}
-        </div>
-      )}
-
-      {/* Empty State */}
-      {!loading && items.length === 0 && (
-        <div className="blog-archive-empty">
-          <p>{dict?.blog?.no_results || 'No blog posts found.'}</p>
-        </div>
-      )}
+      <div className="blog-archive-grid-container">
+        {loading ? (
+          <div className="blog-archive-loader">
+            <div className="spinner" />
+          </div>
+        ) : items.length === 0 ? (
+          <div className="blog-archive-empty">
+            <p>{dict?.blog?.no_results || 'No blog posts found.'}</p>
+          </div>
+        ) : (
+          <div className="blog-archive-grid" ref={gridRef}>
+            {items.map((post) => (
+              <BlogCard key={post._id} post={post} locale={locale} />
+            ))}
+          </div>
+        )}
+      </div>
 
       {/* Pagination */}
       {totalPages > 1 && (

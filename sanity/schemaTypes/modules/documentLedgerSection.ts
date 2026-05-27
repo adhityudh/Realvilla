@@ -21,8 +21,8 @@ export const documentLedgerSection = defineType({
       type: 'string',
       description: 'Used as an anchor identifier (e.g. for smooth scrolling links like #about).',
       initialValue: 'document-ledger',
-    group: 'advanced',
-}),
+      group: 'advanced',
+    }),
     defineField({
       name: 'disableEntranceAnimation',
       title: 'Disable Entrance Animation',
@@ -45,21 +45,21 @@ export const documentLedgerSection = defineType({
       type: 'string',
       description: 'Small caption above the title, e.g., "Essential Documentation"',
       group: 'content',
-}),
+    }),
     defineField({
       name: 'headline',
       title: 'Headline',
       type: 'string',
       description: 'The primary heading, e.g., "What You Need to Start"',
       group: 'content',
-}),
+    }),
     defineField({
       name: 'intro',
       title: 'Introductory Text',
       type: 'blockContent',
       description: 'Brief contextual description placed below the header.',
       group: 'content',
-}),
+    }),
     defineField({
       name: 'cta',
       title: 'Call to Action',
@@ -69,7 +69,6 @@ export const documentLedgerSection = defineType({
           name: 'label',
           title: 'Label',
           type: 'string',
-          initialValue: 'PRE-APPROVE NOW',
         }),
         defineField({
           name: 'linkType',
@@ -146,7 +145,7 @@ export const documentLedgerSection = defineType({
         }),
       ],
       group: 'content',
-}),
+    }),
     defineField({
       name: 'items',
       title: 'Document Checklist Items',
@@ -190,8 +189,8 @@ export const documentLedgerSection = defineType({
           },
         },
       ],
-    group: 'content',
-}),
+      group: 'content',
+    }),
   ],
   preview: {
     select: {

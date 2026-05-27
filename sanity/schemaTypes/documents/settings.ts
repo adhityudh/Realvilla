@@ -12,9 +12,10 @@ export const settings = defineType({
     { name: 'footer', title: 'Footer' },
     { name: 'search', title: 'Search' },
     { name: 'propertiesSeo', title: 'Properties Page' },
-    { name: 'blogSeo', title: 'Blog Page' },
     { name: 'propertyDetail', title: 'Property Detail Page' },
-    { name: 'filters', title: 'Filters' },
+    { name: 'filters', title: 'Property Filters' },
+    { name: 'blogSeo', title: 'Blog Page' },
+    { name: 'blogDetail', title: 'Blog Detail Page' },
     { name: 'contact', title: 'Contact Form' },
     { name: 'mortgage', title: 'Mortgage Calculator' },
   ],
@@ -65,6 +66,161 @@ export const settings = defineType({
       type: 'boolean',
       initialValue: false,
       group: 'blogSeo',
+    }),
+    defineField({
+      name: 'blogDetailCta',
+      title: 'Sidebar CTA Card',
+      description: 'A promotional CTA card shown on the right side of every blog article (desktop only). Leave empty to hide.',
+      type: 'object',
+      group: 'blogDetail',
+      fields: [
+        defineField({
+          name: 'headline',
+          title: 'Headline',
+          description: 'Main headline shown inside the CTA card. e.g. "GET AN ACCURATE PROPERTY VALUATION IN MINUTES"',
+          type: 'string',
+        }),
+        defineField({
+          name: 'ctaLabel',
+          title: 'CTA Button Label',
+          description: 'Text on the button. e.g. "GET YOUR VALUATION"',
+          type: 'string',
+        }),
+        defineField({
+          name: 'linkType',
+          title: 'Link Type',
+          type: 'string',
+          options: {
+            list: [
+              { title: 'Internal Page', value: 'internal' },
+              { title: 'External URL', value: 'external' },
+            ],
+            layout: 'radio',
+          },
+          initialValue: 'internal',
+        }),
+        defineField({
+          name: 'openInNewWindow',
+          title: 'Open in New Tab',
+          type: 'boolean',
+          description: 'Open this link in a new browser tab/window',
+          initialValue: false,
+        }),
+        defineField({
+          name: 'internalLink',
+          title: 'Internal Link',
+          type: 'reference',
+          to: [{ type: 'page' }],
+          hidden: ({ parent }) => parent?.linkType !== 'internal',
+          options: {
+            filter: ({ document }) => {
+              const language = document?.language;
+              if (!language) return {};
+              return {
+                filter: 'language == $language || !defined(language)',
+                params: { language }
+              };
+            }
+          },
+        }),
+        defineField({
+          name: 'internalSection',
+          title: 'Internal Page Section',
+          type: 'string',
+          components: {
+            input: InternalSectionSelector,
+          },
+          hidden: ({ parent }) => parent?.linkType !== 'internal' || !parent?.internalLink,
+        }),
+        defineField({
+          name: 'externalLink',
+          title: 'External Link',
+          type: 'string',
+          description: 'Can be a full URL (https://...), a relative path (/buy), or an anchor (#contact).',
+          hidden: ({ parent }) => parent?.linkType !== 'external',
+        }),
+      ],
+    }),
+    defineField({
+      name: 'blogDetailAbout',
+      title: 'Blog Detail — About REALVILLA Card',
+      description: 'About REALVILLA introduction card displayed under the article body. Leave empty to hide.',
+      type: 'object',
+      group: 'blogDetail',
+      fields: [
+        defineField({
+          name: 'title',
+          title: 'Title',
+          type: 'string',
+          description: 'Title of the card. e.g. "About REALVILLA"',
+        }),
+        defineField({
+          name: 'body',
+          title: 'Body Text',
+          type: 'text',
+          rows: 4,
+          description: 'Introduction details.',
+        }),
+        defineField({
+          name: 'ctaLabel',
+          title: 'CTA Button Label',
+          description: 'Text on the button. e.g. "Discover our services"',
+          type: 'string',
+        }),
+        defineField({
+          name: 'linkType',
+          title: 'Link Type',
+          type: 'string',
+          options: {
+            list: [
+              { title: 'Internal Page', value: 'internal' },
+              { title: 'External URL', value: 'external' },
+            ],
+            layout: 'radio',
+          },
+          initialValue: 'internal',
+        }),
+        defineField({
+          name: 'openInNewWindow',
+          title: 'Open in New Tab',
+          type: 'boolean',
+          description: 'Open this link in a new browser tab/window',
+          initialValue: false,
+        }),
+        defineField({
+          name: 'internalLink',
+          title: 'Internal Link',
+          type: 'reference',
+          to: [{ type: 'page' }],
+          hidden: ({ parent }) => parent?.linkType !== 'internal',
+          options: {
+            filter: ({ document }) => {
+              const language = document?.language;
+              if (!language) return {};
+              return {
+                filter: 'language == $language || !defined(language)',
+                params: { language }
+              };
+            }
+          },
+        }),
+        defineField({
+          name: 'internalSection',
+          title: 'Internal Page Section',
+          type: 'string',
+          components: {
+            input: InternalSectionSelector,
+          },
+          hidden: ({ parent }) => parent?.linkType !== 'internal' || !parent?.internalLink,
+        }),
+        defineField({
+          name: 'externalLink',
+          title: 'External Link',
+          type: 'string',
+          description: 'Can be a full URL (https://...), a relative path (/buy), or an anchor (#contact).',
+          hidden: ({ parent }) => parent?.linkType !== 'external',
+        }),
+      ],
     }),
     defineField({
       name: 'blogPageSections',
@@ -648,6 +804,20 @@ Fields that don't exist in your PDF are simply skipped — you don't need all of
               type: 'object',
               fields: [
                 defineField({ name: 'title', title: 'Column Title', type: 'string' }),
+                defineField({
+                  name: 'dynamicSource',
+                  title: 'Dynamic Source',
+                  type: 'string',
+                  description: 'If set, this column\'s links will be auto-populated from the selected data source instead of the Subgroups below.',
+                  options: {
+                    list: [
+                      { title: 'None (use Subgroups below)', value: '' },
+                      { title: 'Property Categories', value: 'propertyCategories' },
+                    ],
+                    layout: 'radio',
+                  },
+                  initialValue: '',
+                }),
                 defineField({
                   name: 'subgroups',
                   title: 'Subgroups',

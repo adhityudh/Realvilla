@@ -19,6 +19,7 @@ interface FooterSubgroup {
 
 interface FooterColumn {
   title: string;
+  dynamicSource?: string;
   subgroups: FooterSubgroup[];
 }
 
@@ -30,7 +31,22 @@ interface FooterData {
   socialLinks?: FooterLink[];
 }
 
-const FooterSection = ({ data, variant }: { data?: FooterData, variant?: 'default' | 'compact' }) => {
+interface PropertyCategory {
+  slug: string;
+  title: string;
+}
+
+const FooterSection = ({
+  data,
+  variant,
+  propertyCategories,
+  locale,
+}: {
+  data?: FooterData;
+  variant?: 'default' | 'compact';
+  propertyCategories?: PropertyCategory[];
+  locale?: string;
+}) => {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
   const pathname = usePathname();
 
@@ -44,11 +60,32 @@ const FooterSection = ({ data, variant }: { data?: FooterData, variant?: 'defaul
   const isHomepage = !pathname || pathname === '/' || /^\/[a-zA-Z]{2}(\/)?$/.test(pathname);
   const resolvedVariant = variant || (isHomepage ? 'default' : 'compact');
 
+  // Resolve the effective locale from path or prop
+  const resolvedLocale = locale || pathname?.split('/')[1] || 'en';
+  const propertiesPath = resolvedLocale === 'es' ? 'propiedades' : 'properties';
+
+  // Build resolved columns: replace dynamicSource columns with real data
+  const resolvedColumns = data.columns.map((column) => {
+    if (column.dynamicSource === 'propertyCategories' && propertyCategories?.length) {
+      return {
+        ...column,
+        subgroups: [{
+          title: undefined,
+          links: propertyCategories.map((cat) => ({
+            label: cat.title,
+            link: `/${resolvedLocale}/${propertiesPath}?categories=${encodeURIComponent(cat.slug)}`,
+          })),
+        }],
+      };
+    }
+    return column;
+  });
+
   return (
     <footer className={`footer-section ${resolvedVariant === 'compact' ? 'compact' : ''}`}>
       <div className="footer-container">
         <div className="footer-grid">
-          {data.columns.map((column, colIdx) => (
+          {resolvedColumns.map((column, colIdx) => (
             <div key={colIdx} className={`footer-column ${openIndex === colIdx ? 'is-open' : ''}`}>
               <h3 className="footer-column-title" onClick={() => toggleAccordion(colIdx)}>
                 {column.title}

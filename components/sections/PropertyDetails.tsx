@@ -115,7 +115,7 @@ export default function PropertyDetails({
 
   const price = property.price
     ? new Intl.NumberFormat('en-IE', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(property.price)
-    : dict?.properties?.price_upon_request || 'Price upon request';
+    : dict?.properties?.price_upon_request;
 
   const statusLabel = (() => {
     const raw = property?.status?.toLowerCase();
@@ -127,7 +127,7 @@ export default function PropertyDetails({
   // Group meta by category
   const finalMeta = property.meta || [];
   const groupedMeta = finalMeta.reduce((acc: any, curr: any) => {
-    const cat = curr.category || dict?.property?.other_details || 'General';
+    const cat = curr.category || dict?.property?.other_details;
     const order = curr.categoryOrder ?? 999;
 
     if (!acc[cat]) {
@@ -153,7 +153,7 @@ export default function PropertyDetails({
 
     if (baseVal === null || baseVal === undefined) {
       if (m.booleanValue !== undefined) {
-        baseVal = m.booleanValue ? (dict?.common?.yes || 'Yes') : (dict?.common?.no || 'No');
+        baseVal = m.booleanValue ? dict?.common?.yes : dict?.common?.no;
       } else {
         return '—';
       }
@@ -174,7 +174,7 @@ export default function PropertyDetails({
           {property.description && (
             <div className="details-block description-block">
               <h2 className="details-heading">
-                {dict?.property?.description_title || 'Description'}
+                {dict?.property?.description_title}
               </h2>
               <div 
                 ref={descriptionRef}
@@ -271,7 +271,7 @@ export default function PropertyDetails({
           {/* 2. NEW Property Overview */}
           <div className="details-block property-overview-block">
             <h2 className="details-heading">
-              {dict?.property?.basics_title || 'Property Overview'}
+              {dict?.property?.basics_title}
             </h2>
             <div className="property-overview-grid">
               {Object.entries(groupedMeta)
@@ -320,7 +320,7 @@ export default function PropertyDetails({
             </div>
             
             <div className="property-last-updated">
-              {dict?.property?.updated_label || 'Last Updated'}: {formatDate(property._updatedAt)}
+              {dict?.property?.updated_label}: {formatDate(property._updatedAt)}
             </div>
             
             {property.location?.coordinates?.lat && property.location?.coordinates?.lng && (
@@ -416,14 +416,14 @@ export default function PropertyDetails({
           <ContactModal
             isOpen={isContactModalOpen}
             onClose={handleCloseModal}
-            title={submitSuccess ? "" : (dict?.contact?.request_guidance || 'Request Guidance')}
+            title={submitSuccess ? "" : dict?.contact?.request_guidance}
             subtitle={submitSuccess ? "" : property.title}
             footer={
               submitSuccess ? (
                 <Button 
                   type="button" 
                   variant="dark" 
-                  label={dict?.contact?.success?.close || 'Back to start'} 
+                  label={dict?.contact?.success?.close} 
                   className="form-submit-btn"
                   onClick={handleCloseModal}
                 />
@@ -432,7 +432,7 @@ export default function PropertyDetails({
                   type="submit" 
                   form="contact-modal-general-form"
                   variant="dark" 
-                  label={isSubmitting ? (dict?.contact?.sending || 'Sending...') : (dict?.contact?.general?.submit || 'SEND MESSAGE')} 
+                  label={isSubmitting ? dict?.contact?.sending : dict?.contact?.general?.submit} 
                   className="form-submit-btn" 
                   showArrow={!isSubmitting}
                   disabled={isSubmitting}

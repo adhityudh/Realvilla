@@ -236,11 +236,15 @@
     "amortLabelBalance": "Saldo"
   },
   "blog": {
-    "back_to_blog": "Volver al Blog",
+    "back_to_blog": "Blog",
     "related_posts": "Artículos Relacionados",
+    "toc_label": "En este artículo",
     "no_results": "No se encontraron artículos.",
     "loading": "Cargando...",
-    "load_more": "Cargar Más"
+    "load_more": "Cargar Más",
+    "read_more": "Leer Artículo",
+    "view_all": "Ver Todos los Artículos",
+    "all": "Todos"
   },
   "offer": {
     "modal_title": "Hacer una Oferta de Propiedad",

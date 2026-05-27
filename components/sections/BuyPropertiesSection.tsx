@@ -385,7 +385,7 @@ export default function BuyPropertiesSection({ data, dict, filterMeta: initialMe
           <h2 className="buy-properties-title">{title}</h2>
           <div className="buy-properties-actions">
             <Button
-              label={isMobile ? (dict?.archive?.view_all_short || "View All") : dict?.archive?.all_properties}
+              label={isMobile ? dict?.archive?.view_all_short : dict?.archive?.all_properties}
               href={`/${locale}/${locale === 'es' ? 'propiedades' : 'properties'}`}
               variant="dark"
               showArrow={true}

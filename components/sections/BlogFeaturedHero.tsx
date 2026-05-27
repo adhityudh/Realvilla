@@ -22,7 +22,7 @@ interface BlogFeaturedHeroProps {
 export default function BlogFeaturedHero({ posts, locale, dict }: BlogFeaturedHeroProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [progress, setProgress] = useState(0);
-  const sectionRef = useRef<HTMLElement>(null);
+  const sectionRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const progressIntervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -158,14 +158,14 @@ export default function BlogFeaturedHero({ posts, locale, dict }: BlogFeaturedHe
   const postUrl = `/${locale}/blog/${currentPost.slug}`;
   const formattedDate = currentPost.publishedAt
     ? new Date(currentPost.publishedAt).toLocaleDateString(locale, {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-      })
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    })
     : '';
 
   return (
-    <section 
+    <div
       className="blog-featured-hero"
       ref={sectionRef}
       data-is-hero="true"
@@ -226,7 +226,7 @@ export default function BlogFeaturedHero({ posts, locale, dict }: BlogFeaturedHe
                 aria-label={`Go to slide ${index + 1}`}
               >
                 {index === currentIndex && (
-                  <div 
+                  <div
                     className="blog-featured-hero-dot-progress"
                     style={{ width: `${progress}%` }}
                   />
@@ -235,12 +235,12 @@ export default function BlogFeaturedHero({ posts, locale, dict }: BlogFeaturedHe
             ))}
           </div>
         )}
-        
+
         <div className="blog-featured-hero-body-col">
           <div className="blog-featured-hero-cta-wrapper">
             <Button
               href={postUrl}
-              label={dict?.blog?.read_more || 'Read Article'}
+              label={dict?.blog?.read_more}
               variant="pill"
               showArrow={true}
               className="blog-featured-hero-cta"
@@ -248,6 +248,6 @@ export default function BlogFeaturedHero({ posts, locale, dict }: BlogFeaturedHe
           </div>
         </div>
       </div>
-    </section>
+    </div>
   );
 }

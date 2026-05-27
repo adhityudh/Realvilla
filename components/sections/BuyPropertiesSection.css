@@ -228,86 +228,6 @@
     user-select: none;
 }
 
-/* Responsive adjustments */
-@media (max-width: 1024px) {
-    .buy-properties-section {
-        padding: 3rem 0;
-    }
-
-    .buy-properties-wrapper {
-        padding: 0;
-    }
-
-    .buy-properties-header {
-        flex-direction: column;
-        align-items: center;
-        gap: 1.5rem;
-        margin-bottom: 1.5rem;
-        padding: 0 1.5rem;
-    }
-
-    .buy-properties-grid-container {
-        padding: 0 1.5rem;
-    }
-
-    .buy-properties-title {
-        max-width: 100%;
-    }
-
-    .buy-properties-actions {
-        align-self: center;
-        display: flex;
-        flex-direction: row;
-        /* Kanan kiri */
-        width: 100%;
-        gap: 0.75rem;
-    }
-
-    .buy-properties-actions .buy-properties-cta {
-        flex: 1;
-        /* Main button takes more space */
-        min-width: 0;
-    }
-
-    .buy-properties-filter-btn {
-        width: 48px !important;
-        height: 48px !important;
-        padding: 0 !important;
-        flex-shrink: 0;
-        border-radius: 50% !important;
-    }
-
-    .buy-properties-grid {
-        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-        gap: 2rem 1rem;
-        padding-bottom: 4rem;
-    }
-}
-
-@media (max-width: 768px) {
-    .buy-properties-grid {
-        gap: 2rem 1rem;
-        padding-bottom: 3rem;
-    }
-
-    .pagination-arrow,
-    .pagination-number,
-    .pagination-ellipsis {
-        width: 44px;
-        height: 44px;
-    }
-
-    .buy-pagination {
-        gap: 1rem;
-    }
-}
-
-@media (max-width: 480px) {
-    .buy-properties-grid {
-        grid-template-columns: 1fr;
-    }
-}
-
 /* Seamless Property Card Variation */
 .property-card-seamless {
     background: transparent !important;
@@ -462,4 +382,89 @@
 .buy-properties-quick-filters-wrapper::after {
     right: 0;
     background: linear-gradient(to left, #ffffff, rgba(255, 255, 255, 0));
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+    .buy-properties-section {
+        padding: 3rem 0;
+    }
+
+    .buy-properties-wrapper {
+        padding: 0;
+    }
+
+    .buy-properties-header {
+        flex-direction: column;
+        align-items: center;
+        gap: 1.5rem;
+        margin-bottom: 1.5rem;
+        padding: 0 1.5rem;
+    }
+
+    .buy-properties-grid-container {
+        padding: 0 1rem;
+    }
+
+    .buy-properties-title {
+        max-width: 100%;
+    }
+
+    .buy-properties-actions {
+        align-self: center;
+        display: flex;
+        flex-direction: row;
+        /* Kanan kiri */
+        width: 100%;
+        gap: 0.75rem;
+    }
+
+    .buy-properties-actions .buy-properties-cta {
+        flex: 1;
+        /* Main button takes more space */
+        min-width: 0;
+    }
+
+    .buy-properties-filter-btn {
+        width: 48px !important;
+        height: 48px !important;
+        padding: 0 !important;
+        flex-shrink: 0;
+        border-radius: 50% !important;
+    }
+
+    .buy-properties-grid {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 2rem 1rem;
+        padding-bottom: 4rem;
+    }
+
+    .quick-filter-chip{
+        min-height: 44px;
+        padding: 0rem 1rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .buy-properties-grid {
+        gap: 2rem 1rem;
+        padding-bottom: 3rem;
+    }
+
+    .pagination-arrow,
+    .pagination-number,
+    .pagination-ellipsis {
+        width: 44px;
+        height: 44px;
+    }
+
+    .buy-pagination {
+        gap: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .buy-properties-grid {
+        grid-template-columns: 1fr;
+    }
 }

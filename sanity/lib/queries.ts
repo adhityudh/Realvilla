@@ -483,6 +483,10 @@ export const SECTION_PROJECTION = groq`
           suffix,
           label
         }
+      },
+      _type == "generalDocumentSection" => {
+        tocLabel,
+        body
       }
 `
 
@@ -603,6 +607,31 @@ export const SETTINGS_QUERY = groq`
       ${SEO_SUBFIELDS}
     },
     blogPageFooterPaddingHigh,
+    blogDetailCta {
+      headline,
+      ctaLabel,
+      linkType,
+      openInNewWindow,
+      internalLink-> {
+        _type,
+        "slug": slug.current
+      },
+      internalSection,
+      externalLink
+    },
+    blogDetailAbout {
+      title,
+      body,
+      ctaLabel,
+      linkType,
+      openInNewWindow,
+      internalLink-> {
+        _type,
+        "slug": slug.current
+      },
+      internalSection,
+      externalLink
+    },
     \"blogPageSections\": blogPageSections[] {
       ${SECTION_PROJECTION}
     },
@@ -639,6 +668,7 @@ export const SETTINGS_QUERY = groq`
     footer {
       columns[] {
         title,
+        dynamicSource,
         subgroups[] {
           title,
           links[] {
@@ -658,6 +688,10 @@ export const SETTINGS_QUERY = groq`
         "icon": icon.asset->url,
           "link": ${INTERNAL_LINK_PROJECTION}
       }
+    },
+    "propertyCategories": *[_type == "propertyCategory"] | order(title[$language] asc) {
+      "slug": slug.current,
+      "title": coalesce(title[$language], title.en)
     }
   }
 `
@@ -876,7 +910,7 @@ export const BLOG_CARD_FIELDS = groq`
   },
   "categories": categories[]-> {
     _id,
-    "title": coalesce(title.en, title.es),
+    "title": coalesce(title[$language], title.en, title.es),
     "slug": slug.current
   },
   "featuredImage": featuredImage {
@@ -901,7 +935,7 @@ export const BLOG_ARCHIVE_QUERY = groq`
       ${BLOG_CARD_FIELDS}
     },
     "total": count(*[_type == "blogPost" && language == $language && (!defined($categoryId) || $categoryId == null || $categoryId in categories[]->_id)]),
-    "allCategories": array::unique(*[_type == "blogPost" && language == $language].categories[]->{ _id, "title": coalesce(title.en, title.es), "slug": slug.current })
+    "allCategories": array::unique(*[_type == "blogPost" && language == $language].categories[]->{ _id, "title": coalesce(title[$language], title.en, title.es), "slug": slug.current })
   }
 `
 
@@ -930,9 +964,21 @@ export const BLOG_DETAIL_QUERY = groq`
       alt
     },
     tags,
+    blogDetailCta {
+      headline,
+      ctaLabel,
+      linkType,
+      openInNewWindow,
+      internalLink-> {
+        _type,
+        "slug": slug.current
+      },
+      internalSection,
+      externalLink
+    },
     "_translations": *[_type == "translation.metadata" && references(^._id)][0].translations[].value->{
       "language": language,
-      "slug": slug.current
+      "slug": "blog/" + slug.current
     },
     "relatedPosts": *[_type == "blogPost" && language == $language && slug.current != $slug] | order(publishedAt desc) [0...3] {
       ${BLOG_CARD_FIELDS}
