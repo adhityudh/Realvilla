@@ -37,6 +37,7 @@ import { contactModalComponent } from './modules/contactModalComponent'
 import { genericModalComponent } from './modules/genericModalComponent'
 import { blogSection } from './modules/blogSection'
 import { generalDocumentSection } from './modules/generalDocumentSection'
+import { faqsSection } from './modules/faqsSection'
 
 export const schema: { types: SchemaTypeDefinition[] } = {
   types: [
@@ -76,6 +77,7 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     documentLedgerSection,
     financingCardsSection,
     blogSection,
-    generalDocumentSection
+    generalDocumentSection,
+    faqsSection
   ],
 }

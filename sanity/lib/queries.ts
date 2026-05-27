@@ -487,6 +487,16 @@ export const SECTION_PROJECTION = groq`
       _type == "generalDocumentSection" => {
         tocLabel,
         body
+      },
+      _type == "faqsSection" => {
+        tocLabel,
+        groups[] {
+          title,
+          items[] {
+            question,
+            answer
+          }
+        }
       }
 `
 

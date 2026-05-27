@@ -20,6 +20,7 @@ const SellProcessSection = dynamic(() => import('./SellProcessSection'), { ssr: 
 const DocumentLedgerSection = dynamic(() => import('./DocumentLedgerSection'), { ssr: true })
 const FinancingCardsSection = dynamic(() => import('./FinancingCardsSection'), { ssr: true })
 const GeneralDocumentSection = dynamic(() => import('./GeneralDocumentSection'), { ssr: true })
+const FaqsSection = dynamic(() => import('./FaqsSection'), { ssr: true })
 
 const sectionMap: Record<string, any> = {
   heroSection: HeroCombined,
@@ -42,6 +43,7 @@ const sectionMap: Record<string, any> = {
   documentLedgerSection: DocumentLedgerSection,
   financingCardsSection: FinancingCardsSection,
   generalDocumentSection: GeneralDocumentSection,
+  faqsSection: FaqsSection,
 }
 
 export default function SectionRenderer({ sections, dict, filterMeta, contextData }: { sections: any[], dict?: any, filterMeta?: any, contextData?: any }) {

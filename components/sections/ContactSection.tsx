@@ -5,6 +5,7 @@ import Image from 'next/image';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import ContactCard from '@/components/ui/ContactCard';
+import Button from '@/components/ui/Button';
 import './ContactSection.css';
 
 if (typeof window !== 'undefined') {
@@ -91,7 +92,8 @@ export default function ContactSection({ data, dict, contextData }: { data?: any
       if (card) {
         gsap.set(card, { y: isMobile ? 180 : 80, opacity: 1, filter: 'none' });
       }
-      gsap.set('.contact-headline', { opacity: 1 });
+      const hl = section.querySelector('.contact-headline');
+      if (hl) gsap.set(hl, { opacity: 1 });
       const subtitle = section.querySelector('.contact-subtitle');
       if (subtitle) gsap.set(subtitle, { opacity: 1 });
       const marketItems = section.querySelectorAll('.contact-market-item');
@@ -109,7 +111,8 @@ export default function ContactSection({ data, dict, contextData }: { data?: any
     }
 
     if (data?.disableHeaderEntranceAnimation) {
-      gsap.set('.contact-headline', { opacity: 1 });
+      const hl = section.querySelector('.contact-headline');
+      if (hl) gsap.set(hl, { opacity: 1 });
       const subtitle = section.querySelector('.contact-subtitle');
       if (subtitle) gsap.set(subtitle, { opacity: 1 });
       const marketItems = section.querySelectorAll('.contact-market-item');
@@ -122,7 +125,8 @@ export default function ContactSection({ data, dict, contextData }: { data?: any
         });
       };
       splitText('.contact-headline');
-      gsap.set('.contact-headline', { opacity: 1 });
+      const hl = section.querySelector('.contact-headline');
+      if (hl) gsap.set(hl, { opacity: 1 });
     }
 
     const card = section.querySelector('.contact-card');
@@ -135,11 +139,14 @@ export default function ContactSection({ data, dict, contextData }: { data?: any
     });
 
     if (!data?.disableHeaderEntranceAnimation) {
-      tl.fromTo(section.querySelectorAll('.contact-headline .word-inner'),
-        { yPercent: 100, rotate: 5, filter: 'blur(10px)', opacity: 0 },
-        { yPercent: 0, rotate: 0, filter: 'blur(0px)', opacity: 1, duration: 1.2, stagger: 0.08, ease: 'expo.out' },
-        '-=0.6'
-      );
+      const headlineWords = section.querySelectorAll('.contact-headline .word-inner');
+      if (headlineWords.length > 0) {
+        tl.fromTo(headlineWords,
+          { yPercent: 100, rotate: 5, filter: 'blur(10px)', opacity: 0 },
+          { yPercent: 0, rotate: 0, filter: 'blur(0px)', opacity: 1, duration: 1.2, stagger: 0.08, ease: 'expo.out' },
+          '-=0.6'
+        );
+      }
 
       // Gracefully chain subtitle animation conditionally without triggering GSAP selector warnings
       const subtitleEl = section.querySelector('.contact-subtitle');
@@ -217,7 +224,7 @@ export default function ContactSection({ data, dict, contextData }: { data?: any
       <div className="contact-container">
         <div className="contact-content">
           <div className="contact-description-area">
-            <h2 className="contact-headline">{headline}</h2>
+            {headline && <h2 className="contact-headline">{headline}</h2>}
             {subtitle && <p className="contact-subtitle">{subtitle}</p>}
           </div>
           {marketData?.length > 0 && (
@@ -239,22 +246,17 @@ export default function ContactSection({ data, dict, contextData }: { data?: any
               {contactList.map((item: any, idx: number) => {
                 const iconUrl = item.icon?.url;
                 return (
-                  <a
+                  <Button
                     key={idx}
                     href={item.link}
-                    className="btn-link-styled btn-link-md contact-showcase-btn"
+                    label={item.label}
+                    icon={iconUrl}
+                    variant="pill"
                     target="_blank"
                     rel="noopener noreferrer"
-                  >
-                    {iconUrl && (
-                      <img
-                        src={iconUrl}
-                        alt={item.label}
-                        className="btn-icon"
-                      />
-                    )}
-                    <span>{item.label}</span>
-                  </a>
+                    showArrow={true}
+                    className="contact-showcase-btn"
+                  />
                 );
               })}
             </div>

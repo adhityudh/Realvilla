@@ -79,13 +79,27 @@ export default function SmoothScroller({ children }: { children: React.ReactNode
     // On every route change, reset scroll and refresh triggers
     lenis.scrollTo(0, { immediate: true });
     document.body.classList.add('preloading');
+
+    // Fight native browser anchor scroll during preloading.
+    // When navigating to /#section, the browser tries to jump to the anchor
+    // synchronously before JS can stop it. We intercept the scroll event and
+    // forcibly reset to 0 until the splash animation releases the lock.
+    const lockScroll = () => {
+      if (document.body.classList.contains('preloading')) {
+        window.scrollTo(0, 0);
+      }
+    };
+    window.addEventListener('scroll', lockScroll, { passive: true });
     
     // Give a small delay for the new content to be in the DOM
     const timer = setTimeout(() => {
       ScrollTrigger.refresh();
     }, 200);
 
-    return () => clearTimeout(timer);
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener('scroll', lockScroll);
+    };
   }, [pathname, lenis]);
 
   // Scroll to hash target once preloading is released or hash changes

@@ -77,6 +77,7 @@ export const page = defineType({
         { type: 'financingCardsSection' },
         { type: 'blogSection' },
         { type: 'generalDocumentSection' },
+        { type: 'faqsSection' },
       ],
       group: 'content',
     }),

@@ -34,7 +34,6 @@
   grid-template-columns: 0.5fr 1.5fr;
   grid-template-areas: "toc body";
   gap: 3rem;
-  margin-bottom: 5rem;
 }
 
 .gd-toc-sidebar {

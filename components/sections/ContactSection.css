@@ -13,7 +13,7 @@
     margin-top: 5rem;
 }
 
-.contact-section.contact-showcase .contact-content{
+.contact-section.contact-showcase .contact-content {
     padding-top: 9rem;
     justify-content: space-between;
     padding-bottom: 5rem;
@@ -84,7 +84,7 @@
     .contact-bg-img-desktop {
         display: none;
     }
-    
+
     .contact-bg-img-mobile {
         display: block;
     }
@@ -130,7 +130,8 @@
     -webkit-mask-position: bottom center;
     mask-position: bottom center;
     filter: sepia(0.4) saturate(1.5) contrast(1.25) brightness(0.88);
-    transform: translateZ(0);;
+    transform: translateZ(0);
+    ;
 }
 
 .contact-container {
@@ -334,17 +335,41 @@
 .contact-showcase-btn {
     width: fit-content;
     gap: 1rem;
+    background-color: rgba(255, 255, 255, 0.18) !important;
+    color: var(--text-white) !important;
+    border: 1px solid rgba(255, 255, 255, 0.8) !important;
+    box-shadow: none !important;
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.15) !important;
+    transition: background-color 0.4s ease, border-color 0.4s ease, color 0.4s ease, text-shadow 0.4s ease !important;
+
+    /* Hardware acceleration & Layer optimization */
+    will-change: transform;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    font-size: var(--text-sm-plus);
+}
+
+.contact-showcase-btn:hover {
+    background-color: var(--bg-surface) !important;
+    color: var(--text-black) !important;
+    border-color: var(--bg-surface) !important;
+    text-shadow: none !important;
 }
 
 .contact-showcase-btn .btn-icon {
-    filter: brightness(0);
+    filter: brightness(0) invert(1) !important;
     opacity: 0.8;
     width: 16px;
     height: 16px;
+    transition: filter 0.4s ease, opacity 0.4s ease;
 }
 
-.contact-section.has-bg-override .contact-showcase-btn .btn-icon {
-    filter: brightness(0) invert(1);
+.contact-showcase-btn:hover .btn-icon {
+    filter: brightness(0) !important;
     opacity: 0.8;
 }
 
@@ -476,7 +501,7 @@
         margin-bottom: 2rem;
     }
 
-    .contact-section.contact-showcase .contact-content{
+    .contact-section.contact-showcase .contact-content {
         padding-top: 5rem;
         padding-bottom: 0;
     }
@@ -487,6 +512,7 @@
 }
 
 @media (max-width: 768px) {
+
     .contact-section.contact-showcase .contact-headline,
     .contact-section.contact-showcase .contact-subtitle {
         text-align: left;
@@ -587,7 +613,7 @@
         text-align: left;
     }
 
-    .contact-subtitle{
+    .contact-subtitle {
         margin-top: 1rem;
     }
 }

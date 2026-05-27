@@ -333,6 +333,9 @@ function useIntroOrchestrator() {
     };
 
     ctx.current = gsap.context(() => {
+      let isPopulated = false;
+      let shouldPlay = false;
+
       const tl = gsap.timeline({
         paused: true,
         onStart: () => { document.body.classList.add('intro-active'); },
@@ -360,18 +363,25 @@ function useIntroOrchestrator() {
           getHeroRevealAnimation(tl, isMobile);
           getSplashIntroAnimations(tl, releaseScroll);
           tl.add(() => { initMorph(); }, 1.6);
+          
+          isPopulated = true;
 
           // Play the full cinematic reveal sequence immediately if assets are cached
-          if (globalPreloaderFinished) {
+          // or if the preloader complete event fired while we were populating
+          if (globalPreloaderFinished || shouldPlay) {
             // Hide the circular preloader circle immediately since loading is pre-cached
             gsap.set('.preloader-border-box', { opacity: 0, display: 'none' });
-            tl.play();
+            if (tl.progress() === 0) tl.play();
           }
         });
       }, 100); // Slightly longer delay for safer DOM check
 
       const handlePreloaderComplete = () => {
-        tl.play();
+        if (isPopulated) {
+          if (tl.progress() === 0) tl.play();
+        } else {
+          shouldPlay = true;
+        }
       };
       window.addEventListener('preloader-complete', handlePreloaderComplete);
 
