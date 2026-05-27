@@ -128,6 +128,39 @@ export const contactSection = defineType({
       description: 'List of contact links to display in "Contact Showcase" mode.'
     }),
     defineField({
+      name: 'showLocation',
+      title: 'Show Location',
+      type: 'boolean',
+      initialValue: false,
+      group: 'header',
+      hidden: ({ parent }) => parent?.mode !== 'showcase',
+      description: 'Show a mini map and address details in Showcase Mode.'
+    }),
+    defineField({
+      name: 'locationCoordinates',
+      title: 'Map Location',
+      type: 'geopoint',
+      group: 'header',
+      hidden: ({ parent }) => parent?.mode !== 'showcase' || !parent?.showLocation,
+      description: 'Search for an address or drag the pin. The coordinates will update automatically.'
+    }),
+    defineField({
+      name: 'locationAddress',
+      title: 'Location Address',
+      type: 'string',
+      group: 'header',
+      hidden: ({ parent }) => parent?.mode !== 'showcase' || !parent?.showLocation,
+      description: 'The text describing the location/address to be shown under the map.'
+    }),
+    defineField({
+      name: 'locationMapLink',
+      title: 'View on Map Link',
+      type: 'string',
+      group: 'header',
+      hidden: ({ parent }) => parent?.mode !== 'showcase' || !parent?.showLocation,
+      description: 'Optional: Custom Google Maps link (e.g., https://maps.google.com/...) for the "View on Map" link.'
+    }),
+    defineField({
       name: 'initialStep',
       title: 'Initial Form Step',
       type: 'string',

@@ -298,6 +298,10 @@ export const SECTION_PROJECTION = groq`
           "icon": icon.asset->{ _id, url },
           link
         },
+        showLocation,
+        locationCoordinates,
+        locationAddress,
+        locationMapLink,
         formTitle,
         formSubtitle,
         showIntentWhatsApp,
