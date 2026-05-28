@@ -23,8 +23,16 @@ export const getLinkProjection = (
   internalSectionField = "internalSection"
 ) => `select(
   ${linkTypeField} == "internal" => select(
-    ${internalLinkField}->slug.current == "home" => "/" + coalesce(${internalLinkField}->language, $language) + coalesce("#" + ${internalSectionField}, ""),
-    "/" + coalesce(${internalLinkField}->language, $language) + "/" + ${internalLinkField}->slug.current + coalesce("#" + ${internalSectionField}, "")
+    ${internalLinkField}->slug.current == "home" => "/" + coalesce(${internalLinkField}->language, $language) + select(
+      defined(${internalSectionField}) && ${internalSectionField} != "" && ${internalSectionField} != "#"
+        => "#" + string::split(${internalSectionField}, "#")[-1],
+      ""
+    ),
+    "/" + coalesce(${internalLinkField}->language, $language) + "/" + ${internalLinkField}->slug.current + select(
+      defined(${internalSectionField}) && ${internalSectionField} != "" && ${internalSectionField} != "#"
+        => "#" + string::split(${internalSectionField}, "#")[-1],
+      ""
+    )
   ),
   ${linkTypeField} == "external" => ${externalLinkField},
   ${linkTypeField} == "component" => ${componentLinkField},
