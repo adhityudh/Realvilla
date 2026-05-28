@@ -108,7 +108,8 @@
       "api_not_enabled": "Geocoding API is not enabled in your Google Cloud Console.",
       "network_error": "Network error looking up address."
     },
-    "request_guidance": "Request Guidance"
+    "request_guidance": "Request Guidance",
+    "viewOnMap": "View on Map"
   },
   "filter": {
     "title": "Search Filters",

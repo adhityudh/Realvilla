@@ -330,6 +330,29 @@ export default function PropertyDetails({
                   lng={property.location.coordinates.lng}
                   title={property.title}
                 />
+                <div className="property-location-info">
+                  {property.address && (
+                    <p className="property-location-address">
+                      {property.address}
+                    </p>
+                  )}
+                  <a
+                    href={`https://www.google.com/maps/search/?api=1&query=${property.location.coordinates.lat},${property.location.coordinates.lng}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="property-location-link"
+                  >
+                    <span>{dict?.contact?.viewOnMap}</span>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 -960 960 960"
+                      className="property-location-link-icon"
+                      fill="currentColor"
+                    >
+                      <path d="m256-240-56-56 384-384H240v-80h480v480h-80v-344L256-240Z" />
+                    </svg>
+                  </a>
+                </div>
               </div>
             )}
             

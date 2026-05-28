@@ -52,11 +52,7 @@ export const PROPERTY_CARD_FIELDS = groq`
   propertyCode,
   "locationMunicipality": location.municipality,
   "locationPostalCode": location.postalCode,
-  "coordinates": select(
-    coordinateMethod == "url" && defined(lat) && defined(lng) => { "_type": "geopoint", "lat": lat, "lng": lng },
-    defined(location.coordinates) => location.coordinates,
-    null
-  ),
+  "coordinates": location.coordinates,
   price,
   status,
   "slug": propertyCode,
@@ -293,6 +289,7 @@ export const SECTION_PROJECTION = groq`
         "backgroundImage": backgroundImage.asset->url,
         "backgroundImageMobile": backgroundImageMobile.asset->url,
         mode,
+        hideHeaderOnDesktop,
         contactList[] {
           label,
           "icon": icon.asset->{ _id, url },
@@ -301,7 +298,6 @@ export const SECTION_PROJECTION = groq`
         showLocation,
         locationCoordinates,
         locationAddress,
-        locationMapLink,
         formTitle,
         formSubtitle,
         showIntentWhatsApp,
@@ -737,12 +733,7 @@ export const PROPERTY_DETAIL_QUERY = groq`
       complexName,
       municipality,
       postalCode,
-      coordinateMethod,
-      "coordinates": select(
-        coordinateMethod == "url" && defined(lat) && defined(lng) => { "_type": "geopoint", "lat": lat, "lng": lng },
-        defined(coordinates) => coordinates,
-        null
-      )
+      coordinates
     },
     image { asset->{ _id, url, metadata { lqip, dimensions } } },
     secondaryImage { asset->{ _id, url, metadata { lqip, dimensions } } },

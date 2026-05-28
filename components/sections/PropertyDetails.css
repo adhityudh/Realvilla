@@ -417,7 +417,7 @@
     font-size: var(--text-base-sm);
   }
 
-  .property-map-container{
+  .property-map-container {
     width: calc(100% + 1rem);
     margin: 1rem -.5rem 0;
   }
@@ -485,4 +485,49 @@
   .contact-card.property-details-card {
     padding: 2rem 1.5rem;
   }
+}
+
+/* ── Property Location Info (Independent Styling) ── */
+.property-location-info {
+  margin-top: 1.25rem;
+  display: flex;
+  gap: 0.75rem;
+}
+
+.property-location-address {
+  margin: 0;
+  font-family: var(--font-manrope), sans-serif;
+  font-size: var(--text-base-sm);
+  line-height: var(--lh-relaxed);
+  color: var(--text-black);
+}
+
+.property-location-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: fit-content;
+  font-family: var(--font-manrope), sans-serif;
+  font-size: var(--text-sm);
+  font-weight: var(--fw-bold);
+  color: var(--color-gold-dark);
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: var(--ls-wider);
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.property-location-link:hover {
+  color: var(--text-black);
+  transform: translateX(3px);
+}
+
+.property-location-link-icon {
+  width: 12px;
+  height: 12px;
+  transition: transform 0.3s var(--ease-smooth);
+}
+
+.property-location-link:hover .property-location-link-icon {
+  transform: translate(2px, -2px);
 }

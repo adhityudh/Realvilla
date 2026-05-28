@@ -108,7 +108,8 @@
       "api_not_enabled": "La API de Geocoding no está habilitada en su Google Cloud Console.",
       "network_error": "Error de red al buscar la dirección."
     },
-    "request_guidance": "Solicitar Asesoramiento"
+    "request_guidance": "Solicitar Asesoramiento",
+    "viewOnMap": "Ver en el mapa"
   },
   "filter": {
     "title": "Filtros de Búsqueda",

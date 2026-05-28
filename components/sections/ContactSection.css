@@ -324,12 +324,30 @@
 
 /* ========== CONTACT SHOWCASE MODE ========== */
 
+.contact-showcase-area-wrapper {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
 /* Contact list in showcase mode */
 .contact-showcase-list {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
     margin-top: 3rem;
+}
+
+.contact-showcase-map-wrapper {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 600px;
+    margin: 3rem auto -1.5rem auto;
+}
+
+.contact-content .contact-showcase-area-wrapper:only-child {
+    margin-top: auto;
 }
 
 .contact-showcase-btn {
@@ -629,48 +647,26 @@
 
 /* ==================================================
    🗺️ SHOWCASE MINI-MAP & LOCATION STYLING
-   ================================================== */
-.contact-showcase-map-wrapper {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    max-width: 540px;
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 24px;
-    padding: 1.5rem;
-    -webkit-backdrop-filter: blur(15px);
-    backdrop-filter: blur(15px);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-    transform: translateY(5rem);
-    margin-top: 2rem;
-    transition: transform 0.6s var(--ease-smooth);
-}
+   ================================================= */
 
-.contact-section.no-entrance-anim .contact-showcase-map-wrapper {
-    transform: translateY(80px);
-}
 
 .contact-mini-map-container {
     width: 100%;
     height: 320px;
-    border-radius: 16px;
     overflow: hidden;
     position: relative;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 4px solid rgba(255, 255, 255, 0.5);
 }
 
-.contact-mini-map-iframe {
-    width: 100%;
-    height: 100%;
-    border: 0;
-    filter: grayscale(0.2) contrast(1.1) brightness(0.95);
+.contact-mini-map-container .map-outer-wrapper,
+.contact-mini-map-container .map-inner-element {
+    width: 100% !important;
+    height: 100% !important;
 }
 
 .contact-location-info {
-    margin-top: 1.5rem;
+    margin-top: 0.75rem;
     display: flex;
-    flex-direction: column;
     gap: 0.75rem;
 }
 
@@ -703,7 +699,8 @@
 }
 
 .contact-section.has-bg-override .contact-location-link {
-    color: #e5d5b7; /* Subtle lighter gold for dark backgrounds */
+    color: #e5d5b7;
+    /* Subtle lighter gold for dark backgrounds */
 }
 
 .contact-location-link:hover {
@@ -716,18 +713,31 @@
 }
 
 .contact-location-link-icon {
-    width: 14px;
-    height: 14px;
-    transition: transform 0.3s ease;
+    width: 12px;
+    height: 12px;
+    transition: transform 0.3s var(--ease-smooth);
+}
+
+.contact-location-link:hover .contact-location-link-icon {
+    transform: translate(2px, -2px);
 }
 
 @media (max-width: 1024px) {
     .contact-showcase-map-wrapper {
-        margin: 2rem auto 0;
-        transform: translateY(3rem);
+        margin: 1.5rem auto 0;
     }
-    
+
     .contact-mini-map-container {
         height: 280px;
+    }
+}
+
+.contact-content .contact-showcase-area-wrapper:only-child {
+    margin-top: auto;
+}
+
+@media (min-width: 1025px) {
+    .contact-description-area.hide-desktop {
+        display: none;
     }
 }

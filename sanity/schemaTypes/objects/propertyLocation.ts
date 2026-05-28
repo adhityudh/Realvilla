@@ -47,44 +47,12 @@ export const propertyLocation = defineType({
       description: 'E.g. 38679',
     }),
 
-    // ── Coordinate Input Method Switch ──
-    defineField({
-      name: 'coordinateMethod',
-      title: 'Input Method',
-      type: 'string',
-      options: {
-        list: [
-          { title: 'Interactive Map (Visual)', value: 'visual' },
-          { title: 'Google Maps URL / Manual Coordinates', value: 'url' },
-        ],
-        layout: 'radio',
-        direction: 'horizontal',
-      },
-      initialValue: 'visual',
-      description: 'Choose how you want to provide the coordinates.',
-    }),
-
-    // ── Map Coordinates (Visible only when visual selected) ──
+    // ── Map Coordinates (Visual Picker) ──
     defineField({
       name: 'coordinates',
       title: 'Map Coordinates (Visual Picker)',
       type: 'geopoint',
       description: 'Interactively pick the location on the map.',
-      hidden: ({ parent }) => parent?.coordinateMethod === 'url',
-    }),
-
-    // ── URL & Manual (Visible only when url selected) ──
-    defineField({
-      name: 'lat',
-      title: 'Manual Latitude',
-      type: 'number',
-      hidden: ({ parent }) => parent?.coordinateMethod !== 'url',
-    }),
-    defineField({
-      name: 'lng',
-      title: 'Manual Longitude',
-      type: 'number',
-      hidden: ({ parent }) => parent?.coordinateMethod !== 'url',
     }),
   ],
 })

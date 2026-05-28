@@ -70,6 +70,14 @@ export const contactSection = defineType({
       description: 'Supporting text shown directly beneath the main headline.'
     }),
     defineField({
+      name: 'hideHeaderOnDesktop',
+      title: 'Hide Header on Desktop',
+      type: 'boolean',
+      initialValue: false,
+      group: 'header',
+      description: 'If checked, the main headline and subtitle will be hidden on desktop but remain visible on mobile and tablet.',
+    }),
+    defineField({
       name: 'backgroundImage',
       title: 'Background Image Override (Desktop)',
       type: 'image',
@@ -151,14 +159,6 @@ export const contactSection = defineType({
       group: 'header',
       hidden: ({ parent }) => parent?.mode !== 'showcase' || !parent?.showLocation,
       description: 'The text describing the location/address to be shown under the map.'
-    }),
-    defineField({
-      name: 'locationMapLink',
-      title: 'View on Map Link',
-      type: 'string',
-      group: 'header',
-      hidden: ({ parent }) => parent?.mode !== 'showcase' || !parent?.showLocation,
-      description: 'Optional: Custom Google Maps link (e.g., https://maps.google.com/...) for the "View on Map" link.'
     }),
     defineField({
       name: 'initialStep',

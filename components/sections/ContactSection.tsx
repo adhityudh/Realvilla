@@ -6,6 +6,7 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import ContactCard from '@/components/ui/ContactCard';
 import Button from '@/components/ui/Button';
+import PropertyMap from '@/components/ui/Map';
 import './ContactSection.css';
 
 if (typeof window !== 'undefined') {
@@ -29,7 +30,7 @@ export default function ContactSection({ data, dict, contextData }: { data?: any
   const lat = data.locationCoordinates?.lat;
   const lng = data.locationCoordinates?.lng;
   const mapEmbedUrl = lat && lng ? `https://maps.google.com/maps?q=${lat},${lng}&z=15&output=embed` : null;
-  const mapLink = data.locationMapLink || (lat && lng ? `https://www.google.com/maps/search/?api=1&query=${lat},${lng}` : null);
+  const mapLink = lat && lng ? `https://www.google.com/maps/search/?api=1&query=${lat},${lng}` : null;
 
   useEffect(() => {
     if (!sectionRef.current) return;
@@ -228,10 +229,12 @@ export default function ContactSection({ data, dict, contextData }: { data?: any
       </div>
       <div className="contact-container">
         <div className="contact-content">
-          <div className="contact-description-area">
-            {headline && <h2 className="contact-headline">{headline}</h2>}
-            {subtitle && <p className="contact-subtitle">{subtitle}</p>}
-          </div>
+          {(headline || subtitle) && (
+            <div className={`contact-description-area ${data?.hideHeaderOnDesktop ? 'hide-desktop' : ''}`}>
+              {headline && <h2 className="contact-headline">{headline}</h2>}
+              {subtitle && <p className="contact-subtitle">{subtitle}</p>}
+            </div>
+          )}
           {marketData?.length > 0 && (
             <div className="contact-market-data">
               {marketData.map((item: any, idx: number) => (
@@ -246,88 +249,90 @@ export default function ContactSection({ data, dict, contextData }: { data?: any
               ))}
             </div>
           )}
-          {isShowcase && contactList.length > 0 && (
-            <div className="contact-showcase-list">
-              {contactList.map((item: any, idx: number) => {
-                const iconUrl = item.icon?.url;
-                return (
-                  <Button
-                    key={idx}
-                    href={item.link}
-                    label={item.label}
-                    icon={iconUrl}
-                    variant="pill"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    showArrow={true}
-                    className="contact-showcase-btn"
-                  />
-                );
-              })}
+          {isShowcase && (
+            <div className="contact-showcase-area-wrapper">
+              {contactList.length > 0 && (
+                <div className="contact-showcase-list">
+                  {contactList.map((item: any, idx: number) => {
+                    const iconUrl = item.icon?.url;
+                    return (
+                      <Button
+                        key={idx}
+                        href={item.link}
+                        label={item.label}
+                        icon={iconUrl}
+                        variant="pill"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        showArrow={true}
+                        className="contact-showcase-btn"
+                      />
+                    );
+                  })}
+                </div>
+              )}
+              {data.showLocation && (
+                <div className="contact-showcase-map-wrapper">
+                  {lat && lng && (
+                    <div className="contact-mini-map-container">
+                      <PropertyMap
+                        lat={lat}
+                        lng={lng}
+                        title={data.locationAddress || 'REALVILLA'}
+                        draggable={false}
+                      />
+                    </div>
+                  )}
+                  <div className="contact-location-info">
+                    {data.locationAddress && <p className="contact-location-address">{data.locationAddress}</p>}
+                    {mapLink && (
+                      <a
+                        href={mapLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="contact-location-link"
+                      >
+                        <span>{dict?.contact?.viewOnMap}</span>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 -960 960 960"
+                      className="contact-location-link-icon"
+                      fill="currentColor"
+                    >
+                      <path d="m256-240-56-56 384-384H240v-80h480v480h-80v-344L256-240Z" />
+                    </svg>
+                      </a>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </div>
         <div className="contact-form-wrapper">
-          {isShowcase && data.showLocation ? (
-            <div className="contact-showcase-map-wrapper">
-              {mapEmbedUrl && (
-                <div className="contact-mini-map-container">
-                  <iframe
-                    src={mapEmbedUrl}
-                    width="100%"
-                    height="100%"
-                    style={{ border: 0 }}
-                    allowFullScreen={false}
-                    loading="lazy"
-                    referrerPolicy="no-referrer-when-downgrade"
-                    className="contact-mini-map-iframe"
-                  />
-                </div>
-              )}
-              <div className="contact-location-info">
-                {data.locationAddress && <p className="contact-location-address">{data.locationAddress}</p>}
-                {mapLink && (
-                  <a
-                    href={mapLink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="contact-location-link"
-                  >
-                    <span>{dict?.contact?.viewOnMap || (contextData?.language === 'es' || data?.language === 'es' ? 'Ver en el mapa' : 'View on map')}</span>
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="contact-location-link-icon">
-                      <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
-                      <polyline points="15 3 21 3 21 9" />
-                      <line x1="10" y1="14" x2="21" y2="3" />
-                    </svg>
-                  </a>
-                )}
-              </div>
-            </div>
-          ) : (
-            <ContactCard 
-              dict={dict}
-              initialStep={data.initialStep || 'intent'}
-              nextStepAsModal={data.nextStepAsModal === true}
-              intentTitle={data.formTitle}
-              intentSubtitle={data.formSubtitle}
-              showIntentWhatsApp={data.showIntentWhatsApp}
-              intentWhatsappMessageTemplate={data.intentWhatsappMessageTemplate}
-              generalTitle={data.generalTitle}
-              generalSubtitle={data.generalSubtitle}
-              showGeneralWhatsApp={!data.hideGeneralWhatsApp}
-              sellTitle={data.sellTitle}
-              sellSubtitle={data.sellSubtitle}
-              showSellWhatsApp={!data.hideSellWhatsApp}
-              sellWhatsappMessageTemplate={data.sellWhatsappMessageTemplate}
-              mortgageTitle={data.mortgageTitle}
-              mortgageSubtitle={data.mortgageSubtitle}
-              showMortgageWhatsApp={!data.hideMortgageWhatsApp}
-              mortgageWhatsappMessageTemplate={data.mortgageWhatsappMessageTemplate}
-              presetMessage={data.presetMessage}
-              whatsappNumber={contextData?.whatsappNumber}
-              whatsappMessageTemplate={data.whatsappMessageTemplate}
-            />
-          )}
+          <ContactCard 
+            dict={dict}
+            initialStep={data.initialStep || 'intent'}
+            nextStepAsModal={data.nextStepAsModal === true}
+            intentTitle={data.formTitle}
+            intentSubtitle={data.formSubtitle}
+            showIntentWhatsApp={data.showIntentWhatsApp}
+            intentWhatsappMessageTemplate={data.intentWhatsappMessageTemplate}
+            generalTitle={data.generalTitle}
+            generalSubtitle={data.generalSubtitle}
+            showGeneralWhatsApp={!data.hideGeneralWhatsApp}
+            sellTitle={data.sellTitle}
+            sellSubtitle={data.sellSubtitle}
+            showSellWhatsApp={!data.hideSellWhatsApp}
+            sellWhatsappMessageTemplate={data.sellWhatsappMessageTemplate}
+            mortgageTitle={data.mortgageTitle}
+            mortgageSubtitle={data.mortgageSubtitle}
+            showMortgageWhatsApp={!data.hideMortgageWhatsApp}
+            mortgageWhatsappMessageTemplate={data.mortgageWhatsappMessageTemplate}
+            presetMessage={data.presetMessage}
+            whatsappNumber={contextData?.whatsappNumber}
+            whatsappMessageTemplate={data.whatsappMessageTemplate}
+          />
         </div>
       </div>
     </section>
