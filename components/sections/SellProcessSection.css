@@ -276,3 +276,17 @@
   color: var(--text-black);
   border-bottom-color: var(--text-black);
 }
+
+.sell-process-cta-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 3rem;
+  margin-bottom: -3rem;
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .sell-process-cta-container {
+    margin-top: 2rem;
+  }
+}

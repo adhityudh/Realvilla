@@ -333,7 +333,7 @@
     font-family: var(--font-manrope), sans-serif;
     font-size: var(--text-base-sm);
     font-weight: var(--fw-medium);
-    color: var(--text-muted);
+    color: var(--text-black);
     line-height: 1.2;
     transition: all 0.3s ease;
 }
@@ -439,7 +439,7 @@
         padding-bottom: 4rem;
     }
 
-    .quick-filter-chip{
+    .quick-filter-chip {
         min-height: 44px;
         padding: 0rem 1rem;
     }

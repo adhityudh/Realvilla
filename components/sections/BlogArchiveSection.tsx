@@ -15,19 +15,31 @@ if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
 }
 
+interface Category {
+  _id: string;
+  title: string;
+  slug: string;
+  icon?: {
+    asset?: {
+      _id: string;
+      url: string;
+    };
+  };
+}
+
 interface BlogArchiveSectionProps {
   dict?: any;
   locale: string;
   initialFeatured?: BlogPost[];
   initialItems?: BlogPost[];
   initialTotalCount?: number;
-  initialCategories?: Array<{ _id: string; title: string; slug: string }>;
+  initialCategories?: Category[];
 }
 
 const ITEMS_PER_PAGE = 6;
 
-const deduplicateCategories = (categories: Array<{ _id: string; title: string; slug: string }>) => {
-  return categories.reduce((acc: Array<{ _id: string; title: string; slug: string }>, cat) => {
+const deduplicateCategories = (categories: Category[]) => {
+  return categories.reduce((acc: Category[], cat) => {
     if (!acc.find(c => c._id === cat._id)) {
       acc.push(cat);
     }
@@ -56,7 +68,7 @@ export default function BlogArchiveSection({
   const [showLeftGradient, setShowLeftGradient] = useState(false);
   const [showRightGradient, setShowRightGradient] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
-  const [allCategories, setAllCategories] = useState<Array<{ _id: string; title: string; slug: string }>>(deduplicateCategories(initialCategories || []));
+  const [allCategories, setAllCategories] = useState<Category[]>(deduplicateCategories(initialCategories || []));
   const hasRunInitialFetch = useRef<boolean>(false);
 
   useEffect(() => {
@@ -245,7 +257,16 @@ export default function BlogArchiveSection({
                   className={`blog-archive-tab-item ${selectedCategory === category._id ? 'active' : ''}`}
                   onClick={() => handleCategoryChange(category._id)}
                 >
-                  {category.title}
+                  {category.icon?.asset?.url && (
+                    <div className="blog-archive-tab-icon-box">
+                      <img 
+                        src={category.icon.asset.url} 
+                        alt="" 
+                        className="blog-archive-tab-icon" 
+                      />
+                    </div>
+                  )}
+                  <span>{category.title}</span>
                 </button>
               ))}
             </div>

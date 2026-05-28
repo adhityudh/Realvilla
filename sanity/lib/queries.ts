@@ -440,6 +440,9 @@ export const SECTION_PROJECTION = groq`
         tagline,
         headline,
         intro,
+        ctaLabel,
+        "ctaLink": ${INTERNAL_LINK_PROJECTION},
+        openInNewWindow,
         imageOrder,
         steps[] {
           number,
@@ -940,7 +943,7 @@ export const BLOG_ARCHIVE_QUERY = groq`
       ${BLOG_CARD_FIELDS}
     },
     "total": count(*[_type == "blogPost" && language == $language && (!defined($categoryId) || $categoryId == null || $categoryId in categories[]->_id)]),
-    "allCategories": array::unique(*[_type == "blogPost" && language == $language].categories[]->{ _id, "title": coalesce(title[$language], title.en, title.es), "slug": slug.current })
+    "allCategories": array::unique(*[_type == "blogPost" && language == $language].categories[]->{ _id, "title": coalesce(title[$language], title.en, title.es), "slug": slug.current, "icon": icon { asset->{ _id, url } } })
   }
 `
 

@@ -7,6 +7,7 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { PortableText } from 'next-sanity';
 import { urlForImage } from '@/sanity/lib/image';
+import Button from '@/components/ui/Button';
 import './SellProcessSection.css';
 
 if (typeof window !== 'undefined') {
@@ -29,6 +30,9 @@ interface SellProcessSectionProps {
     headline?: string;
     intro?: any;
     steps?: Step[];
+    ctaLabel?: string;
+    ctaLink?: string;
+    openInNewWindow?: boolean;
   };
 }
 
@@ -244,6 +248,21 @@ export default function SellProcessSection({ data }: SellProcessSectionProps) {
             );
           })}
         </div>
+
+        {/* CTA Button */}
+        {data.ctaLabel && (
+          <div className="sell-process-cta-container">
+            <Button
+              label={data.ctaLabel}
+              href={data.ctaLink || '#'}
+              variant="dark"
+              size="lg"
+              showArrow={true}
+              target={data.openInNewWindow ? '_blank' : undefined}
+              rel={data.openInNewWindow ? 'noopener noreferrer' : undefined}
+            />
+          </div>
+        )}
       </div>
     </section>
   );

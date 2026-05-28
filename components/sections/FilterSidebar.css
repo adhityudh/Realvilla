@@ -790,7 +790,7 @@
     font-family: var(--font-manrope), sans-serif;
     font-size: var(--text-sm);
     font-weight: var(--fw-medium);
-    color: var(--text-muted);
+    color: var(--text-black);
     line-height: 1.2;
     word-wrap: break-word;
     overflow-wrap: break-word;

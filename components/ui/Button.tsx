@@ -11,7 +11,7 @@ interface ButtonProps {
   href?: string;
   onClick?: (e: React.MouseEvent) => void;
   variant?: 'pill' | 'link' | 'link-dark' | 'dark' | 'outline';
-  size?: 'default' | 'md' | 'sm';
+  size?: 'default' | 'md' | 'sm' | 'lg';
   icon?: string;
   className?: string;
   showArrow?: boolean;
@@ -80,6 +80,7 @@ export default function Button({
   let sizeClass = '';
   if (size === 'sm') sizeClass = 'btn-link-sm';
   else if (size === 'md') sizeClass = 'btn-link-md';
+  else if (size === 'lg') sizeClass = 'btn-lg';
 
   return (
     <Component

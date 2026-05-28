@@ -381,6 +381,12 @@ html.lenis body {
   border-bottom-width: 1px;
 }
 
+/* Large size modifier for pill/solid buttons */
+.btn-pill.btn-lg {
+  padding: 1.1rem 2.5rem;
+  font-size: var(--text-base);
+}
+
 .btn-icon {
   width: 1.3rem;
   height: 1.3rem;

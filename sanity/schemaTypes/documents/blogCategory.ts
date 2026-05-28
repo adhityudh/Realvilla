@@ -39,6 +39,12 @@ export const blogCategory = defineType({
       description: 'A short description of this category.',
     }),
     defineField({
+      name: 'icon',
+      title: 'Icon',
+      type: 'image',
+      description: 'Icon to represent this category in the archive tabs.',
+    }),
+    defineField({
       name: 'order',
       title: 'Display Order',
       type: 'number',
@@ -63,11 +69,13 @@ export const blogCategory = defineType({
       title: 'title.en',
       description: 'description.en',
       order: 'order',
+      icon: 'icon',
     },
-    prepare({ title, description, order }) {
+    prepare({ title, description, order, icon }) {
       return {
         title: title || 'Untitled Category',
         subtitle: `Order: ${order ?? 0}${description ? ` — ${description}` : ''}`,
+        media: icon,
       }
     },
   },
