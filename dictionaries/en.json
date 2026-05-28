@@ -35,6 +35,7 @@
     },
     "sell": {
       "back": "Go Back",
+      "continue": "Continue",
       "no_results": "No addresses found. Please try a different search.",
       "fields": {
         "name": "Full Name",

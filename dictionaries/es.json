@@ -35,6 +35,7 @@
     },
     "sell": {
       "back": "Volver",
+      "continue": "Continuar",
       "no_results": "No se encontraron direcciones. Por favor, intente con una búsqueda diferente.",
       "fields": {
         "name": "Nombre Completo",
