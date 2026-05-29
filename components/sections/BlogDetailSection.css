@@ -328,6 +328,10 @@
   /* prevent overflow in grid */
 }
 
+.blog-detail-body>*:first-child {
+  margin-top: 0 !important;
+}
+
 .blog-detail-body h2 {
   font-family: var(--font-cormorant), 'Cormorant Garamond', serif;
   font-size: var(--text-display-xs);
@@ -380,8 +384,8 @@
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
-  margin-top: 2.5rem;
-  padding-top: 1.5rem;
+  margin-top: 2rem;
+  padding-top: 2rem;
   border-top: 1px solid var(--border-light);
 }
 
@@ -389,16 +393,16 @@
   display: inline-block;
   padding: 0.25rem 0.75rem;
   font-family: var(--font-manrope), sans-serif;
-  font-size: var(--text-sm);
+  font-size: var(--text-sm-plus);
   background: var(--bg-muted);
-  color: var(--text-muted);
+  color: var(--text-black);
   border-radius: var(--radius-full);
   font-weight: var(--fw-medium);
 }
 
 /* About REALVILLA Info Card - Flat design with top divider */
 .blog-detail-about-divider {
-  margin-top: 3.5rem;
+  margin-top: 2rem;
   margin-bottom: 2rem;
   border-top: 1px solid var(--border-light, #e5e5e0);
 }
@@ -497,7 +501,7 @@
   }
 
   .blog-detail-image-wrapper {
-    margin-bottom: 1.5rem;
+    margin-bottom: 2rem;
   }
 
   /* TOC hidden on tablet/mobile */
