@@ -239,6 +239,36 @@ export const property = defineType({
                     },
                   },
                 },
+                {
+                  type: 'object',
+                  name: 'nativeVideoItem',
+                  title: 'Video Upload',
+                  fields: [
+                    {
+                      name: 'videoFile',
+                      type: 'file',
+                      title: 'Video File',
+                      description: 'Upload video directly (MP4 recommended, max ~500MB).',
+                      options: { accept: 'video/*' },
+                      validation: (Rule) => Rule.required(),
+                    },
+                    { name: 'thumbnail', type: 'image', title: 'Thumbnail', description: 'Cover image shown before video plays.', options: { hotspot: true } },
+                    { name: 'caption', type: 'string', title: 'Caption (Optional)' },
+                  ],
+                  preview: {
+                    select: {
+                      media: 'thumbnail',
+                      caption: 'caption',
+                    },
+                    prepare({ media, caption }) {
+                      return {
+                        title: 'Uploaded Video',
+                        subtitle: caption || 'No caption',
+                        media,
+                      }
+                    },
+                  },
+                },
               ],
             },
           ],

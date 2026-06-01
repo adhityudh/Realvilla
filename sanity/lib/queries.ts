@@ -757,15 +757,23 @@ export const PROPERTY_DETAIL_QUERY = groq`
         thumbnail { asset->{ _id, url, metadata { lqip, dimensions } } },
         items[] {
           _type,
+          _key,
           _type == "image" => {
             asset->{ _id, url, metadata { lqip, dimensions } },
             alt,
             caption
           },
           _type == "videoItem" => {
+            _key,
             url,
             thumbnail { asset->{ _id, url, metadata { lqip, dimensions } } },
             alt
+          },
+          _type == "nativeVideoItem" => {
+            _key,
+            "videoUrl": videoFile.asset->url,
+            thumbnail { asset->{ _id, url, metadata { lqip, dimensions } } },
+            caption
           }
         }
       },
@@ -775,9 +783,16 @@ export const PROPERTY_DETAIL_QUERY = groq`
         caption
       },
       _type == "videoItem" => {
+        _key,
         url,
         thumbnail { asset->{ _id, url, metadata { lqip, dimensions } } },
         alt
+      },
+      _type == "nativeVideoItem" => {
+        _key,
+        "videoUrl": videoFile.asset->url,
+        thumbnail { asset->{ _id, url, metadata { lqip, dimensions } } },
+        caption
       }
     },
     // Legacy fields

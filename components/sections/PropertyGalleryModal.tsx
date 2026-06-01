@@ -19,7 +19,7 @@ interface PropertyGalleryModalProps {
   initialItem?: any;
 }
 
-// --- STABLE NATIVE PLAYER ENGINE ---
+// --- STABLE NATIVE PLAYER ENGINE (YouTube via Plyr) ---
 // This custom implementation bypasses buggy 3rd party wrappers to directly handle lifecycle,
 // preventing React 18/19 StrictMode crashes (null getAttribute errors).
 function ReliableVideoPlayer({ videoId, poster }: { videoId: string; poster?: string }) {
@@ -106,6 +106,25 @@ function ReliableVideoPlayer({ videoId, poster }: { videoId: string; poster?: st
       >
         <div className="modal-loader-spinner"></div>
       </div>
+    </div>
+  );
+}
+
+// --- NATIVE HTML5 VIDEO PLAYER (for Sanity-hosted videos) ---
+function NativeVideoPlayer({ src, poster }: { src: string; poster?: string }) {
+  return (
+    <div className="plyr-isolated-viewport" style={{ width: '100%', height: '100%', position: 'relative' }}>
+      <video
+        key={src}
+        controls
+        autoPlay
+        muted
+        playsInline
+        poster={poster}
+        style={{ width: '100%', height: '100%', objectFit: 'contain', background: '#000' }}
+      >
+        <source src={src} />
+      </video>
     </div>
   );
 }
@@ -416,6 +435,10 @@ export default function PropertyGalleryModal({ isOpen, onClose, property, dict, 
         : item.url?.split('/').pop();
       return videoId ? `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg` : '/placeholder-media.jpg';
     }
+    if (item._type === 'nativeVideoItem') {
+      if (item.thumbnail?.asset) return urlForImage(item.thumbnail).url();
+      return '/placeholder-media.jpg';
+    }
     return '/placeholder-media.jpg';
   };
 
@@ -428,7 +451,9 @@ export default function PropertyGalleryModal({ isOpen, onClose, property, dict, 
   const renderDetailView = () => {
     if (!selectedItem) return null;
 
-    const isVideo = selectedItem._type === 'videoItem';
+    const isYouTubeVideo = selectedItem._type === 'videoItem';
+    const isNativeVideo = selectedItem._type === 'nativeVideoItem';
+    const isVideo = isYouTubeVideo || isNativeVideo;
     const currentGroupItems = filteredMedia;
     const currentIndex = currentGroupItems.findIndex(m => m === selectedItem);
 
@@ -497,11 +522,18 @@ export default function PropertyGalleryModal({ isOpen, onClose, property, dict, 
             )}
 
             {/* Only mount the Player Engine once layout is stable with real dimensions */}
-            {isLayoutStable && isVideo ? (
+            {isLayoutStable && isYouTubeVideo ? (
               <div className="plyr-container">
                 <ReliableVideoPlayer 
                    videoId={selectedItem.url?.split('v=')[1]?.split('&')[0] || selectedItem.url?.split('/').pop() || ''} 
                    poster={getImageUrl(selectedItem)}
+                />
+              </div>
+            ) : isLayoutStable && isNativeVideo ? (
+              <div className="plyr-container">
+                <NativeVideoPlayer
+                  src={selectedItem.videoUrl || ''}
+                  poster={selectedItem.thumbnail?.asset ? urlForImage(selectedItem.thumbnail).url() : undefined}
                 />
               </div>
             ) : (
@@ -554,7 +586,7 @@ export default function PropertyGalleryModal({ isOpen, onClose, property, dict, 
                 onClick={() => setSelectedItem(item)}
               >
                 <img src={getImageUrl(item)} alt={`Thumbnail ${idx}`} />
-                {item._type === 'videoItem' && (
+                {(item._type === 'videoItem' || item._type === 'nativeVideoItem') && (
                   <div className="thumb-video-icon">
                     <img src="/icons/play_arrow_filled.svg" alt="Play" width="16" height="16" />
                   </div>

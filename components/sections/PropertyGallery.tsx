@@ -61,6 +61,8 @@ export default function PropertyGallery({ property, dict, offerEnabled = false }
 
     // For videoItems, use URL as a unique identifier if no _key/_id
     if (item._type === 'videoItem' && item.url) return item.url;
+    // For nativeVideoItems, use videoUrl as a unique identifier
+    if (item._type === 'nativeVideoItem' && item.videoUrl) return item.videoUrl;
     
     // For galleryGroups that are virtual tours (treated as an item itself), use the group's _key or title
     // Make sure to clean mediaType for comparison
@@ -85,14 +87,14 @@ export default function PropertyGallery({ property, dict, offerEnabled = false }
         activeGroups.push({ group: g, items: [g], cursor: 0 });
       } else {
         // A regular media group has its own array of items
-        const availableItems = (g.items || []).filter((item: any) => item.asset || item.url);
+        const availableItems = (g.items || []).filter((item: any) => item.asset || item.url || item.videoUrl);
         if (availableItems.length > 0) {
           activeGroups.push({ group: g, items: availableItems, cursor: 0 });
         }
       }
     } else {
       // Individual image or video is a group of one item
-      if (g.asset || g.url) {
+      if (g.asset || g.url || g.videoUrl) {
         activeGroups.push({ group: g, items: [g], cursor: 0 });
       }
     }
@@ -175,7 +177,7 @@ export default function PropertyGallery({ property, dict, offerEnabled = false }
       }
     } else {
       const id = getItemId(g);
-      if (id && (g.asset || g.url) && !allUniquePotentialItemsMap.has(id)) {
+      if (id && (g.asset || g.url || g.videoUrl) && !allUniquePotentialItemsMap.has(id)) {
         allUniquePotentialItemsMap.set(id, g);
       }
     }
@@ -219,16 +221,15 @@ export default function PropertyGallery({ property, dict, offerEnabled = false }
 
       <div className="property-gallery-grid">
         {displayItems.map((item, index) => {
-          const isVideo = item._type === 'videoItem';
+          const isVideo = item._type === 'videoItem' || item._type === 'nativeVideoItem';
           const cleanMediaType = clean(item.mediaType);
           const isVirtualTour = item._type === 'galleryGroup' && cleanMediaType === 'virtualTour';
           const isMain = index === 0;
 
-          let imageUrl = '/placeholder-media.jpg'; // Set safe fallback to avoid console warning on empty src
+          let imageUrl = '/placeholder-media.jpg';
           let lqip = '';
 
           if (isVirtualTour) {
-            // Virtual tour thumbnail - check if thumbnail exists
             if (item.thumbnail?.asset) {
               imageUrl = urlForImage(item.thumbnail).url();
               lqip = item.thumbnail.asset?.metadata?.lqip;
@@ -236,22 +237,22 @@ export default function PropertyGallery({ property, dict, offerEnabled = false }
           } else if (item._type === 'image') {
             imageUrl = urlForImage(item).url();
             lqip = item.asset?.metadata?.lqip;
-          } else if (isVideo) {
-            // Use custom thumbnail if available, otherwise a placeholder or extract from YT
+          } else if (item._type === 'nativeVideoItem') {
+            // Native video: use thumbnail if available
+            if (item.thumbnail?.asset) {
+              imageUrl = urlForImage(item.thumbnail).url();
+              lqip = item.thumbnail.asset?.metadata?.lqip;
+            }
+          } else if (item._type === 'videoItem') {
             if (item.thumbnail?.asset) {
               imageUrl = urlForImage(item.thumbnail).url();
               lqip = item.thumbnail.asset?.metadata?.lqip;
             } else {
-              // Extract YouTube thumbnail
               const videoId = item.url?.includes('v=')
                 ? item.url.split('v=')[1]?.split('&')[0]
                 : item.url?.split('/').pop();
-
               if (videoId) {
                 imageUrl = `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
-              } else {
-                // Fallback to a placeholder if extraction fails
-                imageUrl = '/placeholder-media.jpg';
               }
             }
           }
