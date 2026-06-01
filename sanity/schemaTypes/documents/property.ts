@@ -32,13 +32,6 @@ export const property = defineType({
       group: 'general',
     }),
     defineField({
-      name: 'subtitle',
-      title: 'Subtitle',
-      type: 'string',
-      description: 'Optional tagline. E.g. "A Legacy Where Luxury Meets the Horizon".',
-      group: 'general',
-    }),
-    defineField({
       name: 'propertyCode',
       title: 'Property Code',
       type: 'string',

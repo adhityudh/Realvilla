@@ -38,6 +38,11 @@ export default defineConfig({
         { id: 'es', title: 'Spanish' },
       ],
       schemaTypes: ['page', 'property', 'settings', 'blogPost'],
+      // Default new documents to English
+      defaultLanguageId: 'en',
+      // Hide per-language "+ Document English / Spanish" buttons in New Document menu
+      // Users can still switch or create ES via the language toggle inside the document
+      addTemplates: false,
     }),
     googleMapsInput({
       apiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || '',

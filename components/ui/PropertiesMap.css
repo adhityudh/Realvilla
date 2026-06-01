@@ -291,12 +291,14 @@
   height: 14px;
 }
 
-/* Backdrop click to close */
+/* Backdrop click to close — only covers the dialog card itself, not the full map */
 .map-dialog-backdrop {
   position: fixed;
   inset: 0;
   z-index: 150;
   background: transparent;
+  /* Allow touches to pass through on desktop (dialog is absolute-positioned, not fixed) */
+  pointer-events: none;
 }
 
 /* Close button — hidden on desktop, shown on mobile outside the card */
@@ -327,7 +329,20 @@
   }
 
   .map-dialog-backdrop {
+    /* On mobile, only intercept taps that land on the bottom-sheet overlay area.
+       The top portion of the viewport (where the map + markers live) should
+       still receive touch events so markers remain tappable. */
+    pointer-events: none;
     touch-action: manipulation;
+  }
+
+  /* A separate hit-area that sits behind the bottom-sheet card and closes it
+     when the user taps the map area above the sheet. We achieve this by
+     limiting the backdrop to the bottom portion of the screen via clip. */
+  .map-dialog-backdrop--mobile-active {
+    pointer-events: auto;
+    /* Only occupy the bottom 50 % so taps on the upper map are not blocked */
+    top: 50%;
   }
 
   .map-dialog-close:hover {

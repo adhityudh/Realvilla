@@ -478,8 +478,9 @@ export default function PropertiesMap({ properties, municipalityFocus, onPropert
 
     return (
       <>
-        {/* Transparent backdrop for closing */}
-        <div className="map-dialog-backdrop" onClick={() => { setDialogProperty(null); setDialogPosition(null); }} />
+        {/* Transparent backdrop for closing — on mobile it only covers the bottom half
+             so that map markers above the sheet are still tappable */}
+        <div className="map-dialog-backdrop map-dialog-backdrop--mobile-active" onClick={() => { setDialogProperty(null); setDialogPosition(null); }} />
         <div
           className="map-property-dialog"
           onClick={handleDialogClick}
@@ -642,7 +643,23 @@ export default function PropertiesMap({ properties, municipalityFocus, onPropert
   };
 
   return (
-    <div className="properties-map-wrapper">
+    <div
+      className="properties-map-wrapper"
+      onClick={(e) => {
+        // Close the dialog when the user taps on the map area (outside the
+        // bottom-sheet card). Only needed on mobile where the backdrop is
+        // limited to the lower half of the screen.
+        const target = e.target as HTMLElement;
+        if (
+          dialogProperty &&
+          !target.closest('.map-property-dialog') &&
+          !target.closest('.map-dialog-backdrop')
+        ) {
+          setDialogProperty(null);
+          setDialogPosition(null);
+        }
+      }}
+    >
       <div ref={mapRef} className="properties-map-inner" />
       {apiKey === '' && (
         <p style={{ fontSize: '12px', marginTop: '8px', opacity: 0.6, color: '#666' }}>
