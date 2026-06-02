@@ -16,6 +16,7 @@ export function PropertyCodeInput(props: StringInputProps) {
   const client = useClient({ apiVersion: '2024-05-02' })
   const [generated, setGenerated] = useState(false)
   const [isGenerating, setIsGenerating] = useState(false)
+  const [isRegenerating, setIsRegenerating] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   /**
@@ -36,23 +37,28 @@ export function PropertyCodeInput(props: StringInputProps) {
   }
 
   /**
-   * Generate the next sequential unused code.
+   * Generate the smallest unused property code.
+   * Fills gaps from deleted properties before generating a new highest number.
+   * E.g. if RV0001, RV0003 exist (RV0002 was deleted), returns RV0002.
    */
   const generateNextCode = useCallback(async (): Promise<string | null> => {
     const existingCodes: string[] = await client.fetch(
       `*[_type == "property" && defined(propertyCode)].propertyCode`
     )
 
-    let maxNum = 0
+    const usedNums = new Set<number>()
     for (const code of existingCodes) {
       const match = code?.match(/^RV(\d{4})$/)
       if (match) {
-        const num = parseInt(match[1], 10)
-        if (num > maxNum) maxNum = num
+        usedNums.add(parseInt(match[1], 10))
       }
     }
 
-    const nextNum = maxNum + 1
+    // Find the smallest positive integer not already in use
+    let nextNum = 1
+    while (usedNums.has(nextNum)) {
+      nextNum++
+    }
 
     if (nextNum > 9999) {
       setError('Maximum number of properties reached (RV9999).')
@@ -140,22 +146,27 @@ export function PropertyCodeInput(props: StringInputProps) {
   }, [client, documentId])
 
   useEffect(() => {
-    if (generated || isGenerating || value) return
+    // Skip if already generated/generating, unless the user explicitly clicked Regenerate
+    if (generated || isGenerating) return
+    if (value && !isRegenerating) return
 
     const init = async () => {
       setIsGenerating(true)
       setError(null)
 
       try {
-        // Try to find code from a sibling translation first
-        const siblingCode = await findSiblingCode()
-        if (siblingCode) {
-          onChange(set(siblingCode))
-          setGenerated(true)
-          return
+        // For Regenerate: skip sibling lookup and go straight to a new unique code
+        if (!isRegenerating) {
+          const siblingCode = await findSiblingCode()
+          if (siblingCode) {
+            onChange(set(siblingCode))
+            setGenerated(true)
+            setIsRegenerating(false)
+            return
+          }
         }
 
-        // No sibling found, generate a brand new unique code
+        // Generate the smallest unused code
         const newCode = await generateNextCode()
         if (newCode) {
           onChange(set(newCode))
@@ -166,13 +177,15 @@ export function PropertyCodeInput(props: StringInputProps) {
         setError('Failed to generate property code. Please try saving again.')
       } finally {
         setIsGenerating(false)
+        setIsRegenerating(false)
       }
     }
 
     init()
-  }, [generated, isGenerating, value, onChange, findSiblingCode, generateNextCode])
+  }, [generated, isGenerating, isRegenerating, value, onChange, findSiblingCode, generateNextCode])
 
   const handleRegenerate = () => {
+    setIsRegenerating(true)
     setGenerated(false)
   }
 
