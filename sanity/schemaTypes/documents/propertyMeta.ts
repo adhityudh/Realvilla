@@ -112,6 +112,13 @@ export const propertyMeta = defineType({
       description: 'Which category group this meta belongs to on the detail page.',
     }),
     defineField({
+      name: 'displayOrder',
+      title: 'Display Order',
+      type: 'number',
+      description: 'Controls the order this meta appears in the property overview section on the detail page. Lower numbers appear first.',
+      initialValue: 0,
+    }),
+    defineField({
       name: 'children',
       title: 'Child Metas',
       type: 'array',

@@ -1,6 +1,7 @@
 import { defineField, defineType } from 'sanity'
 import { MetaValueInput } from '../../components/MetaValueInput'
 import { PropertyCodeInput } from '../../components/PropertyCodeInput'
+import { BulkPhotoUpload } from '../../components/BulkPhotoUpload'
 
 export const property = defineType({
   name: 'property',
@@ -128,6 +129,9 @@ export const property = defineType({
       type: 'array',
       description: 'Property media groups. Create groups for photos, videos, or virtual tours.',
       group: 'media',
+      components: {
+        input: BulkPhotoUpload,
+      },
       of: [
         // Media Group (only option)
         {

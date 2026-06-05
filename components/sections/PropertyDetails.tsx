@@ -128,10 +128,11 @@ export default function PropertyDetails({
   const finalMeta = property.meta || [];
   const groupedMeta = finalMeta.reduce((acc: any, curr: any) => {
     const cat = curr.category || dict?.property?.other_details;
-    const order = curr.categoryOrder ?? 999;
+    const order = curr.overviewCategoryOrder ?? curr.categoryOrder ?? 999;
+    const itemsSortOrder = curr.overviewItemsSortOrder ?? 'custom';
 
     if (!acc[cat]) {
-      acc[cat] = { items: [], order };
+      acc[cat] = { items: [], order, itemsSortOrder };
     }
     acc[cat].items.push(curr);
     return acc;
@@ -280,7 +281,17 @@ export default function PropertyDetails({
                   <div key={category} className="overview-category">
                     <h3 className="overview-category-title">{category}</h3>
                     <ul className="overview-items-list">
-                      {data.items.map((m: any, idx: number) => {
+                      {[...data.items]
+                        .sort((a: any, b: any) => {
+                          if (data.itemsSortOrder === 'alphabetical') {
+                            const labelA = (a.shortLabel || a.longLabel || '').toLowerCase();
+                            const labelB = (b.shortLabel || b.longLabel || '').toLowerCase();
+                            return labelA.localeCompare(labelB);
+                          }
+                          // Default: custom displayOrder
+                          return (a.displayOrder ?? 999) - (b.displayOrder ?? 999);
+                        })
+                        .map((m: any, idx: number) => {
                         // For boolean values
                         if (m.valueType === 'boolean') {
                           // Only show if true
