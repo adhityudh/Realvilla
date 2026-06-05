@@ -110,21 +110,69 @@ function ReliableVideoPlayer({ videoId, poster }: { videoId: string; poster?: st
   );
 }
 
-// --- NATIVE HTML5 VIDEO PLAYER (for Sanity-hosted videos) ---
+// --- NATIVE HTML5 VIDEO PLAYER via Plyr (for Sanity-hosted videos) ---
 function NativeVideoPlayer({ src, poster }: { src: string; poster?: string }) {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const isInitRef = useRef(false);
+  const [isPlayerReady, setIsPlayerReady] = useState(false);
+
+  useEffect(() => {
+    // Reset ready state when src changes
+    setIsPlayerReady(false);
+  }, [src]);
+
+  useEffect(() => {
+    if (!videoRef.current || isInitRef.current) return;
+
+    let instance: any = null;
+    isInitRef.current = true;
+
+    import('plyr').then(({ default: Plyr }) => {
+      if (!videoRef.current) {
+        isInitRef.current = false;
+        return;
+      }
+
+      instance = new Plyr(videoRef.current, {
+        autoplay: true,
+        muted: true,
+        controls: ['play', 'progress', 'current-time', 'mute', 'volume', 'fullscreen'],
+      });
+
+      instance.on('ready', () => setIsPlayerReady(true));
+      instance.on('playing', () => setIsPlayerReady(true));
+      instance.on('waiting', () => setIsPlayerReady(false));
+    });
+
+    return () => {
+      if (instance) instance.destroy();
+      isInitRef.current = false;
+    };
+  }, [src]);
+
   return (
     <div className="plyr-isolated-viewport" style={{ width: '100%', height: '100%', position: 'relative' }}>
       <video
+        ref={videoRef}
         key={src}
-        controls
-        autoPlay
-        muted
         playsInline
         poster={poster}
-        style={{ width: '100%', height: '100%', objectFit: 'contain', background: '#000' }}
+        preload="metadata"
+        style={{ width: '100%', height: '100%' }}
       >
-        <source src={src} />
+        <source src={src} type="video/mp4" />
       </video>
+
+      <div
+        className="video-loading-overlay"
+        style={{
+          opacity: isPlayerReady ? 0 : 1,
+          visibility: isPlayerReady ? 'hidden' : 'visible',
+          transition: 'opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.6s',
+        }}
+      >
+        <div className="modal-loader-spinner" />
+      </div>
     </div>
   );
 }
@@ -138,6 +186,7 @@ export default function PropertyGalleryModal({ isOpen, onClose, property, dict, 
   }, []);
   const [activeTab, setActiveTab] = useState('');
   const [selectedItem, setSelectedItem] = useState<any>(null);
+  const [isDetailImgLoading, setIsDetailImgLoading] = useState(false);
 
   const modalRef = useRef<HTMLDivElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
@@ -202,10 +251,31 @@ export default function PropertyGalleryModal({ isOpen, onClose, property, dict, 
     }
   }, [selectedItem, activeTab]);
 
-  // Reset zoom when selected item changes
+  // Reset zoom when selected item changes + preload adjacent images
   useEffect(() => {
     setZoomLevel(1);
     setPanPosition({ x: 0, y: 0 });
+
+    if (!selectedItem) return;
+    setIsDetailImgLoading(true); // Start loading state for new item
+
+    const currentIndex = filteredMedia.findIndex((m) => m === selectedItem);
+    const preloadIndexes = [
+      (currentIndex + 1) % filteredMedia.length,
+      (currentIndex - 1 + filteredMedia.length) % filteredMedia.length,
+    ];
+    preloadIndexes.forEach((idx) => {
+      const item = filteredMedia[idx];
+      if (!item || item._type === 'videoItem' || item._type === 'nativeVideoItem') return;
+      const url = getImageUrl(item, 1920);
+      if (url && url !== '/placeholder-media.jpg') {
+        const link = document.createElement('link');
+        link.rel = 'prefetch';
+        link.as = 'image';
+        link.href = url;
+        document.head.appendChild(link);
+      }
+    });
   }, [selectedItem]);
 
   // Zoom control functions
@@ -423,20 +493,27 @@ export default function PropertyGalleryModal({ isOpen, onClose, property, dict, 
     }
   };
 
-  const getImageUrl = (item: any) => {
+  const getImageUrl = (item: any, width?: number) => {
     if (item._type === 'image') {
       if (!item.asset) return '/placeholder-media.jpg';
-      return urlForImage(item).url();
+      const builder = urlForImage(item);
+      return width ? builder.width(width).url() : builder.url();
     }
     if (item._type === 'videoItem') {
-      if (item.thumbnail?.asset) return urlForImage(item.thumbnail).url();
+      if (item.thumbnail?.asset) {
+        const builder = urlForImage(item.thumbnail);
+        return width ? builder.width(width).url() : builder.url();
+      }
       const videoId = item.url?.includes('v=')
         ? item.url.split('v=')[1]?.split('&')[0]
         : item.url?.split('/').pop();
       return videoId ? `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg` : '/placeholder-media.jpg';
     }
     if (item._type === 'nativeVideoItem') {
-      if (item.thumbnail?.asset) return urlForImage(item.thumbnail).url();
+      if (item.thumbnail?.asset) {
+        const builder = urlForImage(item.thumbnail);
+        return width ? builder.width(width).url() : builder.url();
+      }
       return '/placeholder-media.jpg';
     }
     return '/placeholder-media.jpg';
@@ -542,14 +619,29 @@ export default function PropertyGalleryModal({ isOpen, onClose, property, dict, 
                 style={{
                   transform: `scale(${zoomLevel}) translate(${panPosition.x / zoomLevel}px, ${panPosition.y / zoomLevel}px)`,
                   transition: isDragging ? 'none' : 'transform 0.3s ease',
+                  position: 'relative'
                 }}
               >
                 <Image
-                  src={getImageUrl(selectedItem)}
+                  src={getImageUrl(selectedItem, 1920)}
                   alt={selectedItem.caption || property?.title}
                   fill
-                  style={{ objectFit: 'contain', pointerEvents: 'none' }}
+                  sizes="100vw"
+                  priority
+                  style={{ objectFit: 'contain', pointerEvents: 'none', opacity: isDetailImgLoading ? 0 : 1, transition: 'opacity 0.3s ease' }}
+                  onLoad={() => setIsDetailImgLoading(false)}
                 />
+
+                {isDetailImgLoading && (
+                  <div
+                    style={{
+                      position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 5,
+                      background: 'var(--bg-surface)'
+                    }}
+                  >
+                    <div className="modal-loader-spinner" />
+                  </div>
+                )}
               </div>
             )}
             {selectedItem.caption && (
@@ -585,7 +677,13 @@ export default function PropertyGalleryModal({ isOpen, onClose, property, dict, 
                 className={`detail-thumb-item ${selectedItem === item ? 'active' : ''}`}
                 onClick={() => setSelectedItem(item)}
               >
-                <img src={getImageUrl(item)} alt={`Thumbnail ${idx}`} />
+                <Image
+                  src={getImageUrl(item, 160)}
+                  alt={`Thumbnail ${idx}`}
+                  fill
+                  sizes="80px"
+                  style={{ objectFit: 'cover' }}
+                />
                 {(item._type === 'videoItem' || item._type === 'nativeVideoItem') && (
                   <div className="thumb-video-icon">
                     <img src="/icons/play_arrow_filled.svg" alt="Play" width="16" height="16" />
@@ -648,7 +746,7 @@ export default function PropertyGalleryModal({ isOpen, onClose, property, dict, 
           ) : (
             <div className="gallery-grid-scrollable">
               {filteredMedia?.map((item, index) => {
-                const isVideo = item._type === 'videoItem';
+                const isVideo = item._type === 'videoItem' || item._type === 'nativeVideoItem';
                 const imageUrl = getImageUrl(item);
                 
                 // Skip items without valid image URL
@@ -661,7 +759,7 @@ export default function PropertyGalleryModal({ isOpen, onClose, property, dict, 
                     onClick={() => setSelectedItem(item)}
                   >
                     <Image
-                      src={imageUrl}
+                      src={getImageUrl(item, 800)}
                       alt={item.alt || property?.title}
                       fill
                       sizes="(max-width: 768px) 50vw, 33vw"

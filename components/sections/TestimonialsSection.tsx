@@ -22,7 +22,7 @@ const TestimonialsSection = ({ data, dict }: { data?: any, dict?: any }) => {
 
   const title = data.title;
   const testimonials = data.testimonials;
-  const overlapImg = data.overlapImage?.asset ? urlForImage(data.overlapImage).url() : null;
+  const overlapImg = data.overlapImage?.asset ? urlForImage(data.overlapImage).width(800).url() : null;
 
   useEffect(() => {
     if (!sectionRef.current || !titleRef.current || !tickerWrapperRef.current || !overlapImgRef.current) return;

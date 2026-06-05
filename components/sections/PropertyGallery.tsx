@@ -231,21 +231,21 @@ export default function PropertyGallery({ property, dict, offerEnabled = false }
 
           if (isVirtualTour) {
             if (item.thumbnail?.asset) {
-              imageUrl = urlForImage(item.thumbnail).url();
+              imageUrl = urlForImage(item.thumbnail).width(isMain ? 1200 : 600).url();
               lqip = item.thumbnail.asset?.metadata?.lqip;
             }
           } else if (item._type === 'image') {
-            imageUrl = urlForImage(item).url();
+            imageUrl = urlForImage(item).width(isMain ? 1200 : 600).url();
             lqip = item.asset?.metadata?.lqip;
           } else if (item._type === 'nativeVideoItem') {
             // Native video: use thumbnail if available
             if (item.thumbnail?.asset) {
-              imageUrl = urlForImage(item.thumbnail).url();
+              imageUrl = urlForImage(item.thumbnail).width(isMain ? 1200 : 600).url();
               lqip = item.thumbnail.asset?.metadata?.lqip;
             }
           } else if (item._type === 'videoItem') {
             if (item.thumbnail?.asset) {
-              imageUrl = urlForImage(item.thumbnail).url();
+              imageUrl = urlForImage(item.thumbnail).width(isMain ? 1200 : 600).url();
               lqip = item.thumbnail.asset?.metadata?.lqip;
             } else {
               const videoId = item.url?.includes('v=')

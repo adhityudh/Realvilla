@@ -332,4 +332,4 @@
         font-size: var(--text-xs);
         padding: 0.425rem 0.625rem;
     }
-}
+}@keyframes card-shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }

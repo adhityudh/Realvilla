@@ -14,6 +14,7 @@ export interface PropertyCardProps {
 
 export default function PropertyCard({ prop, variant = 'default', dict }: { prop: any, variant?: 'default' | 'seamless', dict?: any }) {
   const [activeImageIndex, setActiveImageIndex] = useState(0);
+  const [isImgLoading, setIsImgLoading] = useState(false);
 
   // Build carousel images array: primary image + all images from gallery groups (excluding virtual tours)
   const carouselImages = (() => {
@@ -22,7 +23,7 @@ export default function PropertyCard({ prop, variant = 'default', dict }: { prop
     // 1. Primary image
     if (prop.image?.asset) {
       images.push({
-        src: urlForImage(prop.image).url(),
+        src: urlForImage(prop.image).width(800).url(),
         lqip: prop.image.asset?.metadata?.lqip,
       });
     }
@@ -41,7 +42,7 @@ export default function PropertyCard({ prop, variant = 'default', dict }: { prop
             g.items.forEach((item: any) => {
               if (item._type === 'image' && item.asset) {
                 images.push({
-                  src: urlForImage(item).url(),
+                  src: urlForImage(item).width(800).url(),
                   lqip: item.asset?.metadata?.lqip,
                 });
               }
@@ -49,7 +50,7 @@ export default function PropertyCard({ prop, variant = 'default', dict }: { prop
           }
         } else if (g._type === 'image' && g.asset) {
           images.push({
-            src: urlForImage(g).url(),
+            src: urlForImage(g).width(800).url(),
             lqip: g.asset?.metadata?.lqip,
           });
         }
@@ -64,12 +65,14 @@ export default function PropertyCard({ prop, variant = 'default', dict }: { prop
   const goToNext = useCallback((e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    setIsImgLoading(true);
     setActiveImageIndex(prev => (prev + 1) % carouselImages.length);
   }, [carouselImages.length]);
 
   const goToPrev = useCallback((e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    setIsImgLoading(true);
     setActiveImageIndex(prev => (prev - 1 + carouselImages.length) % carouselImages.length);
   }, [carouselImages.length]);
 
@@ -132,8 +135,21 @@ export default function PropertyCard({ prop, variant = 'default', dict }: { prop
           placeholder={currentImage.lqip ? "blur" : "empty"}
           blurDataURL={currentImage.lqip}
           style={{ objectFit: 'cover' }}
-          onLoad={(e) => e.currentTarget.classList.add('loaded')}
+          onLoad={(e) => {
+            e.currentTarget.classList.add('loaded');
+            setIsImgLoading(false);
+          }}
         />
+
+        {/* Carousel loading shimmer */}
+        {isImgLoading && (
+          <div style={{
+            position: 'absolute', inset: 0, zIndex: 2,
+            background: 'linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%)',
+            backgroundSize: '200% 100%',
+            animation: 'card-shimmer 1.2s infinite',
+          }} />
+        )}
 
         {/* Carousel dots */}
         {hasMultipleImages && (

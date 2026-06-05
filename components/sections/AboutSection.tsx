@@ -33,8 +33,8 @@ const AboutSection = ({ data, dict }: { data?: any, dict?: any }) => {
   const headline = data.headline;
   const bodyText = data.body || '';
   const content = bodyText.split('\n').filter((p: string) => p.trim() !== '');
-  const bgImage = data.bgImage ? urlForImage(data.bgImage).url() : null;
-  const objectImage = data.objectImage ? urlForImage(data.objectImage).url() : null;
+  const bgImage = data.bgImage ? urlForImage(data.bgImage).width(1920).url() : null;
+  const objectImage = data.objectImage ? urlForImage(data.objectImage).width(1200).url() : null;
   const profileName = data.profileName;
   const certificates = data.certificates;
 
@@ -183,7 +183,7 @@ const AboutSection = ({ data, dict }: { data?: any, dict?: any }) => {
             elementClassNames="about-certificates-gallery"
           >
             {certificates?.map((cert: any, index: number) => {
-              const certUrl = urlForImage(cert).url();
+              const certUrl = urlForImage(cert).width(400).url();
               const num = index + 1;
               return (
                 <a
