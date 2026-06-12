@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
+import Link from 'next/link';
 import Button from '@/components/ui/Button';
 import ContactModal from './ContactModal';
 import { client } from '@/sanity/lib/client';
@@ -800,17 +801,32 @@ export default function ContactCard({
       {showIntentWhatsApp && renderWhatsAppOption(intentWhatsappMessageTemplate)}
 
       <div className="intent-options">
-        {intentKeys.map((key) => (
-          <button
-            key={key}
-            type="button"
-            className="intent-option-btn"
-            onClick={() => handleIntentClick(key)}
-          >
-            <span className="intent-option-label">{intentDict.options[key] || ""}</span>
-            <span className="intent-option-arrow">→</span>
-          </button>
-        ))}
+        {intentKeys.map((key) => {
+          if (key === 'buy') {
+            return (
+              <Link
+                key={key}
+                href={detectedLocale === 'es' ? '/es/comprar' : '/en/buy'}
+                className="intent-option-btn"
+                style={{ display: 'flex', textDecoration: 'none' }}
+              >
+                <span className="intent-option-label">{intentDict.options[key] || ""}</span>
+                <span className="intent-option-arrow">→</span>
+              </Link>
+            );
+          }
+          return (
+            <button
+              key={key}
+              type="button"
+              className="intent-option-btn"
+              onClick={() => handleIntentClick(key)}
+            >
+              <span className="intent-option-label">{intentDict.options[key] || ""}</span>
+              <span className="intent-option-arrow">→</span>
+            </button>
+          );
+        })}
       </div>
     </div>
   );
