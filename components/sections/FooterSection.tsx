@@ -64,6 +64,45 @@ const FooterSection = ({
   const resolvedLocale = locale || pathname?.split('/')[1] || 'en';
   const propertiesPath = resolvedLocale === 'es' ? 'propiedades' : 'properties';
 
+  const resolveHref = (href?: string) => {
+    if (!href) return '#';
+    if (href.includes('#')) {
+      const [path, hash] = href.split('#');
+      if (!path) return href;
+      const normalizedPath = path.replace(/\/$/, '') || '/';
+      const normalizedCurrent = pathname?.replace(/\/$/, '') || '/';
+      if (normalizedPath === normalizedCurrent) {
+        return `#${hash}`;
+      }
+    }
+    return href;
+  };
+
+  const SmartLink = ({ href, children, className }: { href?: string, children: React.ReactNode, className?: string }) => {
+    const resolved = resolveHref(href);
+    const isHash = resolved.startsWith('#') && resolved.length > 1;
+
+    if (isHash) {
+      return (
+        <a 
+          href={resolved} 
+          className={className}
+          onClick={(e) => {
+            e.preventDefault();
+            const targetElement = document.getElementById(resolved.substring(1));
+            if (targetElement) {
+              targetElement.scrollIntoView({ behavior: 'smooth' });
+              window.history.pushState(null, '', resolved);
+            }
+          }}
+        >
+          {children}
+        </a>
+      );
+    }
+    return <Link href={resolved} className={className}>{children}</Link>;
+  };
+
   // Build resolved columns: replace dynamicSource columns with real data
   const resolvedColumns = data.columns.map((column) => {
     if (column.dynamicSource === 'propertyCategories' && propertyCategories?.length) {
@@ -99,7 +138,7 @@ const FooterSection = ({
                       <ul className="footer-links">
                         {subgroup.links?.map((link, linkIdx) => (
                           <li key={linkIdx}>
-                            <Link href={link.link || '#'}>{link.label}</Link>
+                            <SmartLink href={link.link}>{link.label}</SmartLink>
                           </li>
                         ))}
                       </ul>
@@ -145,7 +184,7 @@ const FooterSection = ({
           <div className="footer-legal-row">
             <div className="footer-legal-links">
               {data.legalLinks?.map((link, idx) => (
-                <Link key={idx} href={link.link || '#'}>{link.label}</Link>
+                <SmartLink key={idx} href={link.link}>{link.label}</SmartLink>
               ))}
             </div>
 

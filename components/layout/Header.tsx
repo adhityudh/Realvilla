@@ -175,14 +175,52 @@ export default function Header({ settings, dict }: { settings?: any; dict?: any 
   };
   const cta = settings?.headerCta;
 
+  const resolveHref = (href?: string) => {
+    if (!href) return '#';
+    if (href.includes('#')) {
+      const [path, hash] = href.split('#');
+      if (!path) return href;
+      const normalizedPath = path.replace(/\/$/, '') || '/';
+      const normalizedCurrent = pathname?.replace(/\/$/, '') || '/';
+      if (normalizedPath === normalizedCurrent) {
+        return `#${hash}`;
+      }
+    }
+    return href;
+  };
+
+  const SmartLink = ({ href, children, className }: { href?: string, children: React.ReactNode, className?: string }) => {
+    const resolved = resolveHref(href);
+    const isHash = resolved.startsWith('#') && resolved.length > 1;
+
+    return (
+      <a 
+        href={resolved} 
+        className={className}
+        onClick={(e) => {
+          if (isHash) {
+            e.preventDefault();
+            const targetElement = document.getElementById(resolved.substring(1));
+            if (targetElement) {
+              targetElement.scrollIntoView({ behavior: 'smooth' });
+              window.history.pushState(null, '', resolved);
+            }
+          }
+        }}
+      >
+        {children}
+      </a>
+    );
+  };
+
   return (
     <header className={`header ${!isHome ? 'header-subpage' : ''}`}>
       <div className="header-bg" />
       <div className="mobile-pill-nav">
         {navLinks.map((link: any) => (
-          <a key={link.label} href={link.link} className={`pill-link ${isLinkActive(link.link) ? 'active' : ''}`}>
+          <SmartLink key={link.label} href={link.link} className={`pill-link ${isLinkActive(link.link) ? 'active' : ''}`}>
             <span>{link.label}</span>
-          </a>
+          </SmartLink>
         ))}
       </div>
       <div className="header-content">
@@ -198,7 +236,7 @@ export default function Header({ settings, dict }: { settings?: any; dict?: any 
         </a>
         <nav className="header-nav">
           {navLinks.map((link: any) => (
-            <a key={link.label} href={link.link} className={`nav-link ${isLinkActive(link.link) ? 'active' : ''}`}>{link.label}</a>
+            <SmartLink key={link.label} href={link.link} className={`nav-link ${isLinkActive(link.link) ? 'active' : ''}`}>{link.label}</SmartLink>
           ))}
         </nav>
         <div className="header-actions">

@@ -808,7 +808,7 @@ export default function ContactCard({
                 key={key}
                 href={detectedLocale === 'es' ? '/es/comprar' : '/en/buy'}
                 className="intent-option-btn"
-                style={{ display: 'flex', textDecoration: 'none' }}
+                style={{ textDecoration: 'none' }}
               >
                 <span className="intent-option-label">{intentDict.options[key] || ""}</span>
                 <span className="intent-option-arrow">→</span>
