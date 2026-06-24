@@ -80,7 +80,7 @@ export function PropertyCodeInput(props: StringInputProps) {
     // Strategy 1: Query translation.metadata
     const meta = await client.fetch<any>(
       `*[_type == "translation.metadata" && references($publishedId)][0]{
-        translations[] { "refId": value->._id }
+        translations[] { "refId": value._ref }
       }`,
       { publishedId }
     )
@@ -89,7 +89,7 @@ export function PropertyCodeInput(props: StringInputProps) {
     if (meta?.translations?.length) {
       for (const t of meta.translations) {
         const refId = t.refId
-        if (refId && refId !== publishedId && refId !== documentId) {
+        if (refId) {
           siblingIds.add(refId)
           siblingIds.add(`drafts.${refId}`)
         }
@@ -101,36 +101,22 @@ export function PropertyCodeInput(props: StringInputProps) {
     if (baseId && baseId !== publishedId) {
       // Find docs that have the same base ID with any language suffix
       const siblingDocs = await client.fetch<{ _id: string; propertyCode: string | null }[]>(
-        `*[_type == "property" && _id != $docId && _id != $publishedId && !(_id in ["drafts." + $docId, "drafts." + $publishedId]) && string::startsWith(_id, $baseIdPrefix)] {
+        `*[_type == "property" && string::startsWith(_id, $baseIdPrefix)] {
           _id,
           propertyCode
         }`,
-        {
-          docId: documentId,
-          publishedId,
-          baseIdPrefix: baseId,
-        }
+        { baseIdPrefix: baseId }
       )
       for (const doc of siblingDocs) {
-        if (doc?.propertyCode) siblingIds.add(doc._id)
-      }
-
-      // Also check drafts of those
-      for (const doc of siblingDocs) {
-        const draftId = `drafts.${doc._id.replace(/^drafts\./, '')}`
-        if (draftId !== documentId) {
-          const draftDoc = await client.fetch<{ propertyCode: string | null } | null>(
-            `*[_id == $id][0] { propertyCode }`,
-            { id: draftId }
-          )
-          if (draftDoc?.propertyCode) siblingIds.add(draftId)
-        }
+        siblingIds.add(doc._id)
       }
     }
 
     // Now query all sibling IDs for their propertyCode
     const allIds = Array.from(siblingIds)
     if (allIds.length === 0) return null
+
+    const siblingCodes: string[] = []
 
     for (const id of allIds) {
       // Normalize — strip drafts prefix for query since we already include both versions
@@ -139,7 +125,15 @@ export function PropertyCodeInput(props: StringInputProps) {
         `*[_id == $id || _id == "drafts." + $id][0] { propertyCode }`,
         { id: normalizedId }
       )
-      if (doc?.propertyCode) return doc.propertyCode
+      if (doc?.propertyCode) {
+        siblingCodes.push(doc.propertyCode)
+      }
+    }
+
+    if (siblingCodes.length > 0) {
+      // Return the smallest property code to ensure consistency across all translations
+      siblingCodes.sort()
+      return siblingCodes[0]
     }
 
     return null
@@ -155,15 +149,14 @@ export function PropertyCodeInput(props: StringInputProps) {
       setError(null)
 
       try {
-        // For Regenerate: skip sibling lookup and go straight to a new unique code
-        if (!isRegenerating) {
-          const siblingCode = await findSiblingCode()
-          if (siblingCode) {
-            onChange(set(siblingCode))
-            setGenerated(true)
-            setIsRegenerating(false)
-            return
-          }
+        // Always try to find a sibling code first, even when regenerating,
+        // because translations MUST share the same code.
+        const siblingCode = await findSiblingCode()
+        if (siblingCode) {
+          onChange(set(siblingCode))
+          setGenerated(true)
+          setIsRegenerating(false)
+          return
         }
 
         // Generate the smallest unused code
