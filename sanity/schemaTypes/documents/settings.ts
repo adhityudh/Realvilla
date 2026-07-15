@@ -329,6 +329,38 @@ export const settings = defineType({
       hidden: ({ parent }) => !parent?.propertyOfferEnabled,
     }),
     defineField({
+      name: 'propertyOfferBankName',
+      title: 'Bank Name',
+      description: 'The name of the bank for receiving deposit transfers (e.g., Banco Santander).',
+      type: 'string',
+      group: 'propertyDetail',
+      hidden: ({ parent }) => !parent?.propertyOfferEnabled,
+    }),
+    defineField({
+      name: 'propertyOfferAccountName',
+      title: 'Account Name',
+      description: 'The name of the account holder (e.g., Realvilla S.L.).',
+      type: 'string',
+      group: 'propertyDetail',
+      hidden: ({ parent }) => !parent?.propertyOfferEnabled,
+    }),
+    defineField({
+      name: 'propertyOfferIban',
+      title: 'IBAN',
+      description: 'The International Bank Account Number for the transfer.',
+      type: 'string',
+      group: 'propertyDetail',
+      hidden: ({ parent }) => !parent?.propertyOfferEnabled,
+    }),
+    defineField({
+      name: 'propertyOfferBic',
+      title: 'BIC / SWIFT',
+      description: 'The Bank Identifier Code.',
+      type: 'string',
+      group: 'propertyDetail',
+      hidden: ({ parent }) => !parent?.propertyOfferEnabled,
+    }),
+    defineField({
       name: 'propertyOfferPdfTemplate',
       title: '📄 PDF Proposal Template',
       description: `Upload a single fillable PDF (interactive PDF / AcroForm). The system will auto-fill the form fields in any language, since the content is pulled from the offer form data.

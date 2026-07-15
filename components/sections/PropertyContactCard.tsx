@@ -30,6 +30,10 @@ interface PropertyContactCardProps {
   offerConditionsAccept?: string;
   offerPriceHelper?: string;
   offerConditionsHelper?: string;
+  offerBankName?: string;
+  offerAccountName?: string;
+  offerIban?: string;
+  offerBic?: string;
   isInsideModal?: boolean;
   onSubmitSuccess?: (success: boolean | null) => void;
   onSubmittingChange?: (submitting: boolean) => void;
@@ -57,6 +61,10 @@ export default function PropertyContactCard({
   offerConditionsAccept,
   offerPriceHelper,
   offerConditionsHelper,
+  offerBankName,
+  offerAccountName,
+  offerIban,
+  offerBic,
   isInsideModal = false,
   onSubmitSuccess,
   onSubmittingChange,
@@ -395,6 +403,10 @@ export default function PropertyContactCard({
           offerConditionsAccept={offerConditionsAccept}
           offerPriceHelper={offerPriceHelper}
           offerConditionsHelper={offerConditionsHelper}
+          offerBankName={offerBankName}
+          offerAccountName={offerAccountName}
+          offerIban={offerIban}
+          offerBic={offerBic}
         />
       )}
     </div>

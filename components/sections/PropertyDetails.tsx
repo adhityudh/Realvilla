@@ -27,6 +27,10 @@ interface PropertyDetailsProps {
   offerConditionsAccept?: string;
   offerPriceHelper?: string;
   offerConditionsHelper?: string;
+  offerBankName?: string;
+  offerAccountName?: string;
+  offerIban?: string;
+  offerBic?: string;
 }
 
 export default function PropertyDetails({ 
@@ -44,6 +48,10 @@ export default function PropertyDetails({
   offerConditionsAccept,
   offerPriceHelper,
   offerConditionsHelper,
+  offerBankName,
+  offerAccountName,
+  offerIban,
+  offerBic,
 }: PropertyDetailsProps) {
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -431,6 +439,10 @@ export default function PropertyDetails({
             offerConditionsAccept={offerConditionsAccept}
             offerPriceHelper={offerPriceHelper}
             offerConditionsHelper={offerConditionsHelper}
+            offerBankName={offerBankName}
+            offerAccountName={offerAccountName}
+            offerIban={offerIban}
+            offerBic={offerBic}
           />
         </div>
       </div>

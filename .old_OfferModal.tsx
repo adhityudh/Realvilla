@@ -39,13 +39,9 @@ export interface OfferModalProps {
   offerConditionsAccept?: string;
   offerPriceHelper?: string;
   offerConditionsHelper?: string;
-  offerBankName?: string;
-  offerAccountName?: string;
-  offerIban?: string;
-  offerBic?: string;
 }
 
-const TOTAL_STEPS = 5;
+const TOTAL_STEPS = 4;
 
 const formatPrice = (price: string | number) => {
   const cleanPrice = typeof price === 'string' ? price.replace(/,/g, '') : price;
@@ -76,10 +72,6 @@ export default function OfferModal({
   offerConditionsAccept,
   offerPriceHelper,
   offerConditionsHelper,
-  offerBankName,
-  offerAccountName,
-  offerIban,
-  offerBic,
 }: OfferModalProps) {
   const [step, setStep] = useState(1);
   const [conditionsAccepted, setConditionsAccepted] = useState(false);
@@ -95,10 +87,8 @@ export default function OfferModal({
     phone?: string;
     address?: string;
     offerPrice?: string;
-    receipt?: string;
   };
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
-  const [receiptFile, setReceiptFile] = useState<File | null>(null);
 
   const [formData, setFormData] = useState<OfferFormData>({
     fullName: '',
@@ -182,7 +172,6 @@ export default function OfferModal({
         setCheckoutError(null);
         setFieldErrors({});
         setIsSubmitting(false);
-        setReceiptFile(null);
       }, 450);
     }
   }, [isOpen]);
@@ -276,7 +265,6 @@ export default function OfferModal({
     od.step2_short,
     od.step3_short,
     od.step4_short,
-    od.step5_short,
   ];
 
   // ─────────────────────────────────────────────────────
@@ -371,65 +359,49 @@ export default function OfferModal({
   };
 
   // ─────────────────────────────────────────────────────
-  // SUBMIT → STRIPE CHECKOUT (REPLACED WITH BANK TRANSFER API)
+  // SUBMIT → STRIPE CHECKOUT
   // ─────────────────────────────────────────────────────
   const handleSubmit = async () => {
-    setFieldErrors({});
-    if (!receiptFile) {
-      setFieldErrors({ receipt: od.validation_required });
-      return;
-    }
-
     setCheckoutError(null);
     setIsSubmitting(true);
 
     const currentUrl = typeof window !== 'undefined' ? window.location.href : '';
 
     try {
-      const formDataToSend = new FormData();
-      formDataToSend.append('propertyId', propertyId);
-      if (propertySlug) formDataToSend.append('propertySlug', propertySlug);
-      if (propertyCode) formDataToSend.append('propertyCode', propertyCode);
-      formDataToSend.append('propertyTitle', propertyTitle);
-      if (propertyPrice) formDataToSend.append('propertyPrice', propertyPrice.toString());
-      formDataToSend.append('depositAmount', depositAmount.toString());
-      formDataToSend.append('locale', locale);
-      formDataToSend.append('pageUrl', currentUrl);
-      
-      formDataToSend.append('personal', JSON.stringify({
-        fullName: formData.fullName,
-        idNumber: formData.idNumber,
-        email: formData.email,
-        phone: formData.phone,
-        address: formData.address,
-      }));
-      
-      formDataToSend.append('offer', JSON.stringify({
-        offerPrice: parseFloat(formData.offerPrice.replace(/,/g, '')),
-        additionalConditions: formData.additionalConditions,
-      }));
-
-      formDataToSend.append('receipt', receiptFile);
-
-      const response = await fetch('/api/offer/submit', {
+      const response = await fetch('/api/offer/create-checkout', {
         method: 'POST',
-        body: formDataToSend,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          propertyId,
+          propertySlug,
+          propertyTitle,
+          propertyPrice,
+          depositAmount,
+          locale,
+          pageUrl: currentUrl,
+          personal: {
+            fullName: formData.fullName,
+            idNumber: formData.idNumber,
+            email: formData.email,
+            phone: formData.phone,
+            address: formData.address,
+          },
+          offer: {
+            offerPrice: parseFloat(formData.offerPrice.replace(/,/g, '')),
+            additionalConditions: formData.additionalConditions,
+          },
+        }),
       });
 
       const data = await response.json();
 
-      if (!response.ok) {
+      if (!response.ok || !data.checkoutUrl) {
         throw new Error(data.error || od.error_unexpected);
       }
 
-      // Success
-      setStep(1); // Reset
-      setReceiptFile(null);
-      // Redirect to the dedicated success page
-      const successUrl = `/${locale}/offer-success?property=${propertySlug || ''}`;
-      window.location.href = successUrl;
+      window.location.href = data.checkoutUrl;
     } catch (err: any) {
-      console.error('[OfferModal] Submit error:', err);
+      console.error('[OfferModal] Checkout error:', err);
       setCheckoutError(err.message || od.error_unexpected);
       setIsSubmitting(false);
     }
@@ -440,7 +412,7 @@ export default function OfferModal({
   // ─────────────────────────────────────────────────────
   const renderStepIndicator = () => (
     <div className="offer-step-indicator" role="progressbar" aria-valuenow={step} aria-valuemin={1} aria-valuemax={TOTAL_STEPS} aria-label={`${od.step_label} ${step} ${od.step_of} ${TOTAL_STEPS}`}>
-      {[1, 2, 3, 4, 5].map((s) => (
+      {[1, 2, 3, 4].map((s) => (
         <React.Fragment key={s}>
           <div className="offer-step-item">
             <div className={`offer-step-dot ${s === step ? 'active' : s < step ? 'completed' : ''}`}>
@@ -450,7 +422,7 @@ export default function OfferModal({
               {stepNames[s - 1]}
             </span>
           </div>
-          {s < 5 && <div className={`offer-step-line ${s < step ? 'completed' : ''}`} />}
+          {s < 4 && <div className={`offer-step-line ${s < step ? 'completed' : ''}`} />}
         </React.Fragment>
       ))}
     </div>
@@ -756,79 +728,11 @@ export default function OfferModal({
         <span className="offer-deposit-notice-icon">🔒</span>
         <span className="offer-deposit-notice-text">
           <span>{od.deposit_notice_part1}</span>
+          <strong>{od.deposit_notice_part2}</strong>
+          <span>{od.deposit_notice_part3}</span>
           <strong>€{depositAmount}</strong>
-          <span>{od.deposit_notice_part2}</span>
+          <span>{od.deposit_notice_part4}</span>
         </span>
-      </div>
-
-      {checkoutError && <p className="offer-error-message">✕ {checkoutError}</p>}
-    </div>
-  );
-
-  // ─────────────────────────────────────────────────────
-  // STEP 5: BANK TRANSFER
-  // ─────────────────────────────────────────────────────
-  const renderStep5 = () => (
-    <div className="offer-form-section">
-      {renderStepIndicator()}
-      <h3 className="form-title" style={{ textAlign: 'left' }}>
-        {od.step5_title}
-      </h3>
-      <p className="form-subtitle" style={{ textAlign: 'left', marginLeft: 0, marginRight: 0, marginBottom: '2rem' }}>
-        {od.step5_subtitle}
-      </p>
-
-      <div className="offer-review-section" style={{ marginBottom: '2rem' }}>
-        <div className="offer-review-rows">
-          <div className="offer-review-row">
-            <span className="offer-review-label">{od.transfer_reference}</span>
-            <span className="offer-review-value" style={{ fontWeight: 'bold' }}>Formal Offer - {propertyCode}</span>
-          </div>
-          {offerBankName && (
-            <div className="offer-review-row">
-              <span className="offer-review-label">{od.bank_name}</span>
-              <span className="offer-review-value">{offerBankName}</span>
-            </div>
-          )}
-          {offerAccountName && (
-            <div className="offer-review-row">
-              <span className="offer-review-label">{od.account_name}</span>
-              <span className="offer-review-value">{offerAccountName}</span>
-            </div>
-          )}
-          {offerIban && (
-            <div className="offer-review-row">
-              <span className="offer-review-label">{od.iban}</span>
-              <span className="offer-review-value">{offerIban}</span>
-            </div>
-          )}
-          {offerBic && (
-            <div className="offer-review-row">
-              <span className="offer-review-label">{od.bic}</span>
-              <span className="offer-review-value">{offerBic}</span>
-            </div>
-          )}
-        </div>
-      </div>
-
-      <div className={`form-group ${fieldErrors.receipt ? 'has-error' : ''}`}>
-        <label htmlFor="offer-receipt">
-          {od.upload_receipt_label} <span className="form-required">{od.required}</span>
-        </label>
-        <input
-          type="file"
-          id="offer-receipt"
-          accept="image/*,.pdf"
-          onChange={(e) => {
-            setFieldErrors({});
-            setReceiptFile(e.target.files ? e.target.files[0] : null);
-          }}
-          style={{ padding: '0.5rem 0' }}
-        />
-        {fieldErrors.receipt
-          ? <span className="form-field-error">{fieldErrors.receipt}</span>
-          : <span className="offer-field-helper">{od.upload_receipt_helper}</span>
-        }
       </div>
 
       {checkoutError && <p className="offer-error-message">✕ {checkoutError}</p>}
@@ -897,49 +801,22 @@ export default function OfferModal({
       );
     }
 
-    // Step 4 — Back + Next
+    // Step 4 — Submit only (back is in body)
     if (step === 4) {
       return (
-        <div className="offer-footer-dual">
-          <button type="button" className="offer-back-btn" onClick={handleBack} id="offer-step4-back">
-            <img src="/icons/arrow_left_alt.svg" alt="" aria-hidden="true" className="offer-back-icon" />
-            {od.btn_back}
-          </button>
-          <Button
-            type="button"
-            variant="dark"
-            label={od.btn_next}
-            className="form-submit-btn offer-footer-next"
-            onClick={handleNext}
-            showArrow
-            id="offer-step4-next"
-          />
-        </div>
-      );
-    }
-
-    // Step 5 — Submit only (back is in body/dual)
-    if (step === 5) {
-      return (
-        <div className="offer-footer-dual">
-          <button type="button" className="offer-back-btn" onClick={handleBack} id="offer-step5-back" disabled={isSubmitting}>
-            <img src="/icons/arrow_left_alt.svg" alt="" aria-hidden="true" className="offer-back-icon" />
-            {od.btn_back}
-          </button>
-          <Button
-            type="button"
-            variant="dark"
-            label={isSubmitting
-              ? od.btn_submitting
-              : `${od.btn_submit}`
-            }
-            className="form-submit-btn offer-footer-next"
-            onClick={handleSubmit}
-            disabled={isSubmitting}
-            showArrow={!isSubmitting}
-            id="offer-submit-pay"
-          />
-        </div>
+        <Button
+          type="button"
+          variant="dark"
+          label={isSubmitting
+            ? od.btn_submitting
+            : `${od.btn_submit}`
+          }
+          className="form-submit-btn"
+          onClick={handleSubmit}
+          disabled={isSubmitting}
+          showArrow={!isSubmitting}
+          id="offer-submit-pay"
+        />
       );
     }
 
@@ -959,7 +836,6 @@ export default function OfferModal({
       {step === 2 && renderStep2()}
       {step === 3 && renderStep3()}
       {step === 4 && renderStep4()}
-      {step === 5 && renderStep5()}
     </ContactModal>
   );
 }

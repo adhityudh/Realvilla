@@ -668,6 +668,10 @@ export const SETTINGS_QUERY = groq`
     propertyOfferConditionsAccept,
     propertyOfferPriceHelper,
     propertyOfferConditionsHelper,
+    propertyOfferBankName,
+    propertyOfferAccountName,
+    propertyOfferIban,
+    propertyOfferBic,
     filterSidebar,
     socialLinks[] {
       label,

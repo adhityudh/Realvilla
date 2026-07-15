@@ -86,6 +86,10 @@ export default async function PropertyPage({ params }: { params: Promise<{ local
           offerConditionsAccept={settings?.propertyOfferConditionsAccept}
           offerPriceHelper={settings?.propertyOfferPriceHelper}
           offerConditionsHelper={settings?.propertyOfferConditionsHelper}
+          offerBankName={settings?.propertyOfferBankName}
+          offerAccountName={settings?.propertyOfferAccountName}
+          offerIban={settings?.propertyOfferIban}
+          offerBic={settings?.propertyOfferBic}
         />
         <OtherProperties 
           currentPropertyId={property._id}
