@@ -7,7 +7,7 @@ import PropertyGalleryModal from './PropertyGalleryModal';
 import './PropertyGallery.css';
 
 import Link from 'next/link';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import Button from '@/components/ui/Button';
 import { useGalleryModal } from '@/components/providers/GalleryModalContext';
 
@@ -19,12 +19,30 @@ interface PropertyGalleryProps {
 
 export default function PropertyGallery({ property, dict, offerEnabled = false }: PropertyGalleryProps) {
   const params = useParams();
+  const router = useRouter();
   const locale = params?.locale || 'en';
   const [imageSizes, setImageSizes] = useState<Record<string, { w: number; h: number }>>({});
   const { isOpen: isModalOpen, selectedItem: selectedGalleryItem, openModal, closeModal } = useGalleryModal();
   
   const isSold = property?.status === 'sold' || property?.status === 'reserved';
   const archiveLink = `/${locale}/${locale === 'es' ? 'propiedades' : 'properties'}`;
+
+  // Smart back: return to the exact listing the visitor came from (homepage
+  // teaser or archive, filters + scroll position preserved via browser-back).
+  // Direct visitors (no in-site history) fall back to the properties archive,
+  // i.e. the same destination as "View All Properties".
+  const handleBack = () => {
+    try {
+      const raw = sessionStorage.getItem('realvilla:property-return');
+      if (raw && window.history.length > 1) {
+        router.back();
+        return;
+      }
+    } catch {
+      /* storage unavailable — fall through to archive */
+    }
+    router.push(archiveLink);
+  };
 
   useEffect(() => {
     document.body.classList.remove('header-light-mode');
@@ -200,7 +218,12 @@ export default function PropertyGallery({ property, dict, offerEnabled = false }
   return (
     <section className="property-gallery-section">
       <div className="property-breadcrumb-wrapper">
-        <nav className="property-breadcrumb">
+        <button type="button" className="property-back-btn" onClick={handleBack} aria-label={dict?.property?.back_to_properties || 'Back to properties'}>
+          <img src="/icons/chevron_backward.svg" alt="" width="16" height="16" />
+          <span>{dict?.property?.back_to_properties || 'Back to properties'}</span>
+        </button>
+
+        <nav className="property-breadcrumb" aria-label="Breadcrumb">
           <Link href={`/${locale}`} className="breadcrumb-item breadcrumb-home-link">
             <img src="/images/logo-mark-raster.png" alt="Home" width="20" height="20" className="breadcrumb-logo" />
           </Link>

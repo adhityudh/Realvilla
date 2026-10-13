@@ -73,8 +73,53 @@ export default function SmoothScroller({ children }: { children: React.ReactNode
 
   const pathname = usePathname();
 
+  // Track browser back/forward (popstate) so a "back" from a property detail
+  // page restores the browsing position instead of resetting to the top.
+  // Forward navigations / fresh link clicks keep the existing reset-to-top.
+  const isBackNavRef = useRef(false);
+
+  useEffect(() => {
+    const onPopState = () => {
+      isBackNavRef.current = true;
+    };
+    window.addEventListener('popstate', onPopState);
+    return () => window.removeEventListener('popstate', onPopState);
+  }, []);
+
   useEffect(() => {
     if (!lenis) return;
+
+    const isBackNav = isBackNavRef.current;
+    isBackNavRef.current = false;
+
+    if (isBackNav) {
+      // Back navigation: do NOT force scroll-to-top and do NOT engage the
+      // preloading scroll lock. Restore the exact position saved by
+      // PropertyCard (exact card position on homepage #properties / archive).
+      const timer = setTimeout(() => {
+        try {
+          const raw = sessionStorage.getItem('realvilla:property-return');
+          if (raw) {
+            const ctx = JSON.parse(raw);
+            const isFresh = Date.now() - (ctx.ts || 0) < 5 * 60 * 1000;
+            if (isFresh && ctx.from === window.location.pathname && typeof ctx.scrollY === 'number') {
+              lenis.scrollTo(ctx.scrollY, { immediate: true });
+            } else if (isFresh) {
+              // Fell back: returning to the homepage teaser — land on the
+              // properties section as if "View All Properties" context.
+              const section = document.getElementById('properties');
+              if (section) lenis.scrollTo(section, { offset: -80, immediate: true });
+            }
+            sessionStorage.removeItem('realvilla:property-return');
+          }
+        } catch {
+          /* ignore restore errors */
+        }
+        ScrollTrigger.refresh();
+      }, 150);
+
+      return () => clearTimeout(timer);
+    }
     
     // On every route change, reset scroll and refresh triggers
     lenis.scrollTo(0, { immediate: true });

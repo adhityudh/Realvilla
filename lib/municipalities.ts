@@ -17,6 +17,8 @@ export async function getMunicipalities(): Promise<string[]> {
 }
 
 // Strictly for Sanity schema synchronous dropdown options
+// Covers the island of Tenerife (31) + San Sebastián de La Gomera
+// (La Gomera capital, same province of Santa Cruz de Tenerife — added per client request)
 export const TENERIFE_MUNICIPALITIES = [
   'Adeje', 'Arafo', 'Arico', 'Arona', 'Buenavista del Norte',
   'Candelaria', 'El Rosario', 'El Sauzal', 'El Tanque', 'Fasnia',
@@ -25,6 +27,7 @@ export const TENERIFE_MUNICIPALITIES = [
   'La Orotava', 'La Victoria de Acentejo', 'Los Realejos',
   'Los Silos', 'Puerto de la Cruz', 'San Cristóbal de La Laguna',
   'San Juan de la Rambla', 'San Miguel de Abona',
+  'San Sebastián de La Gomera',
   'Santa Cruz de Tenerife', 'Santa Úrsula', 'Santiago del Teide',
   'Tacoronte', 'Tegueste', 'Vilaflor'
 ];

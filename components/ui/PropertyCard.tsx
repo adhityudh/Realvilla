@@ -85,12 +85,30 @@ export default function PropertyCard({ prop, variant = 'default', dict }: { prop
   const activeLocale = prop.language || (params?.locale as string) || 'en';
   const routePrefix = (activeLocale === 'es') ? 'propiedades' : 'properties';
 
+  // Remember where the visitor came from so a browser-back from the detail
+  // page can restore the exact browsing position (homepage #properties).
+  // Stored in sessionStorage (tab-scoped, auto-cleared, no PII).
+  const handleCardClick = useCallback(() => {
+    try {
+      sessionStorage.setItem(
+        'realvilla:property-return',
+        JSON.stringify({
+          from: typeof window !== 'undefined' ? window.location.pathname : '',
+          scrollY: typeof window !== 'undefined' ? window.scrollY : 0,
+          ts: Date.now(),
+        })
+      );
+    } catch {
+      /* storage unavailable (private mode) — back-restore simply skipped */
+    }
+  }, []);
+
   if (!carouselImages.length) return null;
 
   const currentImage = carouselImages[activeImageIndex];
 
   return (
-    <Link href={`/${activeLocale}/${routePrefix}/${cleanSlug}`} className={`property-card ${variant === 'seamless' ? 'property-card-seamless' : ''}`}>
+    <Link href={`/${activeLocale}/${routePrefix}/${cleanSlug}`} onClick={handleCardClick} className={`property-card ${variant === 'seamless' ? 'property-card-seamless' : ''}`}>
       <div className="property-image-wrapper">
         <div className="badge-row">
           {prop.category?.title && (

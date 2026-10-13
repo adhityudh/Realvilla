@@ -31,8 +31,38 @@
   /* Account for sticky header */
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem 1.5rem;
   position: relative;
   z-index: 1;
+}
+
+.property-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-manrope), sans-serif;
+  font-size: var(--text-sm-plus);
+  font-weight: var(--fw-semibold);
+  color: var(--text-black);
+  background: transparent;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  transition: all 0.3s var(--ease-smooth);
+  white-space: nowrap;
+}
+
+.property-back-btn:hover {
+  color: var(--color-gold-dark, #c5a059);
+}
+
+.property-back-btn img {
+  width: 14px;
+  height: 14px;
+  filter: invert(1);
+  opacity: 0.8;
 }
 
 .property-breadcrumb {

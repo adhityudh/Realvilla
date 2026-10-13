@@ -13,7 +13,10 @@
 // ── Santa Cruz de Tenerife Province GeoNames ID ──
 const TENERIFE_GEONAME_ID = 2511173;
 
-// The official list of 31 municipalities on the island of Tenerife to filter out other islands in the province
+// The official list of municipalities to allow: the 31 on the island of Tenerife
+// plus San Sebastián de La Gomera (La Gomera capital, same province of
+// Santa Cruz de Tenerife — added per client request). Filters out the other
+// islands in the province returned by the GeoNames children endpoint.
 const TENERIFE_MUNICIPALITY_NAMES = new Set([
   'Adeje', 'Arafo', 'Arico', 'Arona', 'Buenavista del Norte',
   'Candelaria', 'El Rosario', 'El Sauzal', 'El Tanque', 'Fasnia',
@@ -22,6 +25,7 @@ const TENERIFE_MUNICIPALITY_NAMES = new Set([
   'La Orotava', 'La Victoria de Acentejo', 'Los Realejos',
   'Los Silos', 'Puerto de la Cruz', 'San Cristóbal de La Laguna',
   'San Juan de la Rambla', 'San Miguel de Abona',
+  'San Sebastián de La Gomera',
   'Santa Cruz de Tenerife', 'Santa Úrsula', 'Santiago del Teide',
   'Tacoronte', 'Tegueste', 'Vilaflor'
 ]);

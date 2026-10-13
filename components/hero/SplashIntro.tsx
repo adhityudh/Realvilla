@@ -276,11 +276,25 @@ function useIntroOrchestrator() {
   const lenis = useLenis();
   const pathname = usePathname();
   const ctx = useRef<gsap.Context | null>(null);
+  const isBackNavRef = useRef(false);
+
+  useEffect(() => {
+    const onPopState = () => {
+      isBackNavRef.current = true;
+    };
+    window.addEventListener('popstate', onPopState);
+    return () => window.removeEventListener('popstate', onPopState);
+  }, []);
 
   useEffect(() => {
     // Immediate cleanup for SPA navigations
     const existingLogo = document.getElementById('morph-breakout-logo');
     if (existingLogo) existingLogo.remove();
+
+    // Browser-back: consume the flag so a return from a property detail page
+    // does not replay the intro from the top (SmoothScroller restores position).
+    const isBackNav = isBackNavRef.current;
+    isBackNavRef.current = false;
 
     if (!globalPreloaderFinished) {
       document.body.classList.add('preloading');
@@ -288,9 +302,11 @@ function useIntroOrchestrator() {
 
     if (!lenis) return;
 
-    // Lock scroll and reset to top for the new intro
-    lenis.stop();
-    lenis.scrollTo(0, { immediate: true });
+    // Lock scroll and reset to top for the new intro (skipped on back nav)
+    if (!isBackNav) {
+      lenis.stop();
+      lenis.scrollTo(0, { immediate: true });
+    }
 
     const isMobile = window.innerWidth <= 1024;
     let morphTlInstance: gsap.core.Timeline | null = null;
