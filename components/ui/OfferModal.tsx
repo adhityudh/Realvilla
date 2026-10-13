@@ -16,6 +16,7 @@ export interface OfferFormData {
   email: string;
   phone: string;
   address: string;
+  preferredLanguage: string;
   // Step 3 — Offer Details
   offerPrice: string;
   additionalConditions: string;
@@ -29,6 +30,7 @@ export interface OfferModalProps {
   propertyTitle: string;
   propertyCode?: string;
   propertyPrice?: number;
+  propertyImage?: string;
   depositAmount?: number;
   dict?: any;
   locale?: string;
@@ -66,6 +68,7 @@ export default function OfferModal({
   propertyTitle,
   propertyCode,
   propertyPrice,
+  propertyImage,
   depositAmount = 500,
   dict,
   locale = 'en',
@@ -106,6 +109,7 @@ export default function OfferModal({
     email: '',
     phone: '',
     address: '',
+    preferredLanguage: locale === 'es' ? 'es' : 'en',
     offerPrice: '',
     additionalConditions: '',
   });
@@ -371,7 +375,7 @@ export default function OfferModal({
   };
 
   // ─────────────────────────────────────────────────────
-  // SUBMIT → STRIPE CHECKOUT (REPLACED WITH BANK TRANSFER API)
+  // SUBMIT → BANK TRANSFER API
   // ─────────────────────────────────────────────────────
   const handleSubmit = async () => {
     setFieldErrors({});
@@ -402,6 +406,7 @@ export default function OfferModal({
         email: formData.email,
         phone: formData.phone,
         address: formData.address,
+        preferredLanguage: formData.preferredLanguage,
       }));
       
       formDataToSend.append('offer', JSON.stringify({
@@ -600,6 +605,27 @@ export default function OfferModal({
         />
         {fieldErrors.address && <span className="form-field-error">{fieldErrors.address}</span>}
       </div>
+
+      {/* Preferred Contact Language */}
+      <div className="form-group">
+        <label id="offer-language-label">
+          {od.field_preferred_language} <span className="form-required">{od.required}</span>
+        </label>
+        <div className="offer-lang-options" role="radiogroup" aria-labelledby="offer-language-label">
+          {(['en', 'es'] as const).map((lang) => (
+            <label key={lang} className={`offer-lang-option ${formData.preferredLanguage === lang ? 'active' : ''}`}>
+              <input
+                type="radio"
+                name="offer-preferred-language"
+                value={lang}
+                checked={formData.preferredLanguage === lang}
+                onChange={() => setFormData((p) => ({ ...p, preferredLanguage: lang }))}
+              />
+              <span>{lang === 'es' ? (od.preferred_language_es || 'Español') : (od.preferred_language_en || 'English')}</span>
+            </label>
+          ))}
+        </div>
+      </div>
     </div>
   );
 
@@ -667,7 +693,7 @@ export default function OfferModal({
   );
 
   // ─────────────────────────────────────────────────────
-  // STEP 4: REVIEW & CHECKOUT
+  // STEP 4: REVIEW
   // ─────────────────────────────────────────────────────
   const renderStep4 = () => (
     <div>
@@ -712,6 +738,10 @@ export default function OfferModal({
           <div className="offer-review-row">
             <span className="offer-review-label">{od.label_address}</span>
             <span className="offer-review-value">{formData.address}</span>
+          </div>
+          <div className="offer-review-row">
+            <span className="offer-review-label">{od.label_preferred_language}</span>
+            <span className="offer-review-value">{formData.preferredLanguage === 'es' ? (od.preferred_language_es || 'Español') : (od.preferred_language_en || 'English')}</span>
           </div>
         </div>
       </div>
@@ -777,6 +807,17 @@ export default function OfferModal({
       <p className="form-subtitle" style={{ textAlign: 'left', marginLeft: 0, marginRight: 0, marginBottom: '2rem' }}>
         {od.step5_subtitle}
       </p>
+
+      {/* Property thumbnail — the home this offer is for */}
+      {propertyImage && (
+        <div className="offer-property-thumb">
+          <img src={propertyImage} alt={propertyTitle} />
+          <div className="offer-property-thumb-info">
+            <span className="offer-property-thumb-title">{formattedSubtitle}</span>
+            {propertyPrice ? <span className="offer-property-thumb-price">{formatPrice(propertyPrice)}</span> : null}
+          </div>
+        </div>
+      )}
 
       <div className="offer-review-section" style={{ marginBottom: '2rem' }}>
         <div className="offer-review-rows">

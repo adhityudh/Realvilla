@@ -60,6 +60,15 @@ export default function PropertyDetails({
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
   const { openModal } = useGalleryModal();
 
+  // Thumbnail for the offer modal (last step shows the offered property)
+  const propertyImageUrl = useMemo(() => {
+    try {
+      return property?.image ? urlForImage(property.image).width(400).url() : '';
+    } catch {
+      return '';
+    }
+  }, [property?.image]);
+
   const descriptionRef = useRef<HTMLDivElement>(null);
   
   const estimatedLength = useMemo(() => {
@@ -433,6 +442,7 @@ export default function PropertyDetails({
             propertyTitle={property.title || ''}
             propertyCode={property.propertyCode}
             propertyPrice={property.price}
+            propertyImage={propertyImageUrl}
             offerConditionsTitle={offerConditionsTitle}
             offerConditionsIntro={offerConditionsIntro}
             offerConditionsTerms={offerConditionsTerms}
@@ -502,6 +512,7 @@ export default function PropertyDetails({
           propertyTitle={property.title || ''}
           propertyCode={property.propertyCode}
           propertyPrice={property.price}
+          propertyImage={propertyImageUrl}
         />
         </ContactModal>
         );

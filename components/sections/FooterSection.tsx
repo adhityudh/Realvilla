@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import './FooterSection.css';
 import { HEADER_LETTERS } from '@/lib/letters';
+import { normalizeExternalUrl } from '@/lib/normalize-url';
 
 interface FooterLink {
   label: string;
@@ -163,7 +164,7 @@ const FooterSection = ({
               {data.socialLinks?.map((social, idx) => (
                 <a 
                   key={idx} 
-                  href={social.link || '#'} 
+                  href={normalizeExternalUrl(social.link)} 
                   className="social-link" 
                   target="_blank" 
                   rel="noopener noreferrer"

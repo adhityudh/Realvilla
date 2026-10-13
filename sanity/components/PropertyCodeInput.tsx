@@ -1,23 +1,30 @@
-import React, { useEffect, useState, useCallback } from 'react'
-import { StringInputProps, useClient, useFormValue, set } from 'sanity'
+import React, { useEffect, useState, useCallback, useRef } from 'react'
+import { StringInputProps, useClient, useFormValue, set, unset } from 'sanity'
 
 /**
- * Custom Sanity input that auto-generates a property code with format RV + 4 digits.
- * E.g. RV0001, RV0002, ..., RV9999.
+ * Property code input with format RV + 4 digits. E.g. RV0001, RV0002, ..., RV9999.
  *
- * - For new documents: generates the next available unique code.
- * - For translations (same property, different language): reuses the code from sibling documents.
- * - For existing documents: keeps the previously assigned code unchanged.
- * - Allows manual regeneration via "Regenerate" button.
+ * - Editable text field: type a code manually (auto-uppercased).
+ * - Leave empty on a new document to auto-generate the next available code
+ *   (translations reuse the sibling document's code).
+ * - "Regenerate" fills the next available code on demand.
+ * - Async validation in the schema (property.ts) rejects duplicates.
  */
 export function PropertyCodeInput(props: StringInputProps) {
   const { value, onChange } = props
   const documentId = (useFormValue(['_id']) as string) || ''
   const client = useClient({ apiVersion: '2024-05-02' })
-  const [generated, setGenerated] = useState(false)
   const [isGenerating, setIsGenerating] = useState(false)
-  const [isRegenerating, setIsRegenerating] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  // One-shot auto-generate per mount (reset by Regenerate). A ref (not state)
+  // so the guard itself never retriggers the effect; prevents the infinite
+  // fetch-retry storm when generation fails while the field is empty.
+  const autoTriedRef = useRef(false)
+  const mounted = useRef(true)
+  useEffect(() => {
+    mounted.current = true
+    return () => { mounted.current = false }
+  }, [])
 
   /**
    * Strip language suffixes from a document ID to get the base ID.
@@ -139,47 +146,72 @@ export function PropertyCodeInput(props: StringInputProps) {
     return null
   }, [client, documentId])
 
-  useEffect(() => {
-    // Skip if already generated/generating, unless the user explicitly clicked Regenerate
-    if (generated || isGenerating) return
-    if (value && !isRegenerating) return
-
-    const init = async () => {
-      setIsGenerating(true)
-      setError(null)
-
-      try {
-        // Always try to find a sibling code first, even when regenerating,
-        // because translations MUST share the same code.
-        const siblingCode = await findSiblingCode()
-        if (siblingCode) {
-          onChange(set(siblingCode))
-          setGenerated(true)
-          setIsRegenerating(false)
-          return
-        }
-
-        // Generate the smallest unused code
-        const newCode = await generateNextCode()
-        if (newCode) {
-          onChange(set(newCode))
-        }
-        setGenerated(true)
-      } catch (err) {
-        console.error('Failed to generate property code:', err)
-        setError('Failed to generate property code. Please try saving again.')
-      } finally {
-        setIsGenerating(false)
-        setIsRegenerating(false)
-      }
+  /**
+   * Race a fetch against a timeout so a hanging request can never leave the
+   * input stuck in "Generating..." with no escape hatch.
+   */
+  const withTimeout = async <T,>(promise: Promise<T>, ms: number): Promise<T> => {
+    let timer: ReturnType<typeof setTimeout>
+    try {
+      return await Promise.race([
+        promise,
+        new Promise<T>((_, reject) => {
+          timer = setTimeout(() => reject(new Error('Property code request timed out')), ms)
+        }),
+      ])
+    } finally {
+      clearTimeout(timer!)
     }
+  }
 
-    init()
-  }, [generated, isGenerating, isRegenerating, value, onChange, findSiblingCode, generateNextCode])
+  const runAutoGenerate = useCallback(async () => {
+    if (isGenerating) return
+    setIsGenerating(true)
+    setError(null)
+
+    try {
+      // Translations MUST share the sibling's code — always check first.
+      const siblingCode = await withTimeout(findSiblingCode(), 12000)
+      if (siblingCode) {
+        if (mounted.current) onChange(set(siblingCode))
+        return
+      }
+
+      // Generate the smallest unused code
+      const newCode = await withTimeout(generateNextCode(), 12000)
+      if (newCode && mounted.current) {
+        onChange(set(newCode))
+      }
+    } catch (err) {
+      console.error('Failed to generate property code:', err)
+      if (mounted.current) {
+        setError('Could not auto-generate a code (request timed out or failed). Type one manually or press Regenerate to retry.')
+      }
+    } finally {
+      if (mounted.current) setIsGenerating(false)
+    }
+  }, [isGenerating, findSiblingCode, generateNextCode, onChange])
+
+  useEffect(() => {
+    // Auto-generate only once per mount and only while the field is empty.
+    // Typing a value (or clearing it and typing again) never triggers a fetch.
+    if (value || autoTriedRef.current) return
+    autoTriedRef.current = true
+    runAutoGenerate()
+  }, [value, runAutoGenerate])
 
   const handleRegenerate = () => {
-    setIsRegenerating(true)
-    setGenerated(false)
+    autoTriedRef.current = true
+    runAutoGenerate()
+  }
+
+  const handleManualChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const clean = e.target.value.toUpperCase().replace(/\s+/g, '')
+    if (!clean) {
+      onChange(unset())
+    } else {
+      onChange(set(clean))
+    }
   }
 
   return (
@@ -187,15 +219,15 @@ export function PropertyCodeInput(props: StringInputProps) {
       <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
         <input
           type="text"
-          readOnly
-          value={value || (isGenerating ? 'Generating...' : '')}
+          value={value || ''}
+          onChange={handleManualChange}
           placeholder="RVXXXX"
           style={{
             width: '100%',
             padding: '7px 12px',
             border: '1px solid var(--card-border-color, #e0e0e0)',
             borderRadius: 4,
-            background: 'var(--input-bg, #f5f5f5)',
+            background: 'var(--input-bg, #ffffff)',
             color: 'var(--text-color, #333)',
             fontSize: 14,
             fontWeight: 600,
@@ -227,7 +259,7 @@ export function PropertyCodeInput(props: StringInputProps) {
         </p>
       )}
       <p style={{ fontSize: 12, color: 'var(--text-color-secondary, #666)', marginTop: 4, marginBottom: 0 }}>
-        Auto-generated property code (format: RV + 4 digits). Same code is shared across all language versions of this property.
+        Type the code manually (format: RV + 4 digits) or press Regenerate to auto-fill the next available one. Same code is shared across all language versions of this property.
       </p>
     </div>
   )

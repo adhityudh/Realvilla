@@ -13,6 +13,7 @@ import 'lightgallery/css/lg-zoom.css';
 import 'lightgallery/css/lg-thumbnail.css';
 import './AboutSection.css';
 import { urlForImage } from '@/sanity/lib/image';
+import { normalizeExternalUrl } from '@/lib/normalize-url';
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
@@ -155,7 +156,7 @@ const AboutSection = ({ data, dict }: { data?: any, dict?: any }) => {
           </div>
           <div className="profile-socials">
             {data.socialLinks?.map((social: any, i: number) => (
-              <a key={i} href={social.link || '#'} target="_blank" rel="noopener noreferrer">
+              <a key={i} href={normalizeExternalUrl(social.link)} target="_blank" rel="noopener noreferrer">
                 {social.icon && <Image src={social.icon} alt={social.label || 'Social'} width={20} height={20} />}
               </a>
             ))}

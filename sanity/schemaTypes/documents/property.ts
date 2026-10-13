@@ -36,16 +36,34 @@ export const property = defineType({
       name: 'propertyCode',
       title: 'Property Code',
       type: 'string',
-      description: 'Unique property identifier with format RV + 4 digits (e.g. RV0001). Auto-generated and read-only.',
+      description: 'Unique property identifier with format RV + 4 digits (e.g. RV0001). Editable — type it manually or leave empty to auto-generate. Used in the property page URL, so duplicates are rejected.',
       components: {
         input: PropertyCodeInput,
       },
-      validation: (Rule) =>
+      validation: (Rule) => [
         Rule.custom((value) => {
           if (!value) return 'Property code is required.'
           if (!/^RV\d{4}$/.test(value)) return 'Must be in format RV followed by 4 digits (e.g. RV0001).'
           return true
         }),
+        Rule.custom(async (value, context) => {
+          if (!value || !/^RV\d{4}$/.test(value)) return true
+          const documentId = (context?.document?._id as string) || ''
+          const publishedId = documentId.replace(/^drafts\./, '')
+          const client = context?.getClient?.({ apiVersion: '2024-05-02' })
+          if (!client || !publishedId) return true
+          // Reject codes used by another property, ignoring this document's
+          // own draft and its translation siblings (en/es share one code).
+          const dupes: number = await client.fetch(
+            `count(*[_type == "property" && propertyCode == $code
+              && !(_id in [$publishedId, $draftId])
+              && !defined(*[_type == "translation.metadata" && references($publishedId) && references(^._id)][0])
+            ])`,
+            { code: value, publishedId, draftId: `drafts.${publishedId}` }
+          )
+          return dupes > 0 ? 'This code is already used by another property.' : true
+        }),
+      ],
       group: 'general',
     }),
     defineField({

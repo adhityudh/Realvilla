@@ -260,7 +260,10 @@ export const SECTION_PROJECTION = groq`
           platform,
           label,
           "icon": icon.asset->url,
-          "link": ${INTERNAL_LINK_PROJECTION}
+          // Social entries are always external URLs (schema has only
+          // externalLink, no linkType) — project it directly. Using the
+          // generic link projection here resolves to null and breaks icons.
+          "link": externalLink
         }
       },
       _type == "propertiesSection" => {
@@ -676,7 +679,8 @@ export const SETTINGS_QUERY = groq`
     socialLinks[] {
       label,
       "icon": icon.asset->url,
-      "link": ${INTERNAL_LINK_PROJECTION}
+      // Always-external social URLs — see note on aboutSection socialLinks.
+      "link": externalLink
     },
     mainNav[] {
       label,
@@ -711,7 +715,8 @@ export const SETTINGS_QUERY = groq`
       socialLinks[] {
         label,
         "icon": icon.asset->url,
-          "link": ${INTERNAL_LINK_PROJECTION}
+          // Always-external social URLs — see note on aboutSection socialLinks.
+          "link": externalLink
       }
     },
     "propertyCategories": *[_type == "propertyCategory"] | order(title[$language] asc) {

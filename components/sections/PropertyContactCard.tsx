@@ -17,6 +17,7 @@ interface PropertyContactCardProps {
   propertyTitle: string;
   propertyCode?: string;
   propertyPrice?: number;
+  propertyImage?: string;
   whatsappNumber?: string;
   presetMessage?: string;
   whatsappMessageTemplate?: string;
@@ -48,6 +49,7 @@ export default function PropertyContactCard({
   propertyTitle,
   propertyCode,
   propertyPrice,
+  propertyImage,
   whatsappNumber,
   presetMessage,
   whatsappMessageTemplate,
@@ -158,7 +160,8 @@ export default function PropertyContactCard({
       message: message || `Inquiry about ${propertyTitle}`,
       fax: honeypot,
       ts: formStartTime,
-      url: currentUrl
+      url: currentUrl,
+      locale
     };
 
     try {
@@ -393,6 +396,7 @@ export default function PropertyContactCard({
           propertyTitle={propertyTitle}
           propertyCode={propertyCode}
           propertyPrice={propertyPrice}
+          propertyImage={propertyImage}
           depositAmount={offerDepositAmount}
           dict={dict}
           locale={locale}

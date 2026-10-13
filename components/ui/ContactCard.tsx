@@ -358,7 +358,8 @@ export default function ContactCard({
       longitude: coordinates?.lng,
       fax: honeypot, // Named neutrally to bait automated autofill bots
       ts: formStartTime,
-      url: currentUrl
+      url: currentUrl,
+      locale: detectedLocale
     } : formType === 'mortgage' ? {
       formType: 'mortgage',
       name: mortgageName,
@@ -366,7 +367,8 @@ export default function ContactCard({
       phone: mortgagePhone,
       fax: honeypot,
       ts: formStartTime,
-      url: currentUrl
+      url: currentUrl,
+      locale: detectedLocale
     } : {
       formType: 'general',
       name: generalName,
@@ -375,7 +377,8 @@ export default function ContactCard({
       message: generalMessage,
       fax: honeypot,
       ts: formStartTime,
-      url: currentUrl
+      url: currentUrl,
+      locale: detectedLocale
     };
 
     try {

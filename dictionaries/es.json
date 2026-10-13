@@ -278,8 +278,11 @@
     "field_offer_price_placeholder": "ej. 450000",
     "field_conditions": "Condiciones Adicionales y Observaciones",
     "field_conditions_placeholder": "Cualquier condición especial, solicitud u observación... (opcional)",
+    "field_preferred_language": "Idioma de contacto preferido",
+    "preferred_language_en": "English",
+    "preferred_language_es": "Español",
     "step4_title": "Revisa tu Propuesta",
-    "step4_subtitle": "Por favor, revise sus datos a continuación antes de proceder al pago.",
+    "step4_subtitle": "Por favor, revise sus datos a continuación antes de proceder con la transferencia bancaria.",
     "section_personal": "Datos Personales",
     "section_offer": "Detalles de la Oferta",
     "label_name": "Nombre Completo",
@@ -287,6 +290,7 @@
     "label_email": "Correo Electrónico",
     "label_phone": "Teléfono",
     "label_address": "Domicilio de notificaciones",
+    "label_preferred_language": "Idioma preferido",
     "label_price": "Precio Ofertado",
     "label_conditions": "Condiciones Adicionales",
     "label_no_conditions": "No especificado",
@@ -319,8 +323,8 @@
     "success_title": "¡Propuesta Enviada!",
     "success_subtitle": "Su oferta ha sido registrada correctamente y el comprobante ha sido subido. Recibirá una copia de su documento de propuesta por correo electrónico en breve.",
     "success_close": "Volver a la Propiedad",
-    "cancel_title": "Pago Cancelado",
-    "cancel_subtitle": "Su pago no se ha completado. Su propuesta no ha sido enviada. Puede intentarlo de nuevo en cualquier momento.",
+    "cancel_title": "Transferencia cancelada",
+    "cancel_subtitle": "Su transferencia bancaria no se ha completado. Su propuesta no ha sido enviada. Puede intentarlo de nuevo en cualquier momento.",
     "cancel_retry": "Intentar de Nuevo"
   }
 }

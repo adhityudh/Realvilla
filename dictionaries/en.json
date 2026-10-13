@@ -278,8 +278,11 @@
     "field_offer_price_placeholder": "e.g. 450000",
     "field_conditions": "Additional Conditions & Remarks",
     "field_conditions_placeholder": "Any special conditions, requests, or observations... (optional)",
+    "field_preferred_language": "Preferred Contact Language",
+    "preferred_language_en": "English",
+    "preferred_language_es": "Español",
     "step4_title": "Review Your Proposal",
-    "step4_subtitle": "Please review your details below before proceeding to payment.",
+    "step4_subtitle": "Please review your details below before proceeding to the bank transfer.",
     "section_personal": "Personal Details",
     "section_offer": "Offer Details",
     "label_name": "Full Name",
@@ -287,6 +290,7 @@
     "label_email": "Email",
     "label_phone": "Phone",
     "label_address": "Notification Address",
+    "label_preferred_language": "Preferred language",
     "label_price": "Offered Price",
     "label_conditions": "Additional Conditions",
     "label_no_conditions": "None specified",
@@ -319,8 +323,8 @@
     "success_title": "Proposal Submitted!",
     "success_subtitle": "Your offer has been successfully registered and the transfer receipt has been uploaded. You will receive a copy of your proposal document by email shortly.",
     "success_close": "Back to Property",
-    "cancel_title": "Payment Cancelled",
-    "cancel_subtitle": "Your payment was not completed. Your proposal has not been submitted. You can try again at any time.",
+    "cancel_title": "Transfer Cancelled",
+    "cancel_subtitle": "Your bank transfer was not completed. Your proposal has not been submitted. You can try again at any time.",
     "cancel_retry": "Try Again"
   }
 }
