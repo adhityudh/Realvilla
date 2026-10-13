@@ -30,6 +30,27 @@ const TENERIFE_MUNICIPALITY_NAMES = new Set([
   'Tacoronte', 'Tegueste', 'Vilaflor'
 ]);
 
+// ── Name normalization ──
+// GeoNames returns province children with varying conventions:
+// unaccented or inverted article suffixes ("Rosario, El", "Orotava, La",
+// "San Sebastián de la Gomera"). Normalize both sides (case, diacritics,
+// article position) and map back to our canonical display names so no
+// municipality is silently dropped from the filter options.
+function normalizeMunicipalityName(name: string): string {
+  let n = (name || '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .trim();
+  const inverted = n.match(/^(.*),\s*(el|la|los|las)$/);
+  if (inverted) n = `${inverted[2]} ${inverted[1]}`.trim();
+  return n.replace(/\s+/g, ' ');
+}
+
+const CANONICAL_BY_NORMALIZED = new Map(
+  [...TENERIFE_MUNICIPALITY_NAMES].map((n) => [normalizeMunicipalityName(n), n])
+);
+
 // ── GeoNames API Base ──
 const GEONAMES_BASE = 'https://secure.geonames.org';
 
@@ -84,11 +105,16 @@ export async function fetchMunicipalities(): Promise<string[]> {
       return [];
     }
 
-    const municipalities = data.geonames
-      .map((g) => g.toponymName || g.name)
-      .filter(Boolean)
-      .filter((name) => TENERIFE_MUNICIPALITY_NAMES.has(name))
-      .sort((a, b) => a.localeCompare(b, 'es'));
+    const municipalities: string[] = [];
+    for (const g of data.geonames || []) {
+      const canonical = CANONICAL_BY_NORMALIZED.get(
+        normalizeMunicipalityName(g.toponymName || g.name)
+      );
+      if (canonical && !municipalities.includes(canonical)) {
+        municipalities.push(canonical);
+      }
+    }
+    municipalities.sort((a, b) => a.localeCompare(b, 'es'));
 
     if (municipalities.length > 0) {
       cachedMunicipalities = municipalities;

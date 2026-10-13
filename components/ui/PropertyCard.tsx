@@ -88,6 +88,7 @@ export default function PropertyCard({ prop, variant = 'default', dict }: { prop
   // Remember where the visitor came from so a browser-back from the detail
   // page can restore the exact browsing position (homepage #properties).
   // Stored in sessionStorage (tab-scoped, auto-cleared, no PII).
+  const detailHref = `/${activeLocale}/${routePrefix}/${cleanSlug}`;
   const handleCardClick = useCallback(() => {
     try {
       sessionStorage.setItem(
@@ -95,13 +96,14 @@ export default function PropertyCard({ prop, variant = 'default', dict }: { prop
         JSON.stringify({
           from: typeof window !== 'undefined' ? window.location.pathname : '',
           scrollY: typeof window !== 'undefined' ? window.scrollY : 0,
+          detailHref,
           ts: Date.now(),
         })
       );
     } catch {
       /* storage unavailable (private mode) — back-restore simply skipped */
     }
-  }, []);
+  }, [detailHref]);
 
   if (!carouselImages.length) return null;
 

@@ -218,9 +218,9 @@ export default function PropertyGallery({ property, dict, offerEnabled = false }
   return (
     <section className="property-gallery-section">
       <div className="property-breadcrumb-wrapper">
-        <button type="button" className="property-back-btn" onClick={handleBack} aria-label={dict?.property?.back_to_properties || 'Back to properties'}>
+        <button type="button" className="property-back-btn" onClick={handleBack} aria-label={dict?.property?.back_to_properties || 'Back'}>
           <img src="/icons/chevron_backward.svg" alt="" width="16" height="16" />
-          <span>{dict?.property?.back_to_properties || 'Back to properties'}</span>
+          <span>{dict?.property?.back_to_properties || 'Back'}</span>
         </button>
 
         <nav className="property-breadcrumb" aria-label="Breadcrumb">

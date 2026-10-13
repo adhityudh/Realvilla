@@ -7,6 +7,7 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { REALVILLA_LETTERS } from '@/lib/letters';
 import { useLenis } from '@/lib/LenisContext';
+import { markBackNavigation, peekBackNavigation } from '@/lib/back-nav';
 import Button from '@/components/ui/Button';
 import './SplashIntro.css';
 import { getHeroRevealAnimation } from './HeroSection';
@@ -276,12 +277,11 @@ function useIntroOrchestrator() {
   const lenis = useLenis();
   const pathname = usePathname();
   const ctx = useRef<gsap.Context | null>(null);
-  const isBackNavRef = useRef(false);
 
+  // popstate fires BEFORE this (remounting) component's effects run, so the
+  // marker is persisted (see lib/back-nav.ts) instead of kept in a ref.
   useEffect(() => {
-    const onPopState = () => {
-      isBackNavRef.current = true;
-    };
+    const onPopState = () => markBackNavigation();
     window.addEventListener('popstate', onPopState);
     return () => window.removeEventListener('popstate', onPopState);
   }, []);
@@ -291,10 +291,10 @@ function useIntroOrchestrator() {
     const existingLogo = document.getElementById('morph-breakout-logo');
     if (existingLogo) existingLogo.remove();
 
-    // Browser-back: consume the flag so a return from a property detail page
-    // does not replay the intro from the top (SmoothScroller restores position).
-    const isBackNav = isBackNavRef.current;
-    isBackNavRef.current = false;
+    // Browser-back: peek (don't consume — SmoothScroller owns the marker) so
+    // a return from a property detail page neither replays the intro from
+    // the top nor fights scroll restoration.
+    const isBackNav = peekBackNavigation();
 
     if (!globalPreloaderFinished) {
       document.body.classList.add('preloading');
@@ -358,6 +358,18 @@ function useIntroOrchestrator() {
         onComplete: () => { releaseScroll(); initMorph(); },
       });
 
+      // Browser-back: jump straight to the end state instead of replaying the
+      // ~3s cinematic splash that would cover the restored scroll position.
+      const playOrSkip = () => {
+        if (tl.progress() !== 0) return;
+        if (isBackNav) {
+          tl.progress(1);
+          releaseScroll();
+        } else {
+          tl.play();
+        }
+      };
+
       // Small delay to ensure siblings (HeroSection) are rendered.
       // We also wait for Lenis to finish its synchronous scroll-to-0, because Chrome's
       // scroll-restoration can leave scrollY > 0 for a few frames even after lenis.scrollTo(0).
@@ -387,14 +399,14 @@ function useIntroOrchestrator() {
           if (globalPreloaderFinished || shouldPlay) {
             // Hide the circular preloader circle immediately since loading is pre-cached
             gsap.set('.preloader-border-box', { opacity: 0, display: 'none' });
-            if (tl.progress() === 0) tl.play();
+            playOrSkip();
           }
         });
       }, 100); // Slightly longer delay for safer DOM check
 
       const handlePreloaderComplete = () => {
         if (isPopulated) {
-          if (tl.progress() === 0) tl.play();
+          playOrSkip();
         } else {
           shouldPlay = true;
         }

@@ -6,9 +6,49 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Lenis from 'lenis';
 import { LenisContext } from '@/lib/LenisContext';
+import { markBackNavigation, peekBackNavigation, clearBackNavigation } from '@/lib/back-nav';
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
+}
+
+const RETURN_KEY = 'realvilla:property-return';
+const RETURN_TTL = 5 * 60 * 1000; // return context valid for 5 minutes
+
+/**
+ * Restores the browsing position saved by PropertyCard.
+ * Returns true when done (restored or nothing to do), false to keep waiting
+ * for the list content to render.
+ */
+function restoreBrowsingPosition(lenis: Lenis): boolean {
+  let ctx: { from?: string; scrollY?: number; detailHref?: string; ts?: number } | null = null;
+  try {
+    const raw = sessionStorage.getItem(RETURN_KEY);
+    if (!raw) return true;
+    ctx = JSON.parse(raw);
+  } catch {
+    return true;
+  }
+  if (!ctx || Date.now() - (ctx.ts || 0) >= RETURN_TTL) {
+    try { sessionStorage.removeItem(RETURN_KEY); } catch { /* ignore */ }
+    return true;
+  }
+  if (ctx.from !== window.location.pathname) return true; // different page — leave scroll alone
+
+  // Same page we left: scroll to the exact card that was clicked
+  // (card-anchored, so post-load layout shifts can't throw it off).
+  if (ctx.detailHref) {
+    const card = document.querySelector(`.property-card[href="${ctx.detailHref}"]`)
+      || document.querySelector(`.property-card[href="${ctx.detailHref}/"]`);
+    if (!card) return false; // list not rendered yet — keep waiting
+    lenis.start(); // a stopped Lenis ignores programmatic scrolls
+    lenis.scrollTo(card as HTMLElement, { offset: -100, immediate: true });
+  } else if (typeof ctx.scrollY === 'number') {
+    lenis.start();
+    lenis.scrollTo(ctx.scrollY, { immediate: true });
+  }
+  try { sessionStorage.removeItem(RETURN_KEY); } catch { /* ignore */ }
+  return true;
 }
 
 export default function SmoothScroller({ children }: { children: React.ReactNode }) {
@@ -76,12 +116,10 @@ export default function SmoothScroller({ children }: { children: React.ReactNode
   // Track browser back/forward (popstate) so a "back" from a property detail
   // page restores the browsing position instead of resetting to the top.
   // Forward navigations / fresh link clicks keep the existing reset-to-top.
-  const isBackNavRef = useRef(false);
-
+  // Observers only peek (see lib/back-nav.ts): popstate fires before newly
+  // mounted components run their effects, and effects may run repeatedly.
   useEffect(() => {
-    const onPopState = () => {
-      isBackNavRef.current = true;
-    };
+    const onPopState = () => markBackNavigation();
     window.addEventListener('popstate', onPopState);
     return () => window.removeEventListener('popstate', onPopState);
   }, []);
@@ -89,38 +127,43 @@ export default function SmoothScroller({ children }: { children: React.ReactNode
   useEffect(() => {
     if (!lenis) return;
 
-    const isBackNav = isBackNavRef.current;
-    isBackNavRef.current = false;
-
-    if (isBackNav) {
+    if (peekBackNavigation()) {
       // Back navigation: do NOT force scroll-to-top and do NOT engage the
-      // preloading scroll lock. Restore the exact position saved by
-      // PropertyCard (exact card position on homepage #properties / archive).
-      const timer = setTimeout(() => {
-        try {
-          const raw = sessionStorage.getItem('realvilla:property-return');
-          if (raw) {
-            const ctx = JSON.parse(raw);
-            const isFresh = Date.now() - (ctx.ts || 0) < 5 * 60 * 1000;
-            if (isFresh && ctx.from === window.location.pathname && typeof ctx.scrollY === 'number') {
-              lenis.scrollTo(ctx.scrollY, { immediate: true });
-            } else if (isFresh) {
-              // Fell back: returning to the homepage teaser — land on the
-              // properties section as if "View All Properties" context.
-              const section = document.getElementById('properties');
-              if (section) lenis.scrollTo(section, { offset: -80, immediate: true });
-            }
-            sessionStorage.removeItem('realvilla:property-return');
-          }
-        } catch {
-          /* ignore restore errors */
+      // preloading scroll lock. Poll briefly for the list content, then
+      // restore the exact card/position saved by PropertyCard. The marker is
+      // cleared only here, so remounting components in the same commit still
+      // observe it; a further navigation aborts the restore.
+      const targetPath = window.location.pathname;
+      const t0 = Date.now();
+      const iv = window.setInterval(() => {
+        if (window.location.pathname !== targetPath) {
+          window.clearInterval(iv);
+          clearBackNavigation();
+          return;
         }
-        ScrollTrigger.refresh();
-      }, 150);
+        const done = restoreBrowsingPosition(lenis);
+        if (done || Date.now() - t0 > 2500) {
+          window.clearInterval(iv);
+          if (!done) {
+            // Timed out waiting for the exact card: best effort fallback to
+            // the homepage properties teaser ("View All Properties" context).
+            const section = document.getElementById('properties');
+            if (section) {
+              lenis.start();
+              lenis.scrollTo(section, { offset: -80, immediate: true });
+            }
+            try { sessionStorage.removeItem(RETURN_KEY); } catch { /* ignore */ }
+          }
+          clearBackNavigation();
+          ScrollTrigger.refresh();
+        }
+      }, 80);
 
-      return () => clearTimeout(timer);
+      return () => window.clearInterval(iv);
     }
-    
+
+    clearBackNavigation(); // forward navs never set the marker; drop any stale one
+
     // On every route change, reset scroll and refresh triggers
     lenis.scrollTo(0, { immediate: true });
     document.body.classList.add('preloading');
