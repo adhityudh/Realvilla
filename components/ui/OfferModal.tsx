@@ -117,6 +117,21 @@ export default function OfferModal({
   const formattedSubtitle = propertyCode ? `[${propertyCode}] ${propertyTitle}` : propertyTitle;
   const pathname = usePathname();
 
+  // Property thumbnail card — identical content & style on steps 3, 4 and 5,
+  // so the buyer always sees which home the offer is for.
+  const renderPropertyThumb = () => {
+    if (!propertyImage) return null;
+    return (
+      <div className="offer-property-thumb">
+        <img src={propertyImage} alt={propertyTitle} />
+        <div className="offer-property-thumb-info">
+          <span className="offer-property-thumb-title">{formattedSubtitle}</span>
+          {propertyPrice ? <span className="offer-property-thumb-price">{formatPrice(propertyPrice)}</span> : null}
+        </div>
+      </div>
+    );
+  };
+
   const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const rawVal = e.target.value;
     
@@ -642,15 +657,17 @@ export default function OfferModal({
         {od.step3_subtitle}
       </p>
 
-      {/* Property Info Box */}
-      {propertyPrice && (
+      {/* Property Info Box — same thumbnail card as steps 4 & 5 */}
+      {propertyImage ? (
+        renderPropertyThumb()
+      ) : propertyPrice ? (
         <div className="offer-deposit-notice" style={{ marginBottom: '2rem' }}>
           <span className="offer-deposit-notice-text">
             <div style={{ marginBottom: '0.25rem' }}>{formattedSubtitle}</div>
             <strong>{formatPrice(propertyPrice)}</strong>
           </span>
         </div>
-      )}
+      ) : null}
 
       {/* Offered Price */}
       <div className={`form-group ${fieldErrors.offerPrice ? 'has-error' : ''}`}>
@@ -704,6 +721,9 @@ export default function OfferModal({
       <p className="form-subtitle" style={{ textAlign: 'left', marginLeft: 0, marginRight: 0, marginBottom: '2rem' }}>
         {od.step4_subtitle}
       </p>
+
+      {/* Property thumbnail — same card as steps 3 & 5 */}
+      {renderPropertyThumb()}
 
       {/* Personal Details Block */}
       <div className="offer-review-section">
@@ -808,16 +828,8 @@ export default function OfferModal({
         {od.step5_subtitle}
       </p>
 
-      {/* Property thumbnail — the home this offer is for */}
-      {propertyImage && (
-        <div className="offer-property-thumb">
-          <img src={propertyImage} alt={propertyTitle} />
-          <div className="offer-property-thumb-info">
-            <span className="offer-property-thumb-title">{formattedSubtitle}</span>
-            {propertyPrice ? <span className="offer-property-thumb-price">{formatPrice(propertyPrice)}</span> : null}
-          </div>
-        </div>
-      )}
+      {/* Property thumbnail — the home this offer is for (same card as steps 3 & 4) */}
+      {renderPropertyThumb()}
 
       <div className="offer-review-section" style={{ marginBottom: '2rem' }}>
         <div className="offer-review-rows">
