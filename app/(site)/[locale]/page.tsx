@@ -130,7 +130,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
                 mortgageCalculator: settingsData?.mortgageCalculator
               }}
             />
-            <RealAdvisorWidget />
+            <RealAdvisorWidget lang={locale} />
             <SectionRenderer
               sections={after}
               dict={dict}

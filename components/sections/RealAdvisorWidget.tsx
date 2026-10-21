@@ -4,20 +4,20 @@ import { useEffect, useRef } from 'react';
 import Script from 'next/script';
 import './RealAdvisorWidget.css';
 
-const RealAdvisorWidget = () => {
+const RealAdvisorWidget = ({ lang = 'es' }: { lang?: string }) => {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
-    if (container.querySelector('reviews-widget')) return;
+    container.innerHTML = '';
 
     const widget = document.createElement('reviews-widget');
     widget.setAttribute('data-team-id', 'cc5fad1c-e0cd-11f0-9d5b-6f2fe46d9670');
     widget.setAttribute('data-layout', 'widget4');
-    widget.setAttribute('data-lang', 'es');
+    widget.setAttribute('data-lang', lang || 'es');
     container.appendChild(widget);
-  }, []);
+  }, [lang]);
 
   return (
     <>
