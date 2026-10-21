@@ -2,6 +2,7 @@ import Header from '@/components/layout/Header';
 import MobileNav from '@/components/layout/MobileNav';
 import SplashIntro from '@/components/hero/SplashIntro';
 import SectionRenderer from '@/components/sections/SectionRenderer';
+import RealAdvisorWidget from '@/components/sections/RealAdvisorWidget';
 import PageComponentsRenderer from '@/components/sections/PageComponentsRenderer';
 import FooterSection from '@/components/sections/FooterSection';
 import { draftMode } from 'next/headers';
@@ -100,15 +101,48 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
         whatsappNumber={settingsData?.contactWhatsAppNumber}
       />
       <SplashIntro data={data.sections.find((s: any) => s._type === 'splashIntro')} dict={dict} />
-      <SectionRenderer 
-        sections={data.sections} 
-        dict={dict} 
-        filterMeta={filterMeta} 
-        contextData={{ 
-          whatsappNumber: settingsData?.contactWhatsAppNumber,
-          mortgageCalculator: settingsData?.mortgageCalculator
-        }} 
-      />
+      {(() => {
+        const sections = data.sections || [];
+        const reviewsIndex = sections.findIndex((s: any) => s._type === 'testimonialsSection');
+        if (reviewsIndex === -1) {
+          return (
+            <SectionRenderer
+              sections={sections}
+              dict={dict}
+              filterMeta={filterMeta}
+              contextData={{
+                whatsappNumber: settingsData?.contactWhatsAppNumber,
+                mortgageCalculator: settingsData?.mortgageCalculator
+              }}
+            />
+          );
+        }
+        const before = sections.slice(0, reviewsIndex + 1);
+        const after = sections.slice(reviewsIndex + 1);
+        return (
+          <>
+            <SectionRenderer
+              sections={before}
+              dict={dict}
+              filterMeta={filterMeta}
+              contextData={{
+                whatsappNumber: settingsData?.contactWhatsAppNumber,
+                mortgageCalculator: settingsData?.mortgageCalculator
+              }}
+            />
+            <RealAdvisorWidget />
+            <SectionRenderer
+              sections={after}
+              dict={dict}
+              filterMeta={filterMeta}
+              contextData={{
+                whatsappNumber: settingsData?.contactWhatsAppNumber,
+                mortgageCalculator: settingsData?.mortgageCalculator
+              }}
+            />
+          </>
+        );
+      })()}
     </>
   );
 }

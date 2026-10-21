@@ -1,0 +1,25 @@
+.realadvisor-widget-section {
+    padding: 5rem 0;
+    background-color: var(--bg-white, #ffffff);
+    position: relative;
+}
+
+.realadvisor-widget-container {
+    max-width: var(--container-max-width, 1280px);
+    margin: 0 auto;
+    padding: 0 3rem;
+}
+
+.realadvisor-widget-mount {
+    width: 100%;
+}
+
+@media (max-width: 768px) {
+    .realadvisor-widget-section {
+        padding: 3rem 0;
+    }
+
+    .realadvisor-widget-container {
+        padding: 0 1.5rem;
+    }
+}
